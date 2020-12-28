@@ -1,3 +1,25 @@
+// Copyright (c) 2020 by Juliusz Chroboczek.
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+
+
 /**
  * toHex formats an array as a hexadecimal string.
  * @param {number[]|Uint8Array} array - the array to format
@@ -14,8 +36,7 @@ function toHex(array) {
     return a.reduce((x, y) => x + hex(y), '')
 }
 
-/**
- * randomid returns a random string of 32 hex digits (16 bytes).
+/** randomid returns a random string of 32 hex digits (16 bytes).
  * @returns {string}
  */
 function randomid() {
@@ -64,9 +85,9 @@ function ServerConnection() {
     /**
      * The ICE configuration used by all associated streams.
      *
-     * @type {RTCIceServer[]}
+     * @type {RTCConfiguration}
      */
-    this.iceServers = null
+    this.rtcConfiguration = null
     /**
      * The permissions granted to this connection.
      *
@@ -121,7 +142,7 @@ function ServerConnection() {
     /**
      * onchat is called whenever a new chat message is received.
      *
-     * @type {(this: ServerConnection, id: string, dest: string, username: string, time: number, privileged: boolean, kind: string, message: string) => void}
+     * @type {(this: ServerConnection, id: string, dest: string, username: string, time: number, privileged: boolean, kind: string, message: unknown) => void}
      */
     this.onchat = null
     /**
@@ -133,7 +154,7 @@ function ServerConnection() {
      * 'id' is non-null, 'privileged' indicates whether the message was
      * sent by an operator.
      *
-     * @type {(this: ServerConnection, id: string, dest: string, username: string, time: number, privileged: boolean, kind: string, message: string) => void}
+     * @type {(this: ServerConnection, id: string, dest: string, username: string, time: number, privileged: boolean, kind: string, message: unknown) => void}
      */
     this.onusermessage = null
     /**
@@ -156,12 +177,13 @@ function ServerConnection() {
   * @property {boolean} [privileged]
   * @property {Object<string,boolean>} [permissions]
   * @property {string} [group]
-  * @property {string} [value]
+  * @property {unknown} [value]
   * @property {RTCSessionDescriptionInit} [offer]
   * @property {RTCSessionDescriptionInit} [answer]
   * @property {RTCIceCandidate} [candidate]
   * @property {Object<string,string>} [labels]
   * @property {Object<string,(boolean|number)>} [request]
+  * @property {Object<string,any>} [rtcConfiguration]
   */
 
 /**
@@ -186,26 +208,6 @@ ServerConnection.prototype.send = function(m) {
 }
 
 /**
- * getIceServers fetches an ICE configuration from the server and
- * populates the iceServers field of a ServerConnection.  It is called
- * lazily by connect.
- *
- * @returns {Promise<RTCIceServer[]>}
- * @function
- */
-ServerConnection.prototype.getIceServers = async function() {
-    let r = await fetch('/ice-servers.json')
-    if(!r.ok)
-        throw new Error("Couldn't fetch ICE servers: " +
-                        r.status + ' ' + r.statusText)
-    let servers = await r.json()
-    if(!(servers instanceof Array))
-        throw new Error("couldn't parse ICE servers")
-    this.iceServers = servers
-    return servers
-}
-
-/**
  * connect connects to the server.
  *
  * @param {string} url - The URL to connect to.
@@ -219,18 +221,11 @@ ServerConnection.prototype.connect = async function(url) {
         sc.socket = null
     }
 
-    if(!sc.iceServers) {
-        try {
-            await sc.getIceServers()
-        } catch(e) {
-            console.warn(e)
-        }
-    }
-
     sc.socket = new WebSocket(url)
 
     return await new Promise((resolve, reject) => {
         this.socket.onerror = function(e) {
+            console.log('ERROR', e)
             reject(e)
         }
         this.socket.onopen = function(e) {
@@ -290,7 +285,8 @@ ServerConnection.prototype.connect = async function(url) {
                 } else {
                     sc.group = m.group
                 }
-                sc.permissions = m.permissions
+                sc.permissions = m.permissions || []
+                sc.rtcConfiguration = m.rtcConfiguration || null
                 if(sc.onjoined)
                     sc.onjoined.call(sc, m.kind, m.group,
                         m.permissions || {},
@@ -344,11 +340,11 @@ ServerConnection.prototype.connect = async function(url) {
  */
 ServerConnection.prototype.join = function(group, username, password) {
     this.send({
-        group: group,
-        kind: 'join',
-        password: password,
         type: 'join',
+        kind: 'join',
+        group: group,
         username: username,
+        password: password,
     })
 }
 
@@ -360,9 +356,9 @@ ServerConnection.prototype.join = function(group, username, password) {
  */
 ServerConnection.prototype.leave = function(group) {
     this.send({
-        group: group,
-        kind: 'leave',
         type: 'join',
+        kind: 'leave',
+        group: group,
     })
 }
 
@@ -393,8 +389,8 @@ ServerConnection.prototype.request = function(what) {
     }
 
     this.send({
-        request: request,
         type: 'request',
+        request: request,
     })
 }
 
@@ -411,9 +407,7 @@ ServerConnection.prototype.newUpStream = function(id) {
         if(sc.up[id])
             throw new Error('Eek!')
     }
-    let pc = new RTCPeerConnection({
-        iceServers: sc.iceServers || [],
-    })
+    let pc = new RTCPeerConnection(sc.rtcConfiguration)
     if(!pc)
         throw new Error("Couldn't create peer connection")
     if(sc.up[id]) {
@@ -456,11 +450,11 @@ ServerConnection.prototype.newUpStream = function(id) {
  */
 ServerConnection.prototype.chat = function(username, kind, dest, value) {
     this.send({
-        dest: dest,
-        id: this.id,
-        kind: kind,
         type: 'chat',
+        id: this.id,
+        dest: dest,
         username: username,
+        kind: kind,
         value: value,
     })
 }
@@ -475,11 +469,11 @@ ServerConnection.prototype.chat = function(username, kind, dest, value) {
  */
 ServerConnection.prototype.userAction = function(username, kind, dest, value) {
     this.send({
-        dest: dest,
-        id: this.id,
-        kind: kind,
         type: 'useraction',
+        id: this.id,
+        dest: dest,
         username: username,
+        kind: kind,
         value: value,
     })
 }
@@ -495,11 +489,11 @@ ServerConnection.prototype.userAction = function(username, kind, dest, value) {
  */
 ServerConnection.prototype.userMessage = function(username, kind, dest, value) {
     this.send({
-        dest: dest,
-        id: this.id,
-        kind: kind,
         type: 'usermessage',
+        id: this.id,
+        dest: dest,
         username: username,
+        kind: kind,
         value: value,
     })
 }
@@ -514,9 +508,9 @@ ServerConnection.prototype.userMessage = function(username, kind, dest, value) {
  */
 ServerConnection.prototype.groupAction = function(username, kind, message) {
     this.send({
+        type: 'groupaction',
         id: this.id,
         kind: kind,
-        type: 'groupaction',
         username: username,
         value: message,
     })
@@ -547,9 +541,7 @@ ServerConnection.prototype.gotOffer = async function(id, labels, offer, renegoti
         throw new Error('Duplicate connection id')
 
     if(!c) {
-        let pc = new RTCPeerConnection({
-            iceServers: this.iceServers,
-        })
+        let pc = new RTCPeerConnection(sc.rtcConfiguration)
         c = new Stream(this, id, pc, false)
         sc.down[id] = c
 
@@ -599,17 +591,30 @@ ServerConnection.prototype.gotOffer = async function(id, labels, offer, renegoti
     if(sc.ondownstream)
         sc.ondownstream.call(sc, c)
 
-    await c.pc.setRemoteDescription(offer)
-    await c.flushRemoteIceCandidates()
-    let answer = await c.pc.createAnswer()
-    if(!answer)
-        throw new Error("Didn't create answer")
-    await c.pc.setLocalDescription(answer)
-    this.send({
-        answer: answer,
-        id: id,
-        type: 'answer',
-    })
+    try {
+        await c.pc.setRemoteDescription(offer)
+
+        await c.flushRemoteIceCandidates()
+
+        let answer = await c.pc.createAnswer()
+        if(!answer)
+            throw new Error("Didn't create answer")
+        await c.pc.setLocalDescription(answer)
+        this.send({
+            type: 'answer',
+            id: id,
+            answer: answer,
+        })
+    } catch(e) {
+        try {
+            if(c.onerror)
+                c.onerror.call(c, e)
+        } finally {
+            c.abort()
+        }
+        return
+    }
+
     c.localDescriptionSent = true
     c.flushLocalIceCandidates()
     if(c.onnegotiationcompleted)
@@ -646,8 +651,12 @@ ServerConnection.prototype.gotAnswer = async function(id, answer) {
     try {
         await c.pc.setRemoteDescription(answer)
     } catch(e) {
-        if(c.onerror)
-            c.onerror.call(c, e)
+        try {
+            if(c.onerror)
+                c.onerror.call(c, e)
+        } finally {
+            c.close()
+        }
         return
     }
     await c.flushRemoteIceCandidates()
@@ -715,7 +724,6 @@ ServerConnection.prototype.gotRemoteIce = async function(id, candidate) {
     else
         c.remoteIceCandidates.push(candidate)
 }
-
 
 /**
  * Stream encapsulates a MediaStream, a set of tracks.
@@ -889,9 +897,12 @@ function Stream(sc, id, pc, up) {
     this.onstats = null
 }
 
-
 /**
  * close closes a stream.
+ *
+ * For streams in the up direction, this may be called at any time.  For
+ * streams in the down direction, this will be called automatically when
+ * the server signals that it is closing a stream.
  */
 Stream.prototype.close = function() {
     let c = this
@@ -905,7 +916,6 @@ Stream.prototype.close = function() {
             try {
                 t.stop()
             } catch(e) {
-                // silence error
             }
         })
     }
@@ -914,16 +924,27 @@ Stream.prototype.close = function() {
     if(c.up && c.localDescriptionSent) {
         try {
             c.sc.send({
-                id: c.id,
                 type: 'close',
+                id: c.id,
             })
         } catch(e) {
-            // silence error
         }
     }
     c.sc = null
 }
 
+/**
+ * abort requests that the server close a down stream.
+ */
+Stream.prototype.abort = function() {
+    let c = this
+    if(c.up)
+        throw new Error("Abort called on an up stream")
+    c.sc.send({
+        type: 'abort',
+        id: c.id,
+    })
+}
 
 /**
  * Called when we get a local ICE candidate.  Don't call this.
@@ -934,15 +955,13 @@ Stream.prototype.close = function() {
 Stream.prototype.gotLocalIce = function(candidate) {
     let c = this
     if(c.localDescriptionSent)
-        c.sc.send({
-            candidate: candidate,
+        c.sc.send({type: 'ice',
             id: c.id,
-            type: 'ice',
+            candidate: candidate,
         })
     else
         c.localIceCandidates.push(candidate)
 }
-
 
 /**
  * flushLocalIceCandidates flushes any buffered local ICE candidates.
@@ -955,10 +974,9 @@ Stream.prototype.flushLocalIceCandidates = function() {
     c.localIceCandidates = []
     candidates.forEach(candidate => {
         try {
-            c.sc.send({
-                candidate: candidate,
+            c.sc.send({type: 'ice',
                 id: c.id,
-                type: 'ice',
+                candidate: candidate,
             })
         } catch(e) {
             console.warn(e)
@@ -966,7 +984,6 @@ Stream.prototype.flushLocalIceCandidates = function() {
     })
     c.localIceCandidates = []
 }
-
 
 /**
  * flushRemoteIceCandidates flushes any buffered remote ICE candidates.  It is
@@ -1019,11 +1036,11 @@ Stream.prototype.negotiate = async function(restartIce) {
     })
 
     c.sc.send({
-        id: c.id,
+        type: 'offer',
         kind: this.localDescriptionSent ? 'renegotiate' : '',
+        id: c.id,
         labels: c.labelsByMid,
         offer: offer,
-        type: 'offer',
     })
     this.localDescriptionSent = true
     c.flushLocalIceCandidates()
@@ -1041,8 +1058,8 @@ Stream.prototype.restartIce = function() {
     let c = this
     if(!c.up) {
         c.sc.send({
-            id: c.id,
             type: 'renegotiate',
+            id: c.id,
         })
         return
     }
@@ -1084,7 +1101,6 @@ Stream.prototype.updateStats = async function() {
             try {
                 report = await t.sender.getStats()
             } catch(e) {
-                // silence error
             }
         }
 
@@ -1140,7 +1156,6 @@ Stream.prototype.updateStats = async function() {
         c.onstats.call(c, c.stats)
 }
 
-
 /**
  * setStatsInterval sets the interval in milliseconds at which the onstats
  * handler will be called.  This is only useful for up streams.
@@ -1162,8 +1177,4 @@ Stream.prototype.setStatsInterval = function(ms) {
     }, ms)
 }
 
-
-export default {
-    ServerConnection,
-    Stream,
-}
+export default {ServerConnection, Stream}

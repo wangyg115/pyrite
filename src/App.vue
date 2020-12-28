@@ -1,18 +1,16 @@
 <template>
     <Main />
-    <Sidebar />
+    <Settings />
 </template>
 
 <script>
 import Main from './components/Main.vue'
-import Sidebar from './components/Sidebar.vue'
+import Settings from './components/Settings.vue'
 
 export default {
     name: 'App',
     components: {
-        Main, Sidebar
+        Main, Settings
     },
-
-
 }
 </script>

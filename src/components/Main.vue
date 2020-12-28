@@ -12,254 +12,30 @@
             </nav>
             <div class="container">
                 <header>
-                    <nav class="topnav navbar navbar-expand navbar-light fixed-top">
-                        <div id="header">
-                            <div
-                                id="sidebarCollapse"
-                                class="collapse"
-                                title="Collapse left panel"
-                            >
-                                <svg
-                                    aria-hidden="true"
-                                    class="svg-inline--fa"
-                                    data-icon="align-left"
-                                    role="img"
-                                    viewBox="0 0 448 512"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M288 44v40c0 8.837-7.163 16-16 16H16c-8.837 0-16-7.163-16-16V44c0-8.837 7.163-16 16-16h256c8.837 0 16 7.163 16 16zM0 172v40c0 8.837 7.163 16 16 16h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16zm16 312h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm256-200H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16h256c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16z"
-                                        fill="currentColor"
-                                    />
-                                </svg>
-                            </div>
-                            <h1
-                                id="title"
-                                class="header-title"
-                            />
-                        </div>
-
-                        <ul class="nav-menu">
-                            <li>
-                                <button
-                                    id="presentbutton"
-                                    class="invisible btn btn-success"
-                                >
-                                    <i
-                                        aria-hidden="true"
-                                        class="fas fa-play"
-                                    /><span class="nav-text"> Ready</span>
-                                </button>
-                            </li>
-                            <li>
-                                <button
-                                    id="unpresentbutton"
-                                    class="invisible btn btn-cancel"
-                                >
-                                    <i
-                                        aria-hidden="true"
-                                        class="fas fa-stop"
-                                    /><span class="nav-text"> Panic</span>
-                                </button>
-                            </li>
-                            <li>
-                                <div
-                                    id="mutebutton"
-                                    class="nav-link nav-button"
-                                >
-                                    <span><i
-                                        aria-hidden="true"
-                                        class="fas fa-microphone-slash"
-                                    /></span>
-                                    <label>Mute</label>
-                                </div>
-                            </li>
-                            <li>
-                                <div
-                                    id="sharebutton"
-                                    class="invisible nav-link nav-button"
-                                >
-                                    <span><i
-                                        aria-hidden="true"
-                                        class="fas fa-share-square"
-                                    /></span>
-                                    <label>Share Screen</label>
-                                </div>
-                            </li>
-                            <li>
-                                <div
-                                    id="unsharebutton"
-                                    class="invisible nav-link nav-button nav-cancel"
-                                >
-                                    <span><i
-                                        aria-hidden="true"
-                                        class="fas fa-window-close"
-                                    /></span>
-                                    <label>Unshare Screen</label>
-                                </div>
-                            </li>
-                            <li>
-                                <div
-                                    id="stopvideobutton"
-                                    class="invisible nav-link nav-button nav-cancel"
-                                >
-                                    <span><i
-                                        aria-hidden="true"
-                                        class="fas fa-window-close"
-                                    /></span>
-                                    <label>Stop Video</label>
-                                </div>
-                            </li>
-                            <li>
-                                <div
-                                    id="openside"
-                                    class="nav-button nav-link nav-more"
-                                >
-                                    <span><i
-                                        aria-hidden="true"
-                                        class="fas fa-ellipsis-v"
-                                    /></span>
-                                </div>
-                            </li>
-                        </ul>
-                    </nav>
+                    <TopNavbar />
                 </header>
-                <div
-                    id="mainrow"
-                    class="row full-width"
-                >
-                    <div
-                        id="left"
-                        class="coln-left"
-                    >
-                        <div id="chat">
-                            <div id="chatbox">
-                                <div
-                                    id="close-chat"
-                                    class="close-chat"
-                                    title="Hide chat"
-                                >
-                                    <span class="close-icon" />
-                                </div>
-                                <div id="box" />
-                                <div class="reply">
-                                    <form id="inputform">
-                                        <textarea
-                                            id="input"
-                                            class="form-reply"
-                                        />
-                                        <input
-                                            id="inputbutton"
-                                            class="btn btn-default"
-                                            type="submit"
-                                            value="&#10148;"
-                                        >
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                <div id="mainrow" class="row full-width">
+                    <div id="left" class="coln-left">
+                        <Chat />
                     </div>
-                    <div id="resizer" />
-                    <div
-                        id="right"
-                        class="coln-right"
-                    >
+                    <div id="resizer" @mousedown="chatResizer" />
+                    <div id="right" class="coln-right">
                         <span
                             id="switch-video"
                             class="show-video blink"
-                        ><i
-                            aria-hidden="true"
-                            class="fas fa-exchange"
-                        /></span>
-                        <div
-                            id="collapse-video"
-                            class="collapse-video"
-                        >
-                            <i
-                                class="far fa-comment-alt open-chat"
-                                title="Open chat"
-                            />
+                            @click="switchVideo"
+                        ><i aria-hidden="true" class="fas fa-exchange" /></span>
+
+                        <div id="collapse-video" class="collapse-video" @click="collapseVideo">
+                            <i class="far fa-comment-alt open-chat" title="Open chat" />
                         </div>
-                        <div
-                            id="video-container"
-                            class="video-container no-video"
-                        >
-                            <div
-                                id="expand-video"
-                                class="expand-video"
-                            >
+
+                        <div id="video-container" class="video-container no-video">
+                            <div id="expand-video" class="expand-video">
                                 <div id="peers" />
                             </div>
                         </div>
-                        <div
-                            id="login-container"
-                            class="login-container invisible"
-                        >
-                            <div class="login-box">
-                                <form
-                                    id="userform"
-                                    class="userform"
-                                >
-                                    <label for="username">Username</label>
-                                    <input
-                                        id="username"
-                                        autocomplete="username"
-                                        class="form-control"
-                                        name="username"
-                                        type="text"
-                                    >
-                                    <label for="password">Password</label>
-                                    <input
-                                        id="password"
-                                        autocomplete="current-password"
-                                        class="form-control"
-                                        name="password"
-                                        type="password"
-                                    >
-                                    <label>Auto ready</label>
-                                    <div class="present-switch">
-                                        <p class="switch-radio">
-                                            <input
-                                                id="presentoff"
-                                                checked
-                                                name="presentradio"
-                                                type="radio"
-                                                value=""
-                                            >
-                                            <label for="presentoff">Disabled</label>
-                                        </p>
-                                        <p class="switch-radio">
-                                            <input
-                                                id="presentmike"
-                                                name="presentradio"
-                                                type="radio"
-                                                value="mike"
-                                            >
-                                            <label for="presentmike">Enable microphone</label>
-                                        </p>
-                                        <p class="switch-radio">
-                                            <input
-                                                id="presentboth"
-                                                name="presentradio"
-                                                type="radio"
-                                                value="both"
-                                            >
-                                            <label for="presentboth">Enable camera and microphone</label>
-                                        </p>
-                                    </div>
-                                    <div class="clear" />
-                                    <div class="connect">
-                                        <input
-                                            id="connectbutton"
-                                            class="btn btn-blue"
-                                            type="submit"
-                                            value="Connect"
-                                        >
-                                    </div>
-                                </form>
-                                <div class="clear" />
-                            </div>
-                        </div>
+                        <Login />
                     </div>
                 </div>
             </div>
@@ -268,14 +44,144 @@
 </template>
 
 <script>
+import Chat from './Chat.vue'
+import Login from './Login.vue'
+import TopNavbar from './TopNavbar.vue'
+
 export default {
-    name: 'HelloWorld',
-    props: {
-        msg: String,
-    },
+    name: 'Main',
+    components: {Chat, Login, TopNavbar},
     data() {
-        return {
-            count: 0,
+        return {state: app.state}
+    },
+    methods: {
+        chatResizer(e) {
+            e.preventDefault()
+            let full_width = document.getElementById("mainrow").offsetWidth
+            let left = document.getElementById("left")
+            let right = document.getElementById("right")
+
+            let start_x = e.clientX
+            let start_width = left.offsetWidth
+
+            function start_drag(e) {
+                let left_width = (start_width + e.clientX - start_x) * 100 / full_width
+                // set min chat width to 300px
+                let min_left_width = 300 * 100 / full_width
+                if (left_width < min_left_width) {
+                    return
+                }
+                left.style.flex = left_width.toString()
+                right.style.flex = (100 - left_width).toString()
+            }
+            function stop_drag(e) {
+                document.documentElement.removeEventListener(
+                    'mousemove', start_drag, false,
+                )
+                document.documentElement.removeEventListener(
+                    'mouseup', stop_drag, false,
+                )
+            }
+
+            document.documentElement.addEventListener(
+                'mousemove', start_drag, false,
+            )
+            document.documentElement.addEventListener(
+                'mouseup', stop_drag, false,
+            )
+        },
+        closeChat() {
+            e.preventDefault()
+            let left = document.getElementById("left")
+            left.style.display = "none"
+            document.getElementById('collapse-video').style.display = "block"
+        },
+        collapseVideo() {
+            e.preventDefault()
+            if(!(this instanceof HTMLElement))
+                throw new Error('Unexpected type for this')
+            let width = window.innerWidth
+            let left = document.getElementById("left")
+            if (left.style.display === "" || left.style.display === "none") {
+                // left chat is hidden, we show the chat and hide collapse button
+                left.style.display = "block"
+                this.style.display = ""
+            }
+            if (width <= 768) {
+                // fixed div for small screen
+                this.style.display = ""
+                hideVideo(true)
+                document.getElementById('switch-video').style.display = "block"
+            }
+        },
+        /**
+         * @param {boolean} [force]
+         */
+        hideVideo(force) {
+            let mediadiv = document.getElementById('peers')
+            if(mediadiv.childElementCount > 0 && !force)
+                return
+            let video_container = document.getElementById('video-container')
+            video_container.classList.add('no-video')
+            let left = document.getElementById("left")
+            if (left.style.display !== "none") {
+                // hide all video buttons used to switch video on mobile layout
+                closeVideoControls()
+            }
+        },
+        showVideo() {
+            let width = window.innerWidth
+            let video_container = document.getElementById('video-container')
+            video_container.classList.remove('no-video')
+            if (width <= 768)
+                document.getElementById('collapse-video').style.display = "block"
+        },
+
+        submitUserForm() {
+            e.preventDefault()
+            if(connecting)
+                return
+            connecting = true
+            try {
+                let username = getInputElement('username').value.trim()
+                let password = getInputElement('password').value
+                this.storeUserPass(username, password)
+                serverConnect()
+            } finally {
+                connecting = false
+            }
+
+            if(getInputElement('presentboth').checked)
+                presentRequested = 'both'
+            else if(getInputElement('presentmike').checked)
+                presentRequested = 'mike'
+            else
+                presentRequested = null
+
+            getInputElement('presentoff').checked = true
+        },
+        /**
+         * @param {string} username
+         * @param {string} password
+         */
+        storeUserPass(username, password) {
+            let userpass = {password, username }
+            try {
+                window.sessionStorage.setItem('userpass', JSON.stringify(userpass))
+                fallbackUserPass = null
+            } catch(e) {
+                console.warn("Couldn't store password:", e)
+                fallbackUserPass = userpass
+            }
+        },
+
+        switchVideo() {
+            e.preventDefault()
+            if(!(this instanceof HTMLElement))
+                throw new Error('Unexpected type for this')
+            this.showVideo()
+            this.style.display = ""
+            document.getElementById('collapse-video').style.display = "block"
         }
     },
 }
