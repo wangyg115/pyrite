@@ -398,18 +398,17 @@ ServerConnection.prototype.request = function(what) {
  * newUpStream requests the creation of a new up stream.
  *
  * @param {string} [id] - The id of the stream to create.
- * @returns {Stream}
+ * @returns {c: Stream, id: string}
  */
 ServerConnection.prototype.newUpStream = function(id) {
     let sc = this
     if(!id) {
         id = randomid()
-        if(sc.up[id])
-            throw new Error('Eek!')
+        if(sc.up[id]) throw new Error('Eek!')
     }
     let pc = new RTCPeerConnection(sc.rtcConfiguration)
-    if(!pc)
-        throw new Error("Couldn't create peer connection")
+    if(!pc) throw new Error("Couldn't create peer connection")
+
     if(sc.up[id]) {
         sc.up[id].close()
     }
@@ -421,21 +420,23 @@ ServerConnection.prototype.newUpStream = function(id) {
     }
 
     pc.onicecandidate = e => {
-        if(!e.candidate)
+        if(!e.candidate) {
             return
+        }
         c.gotLocalIce(e.candidate)
     }
 
     pc.oniceconnectionstatechange = e => {
-        if(c.onstatus)
+        if(c.onstatus) {
             c.onstatus.call(c, pc.iceConnectionState)
-        if(pc.iceConnectionState === 'failed')
+        }
+        if(pc.iceConnectionState === 'failed') {
             c.restartIce()
+        }
     }
 
     pc.ontrack = console.error
-
-    return c
+    return {c, id}
 }
 
 /**

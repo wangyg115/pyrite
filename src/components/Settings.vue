@@ -25,34 +25,38 @@
                     </div>
                 </div>
             </div>
-            <div id="mediaoptions" class="invisible">
+            <div v-show="state.permissions.present" id="mediaoptions">
                 <fieldset>
                     <legend>Media Options</legend>
                     <label class="sidenav-label-first" for="videoselect">Camera:</label>
                     <select
-                        id="videoselect" v-model="videoselect"
+                        id="videoselect" v-model="state.video"
                         class="select select-inline"
                         @change="changeVideoSelect"
                     >
-                        <option value="">
-                            off
+                        <option
+                            v-for="video of state.devices.video" :key="video.id"
+                            :selected="video.id === state.video"
+                            :value="video.id"
+                        >
+                            {{ video.label }}
                         </option>
                     </select>
 
                     <label class="sidenav-label" for="audioselect">Microphone:</label>
                     <select
-                        id="audioselect" v-model="audioselect"
+                        id="audioselect" v-model="state.audio"
                         class="select select-inline"
                         @change="changeAudioSelect"
                     >
-                        <option value="">
-                            off
+                        <option v-for="audio of state.devices.audio" :key="audio.id" :value="audio.id">
+                            {{ audio.label }}
                         </option>
                     </select>
 
                     <form>
                         <input
-                            id="blackboardbox" v-model="blackboardbox"
+                            id="blackboardbox" v-model="state.blackboardMode"
                             type="checkbox"
                             @change="changeBlackboardbox"
                         >
@@ -67,7 +71,7 @@
                 <form id="sendform">
                     <label class="sidenav-label-first" for="sendselect">Send:</label>
                     <select
-                        id="sendselect" v-model="sendselect"
+                        id="sendselect" v-model="state.send"
                         class="select select-inline"
                         @change="changeSendSelect"
                     >
@@ -89,7 +93,7 @@
                 <form id="requestform">
                     <label class="sidenav-label" for="requestselect">Receive:</label>
                     <select
-                        id="requestselect" v-model="requestselect"
+                        id="requestselect" v-model="state.request"
                         class="select select-inline"
                         @change="changeRequestSelect"
                     >
@@ -110,7 +114,7 @@
 
                 <form>
                     <input
-                        id="activitybox" v-model="activitybox"
+                        id="activitybox" v-model="activityDetection"
                         type="checkbox"
                         @change="changeActivitybox"
                     >
@@ -118,7 +122,7 @@
                 </form>
             </fieldset>
 
-            <form id="fileform">
+            <form v-show="state.permissions.present" id="fileform">
                 <label class=".sidenav-label-first" for="fileinput">Play local file:</label>
                 <input
                     id="fileinput" accept="audio/*,video/*"
@@ -137,13 +141,7 @@ export default {
     name: 'Settings',
     data() {
         return {
-            activitybox: '',
-            audioselect: 'off',
-            blackboardbox: 'off',
-            requestselect: '',
-            sendselect: '',
             state: app.state,
-            videoselect: 'off',
         }
     },
     methods: {
@@ -162,11 +160,10 @@ export default {
             }
         },
         changeAudioSelect() {
-            e.preventDefault()
-            if(!(this instanceof HTMLSelectElement))
-                throw new Error('Unexpected type for this')
-            updateSettings({audio: this.value})
-            changePresentation()
+            app.store.save()
+            if (this.state.connected) {
+                app.changePresentation()
+            }
         },
         changeFileInput() {
             if(!(this instanceof HTMLInputElement))
@@ -179,18 +176,14 @@ export default {
             this.closeNav()
         },
         changeVideoSelect() {
-            e.preventDefault()
-            if(!(this instanceof HTMLSelectElement))
-                throw new Error('Unexpected type for this')
-            updateSettings({video: this.value})
-            changePresentation()
+            app.store.save()
+            if (this.state.connected) {
+                app.changePresentation()
+            }
         },
         changeBlackboardbox() {
-            e.preventDefault()
-            if(!(this instanceof HTMLInputElement))
-                throw new Error('Unexpected type for this')
-            updateSettings({blackboardMode: this.checked})
-            changePresentation()
+            app.store.save()
+            app.changePresentation()
         },
         changeRequestSelect() {
             e.preventDefault()
@@ -210,57 +203,14 @@ export default {
             }
         },
         closeNav() {
-        document.getElementById("sidebarnav").style.width = "0"
+            document.getElementById("sidebarnav").style.width = "0"
         },
         closeSide() {
             this.closeNav()
         },
         disconnect() {
-            serverConnection.close()
+            app.connection.close()
             this.closeNav()
-        },
-        reflectSettings() {
-            let settings = getSettings()
-            let store = false
-
-            setLocalMute(settings.localMute)
-
-            let videoselect = getSelectElement('videoselect')
-            if(!settings.hasOwnProperty('video') ||
-            !selectOptionAvailable(videoselect, settings.video)) {
-                settings.video = selectOptionDefault(videoselect)
-                store = true
-            }
-            videoselect.value = settings.video
-
-            let audioselect = getSelectElement('audioselect')
-            if(!settings.hasOwnProperty('audio') ||
-            !selectOptionAvailable(audioselect, settings.audio)) {
-                settings.audio = selectOptionDefault(audioselect)
-                store = true
-            }
-            audioselect.value = settings.audio
-
-            if(settings.hasOwnProperty('request')) {
-                getSelectElement('requestselect').value = settings.request
-            } else {
-                settings.request = getSelectElement('requestselect').value
-                store = true
-            }
-
-            if(settings.hasOwnProperty('send')) {
-                getSelectElement('sendselect').value = settings.send
-            } else {
-                settings.send = getSelectElement('sendselect').value
-                store = true
-            }
-
-            getInputElement('activitybox').checked = settings.activityDetection
-
-            getInputElement('blackboardbox').checked = settings.blackboardMode
-
-            if(store)
-                storeSettings(settings)
         }
     }
 }

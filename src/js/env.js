@@ -4,6 +4,8 @@ function isSafari() {
 }
 
 const env = {}
+
+if (globalThis.navigator) { env.isBrowser = true }
 env.isSafari = isSafari()
 
 

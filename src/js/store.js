@@ -1,33 +1,65 @@
 import {reactive} from 'vue'
 
-const state = reactive({
+const persistantState = reactive({
+    activityDetection: false,
+    audio: null,
+    blackboardMode: false,
+    loading: true,
+    localMute: false,
+    password: 'marley',
+    permissionText: '',
+    present: '', // '', mike or 'both'
+    request: 'everything',
+    resolution: null,
+    send: 'normal',
+    title: '',
+    username: 'bob',
+    video: null,
+})
+
+/**
+ * State is always overwritten by these properties.
+ */
+const volatileState = {
     connected: false,
     devices: {
         audio: [],
         video: [],
     },
-    loading: true,
-    password: 'marley',
-    permissionText: '',
-    present: '', // '', mike or 'both'
-    title: '',
-    username: 'bob',
-})
+    notifications: [],
+    peers: [],
+    permissions: {
+        op: false,
+        // Assume present permission before connecting,
+        // so send can be modified in Settings.
+        present: true,
+        record: false,
+    },
+    upMedia: {
+        audio: [],
+        local: [],
+        screenshare: [],
+        video: [],
+    },
+}
 
 
 class Store {
 
     load() {
+        let restoredState
         try {
-            Object.assign(state, JSON.parse(sessionStorage.getItem('store')))
+            restoredState = JSON.parse(sessionStorage.getItem('store'))
         } catch (err) {
-            // Silently fail
+            restoredState = {}
         }
-        return state
+
+        Object.assign(persistantState, {...restoredState, ...volatileState})
+        return persistantState
     }
 
     save() {
-        sessionStorage.setItem('store', JSON.stringify(state))
+        sessionStorage.setItem('store', JSON.stringify(persistantState))
     }
 }
 

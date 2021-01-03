@@ -29,30 +29,29 @@
         <ul class="nav-menu">
             <li>
                 <button
+                    v-show="state.permissions.present && state.upMedia.local.length"
                     id="presentbutton"
                     class="invisible btn btn-success"
                     @click="present"
                 >
-                    <i
-                        aria-hidden="true"
-                        class="fas fa-play"
-                    /><span class="nav-text"> Ready</span>
+                    <i aria-hidden="true" class="fas fa-play" />
+                    <span class="nav-text"> Ready</span>
                 </button>
             </li>
             <li>
                 <button
+                    v-show="state.upMedia.local.length"
                     id="unpresentbutton"
                     class="invisible btn btn-cancel"
                     @click="unpresent"
                 >
-                    <i
-                        aria-hidden="true"
-                        class="fas fa-stop"
-                    /><span class="nav-text"> Panic</span>
+                    <i aria-hidden="true" class="fas fa-stop" />
+                    <span class="nav-text"> Panic</span>
                 </button>
             </li>
             <li>
                 <div
+                    v-show="state.permissions.present"
                     id="mutebutton"
                     class="nav-link nav-button"
                     @click="mute"
@@ -66,40 +65,40 @@
             </li>
             <li>
                 <div
+                    v-if="state.permissions.present"
                     id="sharebutton"
                     class="invisible nav-link nav-button"
                     @click="share"
                 >
-                    <span><i
-                        aria-hidden="true"
-                        class="fas fa-share-square"
-                    /></span>
+                    <span>
+                        <i aria-hidden="true" class="fas fa-share-square" />
+                    </span>
                     <label>Share Screen</label>
                 </div>
             </li>
             <li>
                 <div
+                    v-show="state.upMedia.screenshare.length"
                     id="unsharebutton"
                     class="invisible nav-link nav-button nav-cancel"
                     @click="unshare"
                 >
-                    <span><i
-                        aria-hidden="true"
-                        class="fas fa-window-close"
-                    /></span>
+                    <span>
+                        <i aria-hidden="true" class="fas fa-window-close" />
+                    </span>
                     <label>Unshare Screen</label>
                 </div>
             </li>
             <li>
                 <div
+                    v-show="state.upMedia.video.length"
                     id="stopvideobutton"
                     class="invisible nav-link nav-button nav-cancel"
                     @click="stopVideo"
                 >
-                    <span><i
-                        aria-hidden="true"
-                        class="fas fa-window-close"
-                    /></span>
+                    <span>
+                        <i aria-hidden="true" class="fas fa-window-close" />
+                    </span>
                     <label>Stop Video</label>
                 </div>
             </li>
@@ -109,10 +108,7 @@
                     class="nav-button nav-link nav-more"
                     @click="openSide"
                 >
-                    <span><i
-                        aria-hidden="true"
-                        class="fas fa-ellipsis-v"
-                    /></span>
+                    <span><i aria-hidden="true" class="fas fa-ellipsis-v" /></span>
                 </div>
             </li>
         </ul>
@@ -153,7 +149,7 @@ export default {
             // button a second time before the stream is set up and the button hidden.
             button.disabled = true
             try {
-                let id = findUpMedia('local')
+                let id = app.findUpMedia('local')
                 if(!id) await addLocalMedia()
             } finally {
                 button.disabled = false

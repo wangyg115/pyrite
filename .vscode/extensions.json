@@ -3,6 +3,7 @@
     "dbaeumer.vscode-eslint",
     "eamodio.gitlens",
     "hex-ci.stylelint-plus",
-    "octref.vetur"
+    "octref.vetur",
+    "csstools.postcss"
   ]
 }

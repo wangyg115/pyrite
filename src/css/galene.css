@@ -1,5 +1,7 @@
-.nav-fixed .topnav {
-    z-index: 1039;
+.nav-fixed {
+    .topnav {
+        z-index: 1039;
+    }
 }
 
 .fixed-top{
@@ -155,6 +157,13 @@
 
 .btn {
     transition-duration: 0.4s;
+
+    &.btn-default {
+        color: #fff;
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
 }
 
 .btn-default:hover {
@@ -163,11 +172,6 @@
     border-color: #4e555b;
 }
 
-.btn-default {
-    color: #fff;
-    background-color: #6c757d;
-    border-color: #6c757d;
-}
 
 .btn:not(:disabled):not(.disabled) {
     cursor: pointer;
@@ -849,12 +853,12 @@ h1 {
     column-gap: 10px;
     position: absolute;
     top: 0;
-    right: 0; 
+    right: 0;
     bottom: 0;
-    min-width: 100%; 
+    min-width: 100%;
     min-height: 100%;
-    width: auto; 
-    height: auto; 
+    width: auto;
+    height: auto;
     z-index: 1000;
     background-size: cover;
     overflow: hidden;
@@ -1267,7 +1271,7 @@ header .collapse {
 
     /* Reappearing the sidebar on toggle button click */
     #left-sidebar {
-        margin-left: 0; 
+        margin-left: 0;
     }
 
     #left-sidebar .sidebar-header strong {

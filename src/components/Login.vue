@@ -56,17 +56,18 @@
                     </p>
                 </div>
                 <div class="clear" />
-                <div class="connect">
-                    <button
-                        id="connectbutton"
-                        class="btn btn-blue"
-                        :disabled="connecting"
-                        @click="login"
-                    >
-                        Connect
-                    </button>
-                </div>
             </form>
+
+            <div class="connect">
+                <button
+                    id="connectbutton"
+                    class="btn btn-blue"
+                    :disabled="connecting"
+                    @click="login"
+                >
+                    Connect
+                </button>
+            </div>
             <div class="clear" />
         </div>
     </div>
