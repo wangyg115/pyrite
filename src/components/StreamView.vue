@@ -25,6 +25,7 @@ export default {
     },
     methods: {
         resizePeers() {
+            console.log('RESIZE PEERS')
             // Window resize can call this method too early
             if (!this.connection)
                 return

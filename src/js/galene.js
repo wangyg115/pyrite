@@ -14,132 +14,6 @@ let group
 /** @type {boolean} */
 let mediaChoicesDone = false
 
-
-/**
- * @param {string} id
- */
-function getSelectElement(id) {
-    let elt = document.getElementById(id)
-    if(!elt || !(elt instanceof HTMLSelectElement))
-        throw new Error(`Couldn't find ${id}`)
-    return elt
-}
-
-/**
- * @param {string} id
- */
-function getInputElement(id) {
-    let elt = document.getElementById(id)
-    if(!elt || !(elt instanceof HTMLInputElement))
-        throw new Error(`Couldn't find ${id}`)
-    return elt
-}
-
-/**
- * @param {string} id
- */
-function getButtonElement(id) {
-    let elt = document.getElementById(id)
-    if(!elt || !(elt instanceof HTMLButtonElement))
-        throw new Error(`Couldn't find ${id}`)
-    return elt
-}
-
-
-/**
- * @param {string} id
- * @param {boolean} visible
- */
-function setVisibility(id, visible) {
-    let elt = document.getElementById(id)
-    if(visible)
-        elt.classList.remove('invisible')
-    else
-        elt.classList.add('invisible')
-}
-
-
-
-
-
-/**
- * @param {Stream} c
- * @param {boolean} value
- */
-function setActive(c, value) {
-    let peer = document.getElementById('peer-' + c.id)
-    if(value)
-        peer.classList.add('peer-active')
-    else
-        peer.classList.remove('peer-active')
-}
-
-
-/**
- * @param {HTMLSelectElement} select
- * @param {string} label
- * @param {string} [value]
- */
-function addSelectOption(select, label, value) {
-    if(!value)
-        value = label
-    for(let i = 0; i < select.children.length; i++) {
-        let child = select.children[i]
-        if(!(child instanceof HTMLOptionElement)) {
-            console.warn('Unexpected select child')
-            continue
-        }
-        if(child.value === value) {
-            if(child.label !== label) {
-                child.label = label
-            }
-            return
-        }
-    }
-
-    let option = document.createElement('option')
-    option.value = value
-    option.textContent = label
-    select.appendChild(option)
-}
-
-/**
- * @param {HTMLSelectElement} select
- * @param {string} value
- */
-function selectOptionAvailable(select, value) {
-    let children = select.children
-    for(let i = 0; i < children.length; i++) {
-        let child = select.children[i]
-        if(!(child instanceof HTMLOptionElement)) {
-            console.warn('Unexpected select child')
-            continue
-        }
-        if(child.value === value)
-            return true
-    }
-    return false
-}
-
-/**
- * @param {HTMLSelectElement} select
- * @returns {string}
- */
-function selectOptionDefault(select) {
-    /* First non-empty option. */
-    for(let i = 0; i < select.children.length; i++) {
-        let child = select.children[i]
-        if(!(child instanceof HTMLOptionElement)) {
-            console.warn('Unexpected select child')
-            continue
-        }
-        if(child.value)
-            return child.value
-    }
-    /* The empty option is always available. */
-    return ''
-}
-
 let safariScreenshareDone = false
 
 
@@ -150,66 +24,6 @@ function cloneHTMLElement(elt) {
     if(!(elt instanceof HTMLElement))
         throw new Error('Unexpected element type')
     return /** @type{HTMLElement} */(elt.cloneNode(true))
-}
-
-
-/**
- * @param {HTMLVideoElement} media
- * @param {HTMLElement} container
- * @param {Stream} c
- */
-function addCustomControls(media, container, c) {
-    media.controls = false
-    let controls = document.getElementById('controls-' + c.id)
-    if(controls) {
-        console.warn('Attempted to add duplicate controls')
-        return
-    }
-
-    let template =
-        document.getElementById('videocontrols-template').firstElementChild
-    controls = cloneHTMLElement(template)
-    controls.id = 'controls-' + c.id
-
-    let volume = getVideoButton(controls, 'volume')
-    if(c.kind === 'local') {
-        volume.remove()
-    } else {
-        setVolumeButton(media.muted,
-            getVideoButton(controls, "volume-mute"),
-            getVideoButton(controls, "volume-slider"))
-    }
-
-    container.appendChild(controls)
-}
-
-
-/**
- * @param {HTMLElement} container
- * @param {string} name
- */
-function getVideoButton(container, name) {
-    return /** @type {HTMLElement} */(container.getElementsByClassName(name)[0])
-}
-
-
-/**
- * @param {boolean} muted
- * @param {HTMLElement} button
- * @param {HTMLElement} slider
- */
-function setVolumeButton(muted, button, slider) {
-    if(!muted) {
-        button.classList.remove("fa-volume-mute")
-        button.classList.add("fa-volume-up")
-    } else {
-        button.classList.remove("fa-volume-up")
-        button.classList.add("fa-volume-mute")
-    }
-
-    if(!(slider instanceof HTMLInputElement))
-        throw new Error("Couldn't find volume slider")
-    slider.disabled = muted
 }
 
 
@@ -252,7 +66,7 @@ const urlRegexp = /https?:\/\/[-a-zA-Z0-9@:%/._\\+~#&()=?]+[-a-zA-Z0-9@:%/_\\+~#
 let lastMessage = {}
 
 
-class Galene extends EventEmitter {
+class Pyrite extends EventEmitter {
     /**
      * Old start function.
      */
@@ -299,9 +113,10 @@ class Galene extends EventEmitter {
         let stream = video.captureStream()
 
         let {c, id} = this.connection.newUpStream()
+        c.kind = 'video'
+
         this.state.upMedia[c.kind].push(id)
 
-        c.kind = 'video'
         c.stream = stream
         stream.onaddtrack = function(e) {
             let t = e.track
@@ -338,7 +153,7 @@ class Galene extends EventEmitter {
                 this.delUpMedia(c)
             }
         }
-        await this.setMedia(c, true, false, video)
+
         c.userdata.play = true
     }
 
@@ -346,9 +161,10 @@ class Galene extends EventEmitter {
      * @param {string} [id]
      */
     async addLocalMedia(_id) {
-        this.logger.info(`add local media - video(${this.state.video}) audio(${this.state.audio})`)
-        let audio = this.state.audio ? {deviceId: this.state.audio} : false
-        let video = this.state.video ? {deviceId: this.state.video} : false
+        this.logger.info(`add local media - id: ${_id})`)
+        // An empty string video/audio device may indicate a fake media stream.
+        let audio = this.state.audio !== null ? {deviceId: this.state.audio} : false
+        let video = this.state.video !== null ? {deviceId: this.state.video} : false
 
         if(video) {
             let resolution = this.state.resolution
@@ -361,29 +177,30 @@ class Galene extends EventEmitter {
             }
         }
 
-        let old = _id && this.connection.up[id]
+        let oldStream = _id && this.connection.up[_id]
 
         if(!audio && !video) {
-            if(old) {
-                this.delUpMedia(old)
+            this.logger.warn('no media')
+            if(oldStream) {
+                this.delUpMedia(oldStream)
             }
             return
         }
 
-        if(old) {
-            this.stopUpMedia(old)
+        if(oldStream) {
+            this.logger.info('removing old stream component')
+            this.stopUpMedia(oldStream)
         }
         let constraints = {audio: audio !== null, video: video !== null}
 
         /** @type {MediaStream} */
         let stream = null
         try {
-            console.log('CONSTRAINTS', constraints)
             stream = await navigator.mediaDevices.getUserMedia(constraints)
         } catch(e) {
             this.displayError(e)
-            if(old) {
-                this.delUpMedia(old)
+            if(oldStream) {
+                this.delUpMedia(oldStream)
             }
             return
         }
@@ -409,8 +226,6 @@ class Galene extends EventEmitter {
             }
             c.pc.addTrack(t, stream)
         })
-
-        await this.setMedia(c, true, true)
     }
 
 
@@ -452,7 +267,6 @@ class Galene extends EventEmitter {
         })
         c.onstats = this.gotUpStats.bind(this, c)
         c.setStatsInterval(2000)
-        await this.setMedia(c, true)
     }
 
 
@@ -490,6 +304,7 @@ class Galene extends EventEmitter {
 
     changePresentation() {
         let id = this.findUpMedia('local')
+        console.log('PRESENT', id)
         if(id) {
             this.addLocalMedia(id)
         }
@@ -498,14 +313,8 @@ class Galene extends EventEmitter {
 
     clearChat() {
         lastMessage = {}
-        document.getElementById('box').textContent = ''
-    }
-
-
-    closeVideoControls() {
-        // hide all video buttons used to switch video on mobile layout
-        document.getElementById('switch-video').style.display = ""
-        document.getElementById('collapse-video').style.display = ""
+        console.log('CLEAR CHAT')
+        // document.getElementById('box').textContent = ''
     }
 
 
@@ -716,9 +525,7 @@ class Galene extends EventEmitter {
         this.delUpMediaKind(null)
 
         this.resetUsers()
-
         this.displayError('Disconnected', 'error')
-        this.closeVideoControls()
 
         if(code != 1000) {
             console.warn('Socket close', code, reason)
@@ -750,9 +557,6 @@ class Galene extends EventEmitter {
         c.onerror = (e) => {
             console.error(e)
             this.displayError(e)
-        }
-        c.ondowntrack = (track, transceiver, label, stream) => {
-            this.setMedia(c, false)
         }
 
         const peer = {
@@ -799,11 +603,6 @@ class Galene extends EventEmitter {
             return
         }
 
-        let input = /** @type{HTMLTextAreaElement} */
-            (document.getElementById('input'))
-        input.placeholder = 'Type /help for help'
-        setTimeout(() => {input.placeholder = ''}, 8000)
-
         this.connection.request(this.state.request)
 
         if(this.connection.permissions.present && !this.findUpMedia('local')) {
@@ -813,24 +612,14 @@ class Galene extends EventEmitter {
             }
 
             if(this.state.present === 'mike') {
-                console.log('EMPTY VIDEO')
-                this.state.video = ''
+                this.state.video = null
                 this.store.save()
             } else if(this.state.present === 'both') {
-                console.log('EMPTY VIDEO (BOTH)')
+                // TODO: Needs action?
 
-                // TODO: WHY???
-                // this.delSetting('video')
             }
 
-            // TODO: Disable button because...
-            let button = getButtonElement('presentbutton')
-            button.disabled = true
-            try {
-                await this.addLocalMedia()
-            } finally {
-                button.disabled = false
-            }
+            await this.addLocalMedia()
 
         }
     }
@@ -881,7 +670,6 @@ class Galene extends EventEmitter {
      */
     newUpStream(_id) {
         let {c, id} = this.connection.newUpStream(_id)
-        this.state.upMedia[id] = c.kind
 
         const peer = {
             id: c.id,
@@ -1043,30 +831,6 @@ class Galene extends EventEmitter {
 
 
     /**
-     * setMedia adds a new media element corresponding to stream c.
-     *
-     * @param {Stream} c
-     * @param {boolean} isUp
-     *     - indicates whether the stream goes in the up direction
-     * @param {boolean} [mirror]
-     *     - whether to mirror the video
-     */
-    async setMedia(c, isUp, mirror) {
-        this.logger.info(`setMedia - up: ${isUp}, mirror:${mirror}`)
-
-        if(!isUp && this.env.isSafari && !this.findUpMedia('local')) {
-            // Safari doesn't allow autoplay unless the user has granted media access
-            try {
-                let stream = await navigator.mediaDevices.getUserMedia({audio: true})
-                stream.getTracks().forEach(t => t.stop())
-            } catch(e) {
-                // silence error
-            }
-        }
-    }
-
-
-    /**
     * @param{boolean} done
     */
     async setMediaChoices(done) {
@@ -1129,13 +893,18 @@ class Galene extends EventEmitter {
             return
         c.stream.getTracks().forEach(t => {
             try {
+                this.logger.debug(`stopping track ${t.id}`)
                 t.stop()
             } catch(e) {
                 // silence error
             }
         })
+
+        this.state.peers.splice(this.state.peers.indexOf(c.id), 1)
+
+
     }
 
 }
 
-export default Galene
+export default Pyrite

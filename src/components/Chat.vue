@@ -15,6 +15,7 @@
                     <textarea
                         id="input"
                         class="form-reply"
+                        :placeholder="inputPlaceholder"
                         @onkeypress="handleChatInput()"
                     />
                     <input
@@ -32,7 +33,15 @@
 <script>
 export default {
     data() {
-        return {state: app.state}
+        return {
+            inputPlaceholder: 'Type /help for help',
+            state: app.state
+        }
+    },
+    mounted() {
+        setTimeout(() => {
+            this.inputPlaceholder = ''
+        }, 8000)
     },
     methods: {
         /**

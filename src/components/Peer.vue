@@ -112,8 +112,13 @@ export default {
             this.stream = app.connection.down[this.peer.id]
             this.stream.onstats = this.gotDownStats
 
+            this.stream.ondowntrack = (track, transceiver, label, stream) => {
+                app.logger.debug(`stream event - ondowntrack [${this.stream.id}]`)
+                this.$refs.media.srcObject = app.connection.down[this.peer.id].stream
+                this.media.play()
+            }
+
             this.stream.onlabel = (label) => {
-                console.log('SET LABEL', label)
                 this.label = label
             }
 

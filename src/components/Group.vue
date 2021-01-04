@@ -16,7 +16,7 @@
                 </header>
                 <div id="mainrow" class="row full-width">
                     <div v-show="state.chat.active" id="left" class="coln-left">
-                        <Chat />
+                        <Chat v-if="state.connected" />
                     </div>
                     <div id="resizer" @mousedown="chatResizer" />
                     <div id="right" class="coln-right">
