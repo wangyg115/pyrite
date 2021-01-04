@@ -5,7 +5,7 @@
                 id="close-chat"
                 class="close-chat"
                 title="Hide chat"
-                @click="closeChat"
+                @click="state.chat.active = !state.chat.active"
             >
                 <span class="close-icon" />
             </div>
@@ -31,6 +31,9 @@
 
 <script>
 export default {
+    data() {
+        return {state: app.state}
+    },
     methods: {
         /**
          * @param {string} peerId

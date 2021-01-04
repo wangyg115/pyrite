@@ -4,8 +4,9 @@
             <h2>Settings</h2>
             <a id="clodeside" class="closebtn" @click="closeSide"><i aria-hidden="true" class="fas fa-times" /></a>
         </div>
+
         <div id="optionsdiv" class="sidenav-content">
-            <div id="profile" class="profile invisible" :class="{invisible: !state.connected}">
+            <div v-show="state.connected" id="profile" class="profile">
                 <div class="profile-user">
                     <div class="profile-logo">
                         <span><i aria-hidden="true" class="fas fa-user" /></span>

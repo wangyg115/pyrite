@@ -15,7 +15,7 @@
                     <TopNavbar />
                 </header>
                 <div id="mainrow" class="row full-width">
-                    <div id="left" class="coln-left">
+                    <div v-show="state.chat.active" id="left" class="coln-left">
                         <Chat />
                     </div>
                     <div id="resizer" @mousedown="chatResizer" />
@@ -26,7 +26,11 @@
                             @click="switchVideo"
                         ><i aria-hidden="true" class="fas fa-exchange" /></span>
 
-                        <div id="collapse-video" class="collapse-video" @click="collapseVideo">
+                        <div
+                            v-show="!state.chat.active" id="collapse-video"
+                            class="collapse-video"
+                            @click="state.chat.active = true"
+                        >
                             <i class="far fa-comment-alt open-chat" title="Open chat" />
                         </div>
                         <StreamView v-if="state.connected" />

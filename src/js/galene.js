@@ -256,11 +256,13 @@ class Galene extends EventEmitter {
     /**
      * Old start function.
      */
-    constructor() {
+    constructor(router) {
         super()
 
         this.logger = new Logger(this)
         this.logger.setLevel('debug')
+
+        this.router = router
 
         this.env = env
         this.protocol = protocol
@@ -376,9 +378,9 @@ class Galene extends EventEmitter {
         /** @type {MediaStream} */
         let stream = null
         try {
+            console.log('CONSTRAINTS', constraints)
             stream = await navigator.mediaDevices.getUserMedia(constraints)
         } catch(e) {
-            console.log("ERROR", e)
             this.displayError(e)
             if(old) {
                 this.delUpMedia(old)
@@ -511,24 +513,7 @@ class Galene extends EventEmitter {
      * @param {string} id
      */
     delMedia(id) {
-        let mediadiv = document.getElementById('peers')
-        let peer = document.getElementById('peer-' + id)
-        if(!peer)
-            throw new Error('Removing unknown media')
-
-        let media = /** @type{HTMLVideoElement} */
-            (document.getElementById('media-' + id))
-
-        if(media.src) {
-            URL.revokeObjectURL(media.src)
-            media.src = null
-        }
-
-        media.srcObject = null
-        mediadiv.removeChild(peer)
-
-        this.resizePeers()
-        this.hideVideo()
+        this.state.peers.splice(this.state.peers.indexOf(id), 1)
     }
 
 
@@ -573,8 +558,6 @@ class Galene extends EventEmitter {
             this.delMedia(id)
             delete(this.connection.up[id])
         }
-
-        this.hideVideo()
     }
 
 
@@ -729,8 +712,14 @@ class Galene extends EventEmitter {
      * @param {string} reason
      */
     gotClose(code, reason) {
+        this.state.connected = false
         this.delUpMediaKind(null)
-        this.setConnected(false)
+
+        this.resetUsers()
+
+        this.displayError('Disconnected', 'error')
+        this.closeVideoControls()
+
         if(code != 1000) {
             console.warn('Socket close', code, reason)
         }
@@ -739,9 +728,13 @@ class Galene extends EventEmitter {
 
     /** @this {ServerConnection} */
     gotConnected() {
-        this.setConnected(true)
+        this.resetUsers()
+        this.clearChat()
+        this.displayUsername()
 
-        this.connection.join(group, this.state.username, this.state.password)
+        const groupName = this.router.currentRoute.value.params.groupId
+        this.connection.join(groupName, this.state.username, this.state.password)
+        this.state.connected = true
     }
 
 
@@ -750,7 +743,7 @@ class Galene extends EventEmitter {
      * @param {Stream} c
      */
     gotDownStream(c) {
-        this.logger.info('got downstream')
+        this.logger.info(`new downstream ${c.id}`)
         c.onclose = () => {
             this.delMedia(c.id)
         }
@@ -761,12 +754,15 @@ class Galene extends EventEmitter {
         c.ondowntrack = (track, transceiver, label, stream) => {
             this.setMedia(c, false)
         }
-        c.onlabel = (label) => {
-            this.setLabel(c)
+
+        const peer = {
+            id: c.id,
+            isUp: false,
+            kind: c.kind,
+            mirror: true,
         }
-        c.onstatus = (status) => {
-            this.setMediaStatus(c)
-        }
+
+        this.state.peers.push(peer)
     }
 
 
@@ -811,31 +807,31 @@ class Galene extends EventEmitter {
         this.connection.request(this.state.request)
 
         if(this.connection.permissions.present && !this.findUpMedia('local')) {
-            if(this.state.present) {
-                if(this.state.present === 'mike') {
-                    console.log('EMPTY VIDEO')
-                    this.state.video = ''
-                    this.store.save()
-                } else if(this.state.present === 'both') {
-                    console.log('EMPTY VIDEO (BOTH)')
-
-                    // TODO: WHY???
-                    // this.delSetting('video')
-                }
-
-                // TODO: Disable button because...
-                let button = getButtonElement('presentbutton')
-                button.disabled = true
-                try {
-                    await this.addLocalMedia()
-                } finally {
-                    button.disabled = false
-                }
-            } else {
-                this.displayMessage(
-                    "Press Ready to enable your camera or microphone",
-                )
+            if (!this.state.present) {
+                this.displayMessage('Press Ready to enable your camera or microphone')
+                return
             }
+
+            if(this.state.present === 'mike') {
+                console.log('EMPTY VIDEO')
+                this.state.video = ''
+                this.store.save()
+            } else if(this.state.present === 'both') {
+                console.log('EMPTY VIDEO (BOTH)')
+
+                // TODO: WHY???
+                // this.delSetting('video')
+            }
+
+            // TODO: Disable button because...
+            let button = getButtonElement('presentbutton')
+            button.disabled = true
+            try {
+                await this.addLocalMedia()
+            } finally {
+                button.disabled = false
+            }
+
         }
     }
 
@@ -856,23 +852,6 @@ class Galene extends EventEmitter {
         default:
             console.warn('Unknown user kind', kind)
             break
-        }
-    }
-
-
-    /**
-     * @param {boolean} [force]
-     */
-    hideVideo(force) {
-        let mediadiv = document.getElementById('peers')
-        if(mediadiv.childElementCount > 0 && !force)
-            return
-        let video_container = document.getElementById('video-container')
-        video_container.classList.add('no-video')
-        let left = document.getElementById("left")
-        if (left.style.display !== "none") {
-            // hide all video buttons used to switch video on mobile layout
-            this.closeVideoControls()
         }
     }
 
@@ -904,9 +883,15 @@ class Galene extends EventEmitter {
         let {c, id} = this.connection.newUpStream(_id)
         this.state.upMedia[id] = c.kind
 
-        c.onstatus = (status) => {
-            this.setMediaStatus(c)
+        const peer = {
+            id: c.id,
+            isUp: true,
+            kind: c.kind,
+            mirror: true,
         }
+
+        this.state.peers.push(peer)
+
         c.onerror = (e) => {
             console.error(e)
             this.displayError(e)
@@ -918,6 +903,8 @@ class Galene extends EventEmitter {
         c.onnegotiationcompleted = () => {
             this.setMaxVideoThroughput(c, this.getMaxVideoThroughput())
         }
+
+
         return {c, id}
     }
 
@@ -949,45 +936,6 @@ class Galene extends EventEmitter {
     resetUsers() {
         for(let id in users) {
             this.delUser(id, users[id])
-        }
-    }
-
-
-    resizePeers() {
-        // Window resize can call this method too early
-        if (!this.connection)
-            return
-        let count =
-            Object.keys(this.connection.up).length +
-            Object.keys(this.connection.down).length
-        let peers = document.getElementById('peers')
-        let columns = Math.ceil(Math.sqrt(count))
-        if (!count)
-            // No video, nothing to resize.
-            return
-        let container = document.getElementById("video-container")
-        // Peers div has total padding of 40px, we remove 40 on offsetHeight
-        // Grid has row-gap of 5px
-        let rows = Math.ceil(count / columns)
-        let margins = (rows - 1) * 5 + 40
-
-        if (count <= 2 && container.offsetHeight > container.offsetWidth) {
-            peers.style['grid-template-columns'] = "repeat(1, 1fr)"
-            rows = count
-        } else {
-            peers.style['grid-template-columns'] = `repeat(${columns}, 1fr)`
-        }
-        if (count === 1)
-            return
-        let max_video_height = (peers.offsetHeight - margins) / rows
-        let media_list = peers.querySelectorAll(".media")
-        for(let i = 0; i < media_list.length; i++) {
-            let media = media_list[i]
-            if(!(media instanceof HTMLMediaElement)) {
-                console.warn('Unexpected media')
-                continue
-            }
-            media.style['max-height'] = max_video_height + "px"
         }
     }
 
@@ -1037,27 +985,6 @@ class Galene extends EventEmitter {
         } catch(e) {
             console.error(e)
             this.displayError(e.message ? e.message : "Couldn't connect to " + url)
-        }
-    }
-
-
-    /**
-     * @param{boolean} connected
-     */
-    setConnected(connected) {
-        this.state.connected = connected
-
-        if(connected) {
-            this.resetUsers()
-            this.clearChat()
-            this.displayUsername()
-        } else {
-            this.resetUsers()
-            // fillLogin() <= from state
-
-            this.displayError('Disconnected', 'error')
-            this.hideVideo()
-            this.closeVideoControls()
         }
     }
 
@@ -1123,15 +1050,9 @@ class Galene extends EventEmitter {
      *     - indicates whether the stream goes in the up direction
      * @param {boolean} [mirror]
      *     - whether to mirror the video
-     * @param {HTMLVideoElement} [video]
-     *     - the video element to add.  If null, a new element with custom
-     *       controls will be created.
      */
-    async setMedia(c, isUp, mirror, video) {
-        this.logger.info('setMedia', isUp, mirror, video)
-
-        this.setMediaStatus(c)
-        this.resizePeers()
+    async setMedia(c, isUp, mirror) {
+        this.logger.info(`setMedia - up: ${isUp}, mirror:${mirror}`)
 
         if(!isUp && this.env.isSafari && !this.findUpMedia('local')) {
             // Safari doesn't allow autoplay unless the user has granted media access
@@ -1142,15 +1063,6 @@ class Galene extends EventEmitter {
                 // silence error
             }
         }
-
-        const peer = {
-            id: c.id,
-            isUp,
-            kind: c.kind,
-            mirror,
-        }
-
-        this.state.peers.push(peer)
     }
 
 
@@ -1201,42 +1113,11 @@ class Galene extends EventEmitter {
     }
 
 
-    /**
-     * @param {Stream} c
-     */
-    setMediaStatus(c) {
-        this.logger.debug('setMediaStatus')
-        let state = c && c.pc && c.pc.iceConnectionState
-        let good = state === 'connected' || state === 'completed'
-
-        let media = document.getElementById('media-' + c.id)
-        if(!media) {
-            this.logger.warn('setting status of unknown media')
-            return
-        }
-        if(good) {
-            media.classList.remove('media-failed')
-            if(c.userdata.play) {
-                if(media instanceof HTMLMediaElement)
-                    media.play().catch(e => {
-                        console.error(e)
-                        this.displayError(e)
-                    })
-                delete(c.userdata.play)
-            }
-        } else {
-            media.classList.add('media-failed')
-        }
-    }
-
-
     // Store current browser viewport height in css variable
     setViewportHeight() {
         document.documentElement.style.setProperty(
             '--vh', `${window.innerHeight/100}px`,
         )
-        // Ajust video component size
-        this.resizePeers()
     }
 
 

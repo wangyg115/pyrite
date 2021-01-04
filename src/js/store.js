@@ -4,6 +4,9 @@ const persistantState = reactive({
     activityDetection: false,
     audio: null,
     blackboardMode: false,
+    chat: {
+        active: true,
+    },
     loading: true,
     localMute: false,
     password: 'marley',

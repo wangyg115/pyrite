@@ -4,7 +4,7 @@
             ref="media"
             :autoplay="true"
             class="media"
-            :class="{mirror: peer.mirror}"
+            :class="{'media-failed': mediaFailed, mirror: peer.mirror,}"
             :muted="peer.isUp"
             :playsinline="true"
         />
@@ -52,7 +52,7 @@
             </div>
         </div>
         <div class="label">
-            {{ stats }}
+            {{ label }}
         </div>
     </div>
 </template>
@@ -71,10 +71,12 @@ export default {
     },
     data() {
         return {
+            label: '',
             media: null,
+            mediaFailed: false,
             muted: false,
-            stats: '',
-            stream: null
+            stream: null,
+            state: app.state
         }
     },
     computed: {
@@ -87,6 +89,14 @@ export default {
             return false
         }
     },
+    beforeUnmount() {
+        if (this.$refs.media.src) {
+             URL.revokeObjectURL(this.$refs.media.src)
+             this.$refs.media.src = null
+        }
+
+        this.$refs.media.srcObject = null
+    },
     mounted() {
         this.media = this.$refs.media
         this.muted = this.media.muted
@@ -97,15 +107,27 @@ export default {
             this.stream.onstats = this.gotUpStats.bind(this, this.stream)
             this.stream.setStatsInterval(2000)
         } else {
+            // Downstream:
             this.$refs.media.srcObject = app.connection.down[this.peer.id].stream
             this.stream = app.connection.down[this.peer.id]
             this.stream.onstats = this.gotDownStats
 
+            this.stream.onlabel = (label) => {
+                console.log('SET LABEL', label)
+                this.label = label
+            }
+
             if(this.state.activityDetection) {
                 this.stream.setStatsInterval(activityDetectionInterval)
             }
-
         }
+
+        this.stream.onstatus = (status) => {
+            this.setMediaStatus()
+        }
+
+        this.setMediaStatus()
+
     },
     methods: {
         /**
@@ -136,8 +158,9 @@ export default {
                 setActive(c, true)
             } else {
                 let last = c.userdata.lastVoiceActivity
-                if(!last || Date.now() - last > activityDetectionPeriod)
+                if(!last || Date.now() - last > activityDetectionPeriod) {
                     setActive(c, false)
+                }
             }
         },
         /**
@@ -159,7 +182,7 @@ export default {
                 }
             })
 
-            this.stats = text
+            this.label = text
         },
         setPip() {
             this.media.requestPictureInPicture()
@@ -169,6 +192,21 @@ export default {
         },
         setFullscreen() {
             this.media.requestFullscreen()
+        },
+        setMediaStatus() {
+            app.logger.debug('setMediaStatus')
+            let state = this.stream && this.stream.pc && this.stream.pc.iceConnectionState
+            this.mediaFailed = !(state === 'connected' || state === 'completed')
+
+            if(!this.mediaFailed) {
+                if(this.stream.userdata.play) {
+                    this.$refs.media.play().catch(e => {
+                        console.error(e)
+                        this.displayError(e)
+                    })
+                    delete(this.stream.userdata.play)
+                }
+            }
         },
         setVolume(e) {
             this.media.volume = parseInt(e.target.value, 10) / 100
