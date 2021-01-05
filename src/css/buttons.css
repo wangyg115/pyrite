@@ -1,0 +1,11 @@
+.theme-dark {
+
+    & .btn-default {
+        background: var(--grey-300);
+        color: var(--grey-50);
+
+        &:focus {
+            outline: none;
+        }
+    }
+}

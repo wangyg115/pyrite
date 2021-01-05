@@ -114,7 +114,7 @@ export default {
 
             this.stream.ondowntrack = (track, transceiver, label, stream) => {
                 app.logger.debug(`stream event - ondowntrack [${this.stream.id}]`)
-                this.$refs.media.srcObject = app.connection.down[this.peer.id].stream
+                this.$refs.media.srcObject = this.stream.stream
                 this.media.play()
             }
 

@@ -1,5 +1,4 @@
 import env from './env.js'
-import EventEmitter from 'eventemitter3'
 import Logger from './logger.js'
 import protocol from './protocol.js'
 import Store from './store.js'
@@ -17,40 +16,6 @@ let mediaChoicesDone = false
 let safariScreenshareDone = false
 
 
-/**
- * @param {Element} elt
- */
-function cloneHTMLElement(elt) {
-    if(!(elt instanceof HTMLElement))
-        throw new Error('Unexpected element type')
-    return /** @type{HTMLElement} */(elt.cloneNode(true))
-}
-
-
-/** @type{Object<string,string>} */
-let users = {}
-
-
-/**
- * Lexicographic order, with case differences secondary.
- * @param{string} a
- * @param{string} b
- */
-function stringCompare(a, b) {
-    let la = a.toLowerCase()
-    let lb = b.toLowerCase()
-    if(la < lb)
-        return -1
-    else if(la > lb)
-        return +1
-    else if(a < b)
-        return -1
-    else if(a > b)
-        return +1
-    return 0
-}
-
-
 const urlRegexp = /https?:\/\/[-a-zA-Z0-9@:%/._\\+~#&()=?]+[-a-zA-Z0-9@:%/_\\+~#&()=]/g
 
 
@@ -66,12 +31,11 @@ const urlRegexp = /https?:\/\/[-a-zA-Z0-9@:%/._\\+~#&()=?]+[-a-zA-Z0-9@:%/_\\+~#
 let lastMessage = {}
 
 
-class Pyrite extends EventEmitter {
+class Pyrite {
     /**
      * Old start function.
      */
     constructor(router) {
-        super()
 
         this.logger = new Logger(this)
         this.logger.setLevel('debug')
@@ -188,7 +152,6 @@ class Pyrite extends EventEmitter {
         }
 
         if(oldStream) {
-            this.logger.info('removing old stream component')
             this.stopUpMedia(oldStream)
         }
         let constraints = {audio: audio !== null, video: video !== null}
@@ -304,8 +267,8 @@ class Pyrite extends EventEmitter {
 
     changePresentation() {
         let id = this.findUpMedia('local')
-        console.log('PRESENT', id)
         if(id) {
+            this.logger.info('resettings local stream')
             this.addLocalMedia(id)
         }
     }
@@ -367,24 +330,6 @@ class Pyrite extends EventEmitter {
             this.delMedia(id)
             delete(this.connection.up[id])
         }
-    }
-
-
-    /**
-     * @param {string} id
-     * @param {string} name
-     */
-    delUser(id, name) {
-        if(!name)
-            name = null
-        if(!(id in users))
-            throw new Error('Unknown user id')
-        if(users[id] !== name)
-            throw new Error('Inconsistent user name')
-        delete(users[id])
-        let div = document.getElementById('users')
-        let user = document.getElementById('user-' + id)
-        div.removeChild(user)
     }
 
 
@@ -524,7 +469,6 @@ class Pyrite extends EventEmitter {
         this.state.connected = false
         this.delUpMediaKind(null)
 
-        this.resetUsers()
         this.displayError('Disconnected', 'error')
 
         if(code != 1000) {
@@ -535,7 +479,6 @@ class Pyrite extends EventEmitter {
 
     /** @this {ServerConnection} */
     gotConnected() {
-        this.resetUsers()
         this.clearChat()
         this.displayUsername()
 
@@ -633,10 +576,10 @@ class Pyrite extends EventEmitter {
     gotUser(id, kind, name) {
         switch(kind) {
         case 'add':
-            this.addUser(id, name)
+            this.state.users.push({id, name})
             break
         case 'delete':
-            this.delUser(id, name)
+            this.state.users.splice(this.state.users.findIndex((u) => u.id === id), 1)
             break
         default:
             console.warn('Unknown user kind', kind)
@@ -718,13 +661,6 @@ class Pyrite extends EventEmitter {
 
     openNav() {
         document.getElementById("sidebarnav").style.width = "250px"
-    }
-
-
-    resetUsers() {
-        for(let id in users) {
-            this.delUser(id, users[id])
-        }
     }
 
 
@@ -889,8 +825,10 @@ class Pyrite extends EventEmitter {
      * @param {Stream} c
      */
     stopUpMedia(c) {
-        if(!c.stream)
+        if(!c.stream) {
+            this.logger.warn('no stream to stop')
             return
+        }
         c.stream.getTracks().forEach(t => {
             try {
                 this.logger.debug(`stopping track ${t.id}`)
@@ -900,6 +838,7 @@ class Pyrite extends EventEmitter {
             }
         })
 
+        this.logger.info(`removing stream ${c.id}`)
         this.state.peers.splice(this.state.peers.indexOf(c.id), 1)
 
 

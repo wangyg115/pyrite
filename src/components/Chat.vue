@@ -1,31 +1,19 @@
 <template>
-    <div id="chat">
-        <div id="chatbox">
-            <div
-                id="close-chat"
-                class="close-chat"
-                title="Hide chat"
-                @click="state.chat.active = !state.chat.active"
+    <div class="c-chat">
+        <div class="messages" />
+        <div class="send">
+            <textarea
+                id="input"
+                :placeholder="inputPlaceholder"
+                @onkeypress="handleChatInput()"
+            />
+            <button
+                class="btn btn-default"
+                type="submit"
+                value="&#10148;"
             >
-                <span class="close-icon" />
-            </div>
-            <div id="box" />
-            <div class="reply">
-                <form id="inputform">
-                    <textarea
-                        id="input"
-                        class="form-reply"
-                        :placeholder="inputPlaceholder"
-                        @onkeypress="handleChatInput()"
-                    />
-                    <input
-                        id="inputbutton"
-                        class="btn btn-default"
-                        type="submit"
-                        value="&#10148;"
-                    >
-                </form>
-            </div>
+                Send
+            </button>
         </div>
     </div>
 </template>
@@ -44,98 +32,6 @@ export default {
         }, 8000)
     },
     methods: {
-        /**
-         * @param {string} peerId
-         * @param {string} nick
-         * @param {number} time
-         * @param {string} kind
-         * @param {string} message
-         */
-        addToChatbox(peerId, dest, nick, time, privileged, kind, message) {
-            let userpass = getUserPass()
-            let row = document.createElement('div')
-            row.classList.add('message-row')
-            let container = document.createElement('div')
-            container.classList.add('message')
-            row.appendChild(container)
-            let footer = document.createElement('p')
-            footer.classList.add('message-footer')
-            if(!peerId)
-                container.classList.add('message-system')
-            if(userpass.username === nick)
-                container.classList.add('message-sender')
-            if(dest)
-                container.classList.add('message-private')
-
-            if(kind !== 'me') {
-                let p = formatLines(message.split('\n'))
-                let doHeader = true
-                if(!peerId && !dest && !nick) {
-                    doHeader = false
-                } else if(lastMessage.nick !== (nick || null) ||
-                        lastMessage.peerId !== peerId ||
-                        lastMessage.dest !== (dest || null) ||
-                        !time || !lastMessage.time) {
-                    doHeader = true
-                } else {
-                    let delta = time - lastMessage.time
-                    doHeader = delta < 0 || delta > 60000
-                }
-
-                if(doHeader) {
-                    let header = document.createElement('p')
-                    if(peerId || nick || dest) {
-                        let user = document.createElement('span')
-                        user.textContent = dest ?
-                            `${nick||'(anon)'} \u2192 ${users[dest]||'(anon)'}` :
-                            (nick || '(anon)')
-                        user.classList.add('message-user')
-                        header.appendChild(user)
-                    }
-                    header.classList.add('message-header')
-                    container.appendChild(header)
-                    if(time) {
-                        let tm = document.createElement('span')
-                        tm.textContent = formatTime(time)
-                        tm.classList.add('message-time')
-                        header.appendChild(tm)
-                    }
-                }
-
-                p.classList.add('message-content')
-                container.appendChild(p)
-                lastMessage.nick = (nick || null)
-                lastMessage.peerId = peerId
-                lastMessage.dest = (dest || null)
-                lastMessage.time = (time || null)
-                container.appendChild(footer)
-            } else {
-                let asterisk = document.createElement('span')
-                asterisk.textContent = '*'
-                asterisk.classList.add('message-me-asterisk')
-                let user = document.createElement('span')
-                user.textContent = nick || '(anon)'
-                user.classList.add('message-me-user')
-                let content = document.createElement('span')
-                formatLine(message).forEach(elt => {
-                    content.appendChild(elt)
-                })
-                content.classList.add('message-me-content')
-                container.appendChild(asterisk)
-                container.appendChild(user)
-                container.appendChild(content)
-                container.classList.add('message-me')
-                lastMessage = {}
-            }
-
-            let box = document.getElementById('box')
-            box.appendChild(row)
-            if(box.scrollHeight > box.clientHeight) {
-                box.scrollTop = box.scrollHeight - box.clientHeight
-            }
-
-            return message
-        },
         handleChatInput() {
             if(e.key === 'Enter' && !e.ctrlKey && !e.shiftKey && !e.metaKey) {
                 e.preventDefault()
@@ -213,3 +109,31 @@ export default {
     }
 }
 </script>
+
+<style lang="postcss">
+.c-chat {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    resize: horizontal;
+    width: 300px;
+
+    & .messages {
+        background: #0FF;
+        flex: 1;
+    }
+
+    & .send {
+        display: flex;
+
+        & button,
+        & textarea {
+            height: var(--unit);
+        }
+
+        & textarea {
+            flex: 1;
+        }
+    }
+}
+</style>

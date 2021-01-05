@@ -44,6 +44,7 @@ const volatileState = {
         screenshare: [],
         video: [],
     },
+    users: [],
 }
 
 

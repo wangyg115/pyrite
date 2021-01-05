@@ -1,16 +1,39 @@
 <template>
-    <router-view />
-    <Settings />
+    <Users v-if="state.connected" />
+    <Groups v-else />
+
+    <Chat />
+
+    <Controls />
+
+    <RouterView />
+
+    <Notifications />
 </template>
 
 <script>
-
-import Settings from './components/Settings.vue'
+import Notifications from './components/Notifications.vue'
+import Users from './components/Users.vue'
+import Chat from './components/Chat.vue'
+import Controls from './components/Controls.vue'
+import Groups from './components/Groups.vue'
 
 export default {
     name: 'App',
-    components: {
-        Settings
+    components: {Chat, Controls, Groups, Notifications, Users},
+        data() {
+        return {
+            state: app.state
+        }
     },
 }
 </script>
+
+<style lang="postcss">
+.app-view {
+    align-items: stretch;
+    display: grid;
+    grid-template-columns: 250px min-content 100px 1fr;
+    height: 100vh;
+}
+</style>
