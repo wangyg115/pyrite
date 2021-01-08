@@ -1,14 +1,20 @@
 <template>
-    <div id="video-container" class="video-container" :class="gridClass">
+    <Login v-if="!state.connected" class="content" />
+    <div
+        v-else id="video-container"
+        class="video-container"
+        :class="gridClass"
+    >
         <Peer v-for="peer of state.peers" :key="peer.id" :peer="peer" />
     </div>
 </template>
 
 <script>
+import Login from './Login.vue'
 import Peer from './Peer.vue'
 
 export default {
-    components: {Peer},
+    components: {Login, Peer},
     data() {
         return {
             state: app.state
@@ -36,7 +42,7 @@ export default {
     flex-direction: column;
 
     & .peer {
-        background: #0FF;
+        background: #0ff;
         display: flex;
         /* max-height: 50px; */
         position: relative;

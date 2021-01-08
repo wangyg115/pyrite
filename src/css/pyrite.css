@@ -1,37 +1,39 @@
 @import "./buttons";
+@import "./content";
 @import "./fonts";
+@import "./forms";
+@import "./presence";
 
 .theme-dark {
-    --primary-color: #4CADE7;
-    --secondary-color: rgb(0, 105, 217);
-    --info-color: #9DDC4B;
-    --warning-color: #AF702D;
-    --error-color: #CB6C4D;
+    --primary-color: #98eb45;
 
-    --text-color: #221713;
+    --info-color: #9ddc4b;
+    --warning-color: #af702d;
+    --error-color: #cb6c4d;
 
-    --grey-500: #221713;
+    --grey-500: #2a1f1b;
     --grey-400: #342824;
     --grey-300: #433732;
-    --grey-200: #5E514C;
-    --grey-100: #B1A29D;
-    --grey-50: #E1D1CB;
-    --grey-0: #FFF;
+    --grey-200: #5e514c;
+    --grey-100: #b1a29d;
+    --grey-50: #e1d1cb;
+    --grey-0: #fff;
 
     background: var(--grey-500);
-    color: var(--text-color);
+    color: var(--grey-100);
 }
 
 :root {
-    --text-small: 0.7rem;
+    --text-small: 0.8rem;
     --text-base: 1rem;
     --text-large: 1.1rem;
-    --text-huge: 1.7rem;
+    --text-huge: 1.5rem;
 
     --border: 2px;
-    --gutter: 8px;
-    --unit: 32px;
-    --spacer: 16px;
+    --spacer: 8px;
+    --space-4: calc(var(--spacer) * 8);
+    --space-3: calc(var(--spacer) * 6);
+    --space-2: calc(var(--spacer) * 4);
 }
 
 * {
@@ -40,6 +42,7 @@
 
 html, body {
     font-family: "Noto Sans", sans-serif;
+    font-size: 1rem;
     font-weight: 400;
     margin: 0;
     outline: none;
@@ -47,10 +50,7 @@ html, body {
 
 a {
     color: var(--primary-color);
-}
-
-input {
-    height: var(--unit);
+    text-decoration: none;
 }
 
 textarea {
@@ -64,12 +64,21 @@ textarea {
 }
 
 .icon {
-    fill: var(--primary-color);
+    fill: currentColor;
     height: 40px;
     width: 40px;
+
+    &.icon-small {
+        height: var(--space-2);
+        width: var(--space-2);
+    }
 
     &.icon-large {
         height: 50px;
         width: 50px;
     }
+}
+
+button {
+    border: 0;
 }

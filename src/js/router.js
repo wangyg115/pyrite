@@ -1,28 +1,24 @@
-import Login from '../components/Login.vue'
+
 import Settings from '../components/Settings.vue'
 import StreamView from '../components/StreamView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
     {
-        component: Login,
-        name: "login",
+        component: Settings,
+        name: "settings",
         path: "/",
     },
     {
-        component: Settings,
-        name: "settings",
-        path: "/settings",
-    },
-    {
         component: StreamView,
-        name: "group",
-        path: "/group/:groupId",
+        name: "groups",
+        path: "/groups/:groupId",
     },
 ]
 
 const router = createRouter({
     history: createWebHistory(),
+    linkActiveClass: 'active',
     routes,
 })
 

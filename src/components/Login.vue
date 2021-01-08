@@ -1,13 +1,13 @@
 <template>
-    <div class="c-login">
-        <label for="username">Username</label>
-        <input
+    <form class="c-login">
+        <FieldText
             v-model="state.username"
             autocomplete="username"
-            class="form-control"
-            name="username"
-            type="text"
-        >
+            :help="'SIP Contact name'"
+            label="Username"
+            placeholder="Alice, Bob, Carol, Dan, Erin..."
+        />
+
         <label for="password">Password</label>
         <input
             id="password"
@@ -65,7 +65,7 @@
             </button>
         </div>
         <div class="clear" />
-    </div>
+    </form>
 </template>
 
 <script>
@@ -91,7 +91,7 @@ export default {
 </script>
 <style lang="postcss">
 .c-login {
-    background: var(--grey-500);
+    background: var(--grey-400);
     overflow: auto;
 }
 </style>

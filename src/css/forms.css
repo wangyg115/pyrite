@@ -1,0 +1,8 @@
+label {
+
+}
+
+input {
+    font-size: 1rem;
+    height: var(--space-2);
+}

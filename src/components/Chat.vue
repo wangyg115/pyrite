@@ -119,7 +119,7 @@ export default {
     width: 300px;
 
     & .messages {
-        background: #0FF;
+        background: var(--grey-300);
         flex: 1;
     }
 

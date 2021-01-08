@@ -1,7 +1,8 @@
 <template>
-    <nav class="c-controls">
+    <nav class="c-controls panel">
         <button
             v-show="state.permissions.present && state.upMedia.local.length"
+            class="btn btn-menu"
             @click="present"
         >
             Ready
@@ -15,36 +16,28 @@
         </button>
         <button
             v-show="state.permissions.present"
+            class="btn btn-menu active"
             @click="mute"
         >
-            Mute
+            <Icon name="mute" />
         </button>
 
         <button
             v-if="state.permissions.present && !state.upMedia.screenshare.length"
+            class="btn btn-menu"
+            :class="{active: state.upMedia.screenshare.length}"
             @click="share"
         >
-            Share Screen
-        </button>
-
-        <button
-            v-else-if="state.upMedia.screenshare.length"
-            @click="unshare"
-        >
-            >Unshare Screen
+            <Icon name="screenshare" />
         </button>
 
         <button
             v-show="state.upMedia.video.length"
-            id="stopvideobutton"
-            class="invisible nav-link nav-button nav-cancel"
+            class="menu btn-menu"
             @click="stopVideo"
         >
             Stop Video
         </button>
-        <Icon name="mute" />
-        <Icon name="screenshare" />
-        <Icon name="stopScreenshare" />
     </nav>
 </template>
 
@@ -113,7 +106,7 @@ export default {
 
 <style lang="postcss">
 .c-controls {
-    background: var(--grey-400);
+    background: var(--grey-500);
     display: flex;
     flex-direction: column;
 }

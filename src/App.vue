@@ -2,7 +2,7 @@
     <Users v-if="state.connected" />
     <Groups v-else />
 
-    <Chat />
+    <Chat v-if="state.connected" />
 
     <Controls />
 
@@ -33,7 +33,8 @@ export default {
 .app-view {
     align-items: stretch;
     display: grid;
-    grid-template-columns: 250px min-content 100px 1fr;
+    /* grid-template-columns: 250px min-content var(--space-4) 1fr; */
+    grid-template-columns: 300px var(--space-4) 1fr;
     height: 100vh;
 }
 </style>
