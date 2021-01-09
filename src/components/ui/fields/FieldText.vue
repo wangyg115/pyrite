@@ -1,6 +1,6 @@
 <template>
     <div class="c-field-text field">
-        <label :for="name">{{ label }}</label>
+        <label v-if="label" :for="name">{{ label }}</label>
         <div class="input-container">
             <input
                 :autocomplete="autocomplete"

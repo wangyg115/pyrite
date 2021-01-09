@@ -8,9 +8,13 @@
 
         <div class="group item">
             <Icon class="item-icon icon-small" name="groups" />
-            <RouterLink class="name" :to="{name: 'groups', params: {groupId: 'hidden'}}">
-                unlisted group
-            </RouterLink>
+
+            <FieldText
+                v-model="customGroupId"
+                autocomplete="username"
+                name="username"
+                placeholder="Join unlisted group"
+            />
         </div>
 
 
@@ -31,7 +35,18 @@ export default {
     name: 'Groups',
     data() {
         return {
-            groups: []
+            customGroupId: '',
+            groups: [],
+            state: app.state,
+        }
+    },
+    watch: {
+        customGroupId() {
+            if (this.customGroupId) {
+                this.$router.replace({name: 'groups', params: {groupId: this.customGroupId}})
+            } else {
+                this.$router.replace({name: 'settings'})
+            }
         }
     },
     async mounted() {
