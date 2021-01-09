@@ -1,22 +1,23 @@
 <template>
     <form class="c-login">
+        <h2>Join group {{ $route.params.groupId }}</h2>
         <FieldText
             v-model="state.username"
             autocomplete="username"
-            :help="'SIP Contact name'"
             label="Username"
-            placeholder="Alice, Bob, Carol, Dan, Erin..."
+            name="username"
+            placeholder="Alice, Bob, Carol..."
         />
 
-        <label for="password">Password</label>
-        <input
-            id="password"
+        <FieldText
             v-model="state.password"
             autocomplete="current-password"
-            class="form-control"
-            name="password"
+            label="Password"
+            name="pasword"
+            placeholder="Alice, Bob, Carol..."
             type="password"
-        >
+        />
+
         <label>Auto ready</label>
 
         <div class="present-switch">

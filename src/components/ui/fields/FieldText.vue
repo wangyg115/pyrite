@@ -1,19 +1,27 @@
 <template>
     <div class="c-field-text field">
-        <label class="c-text__label field__label ca" :for="name">{{ label }}</label>
-        <div class="c-text__container">
+        <label :for="name">{{ label }}</label>
+        <div class="input-container">
             <input
                 :autocomplete="autocomplete"
                 :autofocus="autofocus"
-                class="c-text__element field__element"
                 :class="elementclass"
                 :disabled="disabled"
                 :placeholder="placeholder"
                 :readonly="readonly"
-                type="text"
+                :type="type === 'password' && visible ? 'text' : type"
                 :value="modelValue"
                 @input="updateModel($event)"
             >
+
+            <div
+                v-if="type === 'password'"
+                class="eye"
+                :class="{visible}"
+                @click="visible = !visible"
+            >
+                <icon class="icon icon-mini" :class="{active: visible}" name="eye" />
+            </div>
         </div>
         <div v-if="help" class="c-text__help field__help cf">
             {{ help }}
@@ -24,6 +32,21 @@
 import Field from './field'
 export default {
     extends: Field,
+    props: {
+        type: {
+            default: 'text',
+            type: String,
+            validator: function (value) {
+                return ['password', 'text'].includes(value)
+            }
+        }
+
+    },
+    data() {
+        return {
+            visible: false,
+        }
+    }
 }
 </script>
 
@@ -32,8 +55,32 @@ export default {
     display: flex;
     flex-direction: column;
 
-    & input {
-        border: var(--border) solid var(--grey-300);
+    & .input-container {
+        display: flex;
+        align-items: center;
+
+        & input {
+            background: none;
+            border: none;
+            color: var(--grey-50);
+            border-bottom: var(--border) solid var(--grey-200);
+            outline: none;
+
+            &:focus {
+                border-bottom: var(--border) solid var(--primary-color);
+            }
+        }
+
+        & .icon {
+
+            &:hover {
+                cursor: pointer;
+            }
+
+            &.active {
+                color: var(--primary-color);
+            }
+        }
     }
 
     & label {
