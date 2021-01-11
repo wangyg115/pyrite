@@ -14,7 +14,7 @@ export default {
             return this.validation.$error
         },
     },
-    emits: ['update:modelValue'],
+    emits: ['focus', 'update:modelValue'],
     methods: {
         classes: function() {
             const classes = {}
@@ -27,6 +27,7 @@ export default {
             return classes
         },
         updateModel: function(event) {
+            console.log("UPDATE")
             this.$emit('update:modelValue', event.target.value)
         },
     },

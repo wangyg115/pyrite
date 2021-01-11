@@ -19,7 +19,7 @@
             class="btn btn-menu active"
             @click="mute"
         >
-            <Icon name="mute" />
+            <Icon class="icon-small" name="mute" />
         </button>
 
         <button
@@ -28,7 +28,7 @@
             :class="{active: state.upMedia.screenshare.length}"
             @click="share"
         >
-            <Icon name="screenshare" />
+            <Icon class="icon-small" name="screenshare" />
         </button>
 
         <button

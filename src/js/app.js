@@ -127,8 +127,8 @@ class Pyrite {
     async addLocalMedia(_id) {
         this.logger.info(`add local media - id: ${_id})`)
         // An empty string video/audio device may indicate a fake media stream.
-        let audio = this.state.audio !== null ? {deviceId: this.state.audio} : false
-        let video = this.state.video !== null ? {deviceId: this.state.video} : false
+        let audio = this.state.audio.id !== null ? {deviceId: this.state.audio.id} : false
+        let video = this.state.video.id !== null ? {deviceId: this.state.video.id} : false
 
         if(video) {
             let resolution = this.state.resolution
@@ -483,6 +483,7 @@ class Pyrite {
         this.displayUsername()
 
         const groupName = this.router.currentRoute.value.params.groupId
+        this.logger.info(`joining group: ${groupName}`)
         this.connection.join(groupName, this.state.username, this.state.password)
         this.state.connected = true
     }
@@ -555,7 +556,7 @@ class Pyrite {
             }
 
             if(this.state.present === 'mike') {
-                this.state.video = null
+                this.state.video.id = null
                 this.store.save()
             } else if(this.state.present === 'both') {
                 // TODO: Needs action?
@@ -788,11 +789,11 @@ class Pyrite {
 
             if(d.kind === 'videoinput') {
                 if(!label) label = `Camera ${cn}`
-                this.state.devices.video.push({id: d.deviceId, label })
+                this.state.devices.video.push({id: d.deviceId, name: label })
                 cn++
             } else if(d.kind === 'audioinput') {
                 if(!label) label = `Microphone ${mn}`
-                this.state.devices.audio.push({id: d.deviceId, label })
+                this.state.devices.audio.push({id: d.deviceId, name: label })
                 mn++
             }
         })
@@ -803,8 +804,8 @@ class Pyrite {
             this.state.audio = this.state.devices.audio[0].id
         }
 
-        if (this.state.video === null && this.state.devices.video.length) {
-            this.state.video = this.state.devices.video[0].id
+        if (this.state.video.id === null && this.state.devices.video.length) {
+            this.state.video.id = this.state.devices.video[0].id
         }
 
         this.logger.info(`setMediaChoices: video(${this.state.devices.video.length}) audio(${this.state.devices.audio.length})`)

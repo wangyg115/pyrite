@@ -11,6 +11,7 @@
                 :readonly="readonly"
                 :type="type === 'password' && visible ? 'text' : type"
                 :value="modelValue"
+                @focus="$emit('focus', event)"
                 @input="updateModel($event)"
             >
 
@@ -63,6 +64,8 @@ export default {
             background: none;
             border: none;
             color: var(--grey-50);
+            font-size: 1rem;
+            height: var(--space-2);
             border-bottom: var(--border) solid var(--grey-200);
             outline: none;
 
@@ -72,7 +75,6 @@ export default {
         }
 
         & .icon {
-
             &:hover {
                 cursor: pointer;
             }
@@ -84,7 +86,7 @@ export default {
     }
 
     & label {
-        margin-bottom: var(--spacer);
+        margin: var(--spacer) 0;
     }
 }
 </style>

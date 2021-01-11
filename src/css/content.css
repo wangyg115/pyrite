@@ -2,5 +2,19 @@
     display: flex;
     flex-direction: column;
     max-width: 600px;
-    padding: var(--spacer);
+
+    & header {
+        align-items: center;
+        background: var(--grey-400);
+        border-bottom: var(--border) solid var(--grey-300);
+        display: flex;
+        font-weight: bold;
+        height: var(--space-4);
+        padding: var(--spacer);
+
+        & svg {
+            color: var(--primary-color);
+            margin-right: var(--spacer);
+        }
+    }
 }

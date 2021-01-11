@@ -29,6 +29,15 @@
             <div v-show="state.permissions.present" id="mediaoptions">
                 <fieldset>
                     <legend>Media Options</legend>
+
+                    <FieldSelect
+                        v-model="state.video"
+                        help="select the video camera to use"
+                        label="application language"
+                        name="language"
+                        :options="state.devices.video"
+                    />
+
                     <label class="sidenav-label-first" for="videoselect">Camera:</label>
                     <select
                         id="videoselect" v-model="state.video"

@@ -9,15 +9,15 @@ const persistantState = reactive({
     },
     loading: true,
     localMute: false,
-    password: 'marley',
+    password: '',
     permissionText: '',
     present: '', // '', mike or 'both'
     request: 'everything',
     resolution: null,
     send: 'normal',
     title: '',
-    username: 'bob',
-    video: null,
+    username: '',
+    video: {id: null, label: ''},
 })
 
 /**
