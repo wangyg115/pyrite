@@ -11,6 +11,7 @@
 <script>
 import IconEye from './IconEye.vue'
 import IconGroups from './IconGroups.vue'
+import IconLogout from './IconLogout.vue'
 import IconMute from './IconMute.vue'
 import IconUser from './IconUser.vue'
 import IconUserUnknown from './IconUserUnknown.vue'
@@ -21,6 +22,7 @@ export default {
   components: {
       eye: IconEye,
       groups: IconGroups,
+      logout: IconLogout,
       mute: IconMute,
       screenshare: IconScreenShare,
       stopScreenshare: IconStopScreenShare,

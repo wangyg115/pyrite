@@ -285,7 +285,7 @@ class Pyrite {
      * @param {string} id
      */
     delMedia(id) {
-        this.state.peers.splice(this.state.peers.indexOf(id), 1)
+        this.state.streams.splice(this.state.streams.indexOf(id), 1)
     }
 
 
@@ -510,7 +510,7 @@ class Pyrite {
             mirror: true,
         }
 
-        this.state.peers.push(peer)
+        this.state.streams.push(peer)
     }
 
 
@@ -622,7 +622,7 @@ class Pyrite {
             mirror: true,
         }
 
-        this.state.peers.push(peer)
+        this.state.streams.push(peer)
 
         c.onerror = (e) => {
             console.error(e)
@@ -798,18 +798,16 @@ class Pyrite {
             }
         })
 
-        // Set default options.
-
-        if (this.state.audio === null && this.state.devices.audio.length) {
-            this.state.audio = this.state.devices.audio[0].id
+        // Set default audio/video options when none is set.
+        if (this.state.audio.id === null && this.state.devices.audio.length) {
+            this.state.audio =this.state.devices.audio[0]
         }
 
         if (this.state.video.id === null && this.state.devices.video.length) {
-            this.state.video.id = this.state.devices.video[0].id
+            this.state.video = this.state.devices.video[0]
         }
 
         this.logger.info(`setMediaChoices: video(${this.state.devices.video.length}) audio(${this.state.devices.audio.length})`)
-
         mediaChoicesDone = done
     }
 
@@ -840,7 +838,7 @@ class Pyrite {
         })
 
         this.logger.info(`removing stream ${c.id}`)
-        this.state.peers.splice(this.state.peers.indexOf(c.id), 1)
+        this.state.streams.splice(this.state.streams.indexOf(c.id), 1)
 
 
     }

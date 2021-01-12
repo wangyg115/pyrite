@@ -1,6 +1,14 @@
 <template>
     <nav class="c-controls panel">
         <button
+            v-show="state.permissions.present"
+            class="btn btn-menu active"
+            @click="disconnect"
+        >
+            <Icon class="icon-small" name="logout" />
+        </button>
+
+        <button
             v-show="state.permissions.present && state.upMedia.local.length"
             class="btn btn-menu"
             @click="present"
@@ -50,6 +58,9 @@ export default {
         collapseSidebar() {
             document.getElementById("left-sidebar").classList.toggle("active")
             document.getElementById("mainrow").classList.toggle("full-width-active")
+        },
+        disconnect() {
+            app.connection.close()
         },
         openSide() {
             let sidewidth = document.getElementById("sidebarnav").style.width

@@ -5,7 +5,7 @@
 @import "./presence";
 
 .theme-dark {
-    --primary-color: #98eb45;
+    --primary-color: #e8cf49;
 
     --info-color: #9ddc4b;
     --warning-color: #af702d;
@@ -96,5 +96,5 @@ button {
 
 ::selection {
     background: var(--primary-color);
-    color: var(--grey-500);
+    color: var(--grey-0);
 }

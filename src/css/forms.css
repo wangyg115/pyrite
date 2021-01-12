@@ -2,3 +2,16 @@ label {
 
 }
 
+.field {
+    padding: var(--spacer);
+
+    & label {
+        color: var(--grey-50);
+    }
+
+    & .help {
+        color: var(--grey-100);
+        font-size: var(--text-small);
+        font-style: italic;
+    }
+}

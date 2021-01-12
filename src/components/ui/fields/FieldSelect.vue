@@ -1,9 +1,6 @@
 <template>
-    <div v-click-outside="searchToggle" class="c-select field">
-        <label
-            :class="classes('label')"
-            :for="name"
-        >{{ label }}</label>
+    <div v-click-outside="searchToggle" class="c-field-select field">
+        <label :class="classes('label')" :for="name">{{ label }}</label>
 
         <div class="input-container">
             <div class="button-wrapper">
@@ -14,7 +11,7 @@
                     autocomplete="off"
                     :disabled="disabled"
                     :placeholder="(modelValue && modelValue.id) ? modelValue.name : placeholder"
-                    readonly="!search"
+                    :readonly="!search"
                     @click="searchSelect($event, null, null, false)"
                     @input="searchSelect($event, null, 'query', false)"
                     @keydown.down="searchSelect($event, null, 'down', false)"
@@ -28,33 +25,26 @@
                 <slot class="button" name="button" />
             </div>
 
-            SEARCH: {{ modelValue }}
-
             <div v-show="visible" ref="options" class="options">
-                <div v-for="option in filteredOptions" :key="option.id" @click="searchSelect($event, option, null, true)">
-                    {{ option.name }}
-                </div>
-                <!-- <div
+                <div
                     v-for="option in filteredOptions"
-                    v-if="option.id"
                     :id="`option-${option.id}`"
                     :key="option.id"
                     class="option"
                     :class="{selected: searchSelected.id === option.id}"
                     @click="searchSelect($event, option, null, true)"
                 >
-                    {{ option.name.ca() }}
-                </div> -->
+                    {{ option.name }}
+                </div>
             </div>
         </div>
-        <div v-if="help" class="c-select__help field__help cf">
+        <div v-if="help" class="help">
             {{ help }}
         </div>
         <span
             v-if="invalidFieldValue && validationMessage"
-            class="validation-message is-danger" v-html="validationMessage"
+            class="validation-message" v-html="validationMessage"
         />
-        <slot name="context" />
     </div>
 </template>
 
@@ -99,10 +89,8 @@ export default {
     computed: {
         filteredOptions() {
             let filteredOptions = []
-
             for (const option of this.options) {
                 // Case insensitive search.
-                console.log(option)
                 if (option.name.toLowerCase().includes(this.searchQuery.toLowerCase())) {
                     filteredOptions.push(option)
                 }
@@ -189,13 +177,12 @@ export default {
             }
         },
         searchToggle(event, el, visible) {
-            console.log("SEARCH TOGGLE")
             this.visible = visible
         },
         updateModel: function(event) {
             let value = event.target.value
             if (!value) {
-                this.$emit('input', this.emptySelectOption())
+                this.$emit('update:modelValue', this.emptySelectOption())
             } else {
                 for (const option of this.options) {
                     if (option.id === value) {
@@ -209,9 +196,9 @@ export default {
 </script>
 <style lang="postcss">
 
-.c-select {
+.c-field-select {
     width: 100%;
-
+    max-width: 350px;
 
     & .input-container {
         display: flex;
@@ -225,9 +212,11 @@ export default {
 
             & input {
                 background: none;
+                border: 1px solid var(--grey-200);
                 font-size: 1rem;
                 outline: none;
                 user-select: none;
+                height: var(--space-2);
                 width: 100%;
 
                 &::placeholder {
@@ -235,49 +224,42 @@ export default {
                     font-style: italic;
                 }
 
-                &::focus {
-                    outline: 1px solid var(--primary-base);
-                }
-
                 &:hover {
                     cursor: pointer;
                 }
             }
         }
-    }
 
+        & .options {
+            background: var(--grey-400);
+            border: 1px solid var(--grey-200);
+            box-shadow: 0 0 var(--border) rgba(var(--grey-500), 0.8);
+            margin-top: calc(var(--space-2) + 1px);
+            max-height: 162px;
 
-    & .options {
-        background: var(--grey-400);
-
-        border: 1px solid var(--grey-100);
-        box-shadow: 0 0 $border rgba(var(--grey-500), 0.8);
-        margin-top: $spacer * 5;
-        max-height: 162px;
-
-        max-width: inherit;
-        overflow-y: auto;
-        position: absolute;
-        width: inherit;
-        z-index: 100000;
-
-        .option {
-            color: var(--grey-100);
-            padding: var(--spacer);
-            text-align: left;
-            user-select: none;
+            max-width: inherit;
+            overflow-y: auto;
+            position: absolute;
             width: inherit;
+            z-index: 100000;
 
-            &.selected {
-                background: var(--grey-300);
-                color: var(--primary-base);
+            & .option {
+                color: var(--grey-100);
+                padding: var(--spacer);
+                text-align: left;
+                user-select: none;
+                width: inherit;
 
-            }
+                &.selected {
+                    background: var(--grey-300);
+                    color: var(--primary-base);
+                }
 
-            &:hover {
-                background: var(--grey-300);
-                color: var(--primary-base);
-                cursor: pointer;
+                &:hover {
+                    background: var(--grey-300);
+                    color: var(--primary-base);
+                    cursor: pointer;
+                }
             }
         }
     }

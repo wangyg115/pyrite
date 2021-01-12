@@ -1,4 +1,5 @@
 .content {
+    background: var(--grey-400);
     display: flex;
     flex-direction: column;
     max-width: 600px;
@@ -16,5 +17,9 @@
             color: var(--primary-color);
             margin-right: var(--spacer);
         }
+    }
+
+    & section {
+        padding: var(--spacer);
     }
 }

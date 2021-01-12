@@ -2,7 +2,7 @@ import {reactive} from 'vue'
 
 const persistantState = reactive({
     activityDetection: false,
-    audio: null,
+    audio: {id: null, name: ''},
     blackboardMode: false,
     chat: {
         active: true,
@@ -12,12 +12,12 @@ const persistantState = reactive({
     password: '',
     permissionText: '',
     present: '', // '', mike or 'both'
-    request: 'everything',
+    request: {id: 'everything', name: 'Everything'},
     resolution: null,
-    send: 'normal',
+    send: {id: 'normal', name: 'Normal'},
     title: '',
     username: '',
-    video: {id: null, label: ''},
+    video: {id: null, name: ''},
 })
 
 /**
@@ -30,7 +30,6 @@ const volatileState = {
         video: [],
     },
     notifications: [],
-    peers: [],
     permissions: {
         op: false,
         // Assume present permission before connecting,
@@ -38,6 +37,7 @@ const volatileState = {
         present: true,
         record: false,
     },
+    streams: [],
     upMedia: {
         audio: [],
         local: [],

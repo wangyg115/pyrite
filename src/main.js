@@ -1,6 +1,7 @@
 import './css/pyrite.css'
 import App from './App.vue'
 import { createApp } from 'vue'
+import FieldCheckbox from './components/ui/fields/FieldCheckbox.vue'
 import FieldSelect from './components/ui/fields/FieldSelect.vue'
 import FieldText from './components/ui/fields/FieldText.vue'
 import Icon from './components/ui/icons/Icon.vue'
@@ -13,6 +14,7 @@ globalThis.vm = createApp(App)
 globalThis.vm.component('Icon', Icon)
 globalThis.vm.component('FieldText', FieldText)
 globalThis.vm.component('FieldSelect', FieldSelect)
+globalThis.vm.component('FieldCheckbox', FieldCheckbox)
 
 globalThis.vm.directive('click-outside', {
     beforeMount(el, binding, vnode) {

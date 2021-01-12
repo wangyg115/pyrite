@@ -1,11 +1,10 @@
 <template>
-    <div id="sidebarnav" class="sidenav">
-        <div class="sidenav-header">
-            <h2>Settings</h2>
-            <a id="clodeside" class="closebtn" @click="closeSide"><i aria-hidden="true" class="fas fa-times" /></a>
-        </div>
+    <div class="content">
+        <header>
+            Settings
+        </header>
 
-        <div id="optionsdiv" class="sidenav-content">
+        <section>
             <div v-show="state.connected" id="profile" class="profile">
                 <div class="profile-user">
                     <div class="profile-logo">
@@ -33,115 +32,56 @@
                     <FieldSelect
                         v-model="state.video"
                         help="select the video camera to use"
-                        label="application language"
+                        label="Camera"
                         name="language"
                         :options="state.devices.video"
                     />
 
-                    <label class="sidenav-label-first" for="videoselect">Camera:</label>
-                    <select
-                        id="videoselect" v-model="state.video"
-                        class="select select-inline"
-                        @change="changeVideoSelect"
-                    >
-                        <option
-                            v-for="video of state.devices.video" :key="video.id"
-                            :selected="video.id === state.video"
-                            :value="video.id"
-                        >
-                            {{ video.label }}
-                        </option>
-                    </select>
+                    <FieldSelect
+                        v-model="state.audio"
+                        help="select the video camera to use"
+                        label="Microphone"
+                        name="language"
+                        :options="state.devices.audio"
+                    />
 
-                    <label class="sidenav-label" for="audioselect">Microphone:</label>
-                    <select
-                        id="audioselect" v-model="state.audio"
-                        class="select select-inline"
-                        @change="changeAudioSelect"
-                    >
-                        <option v-for="audio of state.devices.audio" :key="audio.id" :value="audio.id">
-                            {{ audio.label }}
-                        </option>
-                    </select>
-
-                    <form>
-                        <input
-                            id="blackboardbox" v-model="state.blackboardMode"
-                            type="checkbox"
-                            @change="changeBlackboardbox"
-                        >
-                        <label for="blackboardbox">Blackboard mode</label>
-                    </form>
+                    <FieldCheckbox
+                        v-model="state.blackboardMode"
+                        help="Stream at extra high resolution"
+                        label="Blackboard mode"
+                        name="store_key"
+                    />
                 </fieldset>
             </div>
 
             <fieldset>
                 <legend>Other Settings</legend>
 
-                <form id="sendform">
-                    <label class="sidenav-label-first" for="sendselect">Send:</label>
-                    <select
-                        id="sendselect" v-model="state.send"
-                        class="select select-inline"
-                        @change="changeSendSelect"
-                    >
-                        <option value="lowest">
-                            lowest
-                        </option>
-                        <option value="low">
-                            low
-                        </option>
-                        <option selected value="normal">
-                            normal
-                        </option>
-                        <option value="unlimited">
-                            unlimited
-                        </option>
-                    </select>
-                </form>
+                <FieldSelect
+                    v-model="state.send"
+                    help="Bandwidth to use when sending media"
+                    label="Send"
+                    name="send"
+                    :options="sendOptions"
+                />
 
-                <form id="requestform">
-                    <label class="sidenav-label" for="requestselect">Receive:</label>
-                    <select
-                        id="requestselect" v-model="state.request"
-                        class="select select-inline"
-                        @change="changeRequestSelect"
-                    >
-                        <option value="">
-                            nothing
-                        </option>
-                        <option value="audio">
-                            audio only
-                        </option>
-                        <option value="screenshare">
-                            screen share
-                        </option>
-                        <option selected value="everything">
-                            everything
-                        </option>
-                    </select>
-                </form>
+                <FieldSelect
+                    v-model="state.request"
+                    help="Types of media to receive"
+                    label="Receive"
+                    name="request"
+                    :options="receiveOptions"
+                />
 
-                <form>
-                    <input
-                        id="activitybox" v-model="activityDetection"
-                        type="checkbox"
-                        @change="changeActivitybox"
-                    >
-                    <label for="activitybox">Activity detection</label>
-                </form>
+
+                <FieldCheckbox
+                    v-model="state.activityDetection"
+                    help="Detect whether someone is speaking"
+                    label="Activity detection"
+                    name="store_key"
+                />
             </fieldset>
-
-            <form v-show="state.permissions.present" id="fileform">
-                <label class=".sidenav-label-first" for="fileinput">Play local file:</label>
-                <input
-                    id="fileinput" accept="audio/*,video/*"
-                    multiple
-                    type="file"
-                    @change="changeFileInput"
-                >
-            </form>
-        </div>
+        </section>
     </div>
 </template>
 
@@ -151,6 +91,18 @@ export default {
     name: 'Settings',
     data() {
         return {
+            receiveOptions: [
+                {id: 'nothing', name: 'Nothing'},
+                {id: 'audio', name: 'Audio'},
+                {id: 'screenshare', name: 'Screenshare'},
+                {id: 'everything', name: 'Everything'}
+            ],
+            sendOptions: [
+                {id: 'lowest', name: 'Lowest'},
+                {id: 'low', name: 'Low'},
+                {id: 'normal', name: 'Normal'},
+                {id: 'unlimited', name: 'Unlimited'}
+            ],
             state: app.state,
         }
     },

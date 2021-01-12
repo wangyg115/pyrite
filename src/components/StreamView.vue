@@ -1,20 +1,20 @@
 <template>
     <Login v-if="!state.connected" class="content" />
     <div
-        v-else id="video-container"
+        v-else
         class="video-container"
         :class="gridClass"
     >
-        <Peer v-for="peer of state.peers" :key="peer.id" :peer="peer" />
+        <Stream v-for="peer of state.streams" :key="peer.id" :peer="peer" />
     </div>
 </template>
 
 <script>
 import Login from './Login.vue'
-import Peer from './Peer.vue'
+import Stream from './Stream.vue'
 
 export default {
-    components: {Login, Peer},
+    components: {Login, Stream},
     data() {
         return {
             state: app.state
@@ -23,13 +23,13 @@ export default {
     computed: {
         gridClass() {
             const classes={}
-            classes[`grid-${this.state.peers.length}`] = true
+            classes[`grid-${this.state.streams.length}`] = true
             return classes
         }
     },
     watch: {
-        'state.peers'() {
-            console.log('PEERS CHANGED',this.state.peers)
+        'state.streams'() {
+            console.log('PEERS CHANGED',this.state.streams)
         }
     }
 }

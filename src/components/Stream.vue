@@ -1,5 +1,5 @@
 <template>
-    <div class="peer">
+    <div class="stream">
         <video
             ref="media"
             :autoplay="true"
@@ -219,7 +219,6 @@ export default {
         toggleMuteVolume() {
             this.muted = !this.muted
             this.media.muted = this.muted
-            console.log('muted:', this.media.muted)
         }
     }
 }
