@@ -17,6 +17,7 @@ import IconUser from './IconUser.vue'
 import IconUserUnknown from './IconUserUnknown.vue'
 import IconScreenShare from './IconScreenShare.vue'
 import IconStopScreenShare from './IconStopScreenShare.vue'
+import IconWebcam from './IconWebcam.vue'
 
 export default {
   components: {
@@ -27,7 +28,8 @@ export default {
       screenshare: IconScreenShare,
       stopScreenshare: IconStopScreenShare,
       user: IconUser,
-      userUnknown: IconUserUnknown
+      userUnknown: IconUserUnknown,
+      webcam: IconWebcam
   },
   props: {
     name: {

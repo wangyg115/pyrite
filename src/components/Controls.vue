@@ -1,7 +1,7 @@
 <template>
     <nav class="c-controls panel">
         <button
-            v-show="state.permissions.present"
+            v-if="state.connected"
             class="btn btn-menu active"
             @click="disconnect"
         >
@@ -9,19 +9,23 @@
         </button>
 
         <button
+            v-if="state.connected && state.upMedia.local.length"
             v-show="state.permissions.present && state.upMedia.local.length"
-            class="btn btn-menu"
-            @click="present"
+            class="btn btn-menu active"
+            @click="unpresent"
         >
-            Ready
+            <Icon class="icon-small" name="webcam" />
         </button>
 
         <button
-            v-show="state.upMedia.local.length"
-            @click="unpresent"
+            v-else-if="state.connected"
+            class="btn btn-menu"
+            @click="present"
         >
-            Panic
+            <Icon class="icon-small" name="webcam" />
         </button>
+
+
         <button
             v-show="state.permissions.present"
             class="btn btn-menu active"
@@ -78,38 +82,26 @@ export default {
             // setLocalMute(localMute, true)
         },
         async present(e) {
-            e.preventDefault()
-            let button = this
-            if(!(button instanceof HTMLButtonElement))
-                throw new Error('Unexpected type for this.')
-            // there's a potential race condition here: the user might click the
-            // button a second time before the stream is set up and the button hidden.
-            button.disabled = true
-            try {
-                let id = app.findUpMedia('local')
-                if(!id) await addLocalMedia()
-            } finally {
-                button.disabled = false
-            }
+            console.log('PRESENT')
+            let id = app.findUpMedia('local')
+            if(!id) await app.addLocalMedia()
+
         },
-        share(e) {
-            e.preventDefault()
-            addShareMedia()
+        share() {
+            console.log('SHARE')
+            app.addShareMedia()
         },
         stopVideo(e) {
-            e.preventDefault()
-            delUpMediaKind('video')
+            app.delUpMediaKind('video')
             resizePeers()
         },
         unpresent(e) {
-            e.preventDefault()
-            delUpMediaKind('local')
-            resizePeers()
+            console.log('UNPRESENT')
+            app.delUpMediaKind('local')
         },
-        unshare(e) {
-            e.preventDefault()
-            delUpMediaKind('screenshare')
-            resizePeers()
+        unshare() {
+            console.log('UNSHARE')
+            app.delUpMediaKind('screenshare')
         }
     }
 }

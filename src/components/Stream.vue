@@ -8,12 +8,11 @@
             :muted="peer.isUp"
             :playsinline="true"
         />
-        <div class="video-controls vc-overlay">
+        <div class="video-controls">
             <div class="controls-button controls-left">
                 <span class="video-play" title="Play video" @click="setPlay">
                     <i class="fas fa-play" />
                 </span>
-                <!-- v-if="peer.kind !== 'local'" -->
                 <span
                     class="volume" title="Volume"
                     @click="setVolume"
@@ -140,7 +139,6 @@ export default {
          * @param {Object<string,any>} stats
          */
         gotDownStats(stats) {
-            console.log('GOT DOWNSTATS')
             if(!getInputElement('activitybox').checked)
                 return
 
