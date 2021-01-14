@@ -29,6 +29,7 @@ const volatileState = {
         audio: [],
         video: [],
     },
+    muted: false,
     notifications: [],
     permissions: {
         op: false,

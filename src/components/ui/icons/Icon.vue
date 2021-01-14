@@ -10,9 +10,12 @@
 
 <script>
 import IconEye from './IconEye.vue'
+import IconFullscreen from './IconFullscreen.vue'
 import IconGroups from './IconGroups.vue'
 import IconLogout from './IconLogout.vue'
-import IconMute from './IconMute.vue'
+import IconMic from './IconMic.vue'
+import IconMicMute from './IconMicMute.vue'
+import IconPip from './IconPip.vue'
 import IconUser from './IconUser.vue'
 import IconUserUnknown from './IconUserUnknown.vue'
 import IconScreenShare from './IconScreenShare.vue'
@@ -22,9 +25,12 @@ import IconWebcam from './IconWebcam.vue'
 export default {
   components: {
       eye: IconEye,
+      fullscreen: IconFullscreen,
       groups: IconGroups,
       logout: IconLogout,
-      mute: IconMute,
+      mic: IconMic,
+      micMute: IconMicMute,
+      pip: IconPip,
       screenshare: IconScreenShare,
       stopScreenshare: IconStopScreenShare,
       user: IconUser,

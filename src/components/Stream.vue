@@ -1,5 +1,13 @@
 <template>
-    <div class="stream">
+    <div class="c-stream">
+        <div class="controls">
+            <button class="btn btn-menu" @click="setPip">
+                <Icon class="icon-mini" name="pip" />
+            </button>
+            <button class="btn btn-menu" @click="setFullscreen">
+                <Icon class="icon-mini" name="fullscreen" />
+            </button>
+        </div>
         <video
             ref="media"
             :autoplay="true"
@@ -8,30 +16,14 @@
             :muted="peer.isUp"
             :playsinline="true"
         />
-        <div class="video-controls">
+        <!-- <div class="video-controls">
             <div class="controls-button controls-left">
-                <span class="video-play" title="Play video" @click="setPlay">
-                    <i class="fas fa-play" />
-                </span>
-                <span
-                    class="volume" title="Volume"
-                    @click="setVolume"
-                    @input="setVolume"
+                <FieldSlider v-model="volume" />
+                <input
+                    orient="vertical" step="5"
+                    type="range"
+                    @change="setVolume"
                 >
-                    <i
-                        aria-hidden="true"
-                        class="fas"
-                        :class="{'fa-volume-up': muted, 'fa-volume-mute': !muted}"
-                        @click="toggleMuteVolume"
-                    />
-
-                    <input
-                        class="volume-slider" max="100"
-                        min="0"
-                        step="5" type="range"
-                        value="100"
-                    >
-                </span>
             </div>
             <div class="controls-button controls-right">
                 <span
@@ -49,10 +41,10 @@
                     <i aria-hidden="true" class="fas fa-expand" />
                 </span>
             </div>
-        </div>
-        <div class="label">
+        </div> -->
+        <!-- <div class="label">
             {{ label }}
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -74,8 +66,10 @@ export default {
             media: null,
             mediaFailed: false,
             muted: false,
+            pipActive: false,
             stream: null,
-            state: app.state
+            state: app.state,
+            volume: 1
         }
     },
     computed: {
@@ -98,6 +92,15 @@ export default {
     },
     mounted() {
         this.media = this.$refs.media
+
+        this.$refs.media.addEventListener('enterpictureinpicture', () => {
+            this.pipActive = true
+        })
+
+        this.$refs.media.addEventListener('leavepictureinpicture', () => {
+            this.pipActive = false
+        })
+
         this.muted = this.media.muted
 
         if (this.peer.isUp) {
@@ -188,10 +191,11 @@ export default {
             this.label = text
         },
         setPip() {
-            this.media.requestPictureInPicture()
-        },
-        setPlay() {
-            this.media.play()
+            if (this.pipActive) {
+                document.exitPictureInPicture()
+            } else {
+                this.media.requestPictureInPicture()
+            }
         },
         setFullscreen() {
             this.media.requestFullscreen()
@@ -221,3 +225,33 @@ export default {
     }
 }
 </script>
+<style lang="postcss">
+.c-stream {
+    /* display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow: hidden;
+    position:relative; */
+    display: flex;
+    position:relative;
+
+    & .controls {
+            background: rgba(0, 0, 0, 0.5);
+            width: var(--space-4);
+            position: absolute;
+            left: 0;
+            height: 100%;
+            z-index: 1000;
+            /* bottom: 0; */
+    }
+
+    & video {
+        object-fit: cover;
+        /* max-width: 100%; */
+        width: 100%;
+        height: 100%;
+    }
+
+}
+</style>

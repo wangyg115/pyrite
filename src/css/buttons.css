@@ -1,5 +1,5 @@
 .btn {
-    background: var(--grey-300);
+    background: none;
     color: var(--grey-50);
     padding: var(--spacer);
     text-transform: uppercase;

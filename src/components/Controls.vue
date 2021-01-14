@@ -1,54 +1,38 @@
 <template>
     <nav class="c-controls panel">
         <button
-            v-if="state.connected"
-            class="btn btn-menu active"
-            @click="disconnect"
-        >
-            <Icon class="icon-small" name="logout" />
-        </button>
-
-        <button
-            v-if="state.connected && state.upMedia.local.length"
-            v-show="state.permissions.present && state.upMedia.local.length"
-            class="btn btn-menu active"
-            @click="unpresent"
-        >
-            <Icon class="icon-small" name="webcam" />
-        </button>
-
-        <button
-            v-else-if="state.connected"
+            v-if="state.connected && state.permissions.present"
             class="btn btn-menu"
-            @click="present"
+            :class="{active: state.upMedia.local.length}"
+            @click="togglePresent"
         >
             <Icon class="icon-small" name="webcam" />
         </button>
 
-
         <button
-            v-show="state.permissions.present"
-            class="btn btn-menu active"
-            @click="mute"
+            v-if="state.connected && state.permissions.present"
+            class="btn btn-menu"
+            :class="{active: state.muted}"
+            @click="toggleMute"
         >
-            <Icon class="icon-small" name="mute" />
+            <Icon class="icon-small" :name="state.muted ? 'micMute' : 'mic'" />
         </button>
 
         <button
-            v-if="state.permissions.present && !state.upMedia.screenshare.length"
+            v-if="state.connected && state.permissions.present"
             class="btn btn-menu"
             :class="{active: state.upMedia.screenshare.length}"
-            @click="share"
+            @click="toggleShare"
         >
             <Icon class="icon-small" name="screenshare" />
         </button>
 
         <button
-            v-show="state.upMedia.video.length"
-            class="menu btn-menu"
-            @click="stopVideo"
+            v-if="state.connected"
+            class="btn btn-menu"
+            @click="disconnect"
         >
-            Stop Video
+            <Icon class="icon-small" name="logout" />
         </button>
     </nav>
 </template>
@@ -56,52 +40,39 @@
 <script>
 export default {
     data() {
-        return {state: app.state}
+        return {
+            state: app.state
+        }
     },
     methods: {
-        collapseSidebar() {
-            document.getElementById("left-sidebar").classList.toggle("active")
-            document.getElementById("mainrow").classList.toggle("full-width-active")
-        },
         disconnect() {
-            app.connection.close()
+            app.disconnect()
         },
-        openSide() {
-            let sidewidth = document.getElementById("sidebarnav").style.width
-            if (sidewidth !== "0px" && sidewidth !== "") {
-                document.getElementById("sidebarnav").style.width = "0"
-                return
+        toggleMute() {
+            this.state.muted = !this.state.muted
+            app.muteLocalTracks(this.state.muted)
+        },
+        togglePresent() {
+            if (this.state.upMedia.local.length) {
+                app.logger.debug('switching present mode off')
+                app.delUpMediaKind('local')
+
             } else {
-                document.getElementById("sidebarnav").style.width = "250px"
+                app.logger.debug('switching present mode on')
+                let id = app.findUpMedia('local')
+                if(!id) {
+                    app.addLocalMedia()
+                }
             }
         },
-        mute(e) {
-            // e.preventDefault()
-            // let localMute = getSettings().localMute
-            // localMute = !localMute
-            // setLocalMute(localMute, true)
-        },
-        async present(e) {
-            console.log('PRESENT')
-            let id = app.findUpMedia('local')
-            if(!id) await app.addLocalMedia()
-
-        },
-        share() {
-            console.log('SHARE')
-            app.addShareMedia()
-        },
-        stopVideo(e) {
-            app.delUpMediaKind('video')
-            resizePeers()
-        },
-        unpresent(e) {
-            console.log('UNPRESENT')
-            app.delUpMediaKind('local')
-        },
-        unshare() {
-            console.log('UNSHARE')
-            app.delUpMediaKind('screenshare')
+        toggleShare() {
+            if (this.state.upMedia.screenshare.length) {
+                app.logger.debug('switching screenshare off')
+                app.delUpMediaKind('screenshare')
+            } else {
+                app.logger.debug('switching screenshare on')
+                app.addShareMedia()
+            }
         }
     }
 }
@@ -109,7 +80,7 @@ export default {
 
 <style lang="postcss">
 .c-controls {
-    background: var(--grey-500);
+    background: var(--grey-200);
     display: flex;
     flex-direction: column;
 }

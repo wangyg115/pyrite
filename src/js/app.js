@@ -228,40 +228,6 @@ class Pyrite {
             }
             c.labels[t.id] = 'screenshare'
         })
-        c.onstats = this.gotUpStats.bind(this, c)
-        c.setStatsInterval(2000)
-    }
-
-
-    /**
-     * @param {string} id
-     * @param {string} name
-     */
-    addUser(id, name) {
-        if(!name)
-            name = null
-        if(id in users)
-            throw new Error('Duplicate user id')
-        users[id] = name
-
-        let div = document.getElementById('users')
-        let user = document.createElement('div')
-        user.id = 'user-' + id
-        user.classList.add("user-p")
-        user.textContent = name ? name : '(anon)'
-
-        if(name) {
-            let us = div.children
-            for(let i = 0; i < us.length; i++) {
-                let child = us[i]
-                let childname = users[child.id.slice('user-'.length)] || null
-                if(!childname || stringCompare(childname, name) > 0) {
-                    div.insertBefore(user, child)
-                    return
-                }
-            }
-        }
-        div.appendChild(user)
     }
 
 
@@ -285,6 +251,7 @@ class Pyrite {
      * @param {string} id
      */
     delMedia(id) {
+        this.logger.debug(`remove stream ${id} from state`)
         this.state.streams.splice(this.state.streams.indexOf(id), 1)
     }
 
@@ -301,17 +268,11 @@ class Pyrite {
      * @param {Stream} c
      */
     delUpMedia(c) {
-        this.logger.debug(`delUpMedia ${c.id}`)
         this.stopUpMedia(c)
+        this.delMedia(c.id)
 
-        try {
-            this.delMedia(c.id)
-        } catch(e) {
-            console.warn(e)
-        }
         c.close()
         delete(this.connection.up[c.id])
-        this.state.upMedia.splice(this.state.upMedia[c.kind].findIndex((c.id)), 1)
     }
 
 
@@ -321,15 +282,24 @@ class Pyrite {
      * @param {string} kind
     */
     delUpMediaKind(kind) {
-        this.logger.debug(`delUpMediaKind ${kind}`)
+        this.logger.debug(`remove all up media from kind: ${kind}`)
         for(let id in this.connection.up) {
             let c = this.connection.up[id]
-            if(kind && c.kind != kind)
+            if(kind && c.kind != kind) {
                 continue
+            }
             c.close()
             this.delMedia(id)
             delete(this.connection.up[id])
+            this.logger.debug(`remove up media stream: ${id}`)
+            this.state.upMedia[kind].splice(this.state.upMedia[kind].indexOf(id), 1)
         }
+    }
+
+
+    disconnect() {
+        this.state.users = []
+        this.connection.close()
     }
 
 
@@ -444,7 +414,7 @@ class Pyrite {
 
     /** @returns {number} */
     getMaxVideoThroughput() {
-        switch(this.state.send) {
+        switch(this.state.send.id) {
         case 'lowest':
             return 150000
         case 'low':
@@ -547,7 +517,7 @@ class Pyrite {
             return
         }
 
-        this.connection.request(this.state.request)
+        this.connection.request(this.state.request.id)
 
         if(this.connection.permissions.present && !this.findUpMedia('local')) {
             if (!this.state.present) {
@@ -593,6 +563,7 @@ class Pyrite {
     * @param {boolean} mute
     */
     muteLocalTracks(mute) {
+        this.logger.info(`mute local tracks: ${mute}`)
         if(!this.connection)
             return
         for(let id in this.connection.up) {
@@ -839,8 +810,7 @@ class Pyrite {
 
         this.logger.info(`removing stream ${c.id}`)
         this.state.streams.splice(this.state.streams.indexOf(c.id), 1)
-
-
+        this.state.upMedia[c.kind].splice(this.state.upMedia[c.kind].indexOf(c.id), 1)
     }
 
 }

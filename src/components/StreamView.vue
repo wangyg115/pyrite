@@ -1,8 +1,9 @@
 <template>
     <Login v-if="!state.connected" class="content" />
+
     <div
         v-else
-        class="video-container"
+        class="c-stream-view"
         :class="gridClass"
     >
         <Stream v-for="peer of state.streams" :key="peer.id" :peer="peer" />
@@ -35,30 +36,35 @@ export default {
 }
 </script>
 <style lang="postcss">
-.video-container {
-    background: var(--grey-500);
-    display: flex;
-    flex: 1;
-    flex-direction: column;
+.c-stream-view {
+    background: var(--grey-400);
+    display: grid;
 
-    & .peer {
-        background: #0ff;
-        display: flex;
-        /* max-height: 50px; */
-        position: relative;
+
+    padding: var(--spacer);
+
+    & .c-stream {
+         background: var(--grey-500);
+
 
         & video {
             flex: 1;
         }
     }
 
-    /* &.grid-1 {
-        grid-template-columns: repeat(1fr);
+    &.grid-1 {
+        grid-template-rows: 50% 50%;
+        grid-template-columns: 50% 50%;
+        grid-gap: 1rem;
+        /* grid-template-columns: repeat(4, 0.5fr); */
     }
 
     &.grid-2 {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    } */
+        grid-template-rows: 50% 50%;
+        grid-template-columns: 50% 50%;
+        /* grid-gap: 1rem; */
+        /* grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); */
+    }
 }
 
 </style>

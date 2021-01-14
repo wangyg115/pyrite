@@ -49,7 +49,7 @@
                         v-model="state.blackboardMode"
                         help="Stream at extra high resolution"
                         label="Blackboard mode"
-                        name="store_key"
+                        name="blackboard"
                     />
                 </fieldset>
             </div>
@@ -78,7 +78,7 @@
                     v-model="state.activityDetection"
                     help="Detect whether someone is speaking"
                     label="Activity detection"
-                    name="store_key"
+                    name="activity"
                 />
             </fieldset>
         </section>
