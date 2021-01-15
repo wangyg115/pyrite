@@ -1,6 +1,9 @@
 {
   "name": "@garage44/pyrite",
   "version": "0.0.0-development",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
