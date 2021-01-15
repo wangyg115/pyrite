@@ -14,7 +14,6 @@ export default {
             return this.validation.$error
         },
     },
-    emits: ['focus', 'update:modelValue'],
     methods: {
         classes: function() {
             const classes = {}

@@ -53,13 +53,6 @@
         text-transform: uppercase;
         width: 100%;
 
-        &.active,
-        &:not(disabled):hover {
-            border-bottom: 2px solid var(--primary-color);
-            color: var(--grey-50);
-            cursor: pointer;
-        }
-
         &[disabled] {
             background: var(--grey-300);
             border-bottom: 2px solid transparent;
@@ -70,9 +63,14 @@
                 color: var(--grey-200);
             }
         }
+
+        &.active,
+        &:not[disabled]:hover {
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--grey-50);
+            cursor: pointer;
+        }
     }
-
-
 
     &:focus {
         outline: none;

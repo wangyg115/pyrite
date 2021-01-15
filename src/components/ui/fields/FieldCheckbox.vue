@@ -20,7 +20,6 @@
         <div v-if="help && !invalidFieldValue" class="help">
             {{ help }}
         </div>
-        <ul v-if="invalidFieldValue" class="validation-message" v-html="validationMessage" />
     </div>
 </template>
 <script>
@@ -33,6 +32,7 @@ export default {
             type: String
         }
     },
+    emits: ['update:modelValue'],
     methods: {
         updateModel: function(event) {
             this.$emit('update:modelValue', event.target.checked)

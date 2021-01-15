@@ -10,15 +10,22 @@
         font-weight: bold;
         height: var(--space-4);
         padding: var(--spacer);
+        position: relative;
 
         & svg {
             color: var(--primary-color);
             margin-right: var(--spacer);
         }
+
+        & .version {
+            bottom: 0;
+            font-size: var(--text-small);
+            position: absolute;
+            right: var(--spacer);
+        }
     }
 
     & .item {
-        /* height: var(--space-3); */
         align-items: center;
         display: flex;
         padding: var(--spacer);

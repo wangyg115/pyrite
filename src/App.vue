@@ -1,7 +1,18 @@
 <template>
     <div class="app-view theme-dark" :class="{connected: state.connected}">
-        <Users v-if="state.connected" />
-        <Groups v-else />
+        <div class="presence">
+            <header>
+                <RouterLink class="name" :to="{name: 'settings'}">
+                    PYRITE
+                </RouterLink>
+                <div class="version">
+                    {{ version }}
+                </div>
+            </header>
+            <Users v-if="state.connected" />
+            <Groups v-else />
+        </div>
+
 
         <Chat v-if="state.connected" />
         <Controls />
@@ -24,7 +35,8 @@ export default {
     components: {Chat, Controls, Groups, Notifications, Users},
         data() {
         return {
-            state: app.state
+            state: app.state,
+            version: build.version,
         }
     },
 }

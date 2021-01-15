@@ -1,36 +1,29 @@
 <template>
-    <div class="c-groups presence">
-        <header>
-            <RouterLink class="name" :to="{name: 'settings'}">
-                PYRITE
-            </RouterLink>
-        </header>
+    <div class="group item">
+        <Icon class="item-icon icon-small" name="groups" />
 
-        <div class="group item">
-            <Icon class="item-icon icon-small" name="groups" />
+        <FieldText
+            v-model="customGroupId"
+            autocomplete="username"
+            name="username"
+            placeholder="Join unlisted group"
+            @focus="updateRoute"
+        />
+    </div>
 
-            <FieldText
-                v-model="customGroupId"
-                autocomplete="username"
-                name="username"
-                placeholder="Join unlisted group"
-                @focus="updateRoute"
-            />
+
+    <div v-for="group of groups" :key="group.name" class="group item">
+        <Icon class="item-icon icon-small" name="groups" />
+        <RouterLink class="name" :to="{name: 'groups', params: {groupId: group.name}}">
+            {{ group.name }}
+        </RouterLink>
+        <div class="count">
+            {{ group.clientCount }}
         </div>
-
-
-        <div v-for="group of groups" :key="group.name" class="group item">
-            <Icon class="item-icon icon-small" name="groups" />
-            <RouterLink class="name" :to="{name: 'groups', params: {groupId: group.name}}">
-                {{ group.name }}
-            </RouterLink>
-            <div class="count">
-                {{ group.clientCount }}
-            </div>
-            <Icon class="icon-small" name="user" />
-        </div>
+        <Icon class="icon-small" name="user" />
     </div>
 </template>
+
 <script>
 export default {
     name: 'Groups',

@@ -16,21 +16,6 @@ let mediaChoicesDone = false
 let safariScreenshareDone = false
 
 
-const urlRegexp = /https?:\/\/[-a-zA-Z0-9@:%/._\\+~#&()=?]+[-a-zA-Z0-9@:%/_\\+~#&()=]/g
-
-
-/**
- * @typedef {Object} lastMessage
- * @property {string} [nick]
- * @property {string} [peerId]
- * @property {string} [dest]
- * @property {number} [time]
- */
-
-/** @type {lastMessage} */
-let lastMessage = {}
-
-
 class Pyrite {
     /**
      * Old start function.
@@ -223,7 +208,7 @@ class Pyrite {
         c.stream = stream
         stream.getTracks().forEach(t => {
             c.pc.addTrack(t, stream)
-            t.onended = (e) => {
+            t.onended = () => {
                 this.delUpMedia(c)
             }
             c.labels[t.id] = 'screenshare'
@@ -237,13 +222,6 @@ class Pyrite {
             this.logger.info('resettings local stream')
             this.addLocalMedia(id)
         }
-    }
-
-
-    clearChat() {
-        lastMessage = {}
-        console.log('CLEAR CHAT')
-        // document.getElementById('box').textContent = ''
     }
 
 
@@ -354,64 +332,6 @@ class Pyrite {
     }
 
 
-    /**
-     * @param {string} line
-     * @returns {Array.<Text|HTMLElement>}
-     */
-    formatLine(line) {
-        let r = new RegExp(urlRegexp)
-        let result = []
-        let pos = 0
-        while(true) {
-            let m = r.exec(line)
-            if(!m)
-                break
-            result.push(document.createTextNode(line.slice(pos, m.index)))
-            let a = document.createElement('a')
-            a.href = m[0]
-            a.textContent = m[0]
-            a.target = '_blank'
-            a.rel = 'noreferrer noopener'
-            result.push(a)
-            pos = m.index + m[0].length
-        }
-        result.push(document.createTextNode(line.slice(pos)))
-        return result
-    }
-
-
-    /**
-     * @param {string[]} lines
-     * @returns {HTMLElement}
-     */
-    formatLines(lines) {
-        let elts = []
-        if(lines.length > 0)
-            elts = this.formatLine(lines[0])
-        for(let i = 1; i < lines.length; i++) {
-            elts.push(document.createElement('br'))
-            elts = elts.concat(this.formatLine(lines[i]))
-        }
-        let elt = document.createElement('p')
-        elts.forEach(e => elt.appendChild(e))
-        return elt
-    }
-
-
-    /**
-     * @param {number} time
-     * @returns {string}
-     */
-    formatTime(time) {
-        let delta = Date.now() - time
-        let date = new Date(time)
-        let m = date.getMinutes()
-        if(delta > -30000)
-            return date.getHours() + ':' + ((m < 10) ? '0' : '') + m
-        return date.toLocaleString()
-    }
-
-
     /** @returns {number} */
     getMaxVideoThroughput() {
         switch(this.state.send.id) {
@@ -449,7 +369,6 @@ class Pyrite {
 
     /** @this {ServerConnection} */
     gotConnected() {
-        this.clearChat()
         this.displayUsername()
 
         const groupName = this.router.currentRoute.value.params.groupId
@@ -648,17 +567,21 @@ class Pyrite {
         this.connection.onuser = this.gotUser.bind(this)
         this.connection.onjoined = this.gotJoined.bind(this)
         // serverConnection.onchat = this.addToChatbox.bind(this)
-        this.connection.onclearchat = this.clearChat.bind(this)
+        // this.connection.onclearchat = this.clearChat.bind(this)
+
         this.connection.onusermessage = function(id, dest, username, time, privileged, kind, message) {
             switch(kind) {
             case 'error':
             case 'warning':
             case 'info':
+                // eslint-disable-next-line no-case-declarations
                 let from = id ? (username || 'Anonymous') : 'The Server'
-                if(privileged)
-                    displayError(`${from} said: ${message}`, kind)
-                else
+                if(privileged) {
+                    this.displayError(`${from} said: ${message}`, kind)
+                }
+                else {
                     console.error(`Got unprivileged message of kind ${kind}`)
+                }
                 break
             case 'mute':
                 if(privileged) {

@@ -41,8 +41,8 @@ export default {
                 return ['password', 'text'].includes(value)
             }
         }
-
     },
+    emits: ['focus', 'update:modelValue'],
     data() {
         return {
             visible: false,

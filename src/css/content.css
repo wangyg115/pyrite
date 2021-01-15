@@ -8,6 +8,7 @@
         align-items: center;
         background: var(--grey-400);
         border-bottom: var(--border) solid var(--grey-300);
+        color: var(--primary-color);
         display: flex;
         font-weight: bold;
         height: var(--space-4);

@@ -16,7 +16,7 @@
       "globalThis": true,
       "$": true
   },
-  "ignorePatterns": ["node_modules/"],
+  "ignorePatterns": ["node_modules/", "protocol.js", "commands.js"],
   "overrides": [
       {
           "files": ["**/*.js"],

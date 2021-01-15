@@ -1,18 +1,12 @@
 <template>
-    <div class="c-users presence">
-        <header>
-            USERS
-        </header>
-
-        <div v-for="user of sortedUsers" :key="user.id" class="group item">
-            <Icon class="item-icon icon-small" name="user" />
-            <template v-if="user.name">
-                {{ user.name }}
-            </template>
-            <template v-else>
-                '(anon)'
-            </template>
-        </div>
+    <div v-for="user of sortedUsers" :key="user.id" class="group item">
+        <Icon class="item-icon icon-small" name="user" />
+        <template v-if="user.name">
+            {{ user.name }}
+        </template>
+        <template v-else>
+            '(anon)'
+        </template>
     </div>
 </template>
 <script>

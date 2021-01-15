@@ -1,7 +1,7 @@
 <template>
     <div class="c-login content">
         <header>
-            Join group {{ $route.params.groupId }}
+            <Icon class="item-icon icon-small" name="groups" /> {{ $route.params.groupId }}
         </header>
         <section>
             <form>

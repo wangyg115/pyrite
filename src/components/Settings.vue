@@ -1,7 +1,7 @@
 <template>
     <div class="content">
         <header>
-            Settings
+            SETTINGS
         </header>
 
         <section>
@@ -81,6 +81,15 @@
                     name="activity"
                 />
             </fieldset>
+
+            <button
+                id="connectbutton"
+                class="btn btn-widget"
+                :disabled="connecting"
+                @click="login"
+            >
+                Save
+            </button>
         </section>
     </div>
 </template>

@@ -41,10 +41,6 @@
         <div v-if="help" class="help">
             {{ help }}
         </div>
-        <span
-            v-if="invalidFieldValue && validationMessage"
-            class="validation-message" v-html="validationMessage"
-        />
     </div>
 </template>
 
@@ -78,6 +74,7 @@ export default {
             required: true
         }
     },
+    emits: ['update:modelValue'],
     data: function() {
         return {
             searchQuery: '',
