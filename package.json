@@ -32,5 +32,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/garage44/pyrite.git"
+  },
+  "release": {
+    "branches": ["main"]
   }
 }
