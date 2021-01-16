@@ -10,6 +10,7 @@
     "lint": "yarn lint:js;yarn lint:css",
     "lint:js": "eslint \"src/**/{*.js,*.vue}\"",
     "lint:css": "stylelint 'src/css/**/*.css'",
+    "prepublishOnly": "npm run build",
     "semantic-release": "semantic-release"
   },
   "dependencies": {
@@ -17,6 +18,8 @@
     "vue-router": "^4.0.2"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/git": "^9.0.0",
     "@vitejs/plugin-vue": "^1.0.4",
     "eslint": "^7.16.0",
     "eslint-plugin-sort-class-members": "^1.9.0",
@@ -37,6 +40,15 @@
     "url": "https://github.com/garage44/pyrite.git"
   },
   "release": {
-    "branches": ["main"]
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/git"
+    ]
   }
 }
