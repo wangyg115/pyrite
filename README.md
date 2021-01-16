@@ -1,28 +1,36 @@
 # Pyrite
 
-This is an experimental port of the [Galène](https://github.com/jech/galene) video
-conferencing server frontend. Pyrite's initial goal is to mimick the original
-Galène frontend with a [Vue 3](https://v3.vuejs.org/) component-based application.
-The [Vite](https://github.com/vitejs/vite) build tool, semantic versioning and
-auto-deployment makes it easy to quickly release and deploy new versions and
-separate code across files.
+Pyrite is a frontend for the [Galène](https://github.com/jech/galene) video
+conferencing server. Pyrite is a functional mix of the Galène frontend and the
+[CA11 project](https://github.com/open-voip-alliance/ca11). Pyrite's initial
+goal is to match the functionality of the default Galène frontend, while using
+a [Vue 3](https://v3.vuejs.org/) component-based architecture. The
+[Vite](https://github.com/vitejs/vite) build tool provides a pleasant
+developer experience with HMR, while semantic versioning and auto-deployment
+makes Pyrite easy to deploy.
 
-## Setup
-
-* Start the Pyrite development service
+## Development
 
 ```bash
 git clone git@github.com:garage44/pyrite.git
-npm install
+cd pyrite
+npm i
 npm run dev
-# Start a second browser with a fake webcam
-chromium --use-fake-device-for-media-stream --enable-experimental-web-platform-features  --user-data-dir=~/.chromium-tmp
+# Start Galene in another tab
+./galene --insecure
+# Open localhost:3000 in a Chromium browser
 ```
 
-* Start Galène
+> In case you have to test with multiple webcams, you can spin up a browser
+> with a fake webcam device using:
 
 ```bash
-./galene --insecure
+# Start a second browser with a fake webcam
+chromium --use-fake-device-for-media-stream --enable-experimental-web-platform-features  --user-data-dir=/home/user/.chromium-tmp
 ```
 
-> Checkout the install intructions for more info.
+## Deployment
+
+* Setup the [SFU](https://github.com/garage44/pyrite/wiki/SFU-Config)
+* Setup a NGINX [proxy](https://github.com/garage44/pyrite/wiki/Proxy-Config) for your domain
+* Start Galène
