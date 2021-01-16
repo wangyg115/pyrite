@@ -36,7 +36,7 @@ export default {
         data() {
         return {
             state: app.state,
-            version: build.version,
+            version: import.meta.env.VITE_VERSION,
         }
     },
 }
