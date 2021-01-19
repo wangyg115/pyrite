@@ -566,8 +566,7 @@ class Pyrite {
         this.connection.ondownstream = this.gotDownStream.bind(this)
         this.connection.onuser = this.gotUser.bind(this)
         this.connection.onjoined = this.gotJoined.bind(this)
-        // serverConnection.onchat = this.addToChatbox.bind(this)
-        // this.connection.onclearchat = this.clearChat.bind(this)
+
 
         this.connection.onusermessage = function(id, dest, username, time, privileged, kind, message) {
             switch(kind) {

@@ -1,5 +1,8 @@
 <template>
     <nav class="c-controls panel">
+        <RouterLink class="btn btn-menu" :to="{name: 'settings'}">
+            <Icon class="icon-small" name="settings" />
+        </RouterLink>
         <button
             v-if="state.connected && state.permissions.present"
             class="btn btn-menu"
@@ -80,7 +83,8 @@ export default {
 
 <style lang="postcss">
 .c-controls {
-    background: var(--grey-200);
+    background: var(--grey-400);
+    border-right: var(--border) solid var(--grey-300);
     display: flex;
     flex-direction: column;
 }

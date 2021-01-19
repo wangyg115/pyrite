@@ -194,8 +194,8 @@ export default {
 <style lang="postcss">
 
 .c-field-select {
-    width: 100%;
     max-width: 350px;
+    width: 100%;
 
     & .input-container {
         display: flex;
@@ -211,9 +211,9 @@ export default {
                 background: none;
                 border: 1px solid var(--grey-200);
                 font-size: 1rem;
+                height: var(--space-2);
                 outline: none;
                 user-select: none;
-                height: var(--space-2);
                 width: 100%;
 
                 &::placeholder {
@@ -249,12 +249,12 @@ export default {
 
                 &.selected {
                     background: var(--grey-300);
-                    color: var(--primary-base);
+                    color: var(--primary-color);
                 }
 
                 &:hover {
                     background: var(--grey-300);
-                    color: var(--primary-base);
+                    color: var(--primary-color);
                     cursor: pointer;
                 }
             }

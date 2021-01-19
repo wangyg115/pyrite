@@ -1,16 +1,26 @@
 <template>
     <div class="c-chat">
-        <div class="messages" />
+        <div class="messages">
+            <div v-for="message of messages" :key="message.message" class="message">
+                <div class="author">
+                    {{ message.nick }}
+                </div><div class="time">
+                    {{ message.time }}
+                </div>
+                <div class="body">
+                    {{ message.message }}
+                </div>
+            </div>
+        </div>
         <div class="send">
             <textarea
                 id="input"
+                v-model="rawMessage"
                 :placeholder="inputPlaceholder"
-                @onkeypress="handleChatInput()"
             />
             <button
                 class="btn btn-default"
-                type="submit"
-                value="&#10148;"
+                @click="sendMessage"
             >
                 Send
             </button>
@@ -23,45 +33,47 @@ export default {
     data() {
         return {
             inputPlaceholder: 'Type /help for help',
-            state: app.state
+            rawMessage: '',
+            messages: [],
+            state: app.state,
         }
     },
     mounted() {
+        app.connection.onchat = this.addToChatbox.bind(this)
+        app.connection.onclearchat = this.clearChat.bind(this)
         setTimeout(() => {
             this.inputPlaceholder = ''
         }, 8000)
     },
     methods: {
+        addToChatbox(peerId, dest, nick, time, privileged, kind, message) {
+            this.messages.push({peerId, dest, nick, time, privileged, kind, message})
+        },
+        clearChat() {
+            console.log('CLEAR CHAT')
+        },
         handleChatInput() {
             if(e.key === 'Enter' && !e.ctrlKey && !e.shiftKey && !e.metaKey) {
                 e.preventDefault()
                 this.handleInput()
             }
         },
-        handleInput() {
-            let input = /** @type {HTMLTextAreaElement} */
-                (document.getElementById('input'))
-            let data = input.value
-            input.value = ''
-
+        sendMessage() {
             let me, message
 
-            if(data === '')
-                return
-
-            if(data[0] === '/') {
-                if(data.length > 1 && data[1] === '/') {
-                    message = data.slice(1)
+            if(this.rawMessage[0] === '/') {
+                if(this.rawMessage.length > 1 && this.rawMessage[1] === '/') {
+                    message = this.rawMessage.slice(1)
                     me = false
                 } else {
                     let cmd, rest
-                    let space = data.indexOf(' ')
+                    let space = this.rawMessage.indexOf(' ')
                     if(space < 0) {
-                        cmd = data.slice(1)
+                        cmd = this.rawMessage.slice(1)
                         rest = ''
                     } else {
-                        cmd = data.slice(1, space)
-                        rest = data.slice(space + 1)
+                        cmd = this.rawMessage.slice(1, space)
+                        rest = this.rawMessage.slice(space + 1)
                     }
 
                     if(cmd === 'me') {
@@ -70,41 +82,37 @@ export default {
                     } else {
                         let c = commands[cmd]
                         if(!c) {
-                            displayError(`Uknown command /${cmd}, type /help for help`)
+                            app.displayError(`Uknown command /${cmd}, type /help for help`)
                             return
                         }
                         if(c.predicate) {
                             let s = c.predicate()
                             if(s) {
-                                displayError(s)
+                                app.displayError(s)
                                 return
                             }
                         }
                         try {
                             c.f(cmd, rest)
                         } catch(e) {
-                            displayError(e)
+                            app.displayError(e)
                         }
                         return
                     }
                 }
             } else {
-                message = data
+                message = this.rawMessage
                 me = false
             }
 
-            if(!serverConnection || !serverConnection.socket) {
-                displayError("Not connected.")
-                return
-            }
-
-            let username = getUsername()
             try {
-                serverConnection.chat(username, me ? 'me' : '', '', message)
+                app.connection.chat(this.state.username, me ? 'me' : '', '', message)
             } catch(e) {
                 console.error(e)
-                displayError(e)
+                app.displayError(e)
             }
+
+            this.rawMessage = ''
         }
     }
 }
@@ -121,6 +129,13 @@ export default {
     & .messages {
         background: var(--grey-300);
         flex: 1;
+
+        & .message {
+            background: var(--grey-200);
+            color: var(--grey-50);
+            margin: var(--spacer);
+            padding: var(--spacer);
+        }
     }
 
     & .send {

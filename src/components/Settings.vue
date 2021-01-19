@@ -4,7 +4,26 @@
             SETTINGS
         </header>
 
-        <section>
+        <ul class="tabs">
+            <li
+                class="btn btn-menu tab tooltip tooltip-bottom"
+                :class="classes('tabs', 'devices')"
+                data-tooltip="devices"
+                @click="setTab('settings', 'devices')"
+            >
+                <icon name="headset" />
+            </li>
+            <li
+                class="btn btn-menu tab tooltip tooltip-bottom"
+                :class="classes('tabs', 'misc')"
+                data-tooltip="Signalling"
+                @click="setTab('settings', 'misc')"
+            >
+                <icon name="settingsMisc" />
+            </li>
+        </ul>
+
+        <section class="tab-content" :class="{active: state.tabs.settings.active === 'devices'}">
             <div v-show="state.connected" id="profile" class="profile">
                 <div class="profile-user">
                     <div class="profile-logo">
@@ -26,71 +45,64 @@
                 </div>
             </div>
             <div v-show="state.permissions.present" id="mediaoptions">
-                <fieldset>
-                    <legend>Media Options</legend>
-
-                    <FieldSelect
-                        v-model="state.video"
-                        help="select the video camera to use"
-                        label="Camera"
-                        name="language"
-                        :options="state.devices.video"
-                    />
-
-                    <FieldSelect
-                        v-model="state.audio"
-                        help="select the video camera to use"
-                        label="Microphone"
-                        name="language"
-                        :options="state.devices.audio"
-                    />
-
-                    <FieldCheckbox
-                        v-model="state.blackboardMode"
-                        help="Stream at extra high resolution"
-                        label="Blackboard mode"
-                        name="blackboard"
-                    />
-                </fieldset>
-            </div>
-
-            <fieldset>
-                <legend>Other Settings</legend>
-
                 <FieldSelect
-                    v-model="state.send"
-                    help="Bandwidth to use when sending media"
-                    label="Send"
-                    name="send"
-                    :options="sendOptions"
+                    v-model="state.video"
+                    help="select the video camera to use"
+                    label="Camera"
+                    name="language"
+                    :options="state.devices.video"
                 />
 
                 <FieldSelect
-                    v-model="state.request"
-                    help="Types of media to receive"
-                    label="Receive"
-                    name="request"
-                    :options="receiveOptions"
+                    v-model="state.audio"
+                    help="select the video camera to use"
+                    label="Microphone"
+                    name="language"
+                    :options="state.devices.audio"
                 />
-
 
                 <FieldCheckbox
-                    v-model="state.activityDetection"
-                    help="Detect whether someone is speaking"
-                    label="Activity detection"
-                    name="activity"
+                    v-model="state.blackboardMode"
+                    help="Stream at extra high resolution"
+                    label="Blackboard mode"
+                    name="blackboard"
                 />
-            </fieldset>
-
-            <button
-                id="connectbutton"
-                class="btn btn-widget"
-                :disabled="connecting"
-                @click="login"
-            >
-                Save
-            </button>
+            </div>
         </section>
+
+        <section class="tab-content" :class="{active: state.tabs.settings.active === 'misc'}">
+            <FieldSelect
+                v-model="state.send"
+                help="Bandwidth to use when sending media"
+                label="Send"
+                name="send"
+                :options="sendOptions"
+            />
+
+            <FieldSelect
+                v-model="state.request"
+                help="Types of media to receive"
+                label="Receive"
+                name="request"
+                :options="receiveOptions"
+            />
+
+
+            <FieldCheckbox
+                v-model="state.activityDetection"
+                help="Detect whether someone is speaking"
+                label="Activity detection"
+                name="activity"
+            />
+        </section>
+
+        <button
+            id="connectbutton"
+            class="btn btn-widget"
+            @click="saveSettings"
+        >
+            Save
+        </button>
     </div>
 </template>
 
@@ -116,6 +128,13 @@ export default {
         }
     },
     methods: {
+        classes: function(block, modifier) {
+            let classes = {}
+            if (block === 'tabs') {
+                if (modifier === this.state.tabs.settings.active) classes.active = true
+            }
+            return classes
+        },
         changeActivitybox(e) {
             if(!(this instanceof HTMLInputElement))
                 throw new Error('Unexpected type for this')
@@ -182,6 +201,13 @@ export default {
         disconnect() {
             app.connection.close()
             this.closeNav()
+        },
+        saveSettings() {
+            app.store.save()
+            app.notify({level: 'info', message: 'Settings stored'})
+        },
+        setTab: function(category, tab) {
+            app.state.tabs[category] = {active: tab}
         }
     }
 }

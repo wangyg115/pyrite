@@ -26,7 +26,6 @@ export default {
             return classes
         },
         updateModel: function(event) {
-            console.log("UPDATE")
             this.$emit('update:modelValue', event.target.value)
         },
     },

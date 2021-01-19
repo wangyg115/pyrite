@@ -3,10 +3,10 @@
 @import "./fonts";
 @import "./forms";
 @import "./presence";
+@import "./tabs";
 
 .theme-dark {
-    --primary-color: #e8cf49;
-
+    --primary-color: #33c6c3;
     --info-color: #9ddc4b;
     --warning-color: #af702d;
     --error-color: #cb6c4d;
