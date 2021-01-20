@@ -32,6 +32,19 @@ class Pyrite {
         this.store = new Store()
         this.state = this.store.load()
 
+        this.router.beforeResolve((to, from, next) => {
+            // Group can only be changed when not connected to one already.
+            if (!this.state.connected) {
+                if (to.name === 'groups') {
+                    this.state.group = to.params.groupId
+                } else if (to.name === 'settings') {
+                    this.state.group = null
+                }
+            }
+
+            next()
+        })
+
         this.setViewportHeight()
 
         // On resize and orientation change, we update viewport height
@@ -538,7 +551,7 @@ class Pyrite {
         }
 
         if (typeof notification.timeout === 'undefined') {
-            notification.timeout = 15000
+            notification.timeout = 3000
         }
 
         this.state.notifications.push(notification)

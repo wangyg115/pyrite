@@ -208,8 +208,9 @@ export default {
             z-index: 1000;
 
             & input {
-                background: none;
-                border: 1px solid var(--grey-200);
+                background: var(--grey-400);
+                border: 0;
+                border-bottom: 1px solid var(--grey-200);
                 font-size: 1rem;
                 height: var(--space-2);
                 outline: none;

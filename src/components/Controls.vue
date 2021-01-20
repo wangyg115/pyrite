@@ -1,42 +1,52 @@
 <template>
-    <nav class="c-controls panel">
-        <RouterLink class="btn btn-menu" :to="{name: 'settings'}">
-            <Icon class="icon-small" name="settings" />
-        </RouterLink>
-        <button
-            v-if="state.connected && state.permissions.present"
-            class="btn btn-menu"
-            :class="{active: state.upMedia.local.length}"
-            @click="togglePresent"
-        >
-            <Icon class="icon-small" name="webcam" />
-        </button>
+    <nav class="c-controls">
+        <div class="navigational-controls">
+            <RouterLink class="btn btn-menu" :to="{name: 'settings'}">
+                <Icon class="icon-small" name="settings" />
+            </RouterLink>
+            <RouterLink v-if="state.group" class="btn btn-menu" :to="{name: 'groups', params: {groupId: state.group}}">
+                <Icon class="icon-small" name="groups" />
+            </RouterLink>
+            <button v-else class="btn btn-menu" disabled>
+                <Icon class="icon-small" name="groups" />
+            </button>
+            <button
+                v-if="state.connected"
+                class="btn btn-menu"
+                @click="disconnect"
+            >
+                <Icon class="icon-small" name="logout" />
+            </button>
+        </div>
 
-        <button
-            v-if="state.connected && state.permissions.present"
-            class="btn btn-menu"
-            :class="{active: state.muted}"
-            @click="toggleMute"
-        >
-            <Icon class="icon-small" :name="state.muted ? 'micMute' : 'mic'" />
-        </button>
+        <div class="group-controls">
+            <button
+                v-if="state.connected && state.permissions.present"
+                class="btn btn-menu"
+                :class="{active: state.upMedia.local.length}"
+                @click="togglePresent"
+            >
+                <Icon class="icon-small" name="webcam" />
+            </button>
 
-        <button
-            v-if="state.connected && state.permissions.present"
-            class="btn btn-menu"
-            :class="{active: state.upMedia.screenshare.length}"
-            @click="toggleShare"
-        >
-            <Icon class="icon-small" name="screenshare" />
-        </button>
+            <button
+                v-if="state.connected && state.permissions.present"
+                class="btn btn-menu"
+                :class="{active: state.upMedia.screenshare.length}"
+                @click="toggleShare"
+            >
+                <Icon class="icon-small" name="screenshare" />
+            </button>
 
-        <button
-            v-if="state.connected"
-            class="btn btn-menu"
-            @click="disconnect"
-        >
-            <Icon class="icon-small" name="logout" />
-        </button>
+            <button
+                v-if="state.connected && state.permissions.present"
+                class="btn btn-menu"
+                :class="{active: state.muted}"
+                @click="toggleMute"
+            >
+                <Icon class="icon-small" :name="state.muted ? 'micMute' : 'mic'" />
+            </button>
+        </div>
     </nav>
 </template>
 
@@ -87,5 +97,6 @@ export default {
     border-right: var(--border) solid var(--grey-300);
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
 }
 </style>

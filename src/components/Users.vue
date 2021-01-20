@@ -1,13 +1,15 @@
 <template>
-    <div v-for="user of sortedUsers" :key="user.id" class="group item">
-        <Icon class="item-icon icon-small" name="user" />
-        <template v-if="user.name">
-            {{ user.name }}
-        </template>
-        <template v-else>
-            '(anon)'
-        </template>
-    </div>
+    <section>
+        <div v-for="user of sortedUsers" :key="user.id" class="group item">
+            <Icon class="item-icon icon-small" name="user" />
+            <template v-if="user.name">
+                {{ user.name }}
+            </template>
+            <template v-else>
+                '(anon)'
+            </template>
+        </div>
+    </section>
 </template>
 <script>
 export default {
@@ -37,8 +39,8 @@ export default {
 
 <style lang="postcss">
 #users {
-    background-color: #FFF;
-    border: 1px solid #F7F7F7;
+    background-color: #fff;
+    border: 1px solid #f7f7f7;
     display: block;
     height: calc(100% - 84px);
     margin: 0;
@@ -50,7 +52,7 @@ export default {
 }
 
 #users .user-p {
-    border-bottom: 1px solid #F0F0F0;
+    border-bottom: 1px solid #f0f0f0;
     cursor: pointer;
     height: 40px;
     line-height: 18px;
@@ -62,11 +64,11 @@ export default {
 }
 
 #users > div:hover {
-    background-color: #F2F2F2;
+    background-color: #f2f2f2;
 }
 
 #users > div::before {
-    color: #20B91E;
+    color: #20b91e;
     content: "\f111";
     font-family: "Font Awesome 5 Free";
     font-weight: 900;

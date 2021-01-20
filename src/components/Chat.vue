@@ -22,7 +22,7 @@
                 class="btn btn-default"
                 @click="sendMessage"
             >
-                Send
+                <icon class="icon icon-mini" name="send" />
             </button>
         </div>
     </div>

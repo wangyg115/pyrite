@@ -7,6 +7,7 @@ const persistantState = reactive({
     chat: {
         active: true,
     },
+    group: null,
     loading: true,
     localMute: false,
     password: '',

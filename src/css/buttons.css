@@ -16,6 +16,14 @@
         position: relative;
         width: var(--space-4);
 
+        &[disabled] {
+            color: var(--grey-300);
+
+            &:hover {
+                cursor: not-allowed;
+            }
+        }
+
         &::before {
             background: var(--primary-color);
             bottom: calc(-1 * var(--border));
@@ -29,6 +37,7 @@
             transition: transform 150ms;
             will-change: transform;
         }
+
 
         &.active,
         &:not([disabled]):hover {

@@ -22,6 +22,7 @@ import IconPip from './IconPip.vue'
 import IconUser from './IconUser.vue'
 import IconUserUnknown from './IconUserUnknown.vue'
 import IconScreenShare from './IconScreenShare.vue'
+import IconSend from './IconSend.vue'
 import IconSettings from './IconSettings.vue'
 import IconSettingsMisc from './IconSettingsMisc.vue'
 import IconStopScreenShare from './IconStopScreenShare.vue'
@@ -41,6 +42,7 @@ export default {
       micMute: IconMicMute,
       pip: IconPip,
       screenshare: IconScreenShare,
+      send: IconSend,
       settings: IconSettings,
       settingsMisc: IconSettingsMisc,
       stopScreenshare: IconStopScreenShare,
