@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/garage44/pyrite/compare/v1.0.5...v1.1.0) (2021-01-20)
+
+
+### Features
+
+* general look and feel mess room ([c8c946f](https://github.com/garage44/pyrite/commit/c8c946f575c625b99441530683325eae8dc1e7b4))
+
 ## [1.0.5](https://github.com/garage44/pyrite/compare/v1.0.4...v1.0.5) (2021-01-19)
 
 
