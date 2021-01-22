@@ -41,10 +41,10 @@ export default {
 <style lang="postcss">
 
 .c-notifications {
-    bottom: var(--spacer);
     max-width: 400px;
     position: absolute;
     right: var(--spacer);
+    top: var(--spacer);
     width: 100%;
     z-index: 100000;
 

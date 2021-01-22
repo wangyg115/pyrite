@@ -1,9 +1,5 @@
 <template>
     <div class="content">
-        <header>
-            SETTINGS
-        </header>
-
         <ul class="tabs">
             <li
                 class="btn btn-menu tab tooltip tooltip-bottom"
@@ -11,39 +7,19 @@
                 data-tooltip="devices"
                 @click="setTab('settings', 'devices')"
             >
-                <icon name="headset" />
+                <icon class="icon-small" name="headset" />
             </li>
             <li
                 class="btn btn-menu tab tooltip tooltip-bottom"
                 :class="classes('tabs', 'misc')"
-                data-tooltip="Signalling"
+                data-tooltip="Miscellaneous"
                 @click="setTab('settings', 'misc')"
             >
-                <icon name="settingsMisc" />
+                <icon class="icon-small" name="settingsMisc" />
             </li>
         </ul>
 
         <section class="tab-content" :class="{active: state.tabs.settings.active === 'devices'}">
-            <div v-show="state.connected" id="profile" class="profile">
-                <div class="profile-user">
-                    <div class="profile-logo">
-                        <span><i aria-hidden="true" class="fas fa-user" /></span>
-                    </div>
-                    <div class="profile-info">
-                        <span v-if="state.password && state.username" id="userspan">
-                            {{ state.username }}
-                        </span>
-
-                        <span id="permspan">{{ state.permissionText }}</span>
-                    </div>
-                    <div class="user-logout">
-                        <a id="disconnectbutton" @click="disconnect">
-                            <span class="logout-icon"><i class="fas fa-sign-out-alt" /></span>
-                            <span class="logout-text">Logout</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
             <div v-show="state.permissions.present" id="mediaoptions">
                 <FieldSelect
                     v-model="state.video"
@@ -60,6 +36,8 @@
                     name="language"
                     :options="state.devices.audio"
                 />
+
+                <SoundMeter v-if="state.mediaReady" />
 
                 <FieldCheckbox
                     v-model="state.blackboardMode"
@@ -107,9 +85,11 @@
 </template>
 
 <script>
+import SoundMeter from './ui/SoundMeter.vue'
 
 export default {
     name: 'Settings',
+    components: {SoundMeter},
     data() {
         return {
             receiveOptions: [

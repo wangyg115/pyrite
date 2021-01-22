@@ -4,6 +4,7 @@
 @import "./forms";
 @import "./presence";
 @import "./tabs";
+@import "./tooltip";
 
 .theme-dark {
     --primary-color: #33c6c3;
@@ -12,8 +13,8 @@
     --error-color: #cb6c4d;
 
     --grey-500: #1a202c;
-    --grey-400: #2e3847;
-    --grey-300: #4b5567;
+    --grey-400: #222835;
+    --grey-300: #292f3b;
     --grey-200: #667184;
     --grey-100: #828da1;
     --grey-50: #cad6eb;
@@ -61,27 +62,6 @@ textarea {
 
     &:focus {
         outline: none;
-    }
-}
-
-.icon {
-    fill: currentColor;
-    height: 40px;
-    width: 40px;
-
-    &.icon-mini {
-        height: var(--space-1);
-        width: var(--space-1);
-    }
-
-    &.icon-small {
-        height: var(--space-2);
-        width: var(--space-2);
-    }
-
-    &.icon-large {
-        height: 50px;
-        width: 50px;
     }
 }
 

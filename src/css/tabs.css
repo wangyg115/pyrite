@@ -1,5 +1,6 @@
 .tabs {
     background: var(--grey-500);
+    border-bottom: var(--border) solid var(--grey-300);
     display: flex;
     margin: 0;
     padding: 0;

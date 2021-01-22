@@ -15,6 +15,7 @@ import IconFullscreen from './IconFullscreen.vue'
 import IconGroups from './IconGroups.vue'
 import IconHeadset from './IconHeadset.vue'
 import IconInfo from './IconInfo.vue'
+import IconLogin from './IconLogin.vue'
 import IconLogout from './IconLogout.vue'
 import IconMic from './IconMic.vue'
 import IconMicMute from './IconMicMute.vue'
@@ -37,6 +38,7 @@ export default {
       groups: IconGroups,
       headset: IconHeadset,
       info: IconInfo,
+      login: IconLogin,
       logout: IconLogout,
       mic: IconMic,
       micMute: IconMicMute,
@@ -59,3 +61,31 @@ export default {
   }
 }
 </script>
+<style lang="postcss">
+.icon {
+    fill: currentColor;
+    height: 40px;
+    width: 40px;
+
+    &.icon-flipx {
+        transform: scale(-1, 1);
+    }
+
+    &.icon-mini {
+        height: var(--space-1);
+        width: var(--space-1);
+    }
+
+    &.icon-small {
+        height: var(--space-2);
+        width: var(--space-2);
+    }
+
+    &.icon-large {
+        height: 50px;
+        width: 50px;
+    }
+}
+
+
+</style>

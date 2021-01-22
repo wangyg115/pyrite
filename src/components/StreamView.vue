@@ -37,15 +37,14 @@ export default {
 </script>
 <style lang="postcss">
 .c-stream-view {
-    background: var(--grey-400);
+    background: var(--grey-500);
     display: grid;
 
 
     padding: var(--spacer);
 
     & .c-stream {
-         background: var(--grey-500);
-
+        background: var(--grey-500);
 
         & video {
             flex: 1;
@@ -53,15 +52,15 @@ export default {
     }
 
     &.grid-1 {
-        grid-template-rows: 50% 50%;
-        grid-template-columns: 50% 50%;
         grid-gap: 1rem;
+        grid-template-columns: 50% 50%;
+        grid-template-rows: 50% 50%;
         /* grid-template-columns: repeat(4, 0.5fr); */
     }
 
     &.grid-2 {
-        grid-template-rows: 50% 50%;
         grid-template-columns: 50% 50%;
+        grid-template-rows: 50% 50%;
         /* grid-gap: 1rem; */
         /* grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); */
     }

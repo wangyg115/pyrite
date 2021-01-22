@@ -1,0 +1,40 @@
+@keyframes tooltip-right {
+    0% {opacity: 0;}
+    75% {opacity: 0;}
+    100% {opacity: 100;}
+}
+
+.tooltip {
+    cursor: pointer;
+    position: relative;
+    text-transform: capitalize;
+    white-space: nowrap;
+
+    &::after {
+        bottom: 25%;
+        left: 75%;
+        margin-bottom: calc(-2 * var(spacer));
+        margin-left: 0;
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+    }
+
+    &:hover::after {
+        animation: tooltip-right 1s ease-out forwards;
+    }
+}
+
+.tooltip::after,
+[data-tooltip]::after {
+    background: var(--grey-500);
+    border-radius: calc(var(--spacer) / 4);
+    box-shadow: 0 0 8px var(--grey-400);
+    color: var(--primary-color);
+    content: attr(data-tooltip);
+    font-size: var(--text-small);
+    font-weight: 600;
+    padding: var(--spacer);
+    z-index: 10000000;
+}
+

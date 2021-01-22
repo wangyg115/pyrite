@@ -2,7 +2,7 @@
     padding: var(--spacer);
 
     & label {
-        color: var(--grey-50);
+        color: var(--grey-100);
     }
 
     & .help {

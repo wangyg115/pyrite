@@ -1,14 +1,13 @@
 <template>
     <section class="c-groups">
         <div class="group item">
-            <Icon class="item-icon icon-small" name="groups" />
-
             <FieldText
                 v-model="state.group"
                 autocomplete="username"
                 class="custom-group"
+                help="manual input for unlisted groups"
                 name="username"
-                placeholder="Join a group"
+                placeholder="Type group name"
                 @focus="updateRoute"
             />
         </div>

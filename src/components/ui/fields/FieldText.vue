@@ -24,7 +24,7 @@
                 <icon class="icon icon-mini" :class="{active: visible}" name="eye" />
             </div>
         </div>
-        <div v-if="help" class="c-text__help field__help cf">
+        <div v-if="help" class="help">
             {{ help }}
         </div>
     </div>
@@ -57,16 +57,16 @@ export default {
     flex-direction: column;
 
     & .input-container {
-        display: flex;
         align-items: center;
+        display: flex;
 
         & input {
             background: none;
             border: none;
+            border-bottom: var(--border) solid var(--grey-200);
             color: var(--grey-50);
             font-size: 1rem;
             height: var(--space-2);
-            border-bottom: var(--border) solid var(--grey-200);
             outline: none;
 
             &:focus {
@@ -75,6 +75,7 @@ export default {
         }
 
         & .icon {
+
             &:hover {
                 cursor: pointer;
             }

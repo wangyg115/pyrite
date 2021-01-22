@@ -1,7 +1,7 @@
 <template>
     <div class="c-login content">
         <header>
-            <Icon class="item-icon icon-small" name="groups" /> {{ $route.params.groupId }}
+            <Icon class="item-icon icon-small" name="login" /><em>{{ $route.params.groupId }}</em>
         </header>
         <section>
             <form>
@@ -65,7 +65,7 @@
                 :disabled="connecting"
                 @click="login"
             >
-                Connect
+                JOIN GROUP
             </button>
         </section>
     </div>
@@ -93,7 +93,5 @@ export default {
 }
 </script>
 <style lang="postcss">
-.c-login {
-    overflow: auto;
-}
+
 </style>

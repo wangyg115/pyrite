@@ -16,7 +16,6 @@ const persistantState = reactive({
     request: {id: 'everything', name: 'Everything'},
     resolution: null,
     send: {id: 'normal', name: 'Normal'},
-    tabs: {settings: {active: 'devices'}},
     title: '',
     username: '',
     video: {id: null, name: ''},
@@ -31,6 +30,7 @@ const volatileState = {
         audio: [],
         video: [],
     },
+    mediaReady: false,
     muted: false,
     notifications: [],
     permissions: {
@@ -41,6 +41,7 @@ const volatileState = {
         record: false,
     },
     streams: [],
+    tabs: {settings: {active: 'devices'}},
     upMedia: {
         audio: [],
         local: [],

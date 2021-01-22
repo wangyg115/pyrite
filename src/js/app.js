@@ -45,12 +45,6 @@ class Pyrite {
             next()
         })
 
-        this.setViewportHeight()
-
-        // On resize and orientation change, we update viewport height
-        addEventListener('resize', this.setViewportHeight.bind(this))
-        addEventListener('orientationchange', this.setViewportHeight.bind(this))
-
         group = decodeURIComponent(location.pathname.replace(/^\/[a-z]*\//, ''))
         let title = group.charAt(0).toUpperCase() + group.slice(1)
         if(group !== '') {
@@ -158,6 +152,8 @@ class Pyrite {
         let stream = null
         try {
             stream = await navigator.mediaDevices.getUserMedia(constraints)
+            console.log('LOCAL STREAm', stream)
+            this.state.mediaReady = true
         } catch(e) {
             this.displayError(e)
             if(oldStream) {
@@ -165,7 +161,6 @@ class Pyrite {
             }
             return
         }
-
 
         this.setMediaChoices(true)
 
@@ -177,8 +172,10 @@ class Pyrite {
         stream.getTracks().forEach(t => {
             c.labels[t.id] = t.kind
             if(t.kind == 'audio') {
-                if(this.state.localMute)
+                if(this.state.localMute) {
+                    this.logger.info('muting local stream')
                     t.enabled = false
+                }
             } else if(t.kind == 'video') {
                 if(this.state.blackboardMode) {
                     /** @ts-ignore */
@@ -398,9 +395,11 @@ class Pyrite {
     gotDownStream(c) {
         this.logger.info(`new downstream ${c.id}`)
         c.onclose = () => {
+            this.logger.debug(`[onclose] downstream ${c.id}`)
             this.delMedia(c.id)
         }
         c.onerror = (e) => {
+            this.logger.info(`[onerror] downstream ${c.id}`)
             console.error(e)
             this.displayError(e)
         }
@@ -563,11 +562,6 @@ class Pyrite {
     }
 
 
-    openNav() {
-        document.getElementById("sidebarnav").style.width = "250px"
-    }
-
-
     async serverConnect() {
         if(this.connection && this.connection.socket) {
             this.connection.close()
@@ -579,7 +573,6 @@ class Pyrite {
         this.connection.ondownstream = this.gotDownStream.bind(this)
         this.connection.onuser = this.gotUser.bind(this)
         this.connection.onjoined = this.gotJoined.bind(this)
-
 
         this.connection.onusermessage = function(id, dest, username, time, privileged, kind, message) {
             switch(kind) {
@@ -625,7 +618,7 @@ class Pyrite {
      * @param {boolean} [reflect]
      */
     setLocalMute(mute, reflect) {
-        this.logger.info('setLocalMute')
+        this.logger.debug(`set local mute: ${mute}`)
         this.muteLocalTracks(mute)
         let button = document.getElementById('mutebutton')
         let icon = button.querySelector("span .fas")
@@ -649,7 +642,7 @@ class Pyrite {
      * @param {number} [bps]
      */
     async setMaxVideoThroughput(c, bps) {
-        this.logger.info('setMaxVideoThroughput', bps)
+        this.logger.debug(`set maxiumum video throughput: ${bps}`)
         let senders = c.pc.getSenders()
         for(let i = 0; i < senders.length; i++) {
             let s = senders[i]
@@ -690,6 +683,9 @@ class Pyrite {
 
         let cn = 1, mn = 1
 
+        this.state.devices.audio = []
+        this.state.devices.video = []
+
         devices.forEach(d => {
             let label = d.label
 
@@ -718,14 +714,6 @@ class Pyrite {
     }
 
 
-    // Store current browser viewport height in css variable
-    setViewportHeight() {
-        document.documentElement.style.setProperty(
-            '--vh', `${window.innerHeight/100}px`,
-        )
-    }
-
-
     /**
      * @param {Stream} c
      */
@@ -743,7 +731,7 @@ class Pyrite {
             }
         })
 
-        this.logger.info(`removing stream ${c.id}`)
+        this.logger.debug(`removing stream ${c.id}`)
         this.state.streams.splice(this.state.streams.indexOf(c.id), 1)
         this.state.upMedia[c.kind].splice(this.state.upMedia[c.kind].indexOf(c.id), 1)
     }

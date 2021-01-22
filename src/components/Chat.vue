@@ -127,7 +127,7 @@ export default {
     width: 300px;
 
     & .messages {
-        background: var(--grey-300);
+        background: var(--grey-500);
         flex: 1;
 
         & .message {

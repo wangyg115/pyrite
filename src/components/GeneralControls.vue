@@ -1,10 +1,14 @@
 <template>
     <nav class="c-controls">
         <div class="navigational-controls">
-            <RouterLink class="btn btn-menu" :to="{name: 'settings'}">
+            <RouterLink class="btn btn-menu tooltip" data-tooltip="settings" :to="{name: 'settings'}">
                 <Icon class="icon-small" name="settings" />
             </RouterLink>
-            <RouterLink v-if="state.group" class="btn btn-menu" :to="{name: 'groups', params: {groupId: state.group}}">
+            <RouterLink
+                v-if="state.group" class="btn btn-menu tooltip"
+                data-tooltip="current group"
+                :to="{name: 'groups', params: {groupId: state.group}}"
+            >
                 <Icon class="icon-small" name="groups" />
             </RouterLink>
             <button v-else class="btn btn-menu" disabled>
@@ -12,39 +16,11 @@
             </button>
             <button
                 v-if="state.connected"
-                class="btn btn-menu"
+                class="btn btn-menu tooltip"
+                data-tooltip="leave group"
                 @click="disconnect"
             >
                 <Icon class="icon-small" name="logout" />
-            </button>
-        </div>
-
-        <div class="group-controls">
-            <button
-                v-if="state.connected && state.permissions.present"
-                class="btn btn-menu"
-                :class="{active: state.upMedia.local.length}"
-                @click="togglePresent"
-            >
-                <Icon class="icon-small" name="webcam" />
-            </button>
-
-            <button
-                v-if="state.connected && state.permissions.present"
-                class="btn btn-menu"
-                :class="{active: state.upMedia.screenshare.length}"
-                @click="toggleShare"
-            >
-                <Icon class="icon-small" name="screenshare" />
-            </button>
-
-            <button
-                v-if="state.connected && state.permissions.present"
-                class="btn btn-menu"
-                :class="{active: state.muted}"
-                @click="toggleMute"
-            >
-                <Icon class="icon-small" :name="state.muted ? 'micMute' : 'mic'" />
             </button>
         </div>
     </nav>

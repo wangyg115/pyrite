@@ -1,6 +1,6 @@
 <template>
     <div v-click-outside="searchToggle" class="c-field-select field">
-        <label :class="classes('label')" :for="name">{{ label }}</label>
+        <label :for="name">{{ label }}</label>
 
         <div class="input-container">
             <div class="button-wrapper">
@@ -230,7 +230,7 @@ export default {
 
         & .options {
             background: var(--grey-400);
-            border: 1px solid var(--grey-200);
+            border: 1px solid var(--grey-300);
             box-shadow: 0 0 var(--border) rgba(var(--grey-500), 0.8);
             margin-top: calc(var(--space-2) + 1px);
             max-height: 162px;

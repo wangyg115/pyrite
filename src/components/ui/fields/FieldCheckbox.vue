@@ -4,7 +4,7 @@
             <label class="switch" :class="elementclass" :for="name">
                 <input
                     :id="name"
-                    :checked="value"
+                    :checked="modelValue"
                     :class="elementclass"
                     :disabled="disabled"
                     :name="name"
@@ -29,7 +29,7 @@ export default {
     props: {
         modelValue: {
             required: true,
-            type: String
+            type: Boolean
         }
     },
     emits: ['update:modelValue'],
@@ -42,6 +42,7 @@ export default {
 </script>
 <style lang="postcss">
 .c-field-checkbox {
+
     & .row {
         align-items: center;
         display: flex;
@@ -54,12 +55,36 @@ export default {
         user-select: none;
         width: calc(var(--spacer) * 5);
 
+        & .slider {
+            background-color: var(--grey-500);
+            border-radius: calc(var(--spacer) * 2);
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+
+            &::before {
+                background: var(--grey-100);
+                border-radius: 50%;
+                bottom: calc(var(--spacer) / 2);
+                content: "";
+                height: calc(var(--spacer) * 2);
+                left: calc(var(--spacer) / 2);
+                position: absolute;
+                transition: 0.4s;
+                width: calc(var(--spacer) * 2);
+            }
+        }
+
         & input {
             height: 0;
             opacity: 0;
             width: 0;
 
             & + .slider {
+
                 svg {
                     transition: all 0.5s ease-in-out;
                 }
@@ -73,45 +98,6 @@ export default {
                 }
             }
         }
-
-        & .slider {
-            background-color: var(--grey-500);
-            border-radius: 10px;
-            bottom: 0;
-            cursor: pointer;
-            left: 0;
-            position: absolute;
-            right: 0;
-            top: 0;
-
-            &::before {
-                background: var(--grey-200);
-                border-radius: 50%;
-                bottom: calc(var(--spacer) / 2);
-                content: '';
-                height: calc(var(--spacer) * 2);
-                left: calc(var(--spacer) / 2);
-                position: absolute;
-                transition: 0.4s;
-                width: calc(var(--spacer) * 2);
-            }
-        }
-    }
-
-    & .icon-enabled,
-    & .icon-disabled {
-        @include icon-size(var(--icon-normal));
-        fill: var(--grey-50);
-        height: 100%;
-        position: absolute;
-    }
-
-    & .icon-disabled {
-        left: 3px;
-    }
-
-    & .icon-enabled {
-        right: 3px;
     }
 }
 
