@@ -19,15 +19,15 @@
 let commands = {}
 
 function operatorPredicate() {
-    if(serverConnection && serverConnection.permissions &&
-       serverConnection.permissions.op)
+    if(app.connection && app.connection.permissions &&
+        app.connection.permissions.op)
         return null
     return 'You are not an operator'
 }
 
 function recordingPredicate() {
-    if(serverConnection && serverConnection.permissions &&
-       serverConnection.permissions.record)
+    if(app.connection && app.connection.permissions &&
+        app.connection.permissions.record)
         return null
     return 'You are not allowed to record'
 }
@@ -49,7 +49,15 @@ commands.help = {
         let s = ''
         for(let i = 0; i < cs.length; i++)
             s = s + cs[i] + '\n'
-        addToChatbox(null, null, null, Date.now(), false, null, s)
+        app.state.messages.push({
+            peerId: null,
+            dest: null,
+            nick: null,
+            time: Date.now(),
+            privileged: false,
+            kind: null,
+            message: s
+        })
     },
 }
 
@@ -60,41 +68,12 @@ commands.me = {
     },
 }
 
-commands.set = {
-    f: (c, r) => {
-        if(!r) {
-            let settings = getSettings()
-            let s = ""
-            for(let key in settings)
-                s = s + `${key}: ${JSON.stringify(settings[key])}\n`
-            addToChatbox(null, null, null, Date.now(), false, null, s)
-            return
-        }
-        let p = parseCommand(r)
-        let value
-        if(p[1]) {
-            value = JSON.parse(p[1])
-        } else {
-            value = true
-        }
-        updateSetting(p[0], value)
-        reflectSettings()
-    },
-}
-
-commands.unset = {
-    f: (c, r) => {
-        delSetting(r.trim())
-        return
-    },
-}
-
 commands.leave = {
     description: "leave group",
     f: (c, r) => {
-        if(!serverConnection)
+        if(!app.connection)
             throw new Error('Not connected')
-        serverConnection.close()
+        app.connection.close()
     },
 }
 
@@ -102,7 +81,7 @@ commands.clear = {
     predicate: operatorPredicate,
     description: 'clear the chat history',
     f: (c, r) => {
-        serverConnection.groupAction(getUsername(), 'clearchat')
+        app.connection.groupAction(getUsername(), 'clearchat')
     },
 }
 
@@ -111,7 +90,7 @@ commands.lock = {
     description: 'lock this group',
     parameters: '[message]',
     f: (c, r) => {
-        serverConnection.groupAction(getUsername(), 'lock', r)
+        app.connection.groupAction(getUsername(), 'lock', r)
     },
 }
 
@@ -119,7 +98,7 @@ commands.unlock = {
     predicate: operatorPredicate,
     description: 'unlock this group, revert the effect of /lock',
     f: (c, r) => {
-        serverConnection.groupAction(getUsername(), 'unlock')
+        app.connection.groupAction(getUsername(), 'unlock')
     },
 }
 
@@ -127,7 +106,7 @@ commands.record = {
     predicate: recordingPredicate,
     description: 'start recording',
     f: (c, r) => {
-        serverConnection.groupAction(getUsername(), 'record')
+        app.connection.groupAction(getUsername(), 'record')
     },
 }
 
@@ -135,7 +114,7 @@ commands.unrecord = {
     predicate: recordingPredicate,
     description: 'stop recording',
     f: (c, r) => {
-        serverConnection.groupAction(getUsername(), 'unrecord')
+        app.connection.groupAction(getUsername(), 'unrecord')
     },
 }
 
@@ -143,37 +122,21 @@ commands.subgroups = {
     predicate: operatorPredicate,
     description: 'list subgroups',
     f: (c, r) => {
-        serverConnection.groupAction(getUsername(), 'subgroups')
+        app.connection.groupAction(getUsername(), 'subgroups')
     },
 }
 
 commands.renegotiate = {
     description: 'renegotiate media streams',
     f: (c, r) => {
-        for(let id in serverConnection.up)
-            serverConnection.up[id].restartIce()
-        for(let id in serverConnection.down)
-            serverConnection.down[id].restartIce()
+        for(let id in app.connection.up) {
+            app.connection.up[id].restartIce()
+        }
+        for(let id in app.connection.down) {
+            app.connection.down[id].restartIce()
+        }
     },
 }
-
-commands.msg = {
-    parameters: 'user message',
-    description: 'send a private message',
-    f: (c, r) => {
-        let p = parseCommand(r)
-        if(!p[0])
-            throw new Error('/msg requires parameters')
-        let id = findUserId(p[0])
-        if(!id)
-            throw new Error(`Unknown user ${p[0]}`)
-        let username = getUsername()
-        serverConnection.chat(username, '', id, p[1])
-        addToChatbox(serverConnection.id, id, username,
-            Date.now(), false, '', p[1])
-    },
-}
-
 
 commands.kick = {
     parameters: 'user [message]',
@@ -233,7 +196,7 @@ commands.wall = {
     f: (c, r) => {
         if(!r)
             throw new Error('empty message')
-        serverConnection.userMessage(getUsername(), 'warning', '', r)
+        app.connection.userMessage(getUsername(), 'warning', '', r)
     },
 }
 
@@ -295,12 +258,10 @@ function parseCommand(line) {
 */
 function userCommand(c, r) {
     let p = parseCommand(r)
-    if(!p[0])
-        throw new Error(`/${c} requires parameters`)
+    if(!p[0]) throw new Error(`/${c} requires parameters`)
     let id = findUserId(p[0])
-    if(!id)
-        throw new Error(`Unknown user ${p[0]}`)
-    serverConnection.userAction(getUsername(), c, id, p[1])
+    if(!id) throw new Error(`Unknown user ${p[0]}`)
+    app.connection.userAction(getUsername(), c, id, p[1])
 }
 
 function userMessage(c, r) {
@@ -308,9 +269,8 @@ function userMessage(c, r) {
     if(!p[0])
         throw new Error(`/${c} requires parameters`)
     let id = findUserId(p[0])
-    if(!id)
-        throw new Error(`Unknown user ${p[0]}`)
-    serverConnection.userMessage(getUsername(), c, id, p[1])
+    if(!id) throw new Error(`Unknown user ${p[0]}`)
+    app.connection.userMessage(getUsername(), c, id, p[1])
 }
 
 export default commands

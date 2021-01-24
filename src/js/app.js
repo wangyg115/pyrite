@@ -308,20 +308,6 @@ class Pyrite {
     }
 
 
-    displayUsername() {
-        let text = ''
-
-        if(this.connection.permissions.op && this.connection.permissions.present)
-            text = '(op, presenter)'
-        else if(this.connection.permissions.op)
-            text = 'operator'
-        else if(this.connection.permissions.present)
-            text = 'presenter'
-
-        this.state.permissionText = text
-    }
-
-
     /**
      * @param {unknown} message
      */
@@ -379,8 +365,6 @@ class Pyrite {
 
     /** @this {ServerConnection} */
     gotConnected() {
-        this.displayUsername()
-
         const groupName = this.router.currentRoute.value.params.groupId
         this.logger.info(`joining group: ${groupName}`)
         this.connection.join(groupName, this.state.username, this.state.password)
@@ -421,6 +405,7 @@ class Pyrite {
      * @param {Object<string,boolean>} perms
      */
     async gotJoined(kind, group, perms, message) {
+        this.state.permissions = perms
         this.logger.info(`joined group ${group}`)
 
         switch(kind) {
@@ -437,8 +422,6 @@ class Pyrite {
             return
         case 'join':
         case 'change':
-            this.displayUsername()
-
             if(kind === 'change')
                 return
             break

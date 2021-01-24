@@ -4,6 +4,16 @@
             <button
                 v-if="state.connected && state.permissions.present"
                 class="btn btn-menu tooltip"
+                :class="{active: !state.muted}"
+                data-tooltip="mute microphone"
+                @click="toggleMute"
+            >
+                <Icon class="icon-small" name="mic" />
+            </button>
+
+            <button
+                v-if="state.connected && state.permissions.present"
+                class="btn btn-menu tooltip"
                 :class="{active: state.upMedia.local.length}"
                 data-tooltip="toggle camera"
                 @click="togglePresent"
@@ -19,16 +29,6 @@
                 @click="toggleShare"
             >
                 <Icon class="icon-small" name="screenshare" />
-            </button>
-
-            <button
-                v-if="state.connected && state.permissions.present"
-                class="btn btn-menu tooltip"
-                :class="{active: state.muted}"
-                data-tooltip="mute microphone"
-                @click="toggleMute"
-            >
-                <Icon class="icon-small" :name="state.muted ? 'micMute' : 'mic'" />
             </button>
         </div>
     </nav>

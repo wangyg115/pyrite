@@ -1,13 +1,21 @@
 <template>
     <section>
-        <div v-for="user of sortedUsers" :key="user.id" class="group item">
+        <div v-for="user of sortedUsers" :key="user.id" class="user item">
             <Icon class="item-icon icon-small" name="user" />
-            <template v-if="user.name">
-                {{ user.name }}
-            </template>
-            <template v-else>
-                '(anon)'
-            </template>
+            <div class="name">
+                <template v-if="user.name">
+                    {{ user.name }}
+                </template>
+                <template v-else>
+                    '(anon)'
+                </template>
+                <span v-if="state.users[0].id === user.id">
+                    (you)
+                </span>
+            </div>
+            <div v-if="state.users[0].id === user.id" class="me">
+                {{ userRights }}
+            </div>
         </div>
     </section>
 </template>
@@ -19,6 +27,18 @@ export default {
         }
     },
     computed: {
+        userRights() {
+            let text = ''
+
+            if(app.connection.permissions.op && app.connection.permissions.present)
+                text = '(op, presenter)'
+            else if(app.connection.permissions.op)
+                text = 'operator'
+            else if(app.connection.permissions.present)
+                text = 'presenter'
+
+            return text
+        },
         sortedUsers() {
             const users = [...this.state.users]
             users.sort(function (a, b) {
@@ -30,7 +50,6 @@ export default {
                 else if(a.name > b.name) return +1
                 return 0
             })
-
             return users
         },
     }
@@ -38,40 +57,11 @@ export default {
 </script>
 
 <style lang="postcss">
-#users {
-    background-color: #fff;
-    border: 1px solid #f7f7f7;
-    display: block;
-    height: calc(100% - 84px);
-    margin: 0;
-    overflow-y: auto;
-    padding: 0;
-    position: relative;
-    width: 100%;
-    z-index: 1;
+.user {
+
+    & .me {
+        font-size: var(--text-small);
+    }
 }
 
-#users .user-p {
-    border-bottom: 1px solid #f0f0f0;
-    cursor: pointer;
-    height: 40px;
-    line-height: 18px;
-    margin: 0 !important;
-    overflow: hidden;
-    padding: 10px !important;
-    position: relative;
-    white-space: pre;
-}
-
-#users > div:hover {
-    background-color: #f2f2f2;
-}
-
-#users > div::before {
-    color: #20b91e;
-    content: "\f111";
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    margin-right: 5px;
-}
 </style>

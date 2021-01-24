@@ -11,7 +11,7 @@ const persistantState = reactive({
     loading: true,
     localMute: false,
     password: '',
-    permissionText: '',
+    permissions: {},
     present: '', // '', mike or 'both'
     request: {id: 'everything', name: 'Everything'},
     resolution: null,
@@ -31,6 +31,7 @@ const volatileState = {
         video: [],
     },
     mediaReady: false,
+    messages: [],
     muted: false,
     notifications: [],
     permissions: {

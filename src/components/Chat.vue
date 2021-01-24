@@ -10,7 +10,9 @@
                     </div>
                 </header>
                 <section>
-                    {{ message.message }}
+                    <div v-for="msg of formatMessage(message.message)" :key="msg.id">
+                        {{ msg }}
+                    </div>
                 </section>
             </div>
         </div>
@@ -32,19 +34,19 @@
 </template>
 
 <script>
+import commands from '../js/commands'
 import { nextTick } from 'vue'
 export default {
     data() {
         return {
             inputPlaceholder: 'Type /help for help',
             rawMessage: '',
-            messages: [],
             state: app.state,
         }
     },
     computed: {
         sortedMessages() {
-            const messages = this.messages
+            const messages = this.state.messages
             return messages.sort((a, b) => a.time - b.time)
         }
     },
@@ -57,14 +59,17 @@ export default {
     },
     methods: {
         onChat(peerId, dest, nick, time, privileged, kind, message) {
-            this.messages.push({peerId, dest, nick, time, privileged, kind, message})
+            this.state.messages.push({peerId, dest, nick, time, privileged, kind, message})
             nextTick(() => {
                 this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
             })
         },
         clearChat() {
             app.logger.debug('clearing chat from remote')
-            this.messages = []
+            this.state.messages = []
+        },
+        formatMessage(message) {
+            return message.split('\n')
         },
         formatTime(ts) {
             const date = new Date(ts)
@@ -101,6 +106,8 @@ export default {
                         cmd = this.rawMessage.slice(1, space)
                         rest = this.rawMessage.slice(space + 1)
                     }
+
+                     this.rawMessage = ''
 
                     if(cmd === 'me') {
                         message = rest
@@ -183,7 +190,7 @@ export default {
         background: var(--grey-400);
         border-top: var(--border) solid var(--grey-300);
         display: flex;
-        padding: var(--spacer) 0;
+        padding: var(--space-1) 0;
 
         & button {
             align-items: center;
