@@ -1,5 +1,5 @@
 <template>
-    <nav class="c-controls">
+    <nav class="c-general-controls">
         <div class="navigational-controls">
             <RouterLink class="btn btn-menu tooltip" data-tooltip="settings" :to="{name: 'settings'}">
                 <Icon class="icon-small" name="settings" />
@@ -68,9 +68,9 @@ export default {
 </script>
 
 <style lang="postcss">
-.c-controls {
+.c-general-controls {
     background: var(--grey-400);
-    border-right: var(--border) solid var(--grey-300);
+    border-left: var(--border) solid var(--grey-300);
     display: flex;
     flex-direction: column;
     justify-content: space-between;

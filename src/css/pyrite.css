@@ -24,6 +24,17 @@
     color: var(--grey-100);
 }
 
+::-webkit-scrollbar {
+    width: var(--spacer);
+}
+
+::-webkit-scrollbar-track {
+    background: transparent; }
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+}
+
 :root {
     --text-small: 0.8rem;
     --text-base: 1rem;
@@ -73,3 +84,4 @@ button {
     background: var(--primary-color);
     color: var(--grey-0);
 }
+

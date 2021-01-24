@@ -67,8 +67,9 @@ export default {
     height: 40px;
     width: 40px;
 
-    &.icon-flipx {
-        transform: scale(-1, 1);
+    &.icon-tiny {
+        height: calc(var(--space-1) / 2);
+        width: calc(var(--space-1) / 2);
     }
 
     &.icon-mini {

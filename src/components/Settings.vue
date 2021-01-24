@@ -65,7 +65,6 @@
                 :options="receiveOptions"
             />
 
-
             <FieldCheckbox
                 v-model="state.activityDetection"
                 help="Detect whether someone is speaking"

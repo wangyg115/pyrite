@@ -312,3 +312,5 @@ function userMessage(c, r) {
         throw new Error(`Unknown user ${p[0]}`)
     serverConnection.userMessage(getUsername(), c, id, p[1])
 }
+
+export default commands
