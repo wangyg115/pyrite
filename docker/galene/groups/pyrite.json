@@ -1,0 +1,8 @@
+{
+  "description": "Talk about Pyrite",
+  "contact": "someone@pyrite.video",
+  "public": true,
+  "op": [{"username": "pyrite", "password": "1234"}],
+  "presenter": [{}],
+  "max-clients": 10
+}

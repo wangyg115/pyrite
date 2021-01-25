@@ -16,6 +16,45 @@
  *
  * @type {Object.<string,command>}
  */
+
+/**
+ * @param {string} user
+ */
+function findUserId(user) {
+    if(user in app.state.users) {
+        return user
+    }
+
+    for(let id in app.state.users) {
+        if(app.state.users[id] === user)
+            return id
+    }
+    return null
+}
+
+
+/**
+   @param {string} c
+   @param {string} r
+*/
+function userCommand(c, r) {
+    let p = parseCommand(r)
+    if(!p[0]) throw new Error(`/${c} requires parameters`)
+    let id = findUserId(p[0])
+    if(!id) throw new Error(`Unknown user ${p[0]}`)
+    app.connection.userAction(app.state.username, c, id, p[1])
+}
+
+function userMessage(c, r) {
+    let p = parseCommand(r)
+    console.log('pARSED COMMAND', p)
+    if(!p[0]) throw new Error(`/${c} requires parameters`)
+    let id = findUserId(p[0])
+    if(!id) throw new Error(`Unknown user ${p[0]}`)
+    app.connection.userMessage(app.state.username, c, id, p[1])
+}
+
+
 let commands = {}
 
 function operatorPredicate() {
@@ -81,7 +120,7 @@ commands.clear = {
     predicate: operatorPredicate,
     description: 'clear the chat history',
     f: (c, r) => {
-        app.connection.groupAction(getUsername(), 'clearchat')
+        app.connection.groupAction(app.state.username, 'clearchat')
     },
 }
 
@@ -90,7 +129,7 @@ commands.lock = {
     description: 'lock this group',
     parameters: '[message]',
     f: (c, r) => {
-        app.connection.groupAction(getUsername(), 'lock', r)
+        app.connection.groupAction(app.state.username, 'lock', r)
     },
 }
 
@@ -98,7 +137,7 @@ commands.unlock = {
     predicate: operatorPredicate,
     description: 'unlock this group, revert the effect of /lock',
     f: (c, r) => {
-        app.connection.groupAction(getUsername(), 'unlock')
+        app.connection.groupAction(app.state.username, 'unlock')
     },
 }
 
@@ -106,7 +145,7 @@ commands.record = {
     predicate: recordingPredicate,
     description: 'start recording',
     f: (c, r) => {
-        app.connection.groupAction(getUsername(), 'record')
+        app.connection.groupAction(app.state.username, 'record')
     },
 }
 
@@ -114,7 +153,7 @@ commands.unrecord = {
     predicate: recordingPredicate,
     description: 'stop recording',
     f: (c, r) => {
-        app.connection.groupAction(getUsername(), 'unrecord')
+        app.connection.groupAction(app.state.username, 'unrecord')
     },
 }
 
@@ -122,7 +161,7 @@ commands.subgroups = {
     predicate: operatorPredicate,
     description: 'list subgroups',
     f: (c, r) => {
-        app.connection.groupAction(getUsername(), 'subgroups')
+        app.connection.groupAction(app.state.username, 'subgroups')
     },
 }
 
@@ -180,6 +219,14 @@ commands.mute = {
     f: userMessage,
 }
 
+commands.muteall = {
+    description: 'mute all remote users',
+    predicate: operatorPredicate,
+    f: (c, r) => {
+        app.connection.userMessage('mute', null, null, true);
+    }
+}
+
 commands.warn = {
     parameters: 'user message',
     description: 'send a warning to a user',
@@ -194,25 +241,9 @@ commands.wall = {
     description: 'send a warning to all users',
     predicate: operatorPredicate,
     f: (c, r) => {
-        if(!r)
-            throw new Error('empty message')
-        app.connection.userMessage(getUsername(), 'warning', '', r)
+        if(!r) throw new Error('empty message')
+        app.connection.userMessage('warning', '', r)
     },
-}
-
-
-/**
- * @param {string} user
- */
-function findUserId(user) {
-    if(user in users)
-        return user
-
-    for(let id in users) {
-        if(users[id] === user)
-            return id
-    }
-    return null
 }
 
 
@@ -249,28 +280,6 @@ function parseCommand(line) {
     while(i < line.length && line[i] === ' ')
         i++
     return [first, line.slice(i)]
-}
-
-
-/**
-   @param {string} c
-   @param {string} r
-*/
-function userCommand(c, r) {
-    let p = parseCommand(r)
-    if(!p[0]) throw new Error(`/${c} requires parameters`)
-    let id = findUserId(p[0])
-    if(!id) throw new Error(`Unknown user ${p[0]}`)
-    app.connection.userAction(getUsername(), c, id, p[1])
-}
-
-function userMessage(c, r) {
-    let p = parseCommand(r)
-    if(!p[0])
-        throw new Error(`/${c} requires parameters`)
-    let id = findUserId(p[0])
-    if(!id) throw new Error(`Unknown user ${p[0]}`)
-    app.connection.userMessage(getUsername(), c, id, p[1])
 }
 
 export default commands

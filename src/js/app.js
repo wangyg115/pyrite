@@ -152,7 +152,6 @@ class Pyrite {
         let stream = null
         try {
             stream = await navigator.mediaDevices.getUserMedia(constraints)
-            console.log('LOCAL STREAm', stream)
             this.state.mediaReady = true
         } catch(e) {
             this.displayError(e)
@@ -378,9 +377,12 @@ class Pyrite {
      */
     gotDownStream(c) {
         this.logger.info(`new downstream ${c.id}`)
-        c.onclose = () => {
-            this.logger.debug(`[onclose] downstream ${c.id}`)
-            this.delMedia(c.id)
+        c.onclose = (replace) => {
+            if(!replace) {
+                this.logger.debug(`[onclose] downstream ${c.id}`)
+                this.delMedia(c.id)
+            }
+
         }
         c.onerror = (e) => {
             this.logger.info(`[onerror] downstream ${c.id}`)
@@ -557,7 +559,7 @@ class Pyrite {
         this.connection.onuser = this.gotUser.bind(this)
         this.connection.onjoined = this.gotJoined.bind(this)
 
-        this.connection.onusermessage = function(id, dest, username, time, privileged, kind, message) {
+        this.connection.onusermessage = (id, dest, username, time, privileged, kind, message) => {
             switch(kind) {
             case 'error':
             case 'warning':

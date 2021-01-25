@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
+'use strict';
 
 /**
  * toHex formats an array as a hexadecimal string.
@@ -26,23 +26,23 @@
  * @returns {string} - the hexadecimal representation of array
  */
 function toHex(array) {
-    let a = new Uint8Array(array)
+    let a = new Uint8Array(array);
     function hex(x) {
-        let h = x.toString(16)
+        let h = x.toString(16);
         if(h.length < 2)
-            h = '0' + h
-        return h
+            h = '0' + h;
+        return h;
     }
-    return a.reduce((x, y) => x + hex(y), '')
+    return a.reduce((x, y) => x + hex(y), '');
 }
 
 /** randomid returns a random string of 32 hex digits (16 bytes).
  * @returns {string}
  */
 function randomid() {
-    let a = new Uint8Array(16)
-    crypto.getRandomValues(a)
-    return toHex(a)
+    let a = new Uint8Array(16);
+    crypto.getRandomValues(a);
+    return toHex(a);
 }
 
 /**
@@ -57,50 +57,54 @@ function ServerConnection() {
      * @type {string}
      * @const
      */
-    this.id = randomid()
+    this.id = randomid();
     /**
-     * The group that we have joined, or nil if we haven't joined yet.
+     * The group that we have joined, or null if we haven't joined yet.
      *
      * @type {string}
      */
-    this.group = null
+    this.group = null;
+    /**
+     * The username we joined as.
+     */
+    this.username = null;
     /**
      * The underlying websocket.
      *
      * @type {WebSocket}
      */
-    this.socket = null
+    this.socket = null;
     /**
      * The set of all up streams, indexed by their id.
      *
      * @type {Object<string,Stream>}
      */
-    this.up = {}
+    this.up = {};
     /**
      * The set of all down streams, indexed by their id.
      *
      * @type {Object<string,Stream>}
      */
-    this.down = {}
+    this.down = {};
     /**
      * The ICE configuration used by all associated streams.
      *
      * @type {RTCConfiguration}
      */
-    this.rtcConfiguration = null
+    this.rtcConfiguration = null;
     /**
      * The permissions granted to this connection.
      *
      * @type {Object<string,boolean>}
      */
-    this.permissions = {}
+    this.permissions = {};
     /**
      * userdata is a convenient place to attach data to a ServerConnection.
      * It is not used by the library.
      *
      * @type{Object<unknown,unknown>}
      */
-    this.userdata = {}
+    this.userdata = {};
 
     /* Callbacks */
 
@@ -109,19 +113,19 @@ function ServerConnection() {
      *
      * @type{(this: ServerConnection) => void}
      */
-    this.onconnected = null
+    this.onconnected = null;
     /**
      * onclose is called when the connection is closed
      *
      * @type{(this: ServerConnection, code: number, reason: string) => void}
      */
-    this.onclose = null
+    this.onclose = null;
     /**
      * onuser is called whenever a user is added or removed from the group
      *
      * @type{(this: ServerConnection, id: string, kind: string, username: string) => void}
      */
-    this.onuser = null
+    this.onuser = null;
     /**
      * onjoined is called whenever we join or leave a group or whenever the
      * permissions we have in a group change.
@@ -130,7 +134,7 @@ function ServerConnection() {
      *
      * @type{(this: ServerConnection, kind: string, group: string, permissions: Object<string,boolean>, message: string) => void}
      */
-    this.onjoined = null
+    this.onjoined = null;
     /**
      * ondownstream is called whenever a new down stream is added.  It
      * should set up the stream's callbacks; actually setting up the UI
@@ -138,13 +142,13 @@ function ServerConnection() {
      *
      * @type{(this: ServerConnection, stream: Stream) => void}
      */
-    this.ondownstream = null
+    this.ondownstream = null;
     /**
      * onchat is called whenever a new chat message is received.
      *
      * @type {(this: ServerConnection, id: string, dest: string, username: string, time: number, privileged: boolean, kind: string, message: unknown) => void}
      */
-    this.onchat = null
+    this.onchat = null;
     /**
      * onusermessage is called when an application-specific message is
      * received.  Id is null when the message originated at the server,
@@ -156,14 +160,7 @@ function ServerConnection() {
      *
      * @type {(this: ServerConnection, id: string, dest: string, username: string, time: number, privileged: boolean, kind: string, message: unknown) => void}
      */
-    this.onusermessage = null
-    /**
-     * onclearchat is called whenever the server requests that the chat
-     * be cleared.
-     *
-     * @type{(this: ServerConnection) => void}
-     */
-    this.onclearchat = null
+    this.onusermessage = null;
 }
 
 /**
@@ -171,6 +168,7 @@ function ServerConnection() {
   * @property {string} type
   * @property {string} [kind]
   * @property {string} [id]
+  * @property {string} [source]
   * @property {string} [dest]
   * @property {string} [username]
   * @property {string} [password]
@@ -178,8 +176,8 @@ function ServerConnection() {
   * @property {Object<string,boolean>} [permissions]
   * @property {string} [group]
   * @property {unknown} [value]
-  * @property {RTCSessionDescriptionInit} [offer]
-  * @property {RTCSessionDescriptionInit} [answer]
+  * @property {boolean} [noecho]
+  * @property {string} [sdp]
   * @property {RTCIceCandidate} [candidate]
   * @property {Object<string,string>} [labels]
   * @property {Object<string,(boolean|number)>} [request]
@@ -191,9 +189,9 @@ function ServerConnection() {
  * be called when the connection is effectively closed.
  */
 ServerConnection.prototype.close = function() {
-    this.socket && this.socket.close(1000, 'Close requested by client')
-    this.socket = null
-}
+    this.socket && this.socket.close(1000, 'Close requested by client');
+    this.socket = null;
+};
 
 /**
   * send sends a message to the server.
@@ -202,10 +200,10 @@ ServerConnection.prototype.close = function() {
 ServerConnection.prototype.send = function(m) {
     if(!this.socket || this.socket.readyState !== this.socket.OPEN) {
         // send on a closed socket doesn't throw
-        throw(new Error('Connection is not open'))
+        throw(new Error('Connection is not open'));
     }
-    return this.socket.send(JSON.stringify(m))
-}
+    return this.socket.send(JSON.stringify(m));
+};
 
 /**
  * connect connects to the server.
@@ -215,120 +213,118 @@ ServerConnection.prototype.send = function(m) {
  * @function
  */
 ServerConnection.prototype.connect = async function(url) {
-    let sc = this
+    let sc = this;
     if(sc.socket) {
-        sc.socket.close(1000, 'Reconnecting')
-        sc.socket = null
+        sc.socket.close(1000, 'Reconnecting');
+        sc.socket = null;
     }
 
-    sc.socket = new WebSocket(url)
+    sc.socket = new WebSocket(url);
 
     return await new Promise((resolve, reject) => {
         this.socket.onerror = function(e) {
-            console.log('ERROR', e)
-            reject(e)
-        }
+            reject(e);
+        };
         this.socket.onopen = function(e) {
             sc.send({
                 type: 'handshake',
                 id: sc.id,
-            })
+            });
             if(sc.onconnected)
-                sc.onconnected.call(sc)
-            resolve(sc)
-        }
+                sc.onconnected.call(sc);
+            resolve(sc);
+        };
         this.socket.onclose = function(e) {
-            sc.permissions = {}
+            sc.permissions = {};
+            for(let id in sc.up) {
+                let c = sc.up[id];
+                c.close();
+            }
             for(let id in sc.down) {
-                let c = sc.down[id]
-                delete(sc.down[id])
-                c.close()
-                if(c.onclose)
-                    c.onclose.call(c)
+                let c = sc.down[id];
+                c.close();
             }
             if(sc.group && sc.onjoined)
-                sc.onjoined.call(sc, 'leave', sc.group, {}, '')
-            sc.group = null
+                sc.onjoined.call(sc, 'leave', sc.group, {}, '');
+            sc.group = null;
+            sc.username = null;
             if(sc.onclose)
-                sc.onclose.call(sc, e.code, e.reason)
-            reject(new Error('websocket close ' + e.code + ' ' + e.reason))
-        }
+                sc.onclose.call(sc, e.code, e.reason);
+            reject(new Error('websocket close ' + e.code + ' ' + e.reason));
+        };
         this.socket.onmessage = function(e) {
-            let m = JSON.parse(e.data)
+            let m = JSON.parse(e.data);
             switch(m.type) {
+            case 'handshake':
+                break;
             case 'offer':
-                sc.gotOffer(m.id, m.labels, m.offer, m.kind === 'renegotiate')
-                break
+                sc.gotOffer(m.id, m.labels, m.source, m.username,
+                            m.sdp, m.kind === 'renegotiate');
+                break;
             case 'answer':
-                sc.gotAnswer(m.id, m.answer)
-                break
+                sc.gotAnswer(m.id, m.sdp);
+                break;
             case 'renegotiate':
-                sc.gotRenegotiate(m.id)
-                break
+                sc.gotRenegotiate(m.id);
+                break;
             case 'close':
-                sc.gotClose(m.id)
-                break
+                sc.gotClose(m.id);
+                break;
             case 'abort':
-                sc.gotAbort(m.id)
-                break
+                sc.gotAbort(m.id);
+                break;
             case 'ice':
-                sc.gotRemoteIce(m.id, m.candidate)
-                break
-            case 'label':
-                sc.gotLabel(m.id, m.value)
-                break
+                sc.gotRemoteIce(m.id, m.candidate);
+                break;
             case 'joined':
                 if(sc.group) {
                     if(m.group !== sc.group) {
-                        throw new Error('Joined multiple groups')
+                        throw new Error('Joined multiple groups');
                     }
                 } else {
-                    sc.group = m.group
+                    sc.group = m.group;
                 }
-                sc.permissions = m.permissions || []
-                sc.rtcConfiguration = m.rtcConfiguration || null
+                sc.username = m.username;
+                sc.permissions = m.permissions || [];
+                sc.rtcConfiguration = m.rtcConfiguration || null;
                 if(sc.onjoined)
                     sc.onjoined.call(sc, m.kind, m.group,
-                        m.permissions || {},
-                        m.value || null)
-                break
+                                     m.permissions || {},
+                                     m.value || null);
+                break;
             case 'user':
                 if(sc.onuser)
-                    sc.onuser.call(sc, m.id, m.kind, m.username)
-                break
+                    sc.onuser.call(sc, m.id, m.kind, m.username);
+                break;
             case 'chat':
                 if(sc.onchat)
                     sc.onchat.call(
-                        sc, m.id, m.dest, m.username, m.time,
+                        sc, m.source, m.dest, m.username, m.time,
                         m.privileged, m.kind, m.value,
-                    )
-                break
+                    );
+                break;
             case 'usermessage':
                 if(sc.onusermessage)
                     sc.onusermessage.call(
-                        sc, m.id, m.dest, m.username, m.time,
+                        sc, m.source, m.dest, m.username, m.time,
                         m.privileged, m.kind, m.value,
-                    )
-                break
-            case 'clearchat':
-                if(sc.onclearchat)
-                    sc.onclearchat.call(sc)
-                break
+                    );
+                break;
             case 'ping':
                 sc.send({
                     type: 'pong',
-                })
-                break
+                });
+                break;
             case 'pong':
                 /* nothing */
-                break
+                break;
             default:
-                console.warn('Unexpected server message', m.type)
-                return
+                console.warn('Unexpected server message', m.type);
+                return;
             }
-        }
-    })
-}
+        };
+    });
+};
 
 /**
  * join requests to join a group.  The onjoined callback will be called
@@ -345,8 +341,8 @@ ServerConnection.prototype.join = function(group, username, password) {
         group: group,
         username: username,
         password: password,
-    })
-}
+    });
+};
 
 /**
  * leave leaves a group.  The onjoined callback will be called when we've
@@ -359,8 +355,8 @@ ServerConnection.prototype.leave = function(group) {
         type: 'join',
         kind: 'leave',
         group: group,
-    })
-}
+    });
+};
 
 /**
  * request sets the list of requested media types.
@@ -369,301 +365,283 @@ ServerConnection.prototype.leave = function(group) {
  */
 ServerConnection.prototype.request = function(what) {
     /** @type {Object<string,boolean>} */
-    let request = {}
+    let request = {};
     switch(what) {
     case '':
-        request = {}
-        break
+        request = {};
+        break;
     case 'audio':
-        request = {audio: true}
-        break
+        request = {audio: true};
+        break;
     case 'screenshare':
-        request = {audio: true, screenshare: true}
-        break
+        request = {audio: true, screenshare: true};
+        break;
     case 'everything':
-        request = {audio: true, screenshare: true, video: true}
-        break
+        request = {audio: true, screenshare: true, video: true};
+        break;
     default:
-        console.error(`Unknown value ${what} in request`)
-        break
+        console.error(`Unknown value ${what} in request`);
+        break;
     }
 
     this.send({
         type: 'request',
         request: request,
-    })
-}
+    });
+};
 
 /**
  * newUpStream requests the creation of a new up stream.
  *
  * @param {string} [id] - The id of the stream to create.
- * @returns {c: Stream, id: string}
+ * @returns {Stream}
  */
 ServerConnection.prototype.newUpStream = function(id) {
-    let sc = this
+    let sc = this;
     if(!id) {
-        id = randomid()
-        if(sc.up[id]) throw new Error('Eek!')
+        id = randomid();
+        if(sc.up[id])
+            throw new Error('Eek!');
     }
-    let pc = new RTCPeerConnection(sc.rtcConfiguration)
-    if(!pc) throw new Error("Couldn't create peer connection")
+    let pc = new RTCPeerConnection(sc.rtcConfiguration);
+    if(!pc)
+        throw new Error("Couldn't create peer connection");
+    if(sc.up[id])
+        sc.up[id].close();
 
-    if(sc.up[id]) {
-        sc.up[id].close()
-    }
-    let c = new Stream(this, id, pc, true)
-    sc.up[id] = c
+    let c = new Stream(this, id, pc, true);
+    sc.up[id] = c;
 
     pc.onnegotiationneeded = async e => {
-        await c.negotiate()
-    }
+            await c.negotiate();
+    };
 
     pc.onicecandidate = e => {
-        if(!e.candidate) {
-            return
-        }
-        c.gotLocalIce(e.candidate)
-    }
+        if(!e.candidate)
+            return;
+        c.gotLocalIce(e.candidate);
+    };
 
     pc.oniceconnectionstatechange = e => {
-        if(c.onstatus) {
-            c.onstatus.call(c, pc.iceConnectionState)
-        }
-        if(pc.iceConnectionState === 'failed') {
-            c.restartIce()
-        }
-    }
+        if(c.onstatus)
+            c.onstatus.call(c, pc.iceConnectionState);
+        if(pc.iceConnectionState === 'failed')
+            c.restartIce();
+    };
 
-    pc.ontrack = console.error
-    return {c, id}
-}
+    pc.ontrack = console.error;
+
+    return {c, id};
+};
 
 /**
  * chat sends a chat message to the server.  The server will normally echo
  * the message back to the client.
  *
- * @param {string} username - The sender's username.
  * @param {string} kind
  *     -  The kind of message, either '', 'me' or an application-specific type.
  * @param {string} dest - The id to send the message to, empty for broadcast.
  * @param {string} value - The text of the message.
  */
-ServerConnection.prototype.chat = function(username, kind, dest, value) {
+ServerConnection.prototype.chat = function(kind, dest, value) {
     this.send({
         type: 'chat',
-        id: this.id,
+        source: this.id,
         dest: dest,
-        username: username,
+        username: this.username,
         kind: kind,
         value: value,
-    })
-}
+    });
+};
 
 /**
  * userAction sends a request to act on a user.
  *
- * @param {string} username - The sender's username.
  * @param {string} kind - One of "op", "unop", "kick", "present", "unpresent".
  * @param {string} dest - The id of the user to act upon.
  * @param {string} [value] - An optional user-readable message.
  */
-ServerConnection.prototype.userAction = function(username, kind, dest, value) {
+ServerConnection.prototype.userAction = function(kind, dest, value) {
     this.send({
         type: 'useraction',
-        id: this.id,
+        source: this.id,
         dest: dest,
-        username: username,
+        username: this.username,
         kind: kind,
         value: value,
-    })
-}
+    });
+};
 
 /**
  * userMessage sends an application-specific message to a user.
  * This is similar to a chat message, but is not saved in the chat history.
  *
- * @param {string} username - The sender's username.
  * @param {string} kind - The kind of application-specific message.
  * @param {string} dest - The id to send the message to, empty for broadcast.
  * @param {string} [value] - An optional parameter.
+ * @param {boolean} [noecho] - If set, don't echo back the message to the sender.
  */
-ServerConnection.prototype.userMessage = function(username, kind, dest, value) {
+ServerConnection.prototype.userMessage = function(kind, dest, value, noecho) {
     this.send({
         type: 'usermessage',
-        id: this.id,
+        source: this.id,
         dest: dest,
-        username: username,
+        username: this.username,
         kind: kind,
         value: value,
-    })
-}
+        noecho: noecho,
+    });
+};
 
 /**
  * groupAction sends a request to act on the current group.
  *
- * @param {string} username - The sender's username.
  * @param {string} kind
  *     - One of 'clearchat', 'lock', 'unlock', 'record' or 'unrecord'.
  * @param {string} [message] - An optional user-readable message.
  */
-ServerConnection.prototype.groupAction = function(username, kind, message) {
+ServerConnection.prototype.groupAction = function(kind, message) {
     this.send({
         type: 'groupaction',
-        id: this.id,
+        source: this.id,
         kind: kind,
-        username: username,
+        username: this.username,
         value: message,
-    })
-}
+    });
+};
 
 /**
  * Called when we receive an offer from the server.  Don't call this.
  *
  * @param {string} id
  * @param {Object<string, string>} labels
- * @param {RTCSessionDescriptionInit} offer
+ * @param {string} source
+ * @param {string} username
+ * @param {string} sdp
  * @param {boolean} renegotiate
  * @function
  */
-ServerConnection.prototype.gotOffer = async function(id, labels, offer, renegotiate) {
-    let sc = this
-    let c = sc.down[id]
+ServerConnection.prototype.gotOffer = async function(id, labels, source, username, sdp, renegotiate) {
+    let sc = this;
+    let c = sc.down[id];
     if(c && !renegotiate) {
         // SDP is rather inflexible as to what can be renegotiated.
         // Unless the server indicates that this is a renegotiation with
         // all parameters unchanged, tear down the existing connection.
-        delete(sc.down[id])
-        c.close()
-        c = null
+        c.close(true);
+        c = null;
     }
 
     if(sc.up[id])
-        throw new Error('Duplicate connection id')
+        throw new Error('Duplicate connection id');
 
     if(!c) {
-        let pc = new RTCPeerConnection(sc.rtcConfiguration)
-        c = new Stream(this, id, pc, false)
-        sc.down[id] = c
+        let pc = new RTCPeerConnection(sc.rtcConfiguration);
+        c = new Stream(this, id, pc, false);
+        sc.down[id] = c;
 
         c.pc.onicecandidate = function(e) {
             if(!e.candidate)
-                return
-            c.gotLocalIce(e.candidate)
-        }
+                return;
+            c.gotLocalIce(e.candidate);
+        };
 
         pc.oniceconnectionstatechange = e => {
             if(c.onstatus)
-                c.onstatus.call(c, pc.iceConnectionState)
+                c.onstatus.call(c, pc.iceConnectionState);
             if(pc.iceConnectionState === 'failed') {
                 sc.send({
                     type: 'renegotiate',
                     id: id,
-                })
+                });
             }
-        }
+        };
 
         c.pc.ontrack = function(e) {
-            let label = e.transceiver && c.labelsByMid[e.transceiver.mid]
+            let label = e.transceiver && c.labelsByMid[e.transceiver.mid];
             if(label) {
-                c.labels[e.track.id] = label
+                c.labels[e.track.id] = label;
             } else {
-                console.warn("Couldn't find label for track")
+                console.warn("Couldn't find label for track");
             }
-            if(c.stream !== e.streams[0]) {
-                c.stream = e.streams[0]
-                let label =
-                    e.transceiver && c.labelsByMid[e.transceiver.mid]
-                c.labels[e.track.id] = label
-                if(c.ondowntrack) {
-                    c.ondowntrack.call(
-                        c, e.track, e.transceiver, label, e.streams[0],
-                    )
-                }
-                if(c.onlabel) {
-                    c.onlabel.call(c, label)
-                }
+            c.stream = e.streams[0];
+            if(c.ondowntrack) {
+                c.ondowntrack.call(
+                    c, e.track, e.transceiver, label, e.streams[0],
+                );
             }
-        }
+        };
     }
 
-    c.labelsByMid = labels
+    c.labelsByMid = labels;
+    c.source = source;
+    c.username = username;
 
     if(sc.ondownstream)
-        sc.ondownstream.call(sc, c)
+        sc.ondownstream.call(sc, c);
 
     try {
-        await c.pc.setRemoteDescription(offer)
+        await c.pc.setRemoteDescription({
+            type: 'offer',
+            sdp: sdp,
+        });
 
-        await c.flushRemoteIceCandidates()
+        await c.flushRemoteIceCandidates();
 
-        let answer = await c.pc.createAnswer()
+        let answer = await c.pc.createAnswer();
         if(!answer)
-            throw new Error("Didn't create answer")
-        await c.pc.setLocalDescription(answer)
+            throw new Error("Didn't create answer");
+        await c.pc.setLocalDescription(answer);
         this.send({
             type: 'answer',
             id: id,
-            answer: answer,
-        })
+            sdp: c.pc.localDescription.sdp,
+        });
     } catch(e) {
         try {
             if(c.onerror)
-                c.onerror.call(c, e)
+                c.onerror.call(c, e);
         } finally {
-            c.abort()
+            c.abort();
         }
-        return
+        return;
     }
 
-    c.localDescriptionSent = true
-    c.flushLocalIceCandidates()
+    c.localDescriptionSent = true;
+    c.flushLocalIceCandidates();
     if(c.onnegotiationcompleted)
-        c.onnegotiationcompleted.call(c)
-}
-
-/**
- * Called when we receive a stream label from the server.  Don't call this.
- *
- * @param {string} id
- * @param {string} label
- */
-ServerConnection.prototype.gotLabel = function(id, label) {
-    let c = this.down[id]
-    if(!c)
-        throw new Error('Got label for unknown id')
-
-    c.label = label
-    if(c.onlabel)
-        c.onlabel.call(c, label)
-}
+        c.onnegotiationcompleted.call(c);
+};
 
 /**
  * Called when we receive an answer from the server.  Don't call this.
  *
  * @param {string} id
- * @param {RTCSessionDescriptionInit} answer
+ * @param {string} sdp
  * @function
  */
-ServerConnection.prototype.gotAnswer = async function(id, answer) {
-    let c = this.up[id]
+ServerConnection.prototype.gotAnswer = async function(id, sdp) {
+    let c = this.up[id];
     if(!c)
-        throw new Error('unknown up stream')
+        throw new Error('unknown up stream');
     try {
-        await c.pc.setRemoteDescription(answer)
+        await c.pc.setRemoteDescription({
+            type: 'answer',
+            sdp: sdp,
+        });
     } catch(e) {
         try {
             if(c.onerror)
-                c.onerror.call(c, e)
+                c.onerror.call(c, e);
         } finally {
-            c.close()
+            c.close();
         }
-        return
+        return;
     }
-    await c.flushRemoteIceCandidates()
+    await c.flushRemoteIceCandidates();
     if(c.onnegotiationcompleted)
-        c.onnegotiationcompleted.call(c)
-}
+        c.onnegotiationcompleted.call(c);
+};
 
 /**
  * Called when we receive a renegotiation request from the server.  Don't
@@ -673,11 +651,11 @@ ServerConnection.prototype.gotAnswer = async function(id, answer) {
  * @function
  */
 ServerConnection.prototype.gotRenegotiate = async function(id) {
-    let c = this.up[id]
+    let c = this.up[id];
     if(!c)
-        throw new Error('unknown up stream')
-    c.restartIce()
-}
+        throw new Error('unknown up stream');
+    c.restartIce();
+};
 
 /**
  * Called when we receive a close request from the server.  Don't call this.
@@ -685,14 +663,11 @@ ServerConnection.prototype.gotRenegotiate = async function(id) {
  * @param {string} id
  */
 ServerConnection.prototype.gotClose = function(id) {
-    let c = this.down[id]
+    let c = this.down[id];
     if(!c)
-        throw new Error('unknown down stream')
-    delete(this.down[id])
-    c.close()
-    if(c.onclose)
-        c.onclose.call(c)
-}
+        throw new Error('unknown down stream');
+    c.close();
+};
 
 /**
  * Called when we receive an abort message from the server.  Don't call this.
@@ -700,12 +675,12 @@ ServerConnection.prototype.gotClose = function(id) {
  * @param {string} id
  */
 ServerConnection.prototype.gotAbort = function(id) {
-    let c = this.up[id]
+    let c = this.up[id];
     if(!c)
-        throw new Error('unknown up stream')
+        throw new Error('unknown up stream');
     if(c.onabort)
-        c.onabort.call(c)
-}
+        c.onabort.call(c);
+};
 
 /**
  * Called when we receive an ICE candidate from the server.  Don't call this.
@@ -715,16 +690,16 @@ ServerConnection.prototype.gotAbort = function(id) {
  * @function
  */
 ServerConnection.prototype.gotRemoteIce = async function(id, candidate) {
-    let c = this.up[id]
+    let c = this.up[id];
     if(!c)
-        c = this.down[id]
+        c = this.down[id];
     if(!c)
-        throw new Error('unknown stream')
+        throw new Error('unknown stream');
     if(c.pc.remoteDescription)
-        await c.pc.addIceCandidate(candidate).catch(console.warn)
+        await c.pc.addIceCandidate(candidate).catch(console.warn);
     else
-        c.remoteIceCandidates.push(candidate)
-}
+        c.remoteIceCandidates.push(candidate);
+};
 
 /**
  * Stream encapsulates a MediaStream, a set of tracks.
@@ -745,79 +720,85 @@ function Stream(sc, id, pc, up) {
      * @type {ServerConnection}
      * @const
      */
-    this.sc = sc
+    this.sc = sc;
     /**
      * The id of this stream.
      *
      * @type {string}
      * @const
      */
-    this.id = id
+    this.id = id;
     /**
      * Indicates whether the stream is in the client->server direction.
      *
      * @type {boolean}
      * @const
      */
-    this.up = up
+    this.up = up;
     /**
      * For up streams, one of "local" or "screenshare".
      *
      * @type {string}
      */
-    this.kind = null
+    this.kind = null;
     /**
-     * For down streams, a user-readable label.
+     * For down streams, the id of the client that created the stream.
      *
      * @type {string}
      */
-    this.label = null
+    this.source = null;
     /**
-     * The associated RTCPeerConnectoin.  This is null before the stream
+     * For down streams, the username of the client who created the stream.
+     *
+     * @type {string}
+     */
+    this.username = null;
+    /**
+     * The associated RTCPeerConnection.  This is null before the stream
      * is connected, and may change over time.
      *
      * @type {RTCPeerConnection}
      */
-    this.pc = pc
+    this.pc = pc;
     /**
      * The associated MediaStream.  This is null before the stream is
      * connected, and may change over time.
      *
      * @type {MediaStream}
      */
-    this.stream = null
+    this.stream = null;
     /**
      * Track labels, indexed by track id.
      *
      * @type {Object<string,string>}
      */
-    this.labels = {}
+    this.labels = {};
     /**
      * Track labels, indexed by mid.
      *
      * @type {Object<string,string>}
      */
-    this.labelsByMid = {}
+    this.labelsByMid = {};
     /**
      * Indicates whether we have already sent a local description.
      *
      * @type {boolean}
      */
-    this.localDescriptionSent = false
+    this.localDescriptionSent = false;
     /**
      * Buffered local ICE candidates.  This will be flushed by
      * flushLocalIceCandidates after we send a local description.
      *
      * @type {RTCIceCandidate[]}
      */
-    this.localIceCandidates = []
+    this.localIceCandidates = [];
     /**
      * Buffered remote ICE candidates.  This will be flushed by
      * flushRemoteIceCandidates when we get a remote SDP description.
      *
      * @type {RTCIceCandidate[]}
      */
-    this.remoteIceCandidates = []
+    this.remoteIceCandidates = [];
     /**
      * The statistics last computed by the stats handler.  This is
      * a dictionary indexed by track id, with each value a dictionary of
@@ -825,44 +806,45 @@ function Stream(sc, id, pc, up) {
      *
      * @type {Object<string,unknown>}
      */
-    this.stats = {}
+    this.stats = {};
     /**
      * The id of the periodic handler that computes statistics, as
      * returned by setInterval.
      *
      * @type {number}
      */
-    this.statsHandler = null
+    this.statsHandler = null;
     /**
      * userdata is a convenient place to attach data to a Stream.
      * It is not used by the library.
      *
      * @type{Object<unknown,unknown>}
      */
-    this.userdata = {}
+    this.userdata = {};
 
     /* Callbacks */
 
     /**
-     * onclose is called when the stream is closed.
+     * onclose is called when the stream is closed.  Replace will be true
+     * if the stream is being replaced by another one with the same id.
      *
-     * @type{(this: Stream) => void}
+     * @type{(this: Stream, replace: boolean) => void}
      */
-    this.onclose = null
+    this.onclose = null;
     /**
      * onerror is called whenever an error occurs.  If the error is
      * fatal, then onclose will be called afterwards.
      *
      * @type{(this: Stream, error: unknown) => void}
      */
-    this.onerror = null
+    this.onerror = null;
     /**
      * onnegotiationcompleted is called whenever negotiation or
      * renegotiation has completed.
      *
      * @type{(this: Stream) => void}
      */
-    this.onnegotiationcompleted = null
+    this.onnegotiationcompleted = null;
     /**
      * ondowntrack is called whenever a new track is added to a stream.
      * If the stream parameter differs from its previous value, then it
@@ -870,32 +852,26 @@ function Stream(sc, id, pc, up) {
      *
      * @type{(this: Stream, track: MediaStreamTrack, transceiver: RTCRtpTransceiver, label: string, stream: MediaStream) => void}
      */
-    this.ondowntrack = null
-    /**
-     * onlabel is called whenever the server sets a new label for the stream.
-     *
-     * @type{(this: Stream, label: string) => void}
-     */
-    this.onlabel = null
+    this.ondowntrack = null;
     /**
      * onstatus is called whenever the status of the stream changes.
      *
      * @type{(this: Stream, status: string) => void}
      */
-    this.onstatus = null
+    this.onstatus = null;
     /**
      * onabort is called when the server requested that an up stream be
      * closed.  It is the resposibility of the client to close the stream.
      *
      * @type{(this: Stream) => void}
      */
-    this.onabort = null
+    this.onabort = null;
     /**
      * onstats is called when we have new statistics about the connection
      *
      * @type{(this: Stream, stats: Object<unknown,unknown>) => void}
      */
-    this.onstats = null
+    this.onstats = null;
 }
 
 /**
@@ -904,48 +880,64 @@ function Stream(sc, id, pc, up) {
  * For streams in the up direction, this may be called at any time.  For
  * streams in the down direction, this will be called automatically when
  * the server signals that it is closing a stream.
+ *
+ * @param {boolean} [replace]
+ *    - true if the stream is being replaced by another one with the same id
  */
-Stream.prototype.close = function() {
-    let c = this
-    if(c.statsHandler) {
-        clearInterval(c.statsHandler)
-        c.statsHandler = null
+Stream.prototype.close = function(replace) {
+    let c = this;
+
+    if(!c.sc) {
+        console.warn('Closing closed stream');
+        return;
     }
 
-    if(c.stream) {
-        c.stream.getTracks().forEach(t => {
-            try {
-                t.stop()
-            } catch(e) {
-            }
-        })
+    if(c.statsHandler) {
+        clearInterval(c.statsHandler);
+        c.statsHandler = null;
     }
-    c.pc.close()
+
+    c.pc.close();
 
     if(c.up && c.localDescriptionSent) {
         try {
             c.sc.send({
                 type: 'close',
                 id: c.id,
-            })
+            });
         } catch(e) {
         }
     }
-    c.sc = null
-}
+
+    if(c.up) {
+        if(c.sc.up[c.id] === c)
+            delete(c.sc.up[c.id]);
+        else
+            console.warn('Closing unknown stream');
+    } else {
+        if(c.sc.down[c.id] === c)
+            delete(c.sc.down[c.id]);
+        else
+            console.warn('Closing unknown stream');
+    }
+    c.sc = null;
+
+    if(c.onclose)
+        c.onclose.call(c, replace);
+};
 
 /**
  * abort requests that the server close a down stream.
  */
 Stream.prototype.abort = function() {
-    let c = this
+    let c = this;
     if(c.up)
-        throw new Error("Abort called on an up stream")
+        throw new Error("Abort called on an up stream");
     c.sc.send({
         type: 'abort',
         id: c.id,
-    })
-}
+    });
+};
 
 /**
  * Called when we get a local ICE candidate.  Don't call this.
@@ -954,54 +946,54 @@ Stream.prototype.abort = function() {
  * @function
  */
 Stream.prototype.gotLocalIce = function(candidate) {
-    let c = this
+    let c = this;
     if(c.localDescriptionSent)
         c.sc.send({type: 'ice',
-            id: c.id,
-            candidate: candidate,
-        })
+                   id: c.id,
+                   candidate: candidate,
+                  });
     else
-        c.localIceCandidates.push(candidate)
-}
+        c.localIceCandidates.push(candidate);
+};
 
 /**
  * flushLocalIceCandidates flushes any buffered local ICE candidates.
  * It is called when we send an offer.
  * @function
  */
-Stream.prototype.flushLocalIceCandidates = function() {
-    let c = this
-    let candidates = c.localIceCandidates
-    c.localIceCandidates = []
+Stream.prototype.flushLocalIceCandidates = function () {
+    let c = this;
+    let candidates = c.localIceCandidates;
+    c.localIceCandidates = [];
     candidates.forEach(candidate => {
         try {
             c.sc.send({type: 'ice',
-                id: c.id,
-                candidate: candidate,
-            })
+                       id: c.id,
+                       candidate: candidate,
+                      });
         } catch(e) {
-            console.warn(e)
+            console.warn(e);
         }
-    })
-    c.localIceCandidates = []
-}
+    });
+    c.localIceCandidates = [];
+};
 
 /**
  * flushRemoteIceCandidates flushes any buffered remote ICE candidates.  It is
  * called automatically when we get a remote description.
  * @function
  */
-Stream.prototype.flushRemoteIceCandidates = async function() {
-    let c = this
-    let candidates = c.remoteIceCandidates
-    c.remoteIceCandidates = []
+Stream.prototype.flushRemoteIceCandidates = async function () {
+    let c = this;
+    let candidates = c.remoteIceCandidates;
+    c.remoteIceCandidates = [];
     /** @type {Array.<Promise<void>>} */
-    let promises = []
+    let promises = [];
     candidates.forEach(candidate => {
-        promises.push(c.pc.addIceCandidate(candidate).catch(console.warn))
-    })
-    return await Promise.all(promises)
-}
+        promises.push(c.pc.addIceCandidate(candidate).catch(console.warn));
+    });
+    return await Promise.all(promises);
+};
 
 /**
  * negotiate negotiates or renegotiates an up stream.  It is called
@@ -1012,40 +1004,42 @@ Stream.prototype.flushRemoteIceCandidates = async function() {
  * @function
  * @param {boolean} [restartIce] - Whether to restart ICE.
  */
-Stream.prototype.negotiate = async function(restartIce) {
-    let c = this
+Stream.prototype.negotiate = async function (restartIce) {
+    let c = this;
     if(!c.up)
-        throw new Error('not an up stream')
+        throw new Error('not an up stream');
 
-    let options = {}
+    let options = {};
     if(restartIce)
-        options = {iceRestart: true}
-    let offer = await c.pc.createOffer(options)
+        options = {iceRestart: true};
+    let offer = await c.pc.createOffer(options);
     if(!offer)
-        throw(new Error("Didn't create offer"))
-    await c.pc.setLocalDescription(offer)
+        throw(new Error("Didn't create offer"));
+    await c.pc.setLocalDescription(offer);
 
     // mids are not known until this point
     c.pc.getTransceivers().forEach(t => {
         if(t.sender && t.sender.track) {
-            let label = c.labels[t.sender.track.id]
+            let label = c.labels[t.sender.track.id];
             if(label)
-                c.labelsByMid[t.mid] = label
+                c.labelsByMid[t.mid] = label;
             else
-                console.warn("Couldn't find label for track")
+                console.warn("Couldn't find label for track");
         }
-    })
+    });
 
     c.sc.send({
         type: 'offer',
+        source: c.sc.id,
+        username: c.sc.username,
         kind: this.localDescriptionSent ? 'renegotiate' : '',
         id: c.id,
         labels: c.labelsByMid,
-        offer: offer,
-    })
-    this.localDescriptionSent = true
-    c.flushLocalIceCandidates()
-}
+        sdp: c.pc.localDescription.sdp,
+    });
+    this.localDescriptionSent = true;
+    c.flushLocalIceCandidates();
+};
 
 /**
  * restartIce causes an ICE restart on a stream.  For up streams, it is
@@ -1055,29 +1049,29 @@ Stream.prototype.negotiate = async function(restartIce) {
  * it returns immediately, negotiation will happen asynchronously.
  */
 
-Stream.prototype.restartIce = function() {
-    let c = this
+Stream.prototype.restartIce = function () {
+    let c = this;
     if(!c.up) {
         c.sc.send({
             type: 'renegotiate',
             id: c.id,
-        })
-        return
+        });
+        return;
     }
 
     if('restartIce' in c.pc) {
         try {
             /** @ts-ignore */
-            c.pc.restartIce()
-            return
+            c.pc.restartIce();
+            return;
         } catch(e) {
-            console.warn(e)
+            console.warn(e);
         }
     }
 
     // negotiate is async, but this returns immediately.
-    c.negotiate(true)
-}
+    c.negotiate(true);
+};
 
 /**
  * updateStats is called periodically, if requested by setStatsInterval,
@@ -1086,21 +1080,21 @@ Stream.prototype.restartIce = function() {
  * @function
  */
 Stream.prototype.updateStats = async function() {
-    let c = this
-    let old = c.stats
+    let c = this;
+    let old = c.stats;
     /** @type{Object<string,unknown>} */
-    let stats = {}
+    let stats = {};
 
-    let transceivers = c.pc.getTransceivers()
+    let transceivers = c.pc.getTransceivers();
     for(let i = 0; i < transceivers.length; i++) {
-        let t = transceivers[i]
-        let stid = t.sender.track && t.sender.track.id
-        let rtid = t.receiver.track && t.receiver.track.id
+        let t = transceivers[i];
+        let stid = t.sender.track && t.sender.track.id;
+        let rtid = t.receiver.track && t.receiver.track.id;
 
-        let report = null
+        let report = null;
         if(stid) {
             try {
-                report = await t.sender.getStats()
+                report = await t.sender.getStats();
             } catch(e) {
             }
         }
@@ -1109,26 +1103,26 @@ Stream.prototype.updateStats = async function() {
             for(let r of report.values()) {
                 if(stid && r.type === 'outbound-rtp') {
                     if(!('bytesSent' in r))
-                        continue
+                        continue;
                     if(!stats[stid])
-                        stats[stid] = {}
-                    stats[stid][r.type] = {}
-                    stats[stid][r.type].timestamp = r.timestamp
-                    stats[stid][r.type].bytesSent = r.bytesSent
+                        stats[stid] = {};
+                    stats[stid][r.type] = {};
+                    stats[stid][r.type].timestamp = r.timestamp;
+                    stats[stid][r.type].bytesSent = r.bytesSent;
                     if(old[stid] && old[stid][r.type])
                         stats[stid][r.type].rate =
                         ((r.bytesSent - old[stid][r.type].bytesSent) * 1000 /
-                         (r.timestamp - old[stid][r.type].timestamp)) * 8
+                         (r.timestamp - old[stid][r.type].timestamp)) * 8;
                 }
             }
         }
 
-        report = null
+        report = null;
         if(rtid) {
             try {
-                report = await t.receiver.getStats()
+                report = await t.receiver.getStats();
             } catch(e) {
-                console.error(e)
+                console.error(e);
             }
         }
 
@@ -1136,26 +1130,26 @@ Stream.prototype.updateStats = async function() {
             for(let r of report.values()) {
                 if(rtid && r.type === 'track') {
                     if(!('totalAudioEnergy' in r))
-                        continue
+                        continue;
                     if(!stats[rtid])
-                        stats[rtid] = {}
-                    stats[rtid][r.type] = {}
-                    stats[rtid][r.type].timestamp = r.timestamp
-                    stats[rtid][r.type].totalAudioEnergy = r.totalAudioEnergy
+                        stats[rtid] = {};
+                    stats[rtid][r.type] = {};
+                    stats[rtid][r.type].timestamp = r.timestamp;
+                    stats[rtid][r.type].totalAudioEnergy = r.totalAudioEnergy;
                     if(old[rtid] && old[rtid][r.type])
                         stats[rtid][r.type].audioEnergy =
                         (r.totalAudioEnergy - old[rtid][r.type].totalAudioEnergy) * 1000 /
-                        (r.timestamp - old[rtid][r.type].timestamp)
+                        (r.timestamp - old[rtid][r.type].timestamp);
                 }
             }
         }
     }
 
-    c.stats = stats
+    c.stats = stats;
 
     if(c.onstats)
-        c.onstats.call(c, c.stats)
-}
+        c.onstats.call(c, c.stats);
+};
 
 /**
  * setStatsInterval sets the interval in milliseconds at which the onstats
@@ -1164,18 +1158,17 @@ Stream.prototype.updateStats = async function() {
  * @param {number} ms - The interval in milliseconds.
  */
 Stream.prototype.setStatsInterval = function(ms) {
-    let c = this
+    let c = this;
     if(c.statsHandler) {
-        clearInterval(c.statsHandler)
-        c.statsHandler = null
+        clearInterval(c.statsHandler);
+        c.statsHandler = null;
     }
 
     if(ms <= 0)
-        return
+        return;
 
     c.statsHandler = setInterval(() => {
-        c.updateStats()
-    }, ms)
-}
-
+        c.updateStats();
+    }, ms);
+};
 export default {ServerConnection, Stream}

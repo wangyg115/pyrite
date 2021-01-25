@@ -1,0 +1,10 @@
+services:
+  galene:
+    container_name: garage44_galene
+    image: garage44/galene:latest
+    volumes:
+      - ./galene/groups:/go/src/galene/groups
+    ports:
+      - 1194:1194
+      - 8443:8443
+

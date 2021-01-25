@@ -1,0 +1,11 @@
+{
+  "description": "Galene technical FAQ",
+  "contact": "some@contact-1234.info",
+  "public": true,
+  "op": [{"username": "pyrite", "password": "1234"}],
+  "presenter": [
+    {"username": "alice", "password": "0000"},
+    {"username": "bob", "password": "1234"}
+  ],
+  "max-clients": 30
+}

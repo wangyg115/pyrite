@@ -16,8 +16,6 @@
         <GeneralControls />
         <Chat v-if="state.connected" />
         <RoomControls v-if="state.connected" />
-
-
         <RouterView />
 
         <Notifications />
@@ -48,11 +46,11 @@ export default {
 .app-view {
     align-items: stretch;
     display: grid;
-    grid-template-columns: 250px var(--space-4) 1fr;
+    grid-template-columns: 300px var(--space-4) 1fr;
     height: 100vh;
 
     &.connected {
-        grid-template-columns: 250px var(--space-4) min-content var(--space-4) 1fr;
+        grid-template-columns: 300px var(--space-4) min-content var(--space-4) 1fr;
     }
 }
 </style>
