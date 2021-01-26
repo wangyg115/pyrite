@@ -36,7 +36,8 @@
 }
 
 :root {
-    --text-small: 0.8rem;
+    --text-tiny: 0.7rem;
+    --text-small: 0.85rem;
     --text-base: 1rem;
     --text-large: 1.1rem;
     --text-huge: 1.5rem;

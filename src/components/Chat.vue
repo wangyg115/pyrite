@@ -1,8 +1,12 @@
 <template>
     <div class="c-chat">
         <div ref="messages" class="messages">
-            <div v-for="message of sortedMessages" :key="message.message" class="message">
-                <header>
+            <div
+                v-for="message of sortedMessages" :key="message.message"
+                class="message"
+                :class="{command: !message.nick}"
+            >
+                <header v-if="message.nick">
                     <div class="author">
                         {{ message.nick }}
                     </div><div class="time">
@@ -19,6 +23,7 @@
         <div class="send">
             <textarea
                 v-model="rawMessage"
+                autofocus
                 :placeholder="inputPlaceholder"
                 @keydown.enter="$event.preventDefault()"
                 @keyup.enter="sendMessage"
@@ -54,7 +59,7 @@ export default {
         app.connection.onchat = this.onChat.bind(this)
         app.connection.onclearchat = this.clearChat.bind(this)
         setTimeout(() => {
-            this.inputPlaceholder = ''
+            this.inputPlaceholder = 'Type a message to chat'
         }, 8000)
     },
     methods: {
@@ -138,13 +143,7 @@ export default {
                 me = false
             }
 
-            try {
-                app.connection.chat(this.state.username, me ? 'me' : '', '', message)
-            } catch(e) {
-                console.error(e)
-                app.displayError(e)
-            }
-
+            app.connection.chat(me ? 'me' : '', '', message)
             this.rawMessage = ''
         }
     }
@@ -170,11 +169,16 @@ export default {
         & .message {
             background: var(--grey-300);
             color: var(--grey-50);
+            font-size: var(--text-small);
             margin-bottom: calc(var(--spacer) * 2);
             margin-left: calc(var(--spacer) * 2);
             margin-right: var(--spacer);
             padding: var(--spacer);
 
+            &.command {
+                background: var(--grey-400);
+                color: var(--grey-100);
+            }
 
             & header {
                 color: var(--primary-color);
@@ -182,6 +186,10 @@ export default {
                 font-size: var(--text-small);
                 justify-content: space-between;
                 margin-bottom: var(--spacer);
+
+                & .time {
+                    font-size: var(--text-tiny);
+                }
             }
         }
     }
@@ -222,6 +230,10 @@ export default {
             /* line-height: var(--space-2); */
             overflow-y: hidden;
             padding: var(--spacer);
+
+            &::placeholder {
+                color: var(--grey-200);
+            }
         }
     }
 }

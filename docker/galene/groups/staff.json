@@ -1,5 +1,6 @@
 {
   "public": false,
+  "description": "Secret, unlisted group",
   "op": [{"username": "pyrite", "password": "1234"}],
   "presenter": [
     {"username": "alice", "password": "0000"},

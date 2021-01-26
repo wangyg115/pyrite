@@ -1,5 +1,5 @@
 {
-    "description": "Teaching class for computer Networking",
+    "description": "Teaching class for computer networking",
     "contact": "some@contact-1234.info",
     "public": true,
     "op": [{"username": "pyrite", "password": "1234"}],
