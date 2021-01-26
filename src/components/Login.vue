@@ -8,7 +8,7 @@
                 <FieldText
                     v-model="state.username"
                     autocomplete="username"
-                    label="Username"
+                    :label="$t('Username')"
                     name="username"
                     placeholder="Alice, Bob, Carol..."
                 />
@@ -16,13 +16,13 @@
                 <FieldText
                     v-model="state.password"
                     autocomplete="current-password"
-                    label="Password"
+                    :label="$t('Password')"
                     name="pasword"
                     placeholder="Alice, Bob, Carol..."
                     type="password"
                 />
 
-                <label>Auto ready</label>
+                <label>{{ $t('Media on join') }}</label>
 
                 <div class="present-switch">
                     <p class="switch-radio">
@@ -34,7 +34,7 @@
                             type="radio"
                             value=""
                         >
-                        <label for="presentoff">Disabled</label>
+                        <label for="presentoff">{{ $t('Disabled') }}</label>
                     </p>
                     <p class="switch-radio">
                         <input
@@ -44,7 +44,7 @@
                             type="radio"
                             value="mike"
                         >
-                        <label for="presentmike">Enable microphone</label>
+                        <label for="presentmike">{{ $t('Microphone') }}</label>
                     </p>
                     <p class="switch-radio">
                         <input
@@ -54,7 +54,7 @@
                             type="radio"
                             value="both"
                         >
-                        <label for="presentboth">Enable camera and microphone</label>
+                        <label for="presentboth">{{ $t('Camera and microphone') }} </label>
                     </p>
                 </div>
             </form>
@@ -65,7 +65,7 @@
                 :disabled="connecting"
                 @click="login"
             >
-                JOIN GROUP
+                {{ $t('join group') }}
             </button>
         </section>
     </div>

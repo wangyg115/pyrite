@@ -5,7 +5,7 @@
                 v-if="state.connected && state.permissions.present"
                 class="btn btn-menu tooltip"
                 :class="{active: !state.muted}"
-                data-tooltip="mute microphone"
+                :data-tooltip="$t('mute microphone')"
                 @click="toggleMute"
             >
                 <Icon class="icon-small" name="mic" />
@@ -15,7 +15,7 @@
                 v-if="state.connected && state.permissions.present"
                 class="btn btn-menu tooltip"
                 :class="{active: state.upMedia.local.length}"
-                data-tooltip="toggle camera"
+                :data-tooltip="`${$t('switch camera')} ${state.upMedia.local.length ? $t('off') : $t('on')}`"
                 @click="togglePresent"
             >
                 <Icon class="icon-small" name="webcam" />
@@ -25,7 +25,7 @@
                 v-if="state.connected && state.permissions.present"
                 class="btn btn-menu tooltip"
                 :class="{active: state.upMedia.screenshare.length}"
-                data-tooltip="toggle screensharing"
+                :data-tooltip="`${$t('switch screensharing')} ${state.upMedia.screenshare.length ? $t('off') : $t('on')}`"
                 @click="toggleShare"
             >
                 <Icon class="icon-small" name="screenshare" />

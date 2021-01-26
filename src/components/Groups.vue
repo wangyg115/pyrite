@@ -5,9 +5,9 @@
                 v-model="state.group"
                 autocomplete="username"
                 class="custom-group"
-                help="manual input for unlisted groups"
+                :help="$t('custom input for unlisted groups')"
                 name="username"
-                placeholder="Type group name"
+                placeholder="..."
                 @focus="updateRoute"
             />
         </div>

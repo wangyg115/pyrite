@@ -1,13 +1,16 @@
 import './css/pyrite.css'
 import App from './App.vue'
 import { createApp } from 'vue'
+import { createI18n } from 'vue-i18n'
 import FieldCheckbox from './components/ui/fields/FieldCheckbox.vue'
 import FieldSelect from './components/ui/fields/FieldSelect.vue'
 import FieldSlider from './components/ui/fields/FieldSlider.vue'
 import FieldText from './components/ui/fields/FieldText.vue'
 import Icon from './components/ui/icons/Icon.vue'
+import localeNL from './locales/nl.js'
 import Pyrite from './js/app.js'
 import router from './js/router.js'
+
 
 globalThis.app = new Pyrite(router)
 globalThis.vm = createApp(App)
@@ -32,9 +35,16 @@ globalThis.vm.directive('click-outside', {
     },
 })
 
+globalThis.app.i18n = createI18n({
+    locale: 'nl',
+    messages: {
+        nl: localeNL,
+    },
+})
 
 globalThis.vm
     .use(router)
+    .use(globalThis.app.i18n)
     .mount('#app')
 
 

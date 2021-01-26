@@ -2,17 +2,17 @@
     <div class="content">
         <ul class="tabs">
             <li
-                class="btn btn-menu tab tooltip tooltip-bottom"
+                class="btn btn-menu tab tooltip"
                 :class="classes('tabs', 'devices')"
-                data-tooltip="devices"
+                :data-tooltip="$t('devices')"
                 @click="setTab('settings', 'devices')"
             >
                 <icon class="icon-small" name="headset" />
             </li>
             <li
-                class="btn btn-menu tab tooltip tooltip-bottom"
+                class="btn btn-menu tab tooltip"
                 :class="classes('tabs', 'misc')"
-                data-tooltip="Miscellaneous"
+                :data-tooltip="$t('miscellaneous')"
                 @click="setTab('settings', 'misc')"
             >
                 <icon class="icon-small" name="settingsMisc" />
@@ -23,17 +23,17 @@
             <div v-show="state.permissions.present" id="mediaoptions">
                 <FieldSelect
                     v-model="state.video"
-                    help="select the video camera to use"
-                    label="Camera"
-                    name="language"
+                    :help="$t('select the video camera to use')"
+                    :label="$t('Camera')"
+                    name="video"
                     :options="state.devices.video"
                 />
 
                 <FieldSelect
                     v-model="state.audio"
-                    help="select the video camera to use"
-                    label="Microphone"
-                    name="language"
+                    :help="$t('select the microphone to use')"
+                    :label="$t('Microphone')"
+                    name="audio"
                     :options="state.devices.audio"
                 />
 
@@ -41,8 +41,8 @@
 
                 <FieldCheckbox
                     v-model="state.blackboardMode"
-                    help="Stream at extra high resolution"
-                    label="Blackboard mode"
+                    :help="$t('Increases resolution and lowers framerate')"
+                    :label="$t('Blackboard mode')"
                     name="blackboard"
                 />
             </div>
@@ -50,25 +50,32 @@
 
         <section class="tab-content" :class="{active: state.tabs.settings.active === 'misc'}">
             <FieldSelect
+                v-model="state.language"
+                :help="$t('select a language')"
+                :label="$t('Language')"
+                name="language"
+                :options="languages"
+            />
+            <FieldSelect
                 v-model="state.send"
-                help="Bandwidth to use when sending media"
-                label="Send"
+                :help="$t('Bandwidth to use when sending media')"
+                :label="$t('Send')"
                 name="send"
                 :options="sendOptions"
             />
 
             <FieldSelect
                 v-model="state.request"
-                help="Types of media to receive"
-                label="Receive"
+                :help="$t('Types of media to receive')"
+                :label="$t('Receive')"
                 name="request"
                 :options="receiveOptions"
             />
 
             <FieldCheckbox
                 v-model="state.activityDetection"
-                help="Detect whether someone is speaking"
-                label="Activity detection"
+                :help="$t('Detect whether someone is speaking')"
+                :label="$t('Activity detection')"
                 name="activity"
             />
         </section>
@@ -78,7 +85,7 @@
             class="btn btn-widget"
             @click="saveSettings"
         >
-            Save
+            {{ $t('Save') }}
         </button>
     </div>
 </template>
@@ -91,17 +98,21 @@ export default {
     components: {SoundMeter},
     data() {
         return {
+            languages: [
+                {id: 'en', name: this.$t('English')},
+                {id: 'nl', name: this.$t('Nederlands')}
+            ],
             receiveOptions: [
-                {id: 'nothing', name: 'Nothing'},
-                {id: 'audio', name: 'Audio'},
-                {id: 'screenshare', name: 'Screenshare'},
-                {id: 'everything', name: 'Everything'}
+                {id: 'nothing', name: this.$t('Nothing')},
+                {id: 'audio', name: this.$t('Audio')},
+                {id: 'screenshare', name: this.$t('Screenshare')},
+                {id: 'everything', name: this.$t('Everything')}
             ],
             sendOptions: [
-                {id: 'lowest', name: 'Lowest'},
-                {id: 'low', name: 'Low'},
-                {id: 'normal', name: 'Normal'},
-                {id: 'unlimited', name: 'Unlimited'}
+                {id: 'lowest', name: this.$t('Lowest')},
+                {id: 'low', name: this.$t('Low')},
+                {id: 'normal', name: this.$t('Normal')},
+                {id: 'unlimited', name: this.$t('Unlimited')}
             ],
             state: app.state,
         }

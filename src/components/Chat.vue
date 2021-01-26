@@ -21,6 +21,14 @@
             </div>
         </div>
         <div class="send">
+            <button
+                class="btn btn-menu tooltip"
+                :data-tooltip="$t('send message')"
+                :disabled="rawMessage === ''"
+                @click="sendMessage"
+            >
+                <icon class="icon icon-mini" name="send" />
+            </button>
             <textarea
                 v-model="rawMessage"
                 autofocus
@@ -28,12 +36,6 @@
                 @keydown.enter="$event.preventDefault()"
                 @keyup.enter="sendMessage"
             />
-            <button
-                class="btn btn-default"
-                @click="sendMessage"
-            >
-                <icon class="icon icon-mini" name="send" />
-            </button>
         </div>
     </div>
 </template>
@@ -44,7 +46,7 @@ import { nextTick } from 'vue'
 export default {
     data() {
         return {
-            inputPlaceholder: 'Type /help for help',
+            inputPlaceholder: this.$t('Type /help for help'),
             rawMessage: '',
             state: app.state,
         }
@@ -59,7 +61,7 @@ export default {
         app.connection.onchat = this.onChat.bind(this)
         app.connection.onclearchat = this.clearChat.bind(this)
         setTimeout(() => {
-            this.inputPlaceholder = 'Type a message to chat'
+            this.inputPlaceholder = this.$t('Type a message to chat')
         }, 8000)
     },
     methods: {
@@ -156,7 +158,7 @@ export default {
     flex-direction: column;
     overflow: auto;
     resize: horizontal;
-    width: 300px;
+    width: 350px;
 
     & .messages {
         background: var(--grey-500);
@@ -198,36 +200,34 @@ export default {
         background: var(--grey-400);
         border-top: var(--border) solid var(--grey-300);
         display: flex;
-        padding: var(--space-1) 0;
+        padding-bottom: var(--space-1);
+        padding-top: var(--spacer);
 
         & button {
             align-items: center;
             background: var(--grey-500);
             display: flex;
-            height: var(--space-2);
+            height: var(--unit);
             justify-content: center;
             padding: 0;
             width: var(--space-3);
+
+            &:not([disabled]):hover {
+                cursor: pointer;
+            }
 
             & svg {
                 height: var(--space-2);
             }
         }
 
-        & button,
-        & input {
-            height: var(--unit);
-        }
 
         & textarea {
-            background: var(--grey-500);
+            background: var(--grey-300);
             border: 0;
             color: var(--primary-color);
             flex: 1;
-            height: var(--space-2);
-            margin-right: var(--spacer);
             outline: none;
-            /* line-height: var(--space-2); */
             overflow-y: hidden;
             padding: var(--spacer);
 

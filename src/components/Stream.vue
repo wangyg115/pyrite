@@ -1,10 +1,10 @@
 <template>
     <div class="c-stream">
         <div class="controls">
-            <button class="btn btn-menu" @click="setPip">
+            <button class="btn btn-menu tooltip" :data-tooltip="$t('picture-in-picture')" @click="setPip">
                 <Icon class="icon-mini" name="pip" />
             </button>
-            <button class="btn btn-menu" @click="setFullscreen">
+            <button class="btn btn-menu tooltip" :data-tooltip="$t('fullscreen')" @click="setFullscreen">
                 <Icon class="icon-mini" name="fullscreen" />
             </button>
         </div>
@@ -234,23 +234,23 @@ export default {
     overflow: hidden;
     position:relative; */
     display: flex;
-    position:relative;
+    position: relative;
 
     & .controls {
-            background: rgba(0, 0, 0, 0.5);
-            width: var(--space-4);
-            position: absolute;
-            left: 0;
-            height: 100%;
-            z-index: 1000;
-            /* bottom: 0; */
+        background: rgba(0, 0, 0, 0.5);
+        height: 100%;
+        left: 0;
+        position: absolute;
+        width: var(--space-4);
+        z-index: 1000;
+        /* bottom: 0; */
     }
 
     & video {
+        height: 100%;
         object-fit: cover;
         /* max-width: 100%; */
         width: 100%;
-        height: 100%;
     }
 
 }

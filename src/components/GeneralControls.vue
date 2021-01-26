@@ -1,12 +1,12 @@
 <template>
     <nav class="c-general-controls">
         <div class="navigational-controls">
-            <RouterLink class="btn btn-menu tooltip" data-tooltip="settings" :to="{name: 'settings'}">
+            <RouterLink class="btn btn-menu tooltip" :data-tooltip="$t('settings')" :to="{name: 'settings'}">
                 <Icon class="icon-small" name="settings" />
             </RouterLink>
             <RouterLink
                 v-if="state.group" class="btn btn-menu tooltip"
-                data-tooltip="current group"
+                :data-tooltip="$t('current group')"
                 :to="{name: 'groups', params: {groupId: state.group}}"
             >
                 <Icon class="icon-small" name="groups" />
@@ -17,7 +17,7 @@
             <button
                 v-if="state.connected"
                 class="btn btn-menu tooltip"
-                data-tooltip="leave group"
+                :data-tooltip="$t('leave group')"
                 @click="disconnect"
             >
                 <Icon class="icon-small" name="logout" />

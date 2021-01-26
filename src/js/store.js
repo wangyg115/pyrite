@@ -8,6 +8,7 @@ const persistantState = reactive({
         active: true,
     },
     group: null,
+    language: {id: 'en'},
     loading: true,
     localMute: false,
     password: '',
