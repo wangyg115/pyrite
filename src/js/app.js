@@ -1,18 +1,21 @@
+
+
+import { createI18n } from 'vue-i18n'
+
 import env from './env.js'
+
+import localeNL from '../locales/nl.js'
 import Logger from './logger.js'
 import protocol from './protocol.js'
+import router from '../js/router.js'
 import Store from './store.js'
 
-
-/** @type {string} */
-let group
 
 /* media names might not be available before we call getDisplayMedia.  So
    we call this twice, the second time to update the menu with user-readable
    labels. */
 /** @type {boolean} */
 let mediaChoicesDone = false
-
 let safariScreenshareDone = false
 
 
@@ -20,7 +23,7 @@ class Pyrite {
     /**
      * Old start function.
      */
-    constructor(router) {
+    constructor() {
 
         this.logger = new Logger(this)
         this.logger.setLevel('debug')
@@ -29,8 +32,18 @@ class Pyrite {
 
         this.env = env
         this.protocol = protocol
+        this.logger.debug('loading store')
         this.store = new Store()
         this.state = this.store.load()
+
+        this.i18n = createI18n({
+            locale: this.state.language.id,
+            messages: {
+                nl: localeNL,
+            },
+            silentFallbackWarn: true,
+            silentTranslationWarn: true,
+        })
 
         this.router.beforeResolve((to, from, next) => {
             // Group can only be changed when not connected to one already.
@@ -41,16 +54,8 @@ class Pyrite {
                     this.state.group = null
                 }
             }
-
             next()
         })
-
-        group = decodeURIComponent(location.pathname.replace(/^\/[a-z]*\//, ''))
-        let title = group.charAt(0).toUpperCase() + group.slice(1)
-        if(group !== '') {
-            document.title = title
-            this.state.title = title
-        }
 
         this.setMediaChoices(false)
     }

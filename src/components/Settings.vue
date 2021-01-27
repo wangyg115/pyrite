@@ -3,21 +3,54 @@
         <ul class="tabs">
             <li
                 class="btn btn-menu tab tooltip"
-                :class="classes('tabs', 'devices')"
-                :data-tooltip="$t('devices')"
-                @click="setTab('settings', 'devices')"
-            >
-                <icon class="icon-small" name="headset" />
-            </li>
-            <li
-                class="btn btn-menu tab tooltip"
                 :class="classes('tabs', 'misc')"
                 :data-tooltip="$t('miscellaneous')"
                 @click="setTab('settings', 'misc')"
             >
                 <icon class="icon-small" name="settingsMisc" />
             </li>
+            <li
+                class="btn btn-menu tab tooltip"
+                :class="classes('tabs', 'devices')"
+                :data-tooltip="$t('devices')"
+                @click="setTab('settings', 'devices')"
+            >
+                <icon class="icon-small" name="headset" />
+            </li>
         </ul>
+
+        <section class="tab-content" :class="{active: state.tabs.settings.active === 'misc'}">
+            <FieldSelect
+                v-model="state.language"
+                :help="$t('change the user interace language')"
+                :label="$t('Language')"
+                name="language"
+                :options="languages"
+            />
+            <FieldSelect
+                v-model="state.send"
+                :help="$t('Bandwidth to use when sending media')"
+                :label="$t('Send')"
+                name="send"
+                :options="sendOptions"
+            />
+
+            <FieldSelect
+                v-model="state.request"
+                :help="$t('Types of media to receive')"
+                :label="$t('Receive')"
+                name="request"
+                :options="receiveOptions"
+            />
+
+            <FieldCheckbox
+                v-model="state.activityDetection"
+                :help="$t('Detect whether someone is speaking')"
+                :label="$t('Activity detection')"
+                name="activity"
+            />
+        </section>
+
 
         <section class="tab-content" :class="{active: state.tabs.settings.active === 'devices'}">
             <div v-show="state.permissions.present" id="mediaoptions">
@@ -46,38 +79,6 @@
                     name="blackboard"
                 />
             </div>
-        </section>
-
-        <section class="tab-content" :class="{active: state.tabs.settings.active === 'misc'}">
-            <FieldSelect
-                v-model="state.language"
-                :help="$t('select a language')"
-                :label="$t('Language')"
-                name="language"
-                :options="languages"
-            />
-            <FieldSelect
-                v-model="state.send"
-                :help="$t('Bandwidth to use when sending media')"
-                :label="$t('Send')"
-                name="send"
-                :options="sendOptions"
-            />
-
-            <FieldSelect
-                v-model="state.request"
-                :help="$t('Types of media to receive')"
-                :label="$t('Receive')"
-                name="request"
-                :options="receiveOptions"
-            />
-
-            <FieldCheckbox
-                v-model="state.activityDetection"
-                :help="$t('Detect whether someone is speaking')"
-                :label="$t('Activity detection')"
-                name="activity"
-            />
         </section>
 
         <button
@@ -193,6 +194,8 @@ export default {
             this.closeNav()
         },
         saveSettings() {
+            app.i18n.global.locale = this.state.language.id
+            app.logger.debug(`settings language to ${this.state.language.id}`)
             app.store.save()
             app.notify({level: 'info', message: 'Settings stored'})
         },

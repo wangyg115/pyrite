@@ -5,6 +5,7 @@ export default {
     'Blackboard mode': 'Blackboard modus',
     'Camera': 'Camera',
     'Camera and microphone': 'Camera en microfoon',
+    'change the user interace language': 'verander de user interface taal',
     'current group': 'huidige groep',
     'custom input for unlisted groups': 'handmatige invoer voor verborgen groepen',
     'Detect whether someone is speaking': 'Detecteer wanneer iemand spreekt',

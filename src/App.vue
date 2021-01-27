@@ -38,7 +38,7 @@ export default {
             state: app.state,
             version: import.meta.env.VITE_VERSION,
         }
-    },
+    }
 }
 </script>
 

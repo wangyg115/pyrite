@@ -1,27 +1,23 @@
 import './css/pyrite.css'
 import App from './App.vue'
 import { createApp } from 'vue'
-import { createI18n } from 'vue-i18n'
 import FieldCheckbox from './components/ui/fields/FieldCheckbox.vue'
 import FieldSelect from './components/ui/fields/FieldSelect.vue'
 import FieldSlider from './components/ui/fields/FieldSlider.vue'
 import FieldText from './components/ui/fields/FieldText.vue'
 import Icon from './components/ui/icons/Icon.vue'
-import localeNL from './locales/nl.js'
 import Pyrite from './js/app.js'
-import router from './js/router.js'
 
+const app = globalThis.app = new Pyrite()
 
-globalThis.app = new Pyrite(router)
-globalThis.vm = createApp(App)
+app.vm = createApp(App)
+app.vm.component('Icon', Icon)
+app.vm.component('FieldText', FieldText)
+app.vm.component('FieldSelect', FieldSelect)
+app.vm.component('FieldCheckbox', FieldCheckbox)
+app.vm.component('FieldSlider', FieldSlider)
 
-globalThis.vm.component('Icon', Icon)
-globalThis.vm.component('FieldText', FieldText)
-globalThis.vm.component('FieldSelect', FieldSelect)
-globalThis.vm.component('FieldCheckbox', FieldCheckbox)
-globalThis.vm.component('FieldSlider', FieldSlider)
-
-globalThis.vm.directive('click-outside', {
+app.vm.directive('click-outside', {
     beforeMount(el, binding) {
         el.clickOutsideEvent = function(event) {
             if (!(el === event.target || el.contains(event.target))) {
@@ -35,16 +31,7 @@ globalThis.vm.directive('click-outside', {
     },
 })
 
-globalThis.app.i18n = createI18n({
-    locale: 'nl',
-    messages: {
-        nl: localeNL,
-    },
-})
+app.vm.use(app.router).use(app.i18n)
 
-globalThis.vm
-    .use(router)
-    .use(globalThis.app.i18n)
-    .mount('#app')
-
+app.vm.mount('#app')
 
