@@ -2,7 +2,7 @@
     <div class="app-view theme theme-dark" :class="{connected: state.connected}">
         <div class="presence">
             <header>
-                <RouterLink class="name" :to="{name: 'settings'}">
+                <RouterLink class="name" :to="{name: 'settings', params: {tabId: 'misc'}}">
                     PYRITE
                 </RouterLink>
                 <div class="version">

@@ -2,7 +2,7 @@
     <transition-group class="c-notifications" name="notification" tag="div">
         <div
             v-for="notification in state.notifications"
-            :key="state.notifications.indexOf(item)"
+            :key="state.notifications.indexOf(notification)"
             class="notification"
             :class="{[notification.level]: true}"
         >

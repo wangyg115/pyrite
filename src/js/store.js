@@ -43,7 +43,6 @@ const volatileState = {
         record: false,
     },
     streams: [],
-    tabs: {settings: {active: 'devices'}},
     upMedia: {
         audio: [],
         local: [],

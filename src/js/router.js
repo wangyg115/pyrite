@@ -7,8 +7,9 @@ const routes = [
     {
         component: Settings,
         name: "settings",
-        path: "/",
+        path: "/settings/:tabId",
     },
+    { path: '/', redirect: { name: 'settings', params: {tabId: 'misc'} }},
     {
         component: StreamView,
         name: "groups",

@@ -1,7 +1,11 @@
 <template>
     <nav class="c-general-controls">
         <div class="navigational-controls">
-            <RouterLink class="btn btn-menu tooltip" :data-tooltip="$t('settings')" :to="{name: 'settings'}">
+            <RouterLink
+                class="btn btn-menu tooltip" :class="{active: $route.name === 'settings'}"
+                :data-tooltip="$t('settings')"
+                :to="{name: 'settings', params: {tabId: 'misc'}}"
+            >
                 <Icon class="icon-small" name="settings" />
             </RouterLink>
             <RouterLink

@@ -1,28 +1,26 @@
 <template>
     <div class="content">
         <ul class="tabs">
-            <li
+            <RouterLink
                 class="btn btn-menu tab tooltip"
-                :class="classes('tabs', 'misc')"
                 :data-tooltip="$t('miscellaneous')"
-                @click="setTab('settings', 'misc')"
+                :to="{name: 'settings', params: {tabId: 'misc'}}"
             >
                 <icon class="icon-small" name="settingsMisc" />
-            </li>
-            <li
+            </RouterLink>
+            <RouterLink
                 class="btn btn-menu tab tooltip"
-                :class="classes('tabs', 'devices')"
                 :data-tooltip="$t('devices')"
-                @click="setTab('settings', 'devices')"
+                :to="{name: 'settings', params: {tabId: 'devices'}}"
             >
                 <icon class="icon-small" name="headset" />
-            </li>
+            </RouterLink>
         </ul>
 
-        <section class="tab-content" :class="{active: state.tabs.settings.active === 'misc'}">
+        <section class="tab-content" :class="{active: $route.params.tabId === 'misc'}">
             <FieldSelect
                 v-model="state.language"
-                :help="$t('change the user interace language')"
+                :help="$t('change the user interface language')"
                 :label="$t('Language')"
                 name="language"
                 :options="languages"
@@ -52,7 +50,7 @@
         </section>
 
 
-        <section class="tab-content" :class="{active: state.tabs.settings.active === 'devices'}">
+        <section class="tab-content" :class="{active: $route.params.tabId === 'devices'}">
             <div v-show="state.permissions.present" id="mediaoptions">
                 <FieldSelect
                     v-model="state.video"
@@ -119,13 +117,6 @@ export default {
         }
     },
     methods: {
-        classes: function(block, modifier) {
-            let classes = {}
-            if (block === 'tabs') {
-                if (modifier === this.state.tabs.settings.active) classes.active = true
-            }
-            return classes
-        },
         changeActivitybox(e) {
             if(!(this instanceof HTMLInputElement))
                 throw new Error('Unexpected type for this')

@@ -53,10 +53,9 @@ export default {
         },
         updateRoute() {
             if (this.state.group) {
-                console.log('REPLACE GROUP', this.state.group)
                 this.$router.replace({name: 'groups', params: {groupId: this.state.group}})
             } else {
-                this.$router.replace({name: 'settings'})
+                this.$router.replace({name: 'settings', params: {tabId: 'misc'}})
             }
         }
     }
