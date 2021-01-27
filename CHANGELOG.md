@@ -1,3 +1,18 @@
+# [1.2.0](https://github.com/garage44/pyrite/compare/v1.1.0...v1.2.0) (2021-01-27)
+
+
+### Bug Fixes
+
+* chat messages & handling ([c24ef26](https://github.com/garage44/pyrite/commit/c24ef269ee1b453df0769fdab768f0e73e3ec938))
+* partially fix commands ([e87938d](https://github.com/garage44/pyrite/commit/e87938d558fc64558ae2289ef4cac19565208a76))
+* tab navigation using router & fixed linter ([d1cdd14](https://github.com/garage44/pyrite/commit/d1cdd149ee08501b5f5fe9b51f531842addb76f9))
+
+
+### Features
+
+* extra control bar, soundmeter, styling tweaks, tooltips ([3885137](https://github.com/garage44/pyrite/commit/3885137cda4ba67c829517623cc49018b6611dea))
+* language selection ([4f02dfb](https://github.com/garage44/pyrite/commit/4f02dfbac892dd3a2eebc22255d5e612ca149638))
+
 # [1.1.0](https://github.com/garage44/pyrite/compare/v1.0.5...v1.1.0) (2021-01-20)
 
 
