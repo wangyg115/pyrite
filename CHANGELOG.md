@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/garage44/pyrite/compare/v1.2.0...v1.2.1) (2021-01-28)
+
+
+### Bug Fixes
+
+* user commands & groupactions ([491cbf5](https://github.com/garage44/pyrite/commit/491cbf549cbe5ceb9d70542e685fed0295f61215))
+
 # [1.2.0](https://github.com/garage44/pyrite/compare/v1.1.0...v1.2.0) (2021-01-27)
 
 
