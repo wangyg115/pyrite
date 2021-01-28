@@ -414,6 +414,7 @@ class Pyrite {
     async gotJoined(kind, group, perms, message) {
         this.state.permissions = perms
         this.logger.info(`joined group ${group}`)
+        this.logger.debug(`permissions: ${JSON.stringify(perms)}`)
 
         switch(kind) {
         case 'fail':
@@ -585,6 +586,11 @@ class Pyrite {
                     this.displayWarning(`You have been muted${by}`)
                 } else {
                     console.error(`Got unprivileged message of kind ${kind}`)
+                }
+                break
+            case 'clearchat':
+                if(privileged) {
+                    this.state.messages = []
                 }
                 break
             default:

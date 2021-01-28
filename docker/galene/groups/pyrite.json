@@ -4,5 +4,7 @@
   "public": true,
   "op": [{"username": "pyrite", "password": "1234"}],
   "presenter": [{}],
-  "max-clients": 10
+  "max-clients": 10,
+  "allow-recording": true,
+  "allow-subgroups": true
 }

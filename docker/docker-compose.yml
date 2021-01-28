@@ -3,6 +3,7 @@ services:
     container_name: galene
     image: garage44/galene:latest
     volumes:
+      - ./galene/data:/go/src/galene/data
       - ./galene/groups:/go/src/galene/groups
     ports:
       - 1194:1194

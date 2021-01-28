@@ -20,14 +20,12 @@
 /**
  * @param {string} user
  */
-function findUserId(user) {
-    if(user in app.state.users) {
-        return user
-    }
-
-    for(let id in app.state.users) {
-        if(app.state.users[id] === user)
-            return id
+function findUserId(username) {
+    for(const user of app.state.users) {
+        if(user.name === username) {
+            console.log('mATCH')
+            return user.id
+        }
     }
     return null
 }
@@ -42,7 +40,7 @@ function userCommand(c, r) {
     if(!p[0]) throw new Error(`/${c} requires parameters`)
     let id = findUserId(p[0])
     if(!id) throw new Error(`Unknown user ${p[0]}`)
-    app.connection.userAction(app.state.username, c, id, p[1])
+    app.connection.userAction(c, id, p[1])
 }
 
 function userMessage(c, r) {
@@ -51,7 +49,7 @@ function userMessage(c, r) {
     if(!p[0]) throw new Error(`/${c} requires parameters`)
     let id = findUserId(p[0])
     if(!id) throw new Error(`Unknown user ${p[0]}`)
-    app.connection.userMessage(app.state.username, c, id, p[1])
+    app.connection.userMessage(c, id, p[1])
 }
 
 
@@ -120,7 +118,7 @@ commands.clear = {
     predicate: operatorPredicate,
     description: 'clear the chat history',
     f: (c, r) => {
-        app.connection.groupAction(app.state.username, 'clearchat')
+        app.connection.groupAction('clearchat')
     },
 }
 
@@ -129,7 +127,7 @@ commands.lock = {
     description: 'lock this group',
     parameters: '[message]',
     f: (c, r) => {
-        app.connection.groupAction(app.state.username, 'lock', r)
+        app.connection.groupAction('lock', r)
     },
 }
 
@@ -137,7 +135,7 @@ commands.unlock = {
     predicate: operatorPredicate,
     description: 'unlock this group, revert the effect of /lock',
     f: (c, r) => {
-        app.connection.groupAction(app.state.username, 'unlock')
+        app.connection.groupAction('unlock')
     },
 }
 
@@ -145,7 +143,7 @@ commands.record = {
     predicate: recordingPredicate,
     description: 'start recording',
     f: (c, r) => {
-        app.connection.groupAction(app.state.username, 'record')
+        app.connection.groupAction('record')
     },
 }
 
@@ -153,7 +151,7 @@ commands.unrecord = {
     predicate: recordingPredicate,
     description: 'stop recording',
     f: (c, r) => {
-        app.connection.groupAction(app.state.username, 'unrecord')
+        app.connection.groupAction('unrecord')
     },
 }
 
@@ -161,7 +159,7 @@ commands.subgroups = {
     predicate: operatorPredicate,
     description: 'list subgroups',
     f: (c, r) => {
-        app.connection.groupAction(app.state.username, 'subgroups')
+        app.connection.groupAction('subgroups')
     },
 }
 

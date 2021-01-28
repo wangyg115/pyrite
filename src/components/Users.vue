@@ -30,11 +30,11 @@ export default {
         userRights() {
             let text = ''
 
-            if(app.connection.permissions.op && app.connection.permissions.present)
+            if(app.state.permissions.op && app.state.permissions.present)
                 text = '(op, presenter)'
-            else if(app.connection.permissions.op)
+            else if(app.state.permissions.op)
                 text = 'operator'
-            else if(app.connection.permissions.present)
+            else if(app.state.permissions.present)
                 text = 'presenter'
 
             return text

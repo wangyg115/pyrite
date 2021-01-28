@@ -221,10 +221,9 @@ export default {
             }
         }
 
-
         & textarea {
             background: var(--grey-300);
-            border: 0;
+            border: var(--border) solid var(--grey-500);
             color: var(--primary-color);
             flex: 1;
             outline: none;

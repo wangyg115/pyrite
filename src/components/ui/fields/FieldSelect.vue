@@ -10,7 +10,7 @@
                     v-model="searchQuery"
                     autocomplete="off"
                     :disabled="disabled"
-                    :placeholder="(modelValue && modelValue.id) ? modelValue.name : placeholder"
+                    :placeholder="(modelValue && modelValue.id) ? options.find((o) => o.id === modelValue.id).name : placeholder"
                     :readonly="!search"
                     @click="searchSelect($event, null, null, false)"
                     @input="searchSelect($event, null, 'query', false)"
