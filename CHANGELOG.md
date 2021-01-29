@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/garage44/pyrite/compare/v1.2.1...v1.3.0) (2021-01-29)
+
+
+### Features
+
+* add pwa manifest & logo ([7646004](https://github.com/garage44/pyrite/commit/764600483fdac34e8c125f815fd84e889d84ff5e))
+
 ## [1.2.1](https://github.com/garage44/pyrite/compare/v1.2.0...v1.2.1) (2021-01-28)
 
 
