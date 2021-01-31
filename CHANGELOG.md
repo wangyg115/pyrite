@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/garage44/pyrite/compare/v1.3.0...v1.4.0) (2021-01-31)
+
+
+### Features
+
+* operator & presenter icons ([0f9e3bc](https://github.com/garage44/pyrite/commit/0f9e3bc51a742cacafe5b8b32c63a33cd38f2de2))
+
 # [1.3.0](https://github.com/garage44/pyrite/compare/v1.2.1...v1.3.0) (2021-01-29)
 
 
