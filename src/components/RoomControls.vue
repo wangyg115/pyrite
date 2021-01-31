@@ -2,7 +2,7 @@
     <nav class="c-controls">
         <div class="group-controls">
             <button
-                v-if="state.connected && state.permissions.present"
+                v-if="state.permissions.present"
                 class="btn btn-menu tooltip"
                 :class="{active: !state.muted}"
                 :data-tooltip="$t('mute microphone')"
@@ -12,7 +12,7 @@
             </button>
 
             <button
-                v-if="state.connected && state.permissions.present"
+                v-if="state.permissions.present"
                 class="btn btn-menu tooltip"
                 :class="{active: state.upMedia.local.length}"
                 :data-tooltip="`${$t('switch camera')} ${state.upMedia.local.length ? $t('off') : $t('on')}`"
@@ -22,13 +22,23 @@
             </button>
 
             <button
-                v-if="state.connected && state.permissions.present"
+                v-if="state.permissions.present"
                 class="btn btn-menu tooltip"
                 :class="{active: state.upMedia.screenshare.length}"
                 :data-tooltip="`${$t('switch screensharing')} ${state.upMedia.screenshare.length ? $t('off') : $t('on')}`"
                 @click="toggleShare"
             >
                 <Icon class="icon-small" name="screenshare" />
+            </button>
+
+            <button
+                v-if="state.permissions.present"
+                class="btn btn-menu tooltip"
+                :class="{active: state.upMedia.screenshare.length}"
+                :data-tooltip="`${$t('play file')} ${state.upMedia.screenshare.length ? $t('off') : $t('on')}`"
+                @click="togglePlayFile"
+            >
+                <Icon class="icon-small" name="playFile" />
             </button>
         </div>
     </nav>
@@ -48,6 +58,9 @@ export default {
         toggleMute() {
             this.state.muted = !this.state.muted
             app.muteLocalTracks(this.state.muted)
+        },
+        togglePlayFile() {
+
         },
         togglePresent() {
             if (this.state.upMedia.local.length) {

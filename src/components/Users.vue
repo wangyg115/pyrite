@@ -14,7 +14,16 @@
                 </span>
             </div>
             <div v-if="state.users[0].id === user.id" class="me">
-                {{ userRights }}
+                <span class="tooltip" :data-tooltip="$t('presenter role')">
+                    <icon
+                        v-if="state.permissions.present"
+                        class="icon icon-mini"
+                        name="present"
+                    />
+                </span>
+                <span class="tooltip" :data-tooltip="$t('operator role')">
+                    <icon v-if="state.permissions.op" class="icon icon-mini" name="operator" />
+                </span>
             </div>
         </div>
     </section>

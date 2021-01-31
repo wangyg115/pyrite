@@ -9,49 +9,55 @@
 </template>
 
 <script>
-import IconEye from './IconEye.vue'
-import IconError from './IconError.vue'
-import IconFullscreen from './IconFullscreen.vue'
-import IconGroups from './IconGroups.vue'
-import IconHeadset from './IconHeadset.vue'
-import IconInfo from './IconInfo.vue'
-import IconLogin from './IconLogin.vue'
-import IconLogout from './IconLogout.vue'
-import IconMic from './IconMic.vue'
-import IconMicMute from './IconMicMute.vue'
-import IconPip from './IconPip.vue'
-import IconUser from './IconUser.vue'
-import IconUserUnknown from './IconUserUnknown.vue'
-import IconScreenShare from './IconScreenShare.vue'
-import IconSend from './IconSend.vue'
-import IconSettings from './IconSettings.vue'
-import IconSettingsMisc from './IconSettingsMisc.vue'
-import IconStopScreenShare from './IconStopScreenShare.vue'
-import IconWarning from './IconWarning.vue'
-import IconWebcam from './IconWebcam.vue'
+import eye from './IconEye.vue'
+import error from './IconError.vue'
+import fullscreen from './IconFullscreen.vue'
+import groups from './IconGroups.vue'
+import headset from './IconHeadset.vue'
+import info from './IconInfo.vue'
+import login from './IconLogin.vue'
+import logout from './IconLogout.vue'
+import mic from './IconMic.vue'
+import micMute from './IconMicMute.vue'
+import operator from './IconOperator.vue'
+import pip from './IconPip.vue'
+import playFile from './IconPlayFile.vue'
+import present from './IconPresent.vue'
+import user from './IconUser.vue'
+import userUnknown from './IconUserUnknown.vue'
+import screenshare from './IconScreenShare.vue'
+import send from './IconSend.vue'
+import settings from './IconSettings.vue'
+import settingsMisc from './IconSettingsMisc.vue'
+import stopScreenshare from './IconStopScreenShare.vue'
+import warning from './IconWarning.vue'
+import webcam from './IconWebcam.vue'
 
 export default {
   components: {
-      eye: IconEye,
-      error: IconError,
-      fullscreen: IconFullscreen,
-      groups: IconGroups,
-      headset: IconHeadset,
-      info: IconInfo,
-      login: IconLogin,
-      logout: IconLogout,
-      mic: IconMic,
-      micMute: IconMicMute,
-      pip: IconPip,
-      screenshare: IconScreenShare,
-      send: IconSend,
-      settings: IconSettings,
-      settingsMisc: IconSettingsMisc,
-      stopScreenshare: IconStopScreenShare,
-      user: IconUser,
-      userUnknown: IconUserUnknown,
-      warning: IconWarning,
-      webcam: IconWebcam
+      eye,
+      error,
+      fullscreen,
+      groups,
+      headset,
+      info,
+      login,
+      logout,
+      mic,
+      micMute,
+      operator,
+      pip,
+      playFile,
+      present,
+      screenshare,
+      send,
+      settings,
+      settingsMisc,
+      stopScreenshare,
+      user,
+      userUnknown,
+      warning,
+      webcam
   },
   props: {
     name: {

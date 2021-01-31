@@ -10,5 +10,6 @@
         }
     ],
     "orientation": "portrait",
-    "start_url": "/?mode=standalone"
+    "start_url": "/?mode=standalone",
+    "version": "1.4"
 }
