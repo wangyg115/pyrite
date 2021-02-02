@@ -66,55 +66,19 @@ class Pyrite {
      */
     async addFileMedia(file) {
         this.logger.info('add file media')
-        let url = URL.createObjectURL(file)
-        let video = document.createElement('video')
-        video.src = url
-        video.controls = true
-        /** @ts-ignore */
-        let stream = video.captureStream()
-
         let {c, id} = this.connection.newUpStream()
         c.kind = 'video'
 
+        const peer = {
+            id: c.id,
+            isUp: true,
+            kind: c.kind,
+            mirror: false,
+            src: file,
+        }
+
+        this.state.streams.push(peer)
         this.state.upMedia[c.kind].push(id)
-
-        c.stream = stream
-        stream.onaddtrack = function(e) {
-            let t = e.track
-            if(t.kind === 'audio') {
-                let presenting = !!this.findUpMedia('local')
-
-                if(presenting && !this.state.localMute) {
-                    this.setLocalMute(true, true)
-                    this.displayWarning('You have been muted')
-                }
-            }
-            c.pc.addTrack(t, stream)
-            c.labels[t.id] = t.kind
-        }
-        stream.onremovetrack = function(e) {
-            let t = e.track
-            delete(c.labels[t.id])
-
-            /** @type {RTCRtpSender} */
-            let sender
-            c.pc.getSenders().forEach(s => {
-                if(s.track === t)
-                    sender = s
-            })
-            if(sender) {
-                c.pc.removeTrack(sender)
-            } else {
-                console.warn('Removing unknown track')
-            }
-
-            if(Object.keys(c.labels).length === 0) {
-                stream.onaddtrack = null
-                stream.onremovetrack == null
-                this.delUpMedia(c)
-            }
-        }
-
         c.userdata.play = true
     }
 
@@ -243,8 +207,8 @@ class Pyrite {
      * @param {string} id
      */
     delMedia(id) {
-        this.logger.debug(`remove stream ${id} from state`)
-        this.state.streams.splice(this.state.streams.indexOf(id), 1)
+        this.logger.debug(`[delMedia] remove stream ${id} from state`)
+        this.state.streams.splice(this.state.streams.findIndex(i => i.id === id), 1)
     }
 
 
@@ -486,8 +450,7 @@ class Pyrite {
     */
     muteLocalTracks(mute) {
         this.logger.info(`mute local tracks: ${mute}`)
-        if(!this.connection)
-            return
+        this.state.muted = mute
         for(let id in this.connection.up) {
             let c = this.connection.up[id]
             if(c.kind === 'local') {
@@ -581,7 +544,7 @@ class Pyrite {
                 break
             case 'mute':
                 if(privileged) {
-                    this.setLocalMute(true, true)
+                    this.muteLocalTracks(true)
                     let by = username ? ' by ' + username : ''
                     this.displayWarning(`You have been muted${by}`)
                 } else {
@@ -605,30 +568,6 @@ class Pyrite {
         } catch(e) {
             console.error(e)
             this.displayError(e.message ? e.message : "Couldn't connect to " + url)
-        }
-    }
-
-
-    /**
-     * @param {boolean} mute
-     * @param {boolean} [reflect]
-     */
-    setLocalMute(mute, reflect) {
-        this.logger.debug(`set local mute: ${mute}`)
-        this.muteLocalTracks(mute)
-        let button = document.getElementById('mutebutton')
-        let icon = button.querySelector("span .fas")
-        if(mute){
-            icon.classList.add('fa-microphone-slash')
-            icon.classList.remove('fa-microphone')
-            button.classList.add('muted')
-        } else {
-            icon.classList.remove('fa-microphone-slash')
-            icon.classList.add('fa-microphone')
-            button.classList.remove('muted')
-        }
-        if(reflect) {
-            this.updateSettings({localMute: mute})
         }
     }
 
@@ -723,12 +662,12 @@ class Pyrite {
                 this.logger.debug(`stopping track ${t.id}`)
                 t.stop()
             } catch(e) {
+                console.trace(e)
                 // silence error
             }
         })
 
-        this.logger.debug(`removing stream ${c.id}`)
-        this.state.streams.splice(this.state.streams.indexOf(c.id), 1)
+        this.logger.debug(`removing upmedia ${c.id}`)
         this.state.upMedia[c.kind].splice(this.state.upMedia[c.kind].indexOf(c.id), 1)
     }
 

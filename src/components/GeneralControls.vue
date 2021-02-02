@@ -42,7 +42,6 @@ export default {
             app.disconnect()
         },
         toggleMute() {
-            this.state.muted = !this.state.muted
             app.muteLocalTracks(this.state.muted)
         },
         togglePresent() {

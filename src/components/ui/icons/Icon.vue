@@ -15,6 +15,7 @@ import fullscreen from './IconFullscreen.vue'
 import groups from './IconGroups.vue'
 import headset from './IconHeadset.vue'
 import info from './IconInfo.vue'
+import logo from './IconLogo.vue'
 import login from './IconLogin.vue'
 import logout from './IconLogout.vue'
 import mic from './IconMic.vue'
@@ -42,6 +43,7 @@ export default {
       headset,
       info,
       login,
+      logo,
       logout,
       mic,
       micMute,

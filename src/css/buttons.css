@@ -24,6 +24,10 @@
             }
         }
 
+        &.warning {
+            color: var(--warning-color);
+        }
+
         &::before {
             background: var(--primary-color);
             bottom: calc(-1 * var(--border));

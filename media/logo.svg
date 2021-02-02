@@ -24,17 +24,18 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.9195961"
-     inkscape:cx="-1.956158"
-     inkscape:cy="69.387102"
+     inkscape:cx="47.348506"
+     inkscape:cy="66.204039"
      inkscape:document-units="mm"
-     inkscape:current-layer="g1556"
+     inkscape:current-layer="g1564"
      inkscape:document-rotation="0"
      showgrid="false"
-     inkscape:window-width="2560"
-     inkscape:window-height="1411"
-     inkscape:window-x="1920"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1" />
+     inkscape:window-width="1343"
+     inkscape:window-height="856"
+     inkscape:window-x="3105"
+     inkscape:window-y="171"
+     inkscape:window-maximized="0"
+     inkscape:pagecheckerboard="true" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -58,17 +59,18 @@
          id="g1556">
         <g
            id="g1564">
+          <circle
+             style="fill:none;fill-opacity:1;stroke:#222835;stroke-width:2.80262;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+             id="path1558-3"
+             cy="9.7591515"
+             cx="12.037825"
+             rx="7.2093797"
+             ry="7.3301554" />
           <path
              id="path878"
-             style="fill:#33c6c3;fill-opacity:1;stroke:none;stroke-width:0.685664;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
-             d="m 11.995854,0.99045081 c -3.2901573,0.0015 -6.2894453,1.88512429 -7.7199858,4.84801109 -1.5343024,3.1777679 -0.965849,6.9709391 1.4325903,9.5593321 0.031028,0.03346 0.070584,0.06044 0.093926,0.09967 1.5976696,2.685947 0,7.557439 0,7.557439 v 0 l 6.1977455,-4.90962 c 0,0 2.13345,-0.200762 3.130979,-0.591877 3.285244,-1.288099 5.446386,-4.456761 5.446405,-7.9855072 H 12.00013 l 0.652512,-8.5525662 c -0.218531,-0.016675 -0.43762,-0.024994 -0.656788,-0.0248818 z"
-             sodipodi:nodetypes="cccscccscccc" />
-          <circle
-             style="fill:#080808;fill-opacity:1;stroke:#222835;stroke-width:1.966;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
-             id="path886"
-             cx="12"
-             cy="9.6722794"
-             r="5.8287377" />
+             style="fill:#33c6c3;fill-opacity:1;stroke:none;stroke-width:2.59149;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+             d="M 45.337891 3.6582031 C 32.90265 3.6638724 21.566923 10.782156 16.160156 21.980469 C 10.361218 33.99093 12.511204 48.328425 21.576172 58.111328 C 21.693443 58.237791 21.841466 58.34001 21.929688 58.488281 C 27.968124 68.639892 21.929688 87.050781 21.929688 87.050781 L 45.355469 68.494141 C 45.355469 68.494141 53.417312 67.736042 57.1875 66.257812 C 69.60417 61.389407 77.773366 49.413165 77.773438 36.076172 L 67.380859 36.076172 A 22.029875 22.029875 0 0 1 67.384766 36.470703 A 22.029875 22.029875 0 0 1 45.353516 58.5 A 22.029875 22.029875 0 0 1 23.324219 36.470703 A 22.029875 22.029875 0 0 1 45.353516 14.441406 A 22.029875 22.029875 0 0 1 47 14.503906 L 47.820312 3.7519531 C 46.994369 3.6889295 46.166242 3.657779 45.337891 3.6582031 z "
+             transform="matrix(0.26458333,0,0,0.26458333,0,0.02267634)" />
           <ellipse
              style="fill:#33c6c3;fill-opacity:1;stroke:#1a202c;stroke-width:1.07;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
              id="path894"
@@ -76,11 +78,11 @@
              cy="9.6159058"
              r="2.0255728" />
           <circle
-             style="fill:#33c6c3;fill-opacity:1;stroke:none;stroke-width:0.897191;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;paint-order:fill markers stroke"
+             style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:2.223;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000;stop-opacity:1"
              id="path1558"
-             cx="12"
-             cy="9.6722794"
-             r="2.5063808" />
+             cx="12.125657"
+             cy="9.6589193"
+             r="2.5357502" />
         </g>
       </g>
     </g>

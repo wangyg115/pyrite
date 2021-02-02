@@ -103,7 +103,54 @@ export default {
 
         this.muted = this.media.muted
 
-        if (this.peer.isUp) {
+        if (this.peer.src) {
+            let url = URL.createObjectURL(this.peer.src)
+            this.$refs.media.src = url
+            this.stream = this.$refs.media.captureStream()
+            const c = app.connection.up[this.peer.id]
+            c.stream = this.stream
+
+            this.stream.onaddtrack = (e) => {
+                let t = e.track
+                if(t.kind === 'audio') {
+                    let presenting = !!app.findUpMedia('local')
+
+                    if(presenting && !this.state.localMute) {
+                        app.muteLocalTracks(true)
+                        app.displayWarning('You have been muted')
+                    }
+                }
+
+                c.pc.addTrack(t, this.stream)
+                c.labels[t.id] = t.kind
+            }
+
+            this.stream.onremovetrack = (e) => {
+                let t = e.track
+                delete(c.labels[t.id])
+
+                /** @type {RTCRtpSender} */
+                let sender
+                c.pc.getSenders().forEach(s => {
+                    if(s.track === t) {
+                        sender = s
+                    }
+                })
+                if(sender) {
+                    c.pc.removeTrack(sender)
+                } else {
+                    console.warn('Removing unknown track')
+                }
+
+                if(Object.keys(c.labels).length === 0) {
+                    this.stream.onaddtrack = null
+                    this.stream.onremovetrack == null
+                    app.delUpMedia(c)
+                }
+            }
+        }
+
+        else if (this.peer.isUp) {
             this.$refs.media.srcObject = app.connection.up[this.peer.id].stream
             this.stream = app.connection.up[this.peer.id]
             this.stream.onstats = this.gotUpStats.bind(this, this.stream)
@@ -117,7 +164,7 @@ export default {
             this.stream.ondowntrack = (track, transceiver, label, stream) => {
                 app.logger.debug(`stream event - ondowntrack [${this.stream.id}]`)
                 this.$refs.media.srcObject = this.stream.stream
-                this.media.play()
+                this.$refs.media.play()
             }
 
             this.stream.onlabel = (label) => {
@@ -227,12 +274,6 @@ export default {
 </script>
 <style lang="postcss">
 .c-stream {
-    /* display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    overflow: hidden;
-    position:relative; */
     display: flex;
     position: relative;
 
@@ -243,13 +284,11 @@ export default {
         position: absolute;
         width: var(--space-4);
         z-index: 1000;
-        /* bottom: 0; */
     }
 
     & video {
         height: 100%;
         object-fit: cover;
-        /* max-width: 100%; */
         width: 100%;
     }
 

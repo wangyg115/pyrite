@@ -6,7 +6,7 @@
         class="c-stream-view"
         :class="gridClass"
     >
-        <Stream v-for="peer of state.streams" :key="peer.id" :peer="peer" />
+        <Stream v-for="stream of state.streams" :key="stream.id" :peer="stream" />
     </div>
 </template>
 

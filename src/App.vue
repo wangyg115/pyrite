@@ -2,8 +2,8 @@
     <div class="app-view theme theme-dark" :class="{connected: state.connected}">
         <div class="presence">
             <header>
-                <RouterLink class="name" :to="{name: 'settings', params: {tabId: 'misc'}}">
-                    PYRITE
+                <RouterLink class="logo" :to="{name: 'settings', params: {tabId: 'misc'}}">
+                    <icon class="icon icon-small" name="logo" />PYRITE VIDEO
                 </RouterLink>
                 <div class="version">
                     {{ version }}
@@ -48,6 +48,12 @@ export default {
     display: grid;
     grid-template-columns: 300px var(--space-4) 1fr;
     height: 100vh;
+
+    & .logo {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+    }
 
     &.connected {
         grid-template-columns: 300px var(--space-4) min-content var(--space-4) 1fr;

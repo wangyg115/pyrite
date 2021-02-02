@@ -171,7 +171,6 @@ export default {
         & .message {
             background: var(--grey-300);
             color: var(--grey-50);
-            font-size: var(--text-small);
             margin-bottom: calc(var(--spacer) * 2);
             margin-left: calc(var(--spacer) * 2);
             margin-right: var(--spacer);
@@ -180,12 +179,14 @@ export default {
             &.command {
                 background: var(--grey-400);
                 color: var(--grey-100);
+                font-size: var(--text-small);
             }
 
             & header {
                 color: var(--primary-color);
                 display: flex;
                 font-size: var(--text-small);
+                font-weight: 600;
                 justify-content: space-between;
                 margin-bottom: var(--spacer);
 
@@ -222,7 +223,7 @@ export default {
         }
 
         & textarea {
-            background: var(--grey-300);
+            background: var(--grey-500);
             border: var(--border) solid var(--grey-500);
             color: var(--primary-color);
             flex: 1;

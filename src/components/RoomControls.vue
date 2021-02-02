@@ -4,7 +4,7 @@
             <button
                 v-if="state.permissions.present"
                 class="btn btn-menu tooltip"
-                :class="{active: !state.muted}"
+                :class="{active: !state.muted, warning: state.muted}"
                 :data-tooltip="$t('mute microphone')"
                 @click="toggleMute"
             >
@@ -14,7 +14,7 @@
             <button
                 v-if="state.permissions.present"
                 class="btn btn-menu tooltip"
-                :class="{active: state.upMedia.local.length}"
+                :class="{active: state.upMedia.local.length, warning: !state.upMedia.local.length}"
                 :data-tooltip="`${$t('switch camera')} ${state.upMedia.local.length ? $t('off') : $t('on')}`"
                 @click="togglePresent"
             >
@@ -34,11 +34,10 @@
             <button
                 v-if="state.permissions.present"
                 class="btn btn-menu tooltip"
-                :class="{active: state.upMedia.screenshare.length}"
-                :data-tooltip="`${$t('play file')} ${state.upMedia.screenshare.length ? $t('off') : $t('on')}`"
-                @click="togglePlayFile"
+                :class="{active: state.upMedia.video.length}"
+                :data-tooltip="playFiles"
             >
-                <Icon class="icon-small" name="playFile" />
+                <FieldFile v-model="playFiles" @file="togglePlayFile" />
             </button>
         </div>
     </nav>
@@ -48,6 +47,7 @@
 export default {
     data() {
         return {
+            playFiles: [],
             state: app.state
         }
     },
@@ -56,11 +56,16 @@ export default {
             app.disconnect()
         },
         toggleMute() {
-            this.state.muted = !this.state.muted
-            app.muteLocalTracks(this.state.muted)
+            app.muteLocalTracks(!this.state.muted)
         },
-        togglePlayFile() {
-
+        togglePlayFile(file) {
+            if (file) {
+                app.addFileMedia(file)
+            } else {
+                this.playFiles = []
+                console.log("plAYFILES", this.playFiles)
+                app.delUpMediaKind('video')
+            }
         },
         togglePresent() {
             if (this.state.upMedia.local.length) {
