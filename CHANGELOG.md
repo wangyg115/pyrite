@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/garage44/pyrite/compare/v1.4.0...v1.5.0) (2021-02-02)
+
+
+### Features
+
+* play file media, logo & cleanup ([4684448](https://github.com/garage44/pyrite/commit/46844486c1d6b175c57774bdbcc1260a259ccab7))
+
 # [1.4.0](https://github.com/garage44/pyrite/compare/v1.3.0...v1.4.0) (2021-01-31)
 
 
