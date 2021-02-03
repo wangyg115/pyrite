@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/garage44/pyrite/compare/v1.5.0...v1.5.1) (2021-02-03)
+
+
+### Bug Fixes
+
+* add missing pwa manifest properties ([53e7b8f](https://github.com/garage44/pyrite/commit/53e7b8f30ef155999a4223947b2a32fbbddf6773))
+
 # [1.5.0](https://github.com/garage44/pyrite/compare/v1.4.0...v1.5.0) (2021-02-02)
 
 
