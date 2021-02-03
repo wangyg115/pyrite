@@ -1,3 +1,10 @@
+## [1.5.3](https://github.com/garage44/pyrite/compare/v1.5.2...v1.5.3) (2021-02-03)
+
+
+### Bug Fixes
+
+* add default service worker for pwa ([ae46468](https://github.com/garage44/pyrite/commit/ae46468a288a443cabb40ebe1a36a119d8fa2423))
+
 ## [1.5.2](https://github.com/garage44/pyrite/compare/v1.5.1...v1.5.2) (2021-02-03)
 
 
