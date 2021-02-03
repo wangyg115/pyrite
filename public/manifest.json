@@ -1,4 +1,7 @@
 {
+    "name": "Pyrite Video",
+    "short_name": "Pyrite",
+    "description": "Video conferencing on steroids",
     "background_color": "#33c6c3",
     "display": "standalone",
     "lang": "en-US",
@@ -9,7 +12,7 @@
             "type": "image/png"
         }
     ],
-    "orientation": "portrait",
+    "orientation": "landscape",
     "start_url": "/?mode=standalone",
     "version": "1.4"
 }
