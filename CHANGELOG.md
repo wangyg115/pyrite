@@ -1,3 +1,10 @@
+## [1.5.2](https://github.com/garage44/pyrite/compare/v1.5.1...v1.5.2) (2021-02-03)
+
+
+### Bug Fixes
+
+* add theme_color to manifest ([8c66626](https://github.com/garage44/pyrite/commit/8c66626027800d7b9adfa88ccfc959cb9d5cd79b))
+
 ## [1.5.1](https://github.com/garage44/pyrite/compare/v1.5.0...v1.5.1) (2021-02-03)
 
 
