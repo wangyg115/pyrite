@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: npm install, build, and test
+    - name: Install packages & verify code
       run: |
         npm ci
         npm run lint
@@ -29,3 +29,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       run: npx semantic-release
+    - name: Deploy artifacts
+      run: |
+        npm run build
+        npm run deploy
