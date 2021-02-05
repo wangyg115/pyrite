@@ -31,7 +31,7 @@ jobs:
       run: npx semantic-release
     - name: Deploy artifacts
       env:
-        RAND_HOST: ${{secrets.RAND_HOST}}
+        RAND_ENDPOINT: ${{secrets.RAND_ENDPOINT}}
         RAND_PW: ${{secrets.RAND_PW}}
         RAND_USER: ${{secrets.RAND_USER}}
       run: |
