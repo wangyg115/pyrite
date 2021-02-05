@@ -3,7 +3,7 @@ name: release
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   build:
@@ -24,11 +24,6 @@ jobs:
       run: |
         npm ci
         npm run lint
-    - name: Release
-      env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      run: npx semantic-release
     - name: Deploy artifacts
       env:
         RAND_ENDPOINT: ${{secrets.RAND_ENDPOINT}}
