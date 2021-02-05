@@ -28,11 +28,12 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      run: npx semantic-release
+    - name: Deploy artifacts
+      env:
         RAND_HOST: ${{secrets.RAND_HOST}}
         RAND_PW: ${{secrets.RAND_PW}}
         RAND_USER: ${{secrets.RAND_USER}}
-      run: npx semantic-release
-    - name: Deploy artifacts
       run: |
         npm run build
         npm run deploy
