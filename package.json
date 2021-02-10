@@ -1,6 +1,5 @@
 {
   "name": "@garage44/pyrite",
-  "private": true,
   "version": "1.5.4-beta.1",
   "publishConfig": {
     "access": "public"
