@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/garage44/pyrite/compare/v1.5.5...v1.6.0) (2021-02-10)
+
+
+### Features
+
+* add deployment channel for beta.pyrite.video ([6e690d3](https://github.com/garage44/pyrite/commit/6e690d3ebd55cc8dd037148c8a46fa755c528af7))
+
 ## [1.5.5](https://github.com/garage44/pyrite/compare/v1.5.4...v1.5.5) (2021-02-10)
 
 
