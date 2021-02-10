@@ -30,7 +30,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       run: npx semantic-release
-    - name: Deploy artifacts
+    - name: Deploy frontend
       env:
         RAND_ENDPOINT: ${{secrets.RAND_ENDPOINT}}
         RAND_PW: ${{secrets.RAND_PW}}
