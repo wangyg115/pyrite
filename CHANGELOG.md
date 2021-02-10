@@ -1,3 +1,11 @@
+## [1.5.4](https://github.com/garage44/pyrite/compare/v1.5.3...v1.5.4) (2021-02-10)
+
+
+### Bug Fixes
+
+* npm publish ([3fbb5db](https://github.com/garage44/pyrite/commit/3fbb5dbd55f73b3c2dcc50a80ad53235942ae820))
+* npm release ([10b1e29](https://github.com/garage44/pyrite/commit/10b1e29657f9f819af3705492dec14f9933f3198))
+
 ## [1.5.4-beta.1](https://github.com/garage44/pyrite/compare/v1.5.3...v1.5.4-beta.1) (2021-02-10)
 
 
