@@ -1,7 +1,7 @@
 {
   "name": "@garage44/pyrite",
   "private": true,
-  "version": "1.5.3",
+  "version": "1.5.4-beta.1",
   "publishConfig": {
     "access": "public"
   },
@@ -46,7 +46,10 @@
   "release": {
     "branches": [
       "main",
-      {"name": "beta", "prerelease": true}
+      {
+        "name": "beta",
+        "prerelease": true
+      }
     ],
     "plugins": [
       "@semantic-release/commit-analyzer",
