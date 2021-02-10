@@ -52,7 +52,6 @@ export default {
             this.groups = await (await fetch('/public-groups.json')).json()
         },
         updateRoute() {
-            console.log('REPLACE')
             if (this.state.group) {
                 this.$router.replace({name: 'groups', params: {groupId: this.state.group}})
             } else {

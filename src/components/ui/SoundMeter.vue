@@ -56,28 +56,20 @@ function createAudioMeter(audioContext, clipLevel, averaging, clipLag) {
 }
 
 
-
 let meter = null
-
 let canvasContext, canvasElement
 
 export default {
+    props: {
+        streamId: {
+            required: true,
+            type: String
+        }
+    },
     data() {
         return {
             state: app.state
         }
-    },
-    watch: {
-        'devices.ready': async function(isReady) {
-            if (isReady) this.updateSoundmeter()
-        },
-        /**
-        * Reinitialize the soundmeter when the
-        * input device changes.
-        */
-        'state.audio.id': async function() {
-            this.updateSoundmeter()
-        },
     },
     unmounted: function() {
         // Stop the volume meter.
@@ -94,10 +86,10 @@ export default {
 
         try {
             this.audioContext = new AudioContext()
-            const localStreamId = app.state.upMedia.local
-            const stream = app.connection.up[localStreamId].stream
 
+            const stream = app.streams[this.streamId]
             const mediaStreamSource = this.audioContext.createMediaStreamSource(stream)
+            window.foo = this.audioContext
             meter = createAudioMeter(this.audioContext)
             mediaStreamSource.connect(meter)
             this.drawLoop()
@@ -120,8 +112,7 @@ export default {
             this.rafID = window.requestAnimationFrame(this.drawLoop)
         },
         updateSoundmeter: async function() {
-            const localStreamId = app.state.upMedia.local
-            const stream = app.connection.up[localStreamId].stream
+            const stream = app.streams[this.streamId]
 
             const mediaStreamSource = this.audioContext.createMediaStreamSource(stream)
             meter = createAudioMeter(this.audioContext)

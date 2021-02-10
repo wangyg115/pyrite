@@ -68,7 +68,7 @@
                     :options="state.devices.audio"
                 />
 
-                <SoundMeter v-if="state.mediaReady" />
+                <SoundMeter v-if="streamId" :stream-id="streamId" />
 
                 <FieldCheckbox
                     v-model="state.blackboardMode"
@@ -114,6 +114,14 @@ export default {
                 {id: 'unlimited', name: this.$t('Unlimited')}
             ],
             state: app.state,
+            streamId: null
+        }
+    },
+    async mounted() {
+        // Not a media stream yet? Create one for the audio settings
+        if (!app.localStream) {
+            await app.addLocalMedia()
+            this.streamId = app.localStream.id
         }
     },
     methods: {
@@ -132,10 +140,7 @@ export default {
             }
         },
         changeAudioSelect() {
-            app.store.save()
-            if (this.state.connected) {
-                app.changePresentation()
-            }
+            app.changePresentation()
         },
         changeFileInput() {
             if(!(this instanceof HTMLInputElement))
@@ -148,13 +153,11 @@ export default {
             this.closeNav()
         },
         changeVideoSelect() {
-            app.store.save()
             if (this.state.connected) {
                 app.changePresentation()
             }
         },
         changeBlackboardbox() {
-            app.store.save()
             app.changePresentation()
         },
         changeRequestSelect() {
@@ -196,3 +199,8 @@ export default {
     }
 }
 </script>
+<style lang="postcss">
+.tabs {
+    padding-left: var(--space-1);
+}
+</style>

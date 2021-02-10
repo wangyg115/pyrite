@@ -47,7 +47,7 @@
     --space-4: calc(var(--spacer) * 8);
     --space-3: calc(var(--spacer) * 6);
     --space-2: calc(var(--spacer) * 4);
-    --space-1: calc(var(--spacer) * 3);
+    --space-1: calc(var(--spacer) * 2);
 }
 
 * {
