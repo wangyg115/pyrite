@@ -1,3 +1,10 @@
+## [1.5.5](https://github.com/garage44/pyrite/compare/v1.5.4...v1.5.5) (2021-02-10)
+
+
+### Bug Fixes
+
+* remove beta branch ([2275943](https://github.com/garage44/pyrite/commit/2275943ed8a8ce48253598c41f2c774bcec51976))
+
 ## [1.5.4](https://github.com/garage44/pyrite/compare/v1.5.3...v1.5.4) (2021-02-10)
 
 

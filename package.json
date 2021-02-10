@@ -1,6 +1,6 @@
 {
   "name": "@garage44/pyrite",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "publishConfig": {
     "access": "public"
   },
@@ -43,7 +43,9 @@
     "url": "https://github.com/garage44/pyrite.git"
   },
   "release": {
-    "branches": ["main"],
+    "branches": [
+      "main"
+    ],
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
