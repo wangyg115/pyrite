@@ -5,6 +5,7 @@
         <div class="input-container">
             <div class="button-wrapper">
                 <input
+                    v-if="options && options.length"
                     :id="name"
                     ref="input"
                     v-model="searchQuery"

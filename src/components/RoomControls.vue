@@ -63,7 +63,6 @@ export default {
                 app.addFileMedia(file)
             } else {
                 this.playFiles = []
-                console.log("plAYFILES", this.playFiles)
                 app.delUpMediaKind('video')
             }
         },

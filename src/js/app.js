@@ -11,27 +11,22 @@ import router from '../js/router.js'
 import Store from './store.js'
 
 
-/* media names might not be available before we call getDisplayMedia.  So
-   we call this twice, the second time to update the menu with user-readable
-   labels. */
-/** @type {boolean} */
-let mediaChoicesDone = false
 let safariScreenshareDone = false
 
 
 class Pyrite {
-    /**
-     * Old start function.
-     */
+
     constructor() {
 
         this.logger = new Logger(this)
         this.logger.setLevel('debug')
 
-        this.router = router
-
         this.env = env
+        this.router = router
         this.protocol = protocol
+
+        this.streams = {}
+
         this.logger.debug('loading store')
         this.store = new Store()
         this.state = this.store.load()
@@ -56,14 +51,9 @@ class Pyrite {
             }
             next()
         })
-
-        this.setMediaChoices(false)
     }
 
 
-    /**
-     * @param {File} file
-     */
     async addFileMedia(file) {
         this.logger.info('add file media')
         let {c, id} = this.connection.newUpStream()
@@ -82,82 +72,83 @@ class Pyrite {
         c.userdata.play = true
     }
 
-    /**
-     * @param {string} [id]
-     */
-    async addLocalMedia(_id) {
-        this.logger.info(`add local media - id: ${_id})`)
-        // An empty string video/audio device may indicate a fake media stream.
-        let audio = this.state.audio.id !== null ? {deviceId: this.state.audio.id} : false
-        let video = this.state.video.id !== null ? {deviceId: this.state.video.id} : false
 
-        if(video) {
+    async addLocalMedia() {
+        await this.setMediaChoices()
+
+        this.logger.info(`addLocalMedia - adding new local stream`)
+        // An empty string video/audio device may indicate a fake media stream.
+        const selecteAudioDevice = this.state.audio.id !== null ? {deviceId: this.state.audio.id} : false
+        const selectedVideoDevice = this.state.video.id !== null ? {deviceId: this.state.video.id} : false
+
+        const constraints = {
+            audio: selecteAudioDevice !== null,
+            video: selectedVideoDevice !== null,
+        }
+
+        if(selectedVideoDevice) {
             let resolution = this.state.resolution
             if(resolution) {
-                video.width = { ideal: resolution[0] }
-                video.height = { ideal: resolution[1] }
+                selectedVideoDevice.width = { ideal: resolution[0] }
+                selectedVideoDevice.height = { ideal: resolution[1] }
             } else if(this.state.blackboardMode) {
-                video.width = { ideal: 1920, min: 640 }
-                video.height = {ideal: 1080, min: 400 }
+                selectedVideoDevice.width = { ideal: 1920, min: 640 }
+                selectedVideoDevice.height = { ideal: 1080, min: 400 }
             }
         }
 
-        let oldStream = _id && this.connection.up[_id]
-
-        if(!audio && !video) {
-            this.logger.warn('no media')
-            if(oldStream) {
-                this.delUpMedia(oldStream)
-            }
-            return
-        }
-
-        if(oldStream) {
-            this.stopUpMedia(oldStream)
-        }
-        let constraints = {audio: audio !== null, video: video !== null}
-
-        /** @type {MediaStream} */
-        let stream = null
         try {
-            stream = await navigator.mediaDevices.getUserMedia(constraints)
-            this.state.mediaReady = true
+            this.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+            this.streams[this.localStream.id] = this.localStream
         } catch(e) {
             this.displayError(e)
-            if(oldStream) {
-                this.delUpMedia(oldStream)
-            }
             return
         }
+        this.state.mediaReady = true
 
-        this.setMediaChoices(true)
+        if (this.state.connected) {
+            let id = this.findUpMedia('local')
+            let oldStream = id && this.connection.up[id]
 
-        let {c, id} = this.newUpStream(_id)
-        c.kind = 'local'
-        c.stream = stream
-        this.state.upMedia[c.kind].push(id)
-
-        stream.getTracks().forEach(t => {
-            c.labels[t.id] = t.kind
-            if(t.kind == 'audio') {
-                if(this.state.localMute) {
-                    this.logger.info('muting local stream')
-                    t.enabled = false
+            if(!selecteAudioDevice && !selectedVideoDevice) {
+                this.logger.warn('addLocalMedia - no media; aborting')
+                if(oldStream) {
+                    this.delUpMedia(oldStream)
                 }
-            } else if(t.kind == 'video') {
-                if(this.state.blackboardMode) {
-                    /** @ts-ignore */
-                    t.contentHint = 'detail'
-                }
+                return
             }
-            c.pc.addTrack(t, stream)
-        })
+
+            if(oldStream) {
+                this.logger.debug(`addLocalMedia - removing old stream first`)
+                this.stopUpMedia(oldStream)
+            }
+
+            let {c, streamId} = this.newUpStream(id)
+            c.kind = 'local'
+            c.stream = this.localStream
+            this.state.upMedia[c.kind].push(streamId)
+
+            this.localStream.getTracks().forEach(t => {
+                c.labels[t.id] = t.kind
+                if(t.kind == 'audio') {
+                    if(this.state.localMute) {
+                        this.logger.info('muting local stream')
+                        t.enabled = false
+                    }
+                } else if(t.kind == 'video') {
+                    if(this.state.blackboardMode) {
+                        /** @ts-ignore */
+                        t.contentHint = 'detail'
+                    }
+                }
+                c.pc.addTrack(t, this.localStream)
+            })
+        }
     }
 
 
     async addShareMedia() {
         this.logger.info('add share media')
-        /** @type {MediaStream} */
         let stream = null
         try {
             if(!('getDisplayMedia' in navigator.mediaDevices))
@@ -203,26 +194,18 @@ class Pyrite {
     }
 
 
-    /**
-     * @param {string} id
-     */
     delMedia(id) {
         this.logger.debug(`[delMedia] remove stream ${id} from state`)
         this.state.streams.splice(this.state.streams.findIndex(i => i.id === id), 1)
     }
 
 
-    /**
-     * @param {string} key
-     */
     delSetting(key) {
         this.state[key] = null
         this.store.save()
     }
 
-    /**
-     * @param {Stream} c
-     */
+
     delUpMedia(c) {
         this.stopUpMedia(c)
         this.delMedia(c.id)
@@ -232,15 +215,10 @@ class Pyrite {
     }
 
 
-    /**
-     * delUpMediaKind reoves all up media of the given kind.  If kind is
-     * falseish, it removes all up media.
-     * @param {string} kind
-    */
     delUpMediaKind(kind) {
         this.logger.debug(`remove all up media from kind: ${kind}`)
         for(let id in this.connection.up) {
-            let c = this.connection.up[id]
+            const c = this.connection.up[id]
             if(kind && c.kind != kind) {
                 continue
             }
@@ -600,21 +578,8 @@ class Pyrite {
         }
     }
 
-
-    /**
-    * @param{boolean} done
-    */
-    async setMediaChoices(done) {
-        if(mediaChoicesDone)
-            return
-
-        let devices = []
-        try {
-            devices = await navigator.mediaDevices.enumerateDevices()
-        } catch(e) {
-            console.error(e)
-            return
-        }
+    async setMediaChoices() {
+        let devices = await navigator.mediaDevices.enumerateDevices()
 
         let cn = 1, mn = 1
 
@@ -645,7 +610,6 @@ class Pyrite {
         }
 
         this.logger.info(`setMediaChoices: video(${this.state.devices.video.length}) audio(${this.state.devices.audio.length})`)
-        mediaChoicesDone = done
     }
 
 
