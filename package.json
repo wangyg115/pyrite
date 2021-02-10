@@ -5,7 +5,7 @@
     "access": "public"
   },
   "scripts": {
-    "deploy": "npm run build;cd dist;zip -r pyrite.zip .;curl -X POST -F 'distFile=@pyrite.zip' $RAND_ENDPOINT -H \"Authorization: Basic $(echo \"$RAND_USER:$RAND_PW\" | base64)\"",
+    "deploy": "npm run build;cd dist;zip -r pyrite.zip .;curl -X POST -F \"distChannel=$RAND_CHANNEL\" -F 'distFile=@pyrite.zip' $RAND_ENDPOINT -H \"Authorization: Basic $(echo $RAND_USER:$RAND_PW | base64)\"",
     "dev": "vite",
     "build": "vite build",
     "galene": "docker-compose -f docker/docker-compose.yml --project-directory ./docker up --remove-orphans",
