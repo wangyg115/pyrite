@@ -1,12 +1,14 @@
 # Pyrite
 
-Pyrite is an alternative frontend for [Galène](https://github.com/jech/galene)
-that is based on the [original frontend](https://github.com/jech/galene/blob/master/static/galene.js), using the reference [client protocol](https://github.com/jech/galene/blob/master/static/protocol.js). Pyrite's purpose is to provide a reactive, component-based
-application with at least the same feature-set as the original frontend.
+![Pyrite](https://pyrite.video/screenshots/pyrite-1.5.png)
 
-![Pyrite](https://pyrite.video/screenshots/pyrite-1.1.png)
+Pyrite is a video conferencing PWA for the [Galène](https://github.com/jech/galene)
+Video Conferencing server. Pyrite's purpose is to develop an extendable reactive,
+component-based (Vue3/Vitejs) frontend that has the same rich feature-set as the
+original frontend, while extending it with features like i18n, customizable theming,
+PWA modus, advanced device config, context-aware UX controls and more.
 
-## Getting started
+## Local setup
 
 **requirements:** Docker, Docker-compose & Node.js
 
@@ -34,4 +36,4 @@ chromium --use-fake-device-for-media-stream --enable-experimental-web-platform-f
 ## Deployment
 
 * Setup the [Galène SFU](https://github.com/garage44/pyrite/wiki/SFU-Config)
-* Setup a NGINX [proxy](https://github.com/garage44/pyrite/wiki/Proxy-Config) for your domain
+* Setup a [proxy](https://github.com/garage44/pyrite/wiki/Proxy-Config) for your domain
