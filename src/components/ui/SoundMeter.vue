@@ -9,7 +9,6 @@ function volumeAudioProcess(event) {
     var sum = 0
     var x
 
-    // Do a root-mean-square on the samples: sum up the squares...
     for (var i = 0; i < bufLength; i++) {
         x = buf[i]
         if (Math.abs(x) >= this.clipLevel) {
@@ -19,12 +18,7 @@ function volumeAudioProcess(event) {
         sum += x * x
     }
 
-    // ... then take the square root of the sum.
     var rms = Math.sqrt(sum / bufLength)
-
-    // Now smooth this out with the averaging factor applied
-    // to the previous sample - take the max here because we
-    // want "fast attack, slow release."
     this.volume = Math.max(rms, this.volume * this.averaging)
 }
 
@@ -43,7 +37,9 @@ function createAudioMeter(audioContext, clipLevel, averaging, clipLag) {
     processor.connect(audioContext.destination)
     processor.checkClipping = function() {
         if (!this.clipping) return false
-        if ((this.lastClip + this.clipLag) < window.performance.now()) this.clipping = false
+        if ((this.lastClip + this.clipLag) < window.performance.now()) {
+            this.clipping = false
+        }
         return this.clipping
     }
 
@@ -57,10 +53,17 @@ function createAudioMeter(audioContext, clipLevel, averaging, clipLag) {
 
 
 let meter = null
-let canvasContext, canvasElement
+
 
 export default {
     props: {
+        stream: {
+            required: true,
+            type: Object
+        },
+        /**
+         * Stream id is passed to be able to react to stream changes.
+         */
         streamId: {
             required: true,
             type: String
@@ -71,52 +74,43 @@ export default {
             state: app.state
         }
     },
+    watch: {
+        streamId(streamId) {
+            this.updateSoundmeter()
+        }
+    },
     unmounted: function() {
         // Stop the volume meter.
         window.cancelAnimationFrame(this.rafID)
     },
     mounted: async function() {
-        canvasElement = this.$refs.meter
-        canvasContext = canvasElement.getContext('2d')
+        this.canvasContext = this.$refs.meter.getContext('2d')
         const computedStyle = getComputedStyle(document.querySelector('.theme'))
         this.colors = {
             primary: computedStyle.getPropertyValue('--primary-color'),
             warning: computedStyle.getPropertyValue('--warning-color'),
         }
 
-        try {
-            this.audioContext = new AudioContext()
-
-            const stream = app.streams[this.streamId]
-            const mediaStreamSource = this.audioContext.createMediaStreamSource(stream)
-            window.foo = this.audioContext
-            meter = createAudioMeter(this.audioContext)
-            mediaStreamSource.connect(meter)
-            this.drawLoop()
-             this.updateSoundmeter()
-
-        } catch (err) {
-            console.error(err)
-        }
+        this.updateSoundmeter()
+        this.drawLoop()
     },
     methods: {
         drawLoop: function() {
-            canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height)
-            if (meter.checkClipping()) {
-                canvasContext.fillStyle = this.colors.warning
+            this.canvasContext.clearRect(0, 0, this.$refs.meter.width, this.$refs.meter.height)
+            if (this.meter.checkClipping()) {
+               this.canvasContext.fillStyle = this.colors.warning
             } else {
-                canvasContext.fillStyle = this.colors.primary
+                this.canvasContext.fillStyle = this.colors.primary
             }
 
-            canvasContext.fillRect(0, 0, meter.volume * canvasElement.width * 2.4, canvasElement.height)
+            this.canvasContext.fillRect(0, 0, this.meter.volume * this.$refs.meter.width * 2.4, this.$refs.meter.height)
             this.rafID = window.requestAnimationFrame(this.drawLoop)
         },
         updateSoundmeter: async function() {
-            const stream = app.streams[this.streamId]
-
-            const mediaStreamSource = this.audioContext.createMediaStreamSource(stream)
-            meter = createAudioMeter(this.audioContext)
-            mediaStreamSource.connect(meter)
+            this.audioContext = new AudioContext()
+            const mediaStreamSource = this.audioContext.createMediaStreamSource(this.stream)
+            this.meter = createAudioMeter(this.audioContext)
+            mediaStreamSource.connect(this.meter)
         },
     }
 }
@@ -124,7 +118,7 @@ export default {
 </script>
 <style lang="postcss">
 canvas {
-    border: 1px solid var(--grey-300);
+    border: 1px solid var(--grey-200);
     height: var(--spacer);
     margin: var(--spacer);
     max-width: 300px;

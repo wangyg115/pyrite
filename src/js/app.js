@@ -25,8 +25,6 @@ class Pyrite {
         this.router = router
         this.protocol = protocol
 
-        this.streams = {}
-
         this.logger.debug('loading store')
         this.store = new Store()
         this.state = this.store.load()
@@ -74,16 +72,21 @@ class Pyrite {
 
 
     async addLocalMedia() {
+        if (!this.state.connected && this.localStream) {
+            this.delLocalMedia()
+        }
+
         await this.setMediaChoices()
 
-        this.logger.info(`addLocalMedia - adding new local stream`)
-        // An empty string video/audio device may indicate a fake media stream.
         const selecteAudioDevice = this.state.audio.id !== null ? {deviceId: this.state.audio.id} : false
         const selectedVideoDevice = this.state.video.id !== null ? {deviceId: this.state.video.id} : false
 
+        // Verify whether the local mediastream is using the right devices.
+        this.logger.debug(`addLocalMedia ${this.state.audio.name} / ${this.state.video.name}`)
+
         const constraints = {
-            audio: selecteAudioDevice !== null,
-            video: selectedVideoDevice !== null,
+            audio: selecteAudioDevice,
+            video: selectedVideoDevice,
         }
 
         if(selectedVideoDevice) {
@@ -99,16 +102,17 @@ class Pyrite {
 
         try {
             this.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-            this.streams[this.localStream.id] = this.localStream
+            this.state.mediaReady = true
         } catch(e) {
             this.displayError(e)
             return
         }
-        this.state.mediaReady = true
+
 
         if (this.state.connected) {
             let id = this.findUpMedia('local')
             let oldStream = id && this.connection.up[id]
+
 
             if(!selecteAudioDevice && !selectedVideoDevice) {
                 this.logger.warn('addLocalMedia - no media; aborting')
@@ -194,6 +198,21 @@ class Pyrite {
     }
 
 
+    delLocalMedia() {
+        if (!this.localStream) return
+
+        this.logger.info('delete local media share media')
+        const stream = this.localStream
+        const tracks = stream.getTracks()
+        tracks.forEach(track => {
+            this.logger.debug(`stopping track ${track.id}`)
+            track.stop()
+        })
+
+        delete this.localStream
+    }
+
+
     delMedia(id) {
         this.logger.debug(`[delMedia] remove stream ${id} from state`)
         this.state.streams.splice(this.state.streams.findIndex(i => i.id === id), 1)
@@ -233,7 +252,9 @@ class Pyrite {
 
     disconnect() {
         this.state.users = []
+        this.state.streams = []
         this.connection.close()
+        this.delLocalMedia()
     }
 
 
@@ -617,24 +638,15 @@ class Pyrite {
      * @param {Stream} c
      */
     stopUpMedia(c) {
-        if(!c.stream) {
-            this.logger.warn('no stream to stop')
-            return
-        }
+        this.logger.debug(`stopping up-stream ${c.id}`)
         c.stream.getTracks().forEach(t => {
-            try {
-                this.logger.debug(`stopping track ${t.id}`)
-                t.stop()
-            } catch(e) {
-                console.trace(e)
-                // silence error
-            }
+            t.stop()
         })
 
-        this.logger.debug(`removing upmedia ${c.id}`)
         this.state.upMedia[c.kind].splice(this.state.upMedia[c.kind].indexOf(c.id), 1)
-    }
+        this.state.streams.splice(this.state.streams.findIndex(i => i.id === c.id), 1)
 
+    }
 }
 
 export default Pyrite

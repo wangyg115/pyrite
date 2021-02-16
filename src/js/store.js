@@ -58,7 +58,7 @@ class Store {
     load() {
         let restoredState
         try {
-            restoredState = JSON.parse(sessionStorage.getItem('store'))
+            restoredState = JSON.parse(localStorage.getItem('store'))
         } catch (err) {
             restoredState = {}
         }
@@ -68,7 +68,7 @@ class Store {
     }
 
     save() {
-        sessionStorage.setItem('store', JSON.stringify(persistantState))
+        localStorage.setItem('store', JSON.stringify(persistantState))
     }
 }
 

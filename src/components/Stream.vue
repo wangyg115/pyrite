@@ -104,11 +104,18 @@ export default {
         this.muted = this.media.muted
 
         if (this.peer.src) {
-            let url = URL.createObjectURL(this.peer.src)
-            this.$refs.media.src = url
-            this.stream = this.$refs.media.captureStream()
-            const c = app.connection.up[this.peer.id]
-            c.stream = this.stream
+            if (this.peer.src instanceof File) {
+                let url = URL.createObjectURL(this.peer.src)
+                this.$refs.media.src = url
+                this.stream = this.$refs.media.captureStream()
+                const c = app.connection.up[this.peer.id]
+                c.stream = this.stream
+            } else if (this.peer.src instanceof MediaStream) {
+                console.log("MEDIA STREAM")
+                this.$refs.media.srcObject = this.peer.src
+                this.stream = this.peer.src
+            }
+
 
             this.stream.onaddtrack = (e) => {
                 let t = e.track
