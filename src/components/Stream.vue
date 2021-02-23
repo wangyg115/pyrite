@@ -1,11 +1,14 @@
 <template>
     <div class="c-stream">
-        <div class="controls">
+        <div v-if="controls" class="controls">
             <button class="btn btn-menu tooltip" :data-tooltip="$t('picture-in-picture')" @click="setPip">
                 <Icon class="icon-mini" name="pip" />
             </button>
             <button class="btn btn-menu tooltip" :data-tooltip="$t('fullscreen')" @click="setFullscreen">
                 <Icon class="icon-mini" name="fullscreen" />
+            </button>
+            <button class="btn btn-menu no-feedback tooltip" :data-tooltip="`${$t('audio volume')} ${volume}`">
+                <FieldSlider v-model="volume" />
             </button>
         </div>
         <video
@@ -16,35 +19,6 @@
             :muted="peer.isUp"
             :playsinline="true"
         />
-        <!-- <div class="video-controls">
-            <div class="controls-button controls-left">
-                <FieldSlider v-model="volume" />
-                <input
-                    orient="vertical" step="5"
-                    type="range"
-                    @change="setVolume"
-                >
-            </div>
-            <div class="controls-button controls-right">
-                <span
-                    v-if="pipEnabled" class="pip"
-                    title="Picture In Picture"
-                    @click="setPip"
-                >
-                    <i aria-hidden="true" class="far fa-clone" />
-                </span>
-                <span
-                    v-if="fullscreenEnabled" class="fullscreen"
-                    title="Fullscreen"
-                    @click="setFullscreen"
-                >
-                    <i aria-hidden="true" class="fas fa-expand" />
-                </span>
-            </div>
-        </div> -->
-        <!-- <div class="label">
-            {{ label }}
-        </div> -->
     </div>
 </template>
 
@@ -55,6 +29,10 @@ const activityDetectionThreshold = 0.2
 
 export default {
     props: {
+        controls: {
+            type: Boolean,
+            default() {return true}
+        },
         peer: {
             type: Object,
             required: true
@@ -69,17 +47,26 @@ export default {
             pipActive: false,
             stream: null,
             state: app.state,
-            volume: 1
+            volume: 100
         }
     },
     computed: {
         fullscreenEnabled() {
-            if (this.media) return this.media.requestFullscreen
+            if (this.$refs.media.src) {
+                return this.$refs.media.src.requestFullscreen
+            }
             return false
         },
         pipEnabled() {
-            if (this.media) return this.media.requestPictureInPicture
+            if (this.$refs.media.src) {
+                return this.$refs.media.src.requestPictureInPicture
+            }
             return false
+        }
+    },
+    watch: {
+        volume(volume) {
+            this.$refs.media.src.volume = volume / 100
         }
     },
     beforeUnmount() {
@@ -91,17 +78,10 @@ export default {
         this.$refs.media.srcObject = null
     },
     mounted() {
-        this.media = this.$refs.media
+        this.$refs.media.addEventListener('enterpictureinpicture', () => { this.pipActive = true })
+        this.$refs.media.addEventListener('leavepictureinpicture', () => { this.pipActive = false })
 
-        this.$refs.media.addEventListener('enterpictureinpicture', () => {
-            this.pipActive = true
-        })
-
-        this.$refs.media.addEventListener('leavepictureinpicture', () => {
-            this.pipActive = false
-        })
-
-        this.muted = this.media.muted
+        this.muted = this.$refs.media.src.muted
 
         if (this.peer.src) {
             if (this.peer.src instanceof File) {
@@ -111,7 +91,6 @@ export default {
                 const c = app.connection.up[this.peer.id]
                 c.stream = this.stream
             } else if (this.peer.src instanceof MediaStream) {
-                console.log("MEDIA STREAM")
                 this.$refs.media.srcObject = this.peer.src
                 this.stream = this.peer.src
             }
@@ -200,7 +179,6 @@ export default {
                 return
 
             let c = this
-
             let maxEnergy = 0
 
             c.pc.getReceivers().forEach(r => {
@@ -268,9 +246,6 @@ export default {
                     delete(this.stream.userdata.play)
                 }
             }
-        },
-        setVolume(e) {
-            this.media.volume = parseInt(e.target.value, 10) / 100
         },
         toggleMuteVolume() {
             this.muted = !this.muted

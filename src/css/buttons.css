@@ -54,6 +54,18 @@
         }
     }
 
+    &.no-feedback {
+
+        &.active,
+        &:not([disabled]):hover {
+            border-bottom: var(--border) solid transparent;
+
+            &::before {
+                transform: scaleX(0);
+            }
+        }
+    }
+
     &.btn-widget {
         align-items: center;
         background: var(--grey-500);

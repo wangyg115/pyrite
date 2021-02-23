@@ -1,7 +1,7 @@
 <template>
     <section v-if="$route.params.tabId === 'devices'" class="tab-content active">
         <div id="mediaoptions">
-            <Stream v-if="peer" :peer="peer" />
+            <Stream v-if="peer" :controls="false" :peer="peer" />
             <FieldSelect
                 v-model="state.video"
                 :help="$t('select the video camera to use')"
