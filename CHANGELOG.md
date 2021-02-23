@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/garage44/pyrite/compare/v1.6.0...v1.7.0) (2021-02-23)
+
+
+### Features
+
+* add volume meter & device preview ([24f8856](https://github.com/garage44/pyrite/commit/24f8856c5e2a0efcedbc073d8e2ef1ae58aef2e3))
+
 # [1.6.0](https://github.com/garage44/pyrite/compare/v1.5.5...v1.6.0) (2021-02-10)
 
 
