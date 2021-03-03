@@ -88,17 +88,16 @@ export default {
                 let url = URL.createObjectURL(this.peer.src)
                 this.$refs.media.src = url
                 this.stream = this.$refs.media.captureStream()
-                const c = app.connection.up[this.peer.id]
-                c.stream = this.stream
+                this.glnStream = app.connection.up[this.peer.id]
+                this.glnStream.stream = this.stream
             } else if (this.peer.src instanceof MediaStream) {
                 this.$refs.media.srcObject = this.peer.src
                 this.stream = this.peer.src
             }
 
-
             this.stream.onaddtrack = (e) => {
                 let t = e.track
-                if(t.kind === 'audio') {
+                if(e.track.kind === 'audio') {
                     let presenting = !!app.findUpMedia('local')
 
                     if(presenting && !this.state.localMute) {
@@ -107,31 +106,30 @@ export default {
                     }
                 }
 
-                c.pc.addTrack(t, this.stream)
-                c.labels[t.id] = t.kind
+                this.glnStream.pc.addTrack(t, this.stream)
+                this.glnStream.labels[t.id] = t.kind
             }
 
             this.stream.onremovetrack = (e) => {
-                let t = e.track
-                delete(c.labels[t.id])
+                delete(this.glnStream.labels[e.track.id])
 
                 /** @type {RTCRtpSender} */
                 let sender
-                c.pc.getSenders().forEach(s => {
-                    if(s.track === t) {
+                this.glnStream.pc.getSenders().forEach(s => {
+                    if(s.track === e.track) {
                         sender = s
                     }
                 })
                 if(sender) {
-                    c.pc.removeTrack(sender)
+                    this.glnStream.pc.removeTrack(sender)
                 } else {
                     console.warn('Removing unknown track')
                 }
 
-                if(Object.keys(c.labels).length === 0) {
+                if(Object.keys(this.glnStream.labels).length === 0) {
                     this.stream.onaddtrack = null
                     this.stream.onremovetrack == null
-                    app.delUpMedia(c)
+                    app.stopUpMedia(this.glnStream)
                 }
             }
         }
