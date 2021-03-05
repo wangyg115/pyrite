@@ -3,7 +3,7 @@
         orient="vertical" step="1"
         type="range"
         :value="modelValue"
-        @change="updateModel($event)"
+        @input="updateModel($event)"
     >
 </template>
 <script>
