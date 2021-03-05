@@ -79,13 +79,13 @@ export default {
                 }
             }
         },
-        toggleShare() {
+        async toggleShare() {
             if (this.state.upMedia.screenshare.length) {
-                app.logger.debug('switching screenshare off')
-                app.delUpMediaKind('screenshare')
+                app.logger.debug('turn screenshare stream off')
+                app.stopUpMedia(this.screenStream)
             } else {
-                app.logger.debug('switching screenshare on')
-                app.addShareMedia()
+                app.logger.debug('turn screenshare stream on')
+                this.screenStream = await app.addShareMedia()
             }
         }
     }

@@ -186,6 +186,8 @@ class Pyrite {
             }
             c.labels[t.id] = 'screenshare'
         })
+
+        return c
     }
 
 
