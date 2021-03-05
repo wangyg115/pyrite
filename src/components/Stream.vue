@@ -97,15 +97,6 @@ export default {
 
             this.stream.onaddtrack = (e) => {
                 let t = e.track
-                if(e.track.kind === 'audio') {
-                    let presenting = !!app.findUpMedia('local')
-
-                    if(presenting && !this.state.localMute) {
-                        app.muteLocalTracks(true)
-                        app.displayWarning('You have been muted')
-                    }
-                }
-
                 this.glnStream.pc.addTrack(t, this.stream)
                 this.glnStream.labels[t.id] = t.kind
             }

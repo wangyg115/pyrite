@@ -545,8 +545,7 @@ class Pyrite {
             case 'mute':
                 if(privileged) {
                     this.muteLocalTracks(true)
-                    let by = username ? ' by ' + username : ''
-                    this.displayWarning(`You have been muted${by}`)
+                    this.displayWarning(`You have been muted${username ? ' by ' + username : ''}`)
                 } else {
                     console.error(`Got unprivileged message of kind ${kind}`)
                 }
