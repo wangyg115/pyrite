@@ -52,21 +52,21 @@ export default {
     },
     computed: {
         fullscreenEnabled() {
-            if (this.$refs.media.src) {
-                return this.$refs.media.src.requestFullscreen
+            if (this.$refs.media) {
+                return this.$refs.media.requestFullscreen
             }
             return false
         },
         pipEnabled() {
-            if (this.$refs.media.src) {
-                return this.$refs.media.src.requestPictureInPicture
+            if (this.$refs.media) {
+                return this.$refs.media.requestPictureInPicture
             }
             return false
         }
     },
     watch: {
         volume(volume) {
-            this.$refs.media.src.volume = volume / 100
+            this.$refs.media.volume = volume / 100
         }
     },
     beforeUnmount() {
@@ -81,7 +81,7 @@ export default {
         this.$refs.media.addEventListener('enterpictureinpicture', () => { this.pipActive = true })
         this.$refs.media.addEventListener('leavepictureinpicture', () => { this.pipActive = false })
 
-        this.muted = this.$refs.media.src.muted
+        this.muted = this.$refs.media.muted
 
         if (this.peer.src) {
             if (this.peer.src instanceof File) {
@@ -224,11 +224,11 @@ export default {
             if (this.pipActive) {
                 document.exitPictureInPicture()
             } else {
-                this.media.requestPictureInPicture()
+                this.$refs.media.requestPictureInPicture()
             }
         },
         setFullscreen() {
-            this.media.requestFullscreen()
+            this.$refs.media.requestFullscreen()
         },
         setMediaStatus() {
             app.logger.debug('setMediaStatus')
@@ -247,7 +247,7 @@ export default {
         },
         toggleMuteVolume() {
             this.muted = !this.muted
-            this.media.muted = this.muted
+            this.$refs.media.muted = this.muted
         }
     }
 }
