@@ -108,14 +108,10 @@ export default {
                 let sender
                 this.glnStream.pc.getSenders().forEach(s => {
                     if(s.track === e.track) {
-                        sender = s
+                        app.logger.info('removing sender track')
+                        this.glnStream.pc.removeTrack(sender)
                     }
                 })
-                if(sender) {
-                    this.glnStream.pc.removeTrack(sender)
-                } else {
-                    console.warn('Removing unknown track')
-                }
 
                 if(Object.keys(this.glnStream.labels).length === 0) {
                     this.stream.onaddtrack = null
