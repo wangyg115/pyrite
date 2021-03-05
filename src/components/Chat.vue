@@ -32,7 +32,7 @@
             <textarea
                 v-model="rawMessage"
                 autofocus
-                :placeholder="inputPlaceholder"
+                :placeholder="$t('Type /help for help')"
                 @keydown.enter="$event.preventDefault()"
                 @keyup.enter="sendMessage"
             />
@@ -46,7 +46,6 @@ import { nextTick } from 'vue'
 export default {
     data() {
         return {
-            inputPlaceholder: this.$t('Type /help for help'),
             rawMessage: '',
             state: app.state,
         }
@@ -60,9 +59,6 @@ export default {
     mounted() {
         app.connection.onchat = this.onChat.bind(this)
         app.connection.onclearchat = this.clearChat.bind(this)
-        setTimeout(() => {
-            this.inputPlaceholder = this.$t('Type a message to chat')
-        }, 8000)
     },
     methods: {
         onChat(peerId, dest, nick, time, privileged, kind, message) {

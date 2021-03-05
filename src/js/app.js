@@ -110,9 +110,8 @@ class Pyrite {
 
 
         if (this.state.connected) {
-            let id = this.findUpMedia('local')
-            let oldStream = id && this.connection.up[id]
-
+            let localStreamId = this.findUpMedia('local')
+            let oldStream = localStreamId && this.connection.up[localStreamId]
 
             if(!selecteAudioDevice && !selectedVideoDevice) {
                 this.logger.warn('addLocalMedia - no media; aborting')
@@ -127,10 +126,10 @@ class Pyrite {
                 this.stopUpMedia(oldStream)
             }
 
-            let {c, streamId} = this.newUpStream(id)
+            let {c, id} = this.newUpStream(localStreamId)
             c.kind = 'local'
             c.stream = this.localStream
-            this.state.upMedia[c.kind].push(streamId)
+            this.state.upMedia[c.kind].push(id)
 
             this.localStream.getTracks().forEach(t => {
                 c.labels[t.id] = t.kind
