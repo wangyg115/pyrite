@@ -7,7 +7,7 @@
             <button class="btn btn-menu tooltip" :data-tooltip="$t('fullscreen')" @click="setFullscreen">
                 <Icon class="icon-mini" name="fullscreen" />
             </button>
-            <button class="btn btn-menu no-feedback tooltip" :data-tooltip="`${$t('audio volume')} ${volume}`">
+            <button v-if="hasAudio" class="btn btn-menu no-feedback tooltip" :data-tooltip="`${$t('audio volume')} ${volume}`">
                 <FieldSlider v-model="volume" />
             </button>
         </div>
@@ -40,6 +40,7 @@ export default {
     },
     data() {
         return {
+            hasAudio: false,
             label: '',
             media: null,
             mediaFailed: false,
@@ -133,7 +134,12 @@ export default {
             this.stream.onstats = this.gotDownStats
 
             this.stream.ondowntrack = (track, transceiver, label, stream) => {
-                app.logger.debug(`stream event - ondowntrack [${this.stream.id}]`)
+                app.logger.debug(`stream ondowntrack - [${this.stream.id}]`)
+                // An incoming audio-track; enable volume controls.
+                if (track.kind === 'audio') {
+                    app.logger.debug(`stream ondowntrack - enable audio controls`)
+                    this.hasAudio = true
+                }
                 this.$refs.media.srcObject = this.stream.stream
                 this.$refs.media.play()
             }
