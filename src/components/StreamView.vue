@@ -27,11 +27,6 @@ export default {
             classes[`grid-${this.state.streams.length}`] = true
             return classes
         }
-    },
-    watch: {
-        'state.streams'() {
-            console.log('PEERS CHANGED',this.state.streams)
-        }
     }
 }
 </script>

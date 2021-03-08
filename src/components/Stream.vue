@@ -11,14 +11,19 @@
                 <FieldSlider v-model="volume" />
             </button>
         </div>
-        <video
-            ref="media"
-            :autoplay="true"
-            class="media"
-            :class="{'media-failed': mediaFailed, mirror: peer.mirror,}"
-            :muted="peer.isUp"
-            :playsinline="true"
-        />
+        <div class="video-container">
+            <video
+                ref="media"
+                :autoplay="true"
+                class="media"
+                :class="{'media-failed': mediaFailed, mirror: peer.mirror,}"
+                :muted="peer.isUp"
+                :playsinline="true"
+            />
+            <div class="about">
+                {{ label }}
+            </div>
+        </div>
     </div>
 </template>
 
@@ -123,13 +128,16 @@ export default {
         }
 
         else if (this.peer.isUp) {
-            this.$refs.media.srcObject = app.connection.up[this.peer.id].stream
+            this.glnStream = app.connection.up[this.peer.id]
+            this.$refs.media.srcObject = this.glnStream.stream
             this.stream = app.connection.up[this.peer.id]
             this.stream.onstats = this.gotUpStats.bind(this, this.stream)
             this.stream.setStatsInterval(2000)
         } else {
             // Downstream:
-            this.$refs.media.srcObject = app.connection.down[this.peer.id].stream
+            this.glnStream = app.connection.down[this.peer.id]
+            this.label = this.glnStream.username
+            this.$refs.media.srcObject = this.glnStream.stream
             this.stream = app.connection.down[this.peer.id]
             this.stream.onstats = this.gotDownStats
 
@@ -259,11 +267,24 @@ export default {
         z-index: 1000;
     }
 
-    & video {
-        height: 100%;
+    & .video-container {
+        /* height: 100%;
         object-fit: cover;
-        width: 100%;
-    }
+        width: 100%; */
 
+        & video {
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        & .about {
+            background: rgba(0, 0, 0, 0.5);
+            bottom: 0;
+            padding: var(--spacer);
+            position: absolute;
+            right: 0;
+        }
+    }
 }
 </style>

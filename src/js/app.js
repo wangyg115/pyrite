@@ -17,7 +17,6 @@ let safariScreenshareDone = false
 class Pyrite {
 
     constructor() {
-
         this.logger = new Logger(this)
         this.logger.setLevel('debug')
 
