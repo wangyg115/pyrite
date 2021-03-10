@@ -41,7 +41,6 @@ export default {
             // Used to undo the action that is triggered by
             // adding one or more files.
             if (this.modelValue.length) {
-                console.log('RESET')
                 e.preventDefault()
                 this.$refs.input.value = ''
                 this.$emit('file', null)

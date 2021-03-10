@@ -70,7 +70,6 @@ export default {
         if (!this.state.connected) {
             app.delLocalMedia()
         }
-        console.log('UNMOUNTE')
     }
 }
 </script>

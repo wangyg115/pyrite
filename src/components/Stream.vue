@@ -1,16 +1,5 @@
 <template>
     <div class="c-stream">
-        <div v-if="controls" class="controls">
-            <button class="btn btn-menu tooltip" :data-tooltip="$t('picture-in-picture')" @click="setPip">
-                <Icon class="icon-mini" name="pip" />
-            </button>
-            <button class="btn btn-menu tooltip" :data-tooltip="$t('fullscreen')" @click="setFullscreen">
-                <Icon class="icon-mini" name="fullscreen" />
-            </button>
-            <button v-if="hasAudio" class="btn btn-menu no-feedback tooltip" :data-tooltip="`${$t('audio volume')} ${volume}`">
-                <FieldSlider v-model="volume" />
-            </button>
-        </div>
         <div class="video-container">
             <video
                 ref="media"
@@ -20,19 +9,42 @@
                 :muted="peer.isUp"
                 :playsinline="true"
             />
+        </div>
+
+        <div v-if="controls" class="stream-bar">
+            <SoundMeter
+                v-if="hasAudio && stream" class="soundmeter"
+                orientation="vertical"
+                :stream="stream"
+                :stream-id="stream.id"
+            />
+
+            <div class="buttons">
+                <button v-if="hasAudio" class="btn btn-menu no-feedback tooltip" :data-tooltip="`${$t('audio volume')} ${volume}`">
+                    <FieldSlider v-model="volume" />
+                </button>
+                <button class="btn btn-menu tooltip" :data-tooltip="$t('picture-in-picture')" @click="setPip">
+                    <Icon class="icon-mini" name="pip" />
+                </button>
+                <button class="btn btn-menu tooltip" :data-tooltip="$t('fullscreen')" @click="setFullscreen">
+                    <Icon class="icon-mini" name="fullscreen" />
+                </button>
+            </div>
             <div class="about">
                 {{ label }}
             </div>
         </div>
     </div>
 </template>
-
 <script>
+import SoundMeter from './ui/SoundMeter.vue'
+
 const activityDetectionInterval = 200
 const activityDetectionPeriod = 700
 const activityDetectionThreshold = 0.2
 
 export default {
+    components: {SoundMeter},
     props: {
         controls: {
             type: Boolean,
@@ -137,31 +149,34 @@ export default {
             // Downstream:
             this.glnStream = app.connection.down[this.peer.id]
             this.label = this.glnStream.username
-            this.$refs.media.srcObject = this.glnStream.stream
-            this.stream = app.connection.down[this.peer.id]
-            this.stream.onstats = this.gotDownStats
+            this.stream = this.glnStream.stream
+            this.glnStream.onstats = this.gotDownStats
 
-            this.stream.ondowntrack = (track, transceiver, label, stream) => {
-                app.logger.debug(`stream ondowntrack - [${this.stream.id}]`)
+            this.glnStream.ondowntrack = (track, transceiver, label, stream) => {
+                app.logger.debug(`stream ondowntrack - [${this.glnStream.id}]`)
                 // An incoming audio-track; enable volume controls.
                 if (track.kind === 'audio') {
                     app.logger.debug(`stream ondowntrack - enable audio controls`)
                     this.hasAudio = true
                 }
-                this.$refs.media.srcObject = this.stream.stream
-                this.$refs.media.play()
+
+                if (!this.stream) {
+                    this.stream = stream
+                    this.$refs.media.srcObject = this.stream
+                    this.$refs.media.play()
+                }
             }
 
-            this.stream.onlabel = (label) => {
+            this.glnStream.onlabel = (label) => {
                 this.label = label
             }
 
             if(this.state.activityDetection) {
-                this.stream.setStatsInterval(activityDetectionInterval)
+                this.glnStream.setStatsInterval(activityDetectionInterval)
             }
         }
 
-        this.stream.onstatus = (status) => {
+        this.glnStream.onstatus = (status) => {
             this.setMediaStatus()
         }
 
@@ -256,35 +271,42 @@ export default {
 <style lang="postcss">
 .c-stream {
     display: flex;
+    flex-direction: column;
+    margin: var(--spacer);
     position: relative;
 
-    & .controls {
-        background: rgba(0, 0, 0, 0.5);
+    & video {
         height: 100%;
-        left: 0;
-        position: absolute;
-        width: var(--space-4);
-        z-index: 1000;
+        object-fit: cover;
+        width: 100%;
     }
 
-    & .video-container {
-        /* height: 100%;
-        object-fit: cover;
-        width: 100%; */
+    & .stream-bar {
+        align-items: center;
+        background: var(--grey-300);
+        border-top: 1px solid var(--grey-300);
+        display: flex;
 
-        & video {
-            height: 100%;
-            object-fit: cover;
-            width: 100%;
+        & .soundmeter {
+            background: var(--grey-400);
+            border: 0;
+            height: var(--space-4);
+            margin: 0;
+            width: 2px;
+        }
+
+        & .buttons {
+            display: flex;
         }
 
         & .about {
-            background: rgba(0, 0, 0, 0.5);
-            bottom: 0;
-            padding: var(--spacer);
-            position: absolute;
-            right: 0;
+            color: var(--grey-200);
+            flex: 1;
+            font-weight: 600;
+            padding-right: var(--spacer);
+            text-align: right;
         }
     }
+
 }
 </style>

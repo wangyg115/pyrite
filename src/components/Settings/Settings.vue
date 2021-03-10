@@ -59,7 +59,6 @@ export default {
             }
         },
         changeAudioSelect() {
-            console.log('CHANGE AUDIO SELECT')
             app.changePresentation()
         },
         changeVideoSelect() {

@@ -18,24 +18,41 @@ export default {
     components: {Login, Stream},
     data() {
         return {
+            gridMode: 'gallery',
             state: app.state
         }
     },
     computed: {
         gridClass() {
             const classes={}
-            classes[`grid-${this.state.streams.length}`] = true
+            const streams = this.state.streams.length
+            if (streams <= 4) {
+                classes[`${this.gridMode}-4`] = true
+            } else if (streams >= 5 && streams <= 9) {
+                classes[`${this.gridMode}-9`] = true
+            } else if (streams >= 10 && stream <= 20) {
+                classes[`${this.gridMode}-20`] = true
+            } else if (streams > 20) {
+                classes[`${this.gridMode}-x`] = true
+            }
+
             return classes
         }
     }
 }
 </script>
 <style lang="postcss">
+/**
+ * 'gallery'-type grid-system:
+ * 1-4: 2 rows, 2 columns
+ * 5-9: 3 rows, 3 columns
+ * 10-20: 5 rows, 4 columns
+ * > 20: 5 rows, 4 columns + scroll
+*/
+
 .c-stream-view {
     background: var(--grey-500);
     display: grid;
-
-
     padding: var(--spacer);
 
     & .c-stream {
@@ -46,18 +63,20 @@ export default {
         }
     }
 
-    &.grid-1 {
+    &.gallery-4 {
         grid-gap: 1rem;
         grid-template-columns: 50% 50%;
         grid-template-rows: 50% 50%;
-        /* grid-template-columns: repeat(4, 0.5fr); */
     }
 
-    &.grid-2 {
-        grid-template-columns: 50% 50%;
-        grid-template-rows: 50% 50%;
-        /* grid-gap: 1rem; */
-        /* grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); */
+    &.gallery-9 {
+        grid-template-columns: 33.33% 33.33% ;
+        grid-template-rows: 33.33% 33.33%;
+    }
+
+    &.gallery-9 {
+        grid-template-columns: 33.33% 33.33% ;
+        grid-template-rows: 33.33% 33.33%;
     }
 }
 

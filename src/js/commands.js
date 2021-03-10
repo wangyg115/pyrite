@@ -23,7 +23,6 @@
 function findUserId(username) {
     for(const user of app.state.users) {
         if(user.name === username) {
-            console.log('mATCH')
             return user.id
         }
     }
@@ -45,7 +44,6 @@ function userCommand(c, r) {
 
 function userMessage(c, r) {
     let p = parseCommand(r)
-    console.log('pARSED COMMAND', p)
     if(!p[0]) throw new Error(`/${c} requires parameters`)
     let id = findUserId(p[0])
     if(!id) throw new Error(`Unknown user ${p[0]}`)
