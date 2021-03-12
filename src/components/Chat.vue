@@ -150,6 +150,7 @@ export default {
 
 <style lang="postcss">
 .c-chat {
+    border-right: var(--border) solid var(--grey-300);
     display: flex;
     flex-direction: column;
     overflow: auto;
@@ -159,7 +160,7 @@ export default {
     & .messages {
         background: var(--grey-500);
         border-left: var(--border) solid var(--grey-300);
-        border-right: var(--border) solid var(--grey-300);
+
         flex: 1;
         overflow-y: scroll;
         padding-top: calc(var(--spacer) * 2);

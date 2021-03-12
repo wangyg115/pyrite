@@ -281,16 +281,26 @@ export default {
 .c-stream {
     display: flex;
     flex-direction: column;
+    justify-items: center;
     position: relative;
 
-    & video {
-        border: 2px solid var(--grey-400);
-        height: 100%;
-        object-fit: cover;
-        width: 100%;
+    & .video-container {
+        height: 0px;
+        padding-top: 75%;
+        position: relative;
 
-        &.activity-detected {
-            border: 2px solid var(--primary-color);
+        & video {
+            border: 2px solid var(--grey-400);
+            height: 100%;
+            left: 0;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            width: 100%;
+
+            &.activity-detected {
+                border: 2px solid var(--primary-color);
+            }
         }
     }
 

@@ -3,9 +3,9 @@
         <div class="group-controls">
             <button
                 v-if="state.permissions.present"
-                class="btn btn-menu tooltip"
+                class="btn btn-menu tooltip tooltip-left"
                 :class="{active: !state.muted, warning: state.muted}"
-                :data-tooltip="$t('mute microphone')"
+                :data-tooltip="state.muted ? $t('unmute microphone'): $t('mute microphone')"
                 @click="toggleMute"
             >
                 <Icon class="icon-small" name="mic" />
@@ -13,7 +13,7 @@
 
             <button
                 v-if="state.permissions.present"
-                class="btn btn-menu tooltip"
+                class="btn btn-menu tooltip tooltip-left"
                 :class="{active: state.upMedia.local.length, warning: !state.upMedia.local.length}"
                 :data-tooltip="`${$t('switch camera')} ${state.upMedia.local.length ? $t('off') : $t('on')}`"
                 @click="togglePresent"
@@ -23,7 +23,7 @@
 
             <button
                 v-if="state.permissions.present"
-                class="btn btn-menu tooltip"
+                class="btn btn-menu tooltip tooltip-left"
                 :class="{active: state.upMedia.screenshare.length}"
                 :data-tooltip="`${$t('switch screensharing')} ${state.upMedia.screenshare.length ? $t('off') : $t('on')}`"
                 @click="toggleShare"
@@ -33,7 +33,7 @@
 
             <button
                 v-if="state.permissions.present"
-                class="btn btn-menu tooltip"
+                class="btn btn-menu tooltip tooltip-left"
                 :class="{active: state.upMedia.video.length}"
                 :data-tooltip="playFiles"
             >

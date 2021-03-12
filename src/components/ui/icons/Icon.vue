@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import chat from './IconChat.vue'
+import chatClose from './IconChatClose.vue'
 import eye from './IconEye.vue'
 import error from './IconError.vue'
 import fullscreen from './IconFullscreen.vue'
@@ -36,6 +38,8 @@ import webcam from './IconWebcam.vue'
 
 export default {
   components: {
+      chat,
+      chatClose,
       eye,
       error,
       fullscreen,

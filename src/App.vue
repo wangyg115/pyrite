@@ -1,5 +1,5 @@
 <template>
-    <div class="app-view theme theme-dark" :class="{connected: state.connected}">
+    <div class="app-view theme theme-dark" :class="{connected: state.connected, 'chat-active': state.chat.active}">
         <div class="presence">
             <header>
                 <RouterLink class="logo" :to="{name: 'settings', params: {tabId: 'misc'}}">
@@ -14,10 +14,9 @@
         </div>
 
         <GeneralControls />
-        <Chat v-if="state.connected" />
-        <RoomControls v-if="state.connected" />
+        <Chat v-if="state.connected && state.chat.active" />
         <RouterView />
-
+        <RoomControls v-if="state.connected" />
         <Notifications />
     </div>
 </template>
@@ -56,7 +55,11 @@ export default {
     }
 
     &.connected {
-        grid-template-columns: 300px var(--space-4) min-content var(--space-4) 1fr;
+        grid-template-columns: 300px var(--space-4) 1fr var(--space-4);
+
+        &.chat-active {
+            grid-template-columns: 300px var(--space-4) min-content 1fr var(--space-4);
+        }
     }
 }
 </style>

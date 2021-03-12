@@ -1,11 +1,10 @@
 <template>
     <Login v-if="!state.connected" class="content" />
-    <div
-        v-else
-        class="c-stream-view"
-        :class="gridClass"
-    >
+    <div v-else-if="state.streams.length" class="c-stream-view" :class="gridClass">
         <Stream v-for="stream of state.streams" :key="stream.id" :peer="stream" />
+    </div>
+    <div v-else class="stream-placeholder">
+        <icon class="icon" name="groups" />
     </div>
 </template>
 
@@ -50,6 +49,7 @@ export default {
 */
 
 .c-stream-view {
+    align-items: center;
     background: var(--grey-500);
     display: grid;
 
@@ -70,11 +70,20 @@ export default {
         grid-template-columns: 33.33% 33.33% ;
         grid-template-rows: 33.33% 33.33%;
     }
+}
 
-    &.gallery-9 {
-        grid-template-columns: 33.33% 33.33% ;
-        grid-template-rows: 33.33% 33.33%;
+.stream-placeholder {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    width: 100%;
+
+    & svg {
+        height: 30%;
+        width: 30%;
     }
+
 }
 
 </style>
