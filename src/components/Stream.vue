@@ -5,24 +5,14 @@
                 ref="media"
                 :autoplay="true"
                 class="media"
-                :class="{'media-failed': mediaFailed, mirror: peer.mirror,}"
+                :class="{'media-failed': mediaFailed, mirror: peer.mirror, 'activity-detected': activityDetected}"
                 :muted="peer.isUp"
                 :playsinline="true"
             />
         </div>
 
         <div v-if="controls" class="stream-bar">
-            <SoundMeter
-                v-if="hasAudio && stream" class="soundmeter"
-                orientation="vertical"
-                :stream="stream"
-                :stream-id="stream.id"
-            />
-
             <div class="buttons">
-                <button v-if="hasAudio" class="btn btn-menu no-feedback tooltip" :data-tooltip="`${$t('audio volume')} ${volume}`">
-                    <FieldSlider v-model="volume" />
-                </button>
                 <button class="btn btn-menu tooltip" :data-tooltip="$t('picture-in-picture')" @click="setPip">
                     <Icon class="icon-mini" name="pip" />
                 </button>
@@ -33,6 +23,15 @@
             <div class="about">
                 {{ label }}
             </div>
+            <button v-if="hasAudio" class="btn btn-menu no-feedback tooltip tooltip-left" :data-tooltip="`${$t('audio volume')} ${volume}`">
+                <FieldSlider v-model="volume" />
+            </button>
+            <SoundMeter
+                v-if="hasAudio && stream" class="soundmeter"
+                orientation="vertical"
+                :stream="stream"
+                :stream-id="stream.id"
+            />
         </div>
     </div>
 </template>
@@ -57,6 +56,7 @@ export default {
     },
     data() {
         return {
+            activityDetected: false,
             hasAudio: false,
             label: '',
             media: null,
@@ -101,56 +101,78 @@ export default {
 
         this.muted = this.$refs.media.muted
 
-        if (this.peer.src) {
-            if (this.peer.src instanceof File) {
-                let url = URL.createObjectURL(this.peer.src)
-                this.$refs.media.src = url
-                this.stream = this.$refs.media.captureStream()
-                this.glnStream = app.connection.up[this.peer.id]
-                this.glnStream.stream = this.stream
-            } else if (this.peer.src instanceof MediaStream) {
-                this.$refs.media.srcObject = this.peer.src
-                this.stream = this.peer.src
-            }
-
-            this.stream.onaddtrack = (e) => {
-                let t = e.track
-                this.glnStream.pc.addTrack(t, this.stream)
-                this.glnStream.labels[t.id] = t.kind
-            }
-
-            this.stream.onremovetrack = (e) => {
-                delete(this.glnStream.labels[e.track.id])
-
-                /** @type {RTCRtpSender} */
-                let sender
-                this.glnStream.pc.getSenders().forEach(s => {
-                    if(s.track === e.track) {
-                        app.logger.info('removing sender track')
-                        this.glnStream.pc.removeTrack(sender)
+        if (this.peer.isUp) {
+            if (this.peer.src) {
+                // Networked stream from local file
+                if (this.peer.src instanceof File) {
+                    this.stream = this.$refs.media.captureStream()
+                    this.glnStream = app.connection.up[this.peer.id]
+                    this.glnStream.onclose = function(replace) {
+                        stopStream(this.stream)
+                        app.logger.info('revoling file-stream url')
+                        URL.revokeObjectURL(this.$refs.media.src)
+                        this.$refs.media.src = null
                     }
-                })
 
-                if(Object.keys(this.glnStream.labels).length === 0) {
-                    this.stream.onaddtrack = null
-                    this.stream.onremovetrack == null
-                    app.stopUpMedia(this.glnStream)
+                    let url = URL.createObjectURL(this.peer.src)
+                    this.$refs.media.src = url
+                // Local MediaStream (not part of Galene); e.g. Webcam test
+                } else if (this.peer.src instanceof MediaStream) {
+                    this.stream = this.peer.src
+                } else {
+                    throw new Error('invalid Stream source type')
+                }
+            } else {
+                // Networked video camera stream; dealt with by addLocalMedia.
+                this.glnStream = app.connection.up[this.peer.id]
+                this.stream = this.glnStream.stream
+            }
+
+            // Networked? add stream object
+            if (this.glnStream) {
+                this.glnStream.stream = this.stream
+                this.glnStream.onstats = this.gotUpStats.bind(this)
+                this.glnStream.setStatsInterval(1000)
+
+                this.stream.onaddtrack = (e) => {
+                    let t = e.track
+                    this.glnStream.pc.addTrack(t, this.stream)
+                    this.glnStream.labels[t.id] = t.kind
+                }
+
+                this.stream.onremovetrack = (e) => {
+                    delete(this.glnStream.labels[e.track.id])
+
+                    /** @type {RTCRtpSender} */
+                    this.glnStream.pc.getSenders().forEach(s => {
+                        if(s.track === e.track) {
+                            app.logger.info('removing sender track')
+                            console.log('TRACk', s.track)
+                            console.log('tRCK?', e.track)
+                            this.glnStream.pc.removeTrack(s.track)
+                        }
+                    })
+
+                    if(Object.keys(this.glnStream.labels).length === 0) {
+                        this.stream.onaddtrack = null
+                        this.stream.onremovetrack == null
+                        app.stopUpMedia(this.glnStream)
+                    }
                 }
             }
-        }
 
-        else if (this.peer.isUp) {
-            this.glnStream = app.connection.up[this.peer.id]
-            this.$refs.media.srcObject = this.glnStream.stream
-            this.stream = app.connection.up[this.peer.id]
-            this.stream.onstats = this.gotUpStats.bind(this, this.stream)
-            this.stream.setStatsInterval(2000)
+            this.$refs.media.srcObject = this.stream
         } else {
-            // Downstream:
+            // Networked down stream
             this.glnStream = app.connection.down[this.peer.id]
-            this.label = this.glnStream.username
             this.stream = this.glnStream.stream
-            this.glnStream.onstats = this.gotDownStats
+
+            if(this.state.activityDetection) {
+                this.glnStream.onstats = this.gotDownStats
+                this.glnStream.setStatsInterval(1000)
+            }
+
+            this.label = this.glnStream.username
 
             this.glnStream.ondowntrack = (track, transceiver, label, stream) => {
                 app.logger.debug(`stream ondowntrack - [${this.glnStream.id}]`)
@@ -171,9 +193,7 @@ export default {
                 this.label = label
             }
 
-            if(this.state.activityDetection) {
-                this.glnStream.setStatsInterval(activityDetectionInterval)
-            }
+
         }
 
         this.glnStream.onstatus = (status) => {
@@ -184,18 +204,10 @@ export default {
 
     },
     methods: {
-        /**
-         * @this {Stream}
-         * @param {Object<string,any>} stats
-         */
         gotDownStats(stats) {
-            if(!getInputElement('activitybox').checked)
-                return
-
-            let c = this
             let maxEnergy = 0
 
-            c.pc.getReceivers().forEach(r => {
+            this.glnStream.pc.getReceivers().forEach(r => {
                 let tid = r.track && r.track.id
                 let s = tid && stats[tid]
                 let energy = s && s['track'] && s['track'].audioEnergy
@@ -206,25 +218,22 @@ export default {
             // totalAudioEnergy is defined as the integral of the square of the
             // volume, so square the threshold.
             if(maxEnergy > activityDetectionThreshold * activityDetectionThreshold) {
-                c.userdata.lastVoiceActivity = Date.now()
-                setActive(c, true)
+                this.glnStream.userdata.lastVoiceActivity = Date.now()
+                this.activityDetected = true
             } else {
-                let last = c.userdata.lastVoiceActivity
+                let last = this.glnStream.userdata.lastVoiceActivity
                 if(!last || Date.now() - last > activityDetectionPeriod) {
-                    setActive(c, false)
+                    this.activityDetected = false
                 }
             }
         },
-        /**
-         * @this {Stream}
-         * @param {Object<string,any>} stats
-         */
-        gotUpStats(c, stats) {
+
+        gotUpStats() {
             let text = ''
 
-            this.stream.pc.getSenders().forEach(s => {
+            this.glnStream.pc.getSenders().forEach(s => {
                 let tid = s.track && s.track.id
-                let stats = tid && this.stream.stats[tid]
+                let stats = tid && this.glnStream.stats[tid]
                 let rate = stats && stats['outbound-rtp'] && stats['outbound-rtp'].rate
                 if(typeof rate === 'number') {
                     if(text) {
@@ -272,13 +281,17 @@ export default {
 .c-stream {
     display: flex;
     flex-direction: column;
-    margin: var(--spacer);
     position: relative;
 
     & video {
+        border: 2px solid var(--grey-400);
         height: 100%;
         object-fit: cover;
         width: 100%;
+
+        &.activity-detected {
+            border: 2px solid var(--primary-color);
+        }
     }
 
     & .stream-bar {

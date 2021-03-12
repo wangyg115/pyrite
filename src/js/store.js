@@ -1,7 +1,7 @@
 import {reactive} from 'vue'
 
 const persistantState = reactive({
-    activityDetection: false,
+    activityDetection: true,
     audio: {id: null, name: ''},
     blackboardMode: false,
     chat: {

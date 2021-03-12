@@ -1,6 +1,5 @@
 <template>
     <Login v-if="!state.connected" class="content" />
-
     <div
         v-else
         class="c-stream-view"
@@ -53,7 +52,6 @@ export default {
 .c-stream-view {
     background: var(--grey-500);
     display: grid;
-    padding: var(--spacer);
 
     & .c-stream {
         background: var(--grey-500);
@@ -64,9 +62,8 @@ export default {
     }
 
     &.gallery-4 {
-        grid-gap: 1rem;
-        grid-template-columns: 50% 50%;
-        grid-template-rows: 50% 50%;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
     }
 
     &.gallery-9 {

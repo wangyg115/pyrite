@@ -107,7 +107,7 @@ class Pyrite {
             return
         }
 
-
+        // Connected to Galene; handle streams.
         if (this.state.connected) {
             let localStreamId = this.findUpMedia('local')
             let oldStream = localStreamId && this.connection.up[localStreamId]
@@ -638,13 +638,10 @@ class Pyrite {
      */
     stopUpMedia(c) {
         this.logger.debug(`stopping up-stream ${c.id}`)
-        c.stream.getTracks().forEach(t => {
-            t.stop()
-        })
+        c.stream.getTracks().forEach(t => t.stop())
 
         this.state.upMedia[c.kind].splice(this.state.upMedia[c.kind].indexOf(c.id), 1)
         this.state.streams.splice(this.state.streams.findIndex(i => i.id === c.id), 1)
-
     }
 }
 

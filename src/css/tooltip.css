@@ -35,8 +35,7 @@
 
     &.tooltip-left::after {
         bottom: 25%;
-        left: -250%;
-        /* margin-bottom: calc(-2 * var(spacer)); */
+        left: -175%;
         margin-left: 0;
     }
 

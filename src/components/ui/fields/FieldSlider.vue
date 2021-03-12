@@ -25,8 +25,8 @@ export default {
 <style lang="postcss">
 input[type="range"] {
     appearance: none;
-    background-color: var(--grey-300);
-    border: 1px solid var(--grey-400);
+    background: var(--grey-500);
+    border: 1px solid var(--grey-300);
     overflow: hidden;
     transform: rotate(-90deg);
     width: var(--space-4);
