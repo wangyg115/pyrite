@@ -5,8 +5,8 @@
                 ref="media"
                 :autoplay="true"
                 class="media"
-                :class="{'media-failed': mediaFailed, mirror: peer.mirror, 'activity-detected': activityDetected}"
-                :muted="peer.isUp"
+                :class="{'media-failed': mediaFailed, mirror: modelValue.mirror, 'activity-detected': activityDetected}"
+                :muted="modelValue.isUp"
                 :playsinline="true"
             />
         </div>
@@ -23,6 +23,7 @@
             <div class="about">
                 {{ label }}
             </div>
+
             <button v-if="hasAudio" class="btn btn-menu no-feedback tooltip tooltip-left" :data-tooltip="`${$t('audio volume')} ${volume}`">
                 <FieldSlider v-model="volume" />
             </button>
@@ -38,10 +39,6 @@
 <script>
 import SoundMeter from './ui/SoundMeter.vue'
 
-const activityDetectionInterval = 200
-const activityDetectionPeriod = 700
-const activityDetectionThreshold = 0.2
-
 export default {
     components: {SoundMeter},
     props: {
@@ -49,11 +46,12 @@ export default {
             type: Boolean,
             default() {return true}
         },
-        peer: {
+        modelValue: {
             type: Object,
             required: true
         }
     },
+    emits: ['update:modelValue'],
     data() {
         return {
             activityDetected: false,
@@ -65,7 +63,6 @@ export default {
             pipActive: false,
             stream: null,
             state: app.state,
-            volume: 100
         }
     },
     computed: {
@@ -80,10 +77,19 @@ export default {
                 return this.$refs.media.requestPictureInPicture
             }
             return false
+        },
+        /**
+         * Indirectly map props to state in order to modify volume.
+         * May be a bit hacky, but allows setters without emitting
+         * events upwards.
+         */
+        volume: {
+            get() { return this.modelValue.volume },
+            set(volume) { this.$emit('update:modelValue', {...this.modelValue, volume}) }
         }
     },
     watch: {
-        volume(volume) {
+        'modelValue.volume'(volume) {
             this.$refs.media.volume = volume / 100
         }
     },
@@ -101,12 +107,12 @@ export default {
 
         this.muted = this.$refs.media.muted
 
-        if (this.peer.isUp) {
-            if (this.peer.src) {
+        if (this.modelValue.isUp) {
+            if (this.modelValue.src) {
                 // Networked stream from local file
-                if (this.peer.src instanceof File) {
+                if (this.modelValue.src instanceof File) {
                     this.stream = this.$refs.media.captureStream()
-                    this.glnStream = app.connection.up[this.peer.id]
+                    this.glnStream = app.connection.up[this.modelValue.id]
                     this.glnStream.onclose = function(replace) {
                         stopStream(this.stream)
                         app.logger.info('revoling file-stream url')
@@ -114,17 +120,17 @@ export default {
                         this.$refs.media.src = null
                     }
 
-                    let url = URL.createObjectURL(this.peer.src)
+                    let url = URL.createObjectURL(this.modelValue.src)
                     this.$refs.media.src = url
                 // Local MediaStream (not part of Galene); e.g. Webcam test
-                } else if (this.peer.src instanceof MediaStream) {
-                    this.stream = this.peer.src
+                } else if (this.modelValue.src instanceof MediaStream) {
+                    this.stream = this.modelValue.src
                 } else {
                     throw new Error('invalid Stream source type')
                 }
             } else {
                 // Networked video camera stream; dealt with by addLocalMedia.
-                this.glnStream = app.connection.up[this.peer.id]
+                this.glnStream = app.connection.up[this.modelValue.id]
                 this.stream = this.glnStream.stream
             }
 
@@ -147,8 +153,6 @@ export default {
                     this.glnStream.pc.getSenders().forEach(s => {
                         if(s.track === e.track) {
                             app.logger.info('removing sender track')
-                            console.log('TRACk', s.track)
-                            console.log('tRCK?', e.track)
                             this.glnStream.pc.removeTrack(s.track)
                         }
                     })
@@ -164,7 +168,7 @@ export default {
             this.$refs.media.srcObject = this.stream
         } else {
             // Networked down stream
-            this.glnStream = app.connection.down[this.peer.id]
+            this.glnStream = app.connection.down[this.modelValue.id]
             this.stream = this.glnStream.stream
 
             if(this.state.activityDetection) {
@@ -193,19 +197,18 @@ export default {
                 this.label = label
             }
 
-
-        }
-
-        this.glnStream.onstatus = (status) => {
-            this.setMediaStatus()
+            this.glnStream.onstatus = (status) => {
+                this.setMediaStatus()
+            }
         }
 
         this.setMediaStatus()
-
     },
     methods: {
         gotDownStats(stats) {
             let maxEnergy = 0
+            const activityDetectionPeriod = 700
+            const activityDetectionThreshold = 0.2
 
             this.glnStream.pc.getReceivers().forEach(r => {
                 let tid = r.track && r.track.id

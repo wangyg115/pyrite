@@ -39,6 +39,10 @@
             >
                 <FieldFile v-model="playFiles" @file="togglePlayFile" />
             </button>
+
+            <button class="btn btn-menu no-feedback tooltip tooltip-left" :data-tooltip="`${$t('master audio volume')} ${volume}`">
+                <FieldSlider v-model="volume" />
+            </button>
         </div>
     </nav>
 </template>
@@ -48,7 +52,15 @@ export default {
     data() {
         return {
             playFiles: [],
-            state: app.state
+            state: app.state,
+            volume: 100
+        }
+    },
+    watch: {
+        volume(volume) {
+            for (const description of this.state.streams) {
+                description.volume = volume
+            }
         }
     },
     methods: {

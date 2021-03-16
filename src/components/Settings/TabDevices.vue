@@ -1,7 +1,7 @@
 <template>
     <section v-if="$route.params.tabId === 'devices'" class="tab-content active">
         <div id="mediaoptions">
-            <Stream v-if="peer" :controls="false" :peer="peer" />
+            <Stream v-if="description" v-model="description" :controls="false" />
             <FieldSelect
                 v-model="state.video"
                 :help="$t('select the video camera to use')"
@@ -37,7 +37,7 @@ export default {
     components: {Stream, SoundMeter},
     data() {
         return {
-            peer: null,
+            description: null,
             stream: null,
             streamId: null,
             state: app.state,
@@ -58,12 +58,13 @@ export default {
         }
         this.stream = app.localStream
         this.streamId = app.localStream.id
-        this.peer = {
+        this.description = {
             id: this.stream.id,
             isUp: true,
             kind: 'video',
             mirror: false,
-            src: app.localStream
+            src: app.localStream,
+            volume: 100
         }
     },
     beforeUnmount() {

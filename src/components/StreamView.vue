@@ -1,7 +1,7 @@
 <template>
     <Login v-if="!state.connected" class="content" />
     <div v-else-if="state.streams.length" class="c-stream-view" :class="gridClass">
-        <Stream v-for="stream of state.streams" :key="stream.id" :peer="stream" />
+        <Stream v-for="(description, index) in state.streams" :key="description.id" v-model="state.streams[index]" />
     </div>
     <div v-else class="stream-placeholder">
         <icon class="icon" name="groups" />

@@ -56,15 +56,14 @@ class Pyrite {
         let {c, id} = this.connection.newUpStream()
         c.kind = 'video'
 
-        const peer = {
+        this.state.streams.push({
             id: c.id,
             isUp: true,
             kind: c.kind,
             mirror: false,
             src: file,
-        }
-
-        this.state.streams.push(peer)
+            volume: 100,
+        })
         this.state.upMedia[c.kind].push(id)
         c.userdata.play = true
     }
@@ -358,14 +357,13 @@ class Pyrite {
             this.displayError(e)
         }
 
-        const peer = {
+        this.state.streams.push({
             id: c.id,
             isUp: false,
             kind: c.kind,
             mirror: true,
-        }
-
-        this.state.streams.push(peer)
+            volume: 100,
+        })
     }
 
 
@@ -470,14 +468,13 @@ class Pyrite {
     newUpStream(_id) {
         let {c, id} = this.connection.newUpStream(_id)
 
-        const peer = {
+        this.state.streams.push({
             id: c.id,
             isUp: true,
             kind: c.kind,
             mirror: true,
-        }
-
-        this.state.streams.push(peer)
+            volume: 100,
+        })
 
         c.onerror = (e) => {
             console.error(e)
