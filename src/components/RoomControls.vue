@@ -40,7 +40,7 @@
                 <FieldFile v-model="playFiles" @file="togglePlayFile" />
             </button>
 
-            <button class="btn btn-menu no-feedback tooltip tooltip-left" :data-tooltip="`${$t('master audio volume')} ${volume}`">
+            <button class="btn btn-menu no-feedback tooltip tooltip-left" :data-tooltip="`${$t('master audio volume')} ${volume.value}`">
                 <FieldSlider v-model="volume" />
             </button>
         </div>
@@ -53,13 +53,19 @@ export default {
         return {
             playFiles: [],
             state: app.state,
-            volume: 100
+            volume: {
+                locked: null,
+                value: 100,
+            }
         }
     },
     watch: {
         volume(volume) {
             for (const description of this.state.streams) {
-                description.volume = volume
+                // Only downstreams have volume control:
+                if (!description.isUp && !description.volume.locked) {
+                    description.volume = volume
+                }
             }
         }
     },

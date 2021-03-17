@@ -62,7 +62,10 @@ class Pyrite {
             kind: c.kind,
             mirror: false,
             src: file,
-            volume: 100,
+            volume: {
+                locked: false,
+                value: 100,
+            },
         })
         this.state.upMedia[c.kind].push(id)
         c.userdata.play = true
@@ -362,7 +365,10 @@ class Pyrite {
             isUp: false,
             kind: c.kind,
             mirror: true,
-            volume: 100,
+            volume: {
+                locked: false,
+                value: 100,
+            },
         })
     }
 
@@ -473,7 +479,10 @@ class Pyrite {
             isUp: true,
             kind: c.kind,
             mirror: true,
-            volume: 100,
+            volume: {
+                locked: false,
+                value: 100,
+            },
         })
 
         c.onerror = (e) => {

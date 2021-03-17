@@ -64,7 +64,10 @@ export default {
             kind: 'video',
             mirror: false,
             src: app.localStream,
-            volume: 100
+            volume: {
+                locked: false,
+                value: 100,
+            },
         }
     },
     beforeUnmount() {

@@ -17,6 +17,7 @@ import fullscreen from './IconFullscreen.vue'
 import groups from './IconGroups.vue'
 import headset from './IconHeadset.vue'
 import info from './IconInfo.vue'
+import lock from './IconLock.vue'
 import logo from './IconLogo.vue'
 import login from './IconLogin.vue'
 import logout from './IconLogout.vue'
@@ -46,6 +47,7 @@ export default {
       groups,
       headset,
       info,
+      lock,
       login,
       logo,
       logout,

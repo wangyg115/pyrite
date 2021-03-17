@@ -23,8 +23,7 @@
             <div class="about">
                 {{ label }}
             </div>
-
-            <button v-if="hasAudio" class="btn btn-menu no-feedback tooltip tooltip-left" :data-tooltip="`${$t('audio volume')} ${volume}`">
+            <button v-if="hasAudio" class="btn btn-menu no-feedback tooltip tooltip-left" :data-tooltip="`${$t('audio volume')} ${volume.value}`">
                 <FieldSlider v-model="volume" />
             </button>
             <SoundMeter
@@ -89,8 +88,8 @@ export default {
         }
     },
     watch: {
-        'modelValue.volume'(volume) {
-            this.$refs.media.volume = volume / 100
+        'modelValue.volume.value'(value) {
+            this.$refs.media.volume = value / 100
         }
     },
     beforeUnmount() {
