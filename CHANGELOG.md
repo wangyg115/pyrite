@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/garage44/pyrite/compare/v1.8.0...v1.8.1) (2021-03-18)
+
+
+### Bug Fixes
+
+* add missing icon lock ([07a5bcb](https://github.com/garage44/pyrite/commit/07a5bcb81985691e4a5c3c52ee1886dd1d4052eb))
+
 # [1.8.0](https://github.com/garage44/pyrite/compare/v1.7.0...v1.8.0) (2021-03-18)
 
 
