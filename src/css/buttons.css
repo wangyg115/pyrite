@@ -24,9 +24,6 @@
             }
         }
 
-        &.warning {
-            color: var(--warning-color);
-        }
 
         &::before {
             background: var(--primary-color);
@@ -42,15 +39,30 @@
             will-change: transform;
         }
 
+        &.warning {
+            color: var(--warning-color);
 
-        &.active,
+            &::before {
+                background: var(--warning-color);
+            }
+        }
+
         &:not([disabled]):hover {
             color: var(--primary-color);
+
             cursor: pointer;
+
+            &.warning {
+                color: var(--warning-color);
+            }
 
             &::before {
                 transform: scaleX(1);
             }
+        }
+
+        &.active {
+            color: var(--primary-color);
         }
     }
 

@@ -1,45 +1,60 @@
 <template>
     <div class="c-stream">
-        <div v-if="controls" class="controls">
-            <button class="btn btn-menu tooltip" :data-tooltip="$t('picture-in-picture')" @click="setPip">
-                <Icon class="icon-mini" name="pip" />
-            </button>
-            <button class="btn btn-menu tooltip" :data-tooltip="$t('fullscreen')" @click="setFullscreen">
-                <Icon class="icon-mini" name="fullscreen" />
-            </button>
-            <button class="btn btn-menu no-feedback tooltip" :data-tooltip="`${$t('audio volume')} ${volume}`">
+        <div class="video-container">
+            <video
+                ref="media"
+                :autoplay="true"
+                class="media"
+                :class="{'media-failed': mediaFailed, mirror: modelValue.mirror, 'activity-detected': activityDetected}"
+                :muted="modelValue.isUp"
+                :playsinline="true"
+            />
+        </div>
+
+        <div v-if="controls" class="stream-bar">
+            <div class="buttons">
+                <button class="btn btn-menu tooltip" :data-tooltip="$t('picture-in-picture')" @click="setPip">
+                    <Icon class="icon-mini" name="pip" />
+                </button>
+                <button class="btn btn-menu tooltip" :data-tooltip="$t('fullscreen')" @click="setFullscreen">
+                    <Icon class="icon-mini" name="fullscreen" />
+                </button>
+            </div>
+            <div class="about">
+                {{ label }}
+            </div>
+            <button v-if="hasAudio" class="btn btn-menu no-feedback tooltip tooltip-left" :data-tooltip="`${$t('audio volume')} ${volume.value}`">
                 <FieldSlider v-model="volume" />
             </button>
+            <SoundMeter
+                v-if="hasAudio && stream" class="soundmeter"
+                orientation="vertical"
+                :stream="stream"
+                :stream-id="stream.id"
+            />
         </div>
-        <video
-            ref="media"
-            :autoplay="true"
-            class="media"
-            :class="{'media-failed': mediaFailed, mirror: peer.mirror,}"
-            :muted="peer.isUp"
-            :playsinline="true"
-        />
     </div>
 </template>
-
 <script>
-const activityDetectionInterval = 200
-const activityDetectionPeriod = 700
-const activityDetectionThreshold = 0.2
+import SoundMeter from './ui/SoundMeter.vue'
 
 export default {
+    components: {SoundMeter},
     props: {
         controls: {
             type: Boolean,
             default() {return true}
         },
-        peer: {
+        modelValue: {
             type: Object,
             required: true
         }
     },
+    emits: ['update:modelValue'],
     data() {
         return {
+            activityDetected: false,
+            hasAudio: false,
             label: '',
             media: null,
             mediaFailed: false,
@@ -47,26 +62,34 @@ export default {
             pipActive: false,
             stream: null,
             state: app.state,
-            volume: 100
         }
     },
     computed: {
         fullscreenEnabled() {
-            if (this.$refs.media.src) {
-                return this.$refs.media.src.requestFullscreen
+            if (this.$refs.media) {
+                return this.$refs.media.requestFullscreen
             }
             return false
         },
         pipEnabled() {
-            if (this.$refs.media.src) {
-                return this.$refs.media.src.requestPictureInPicture
+            if (this.$refs.media) {
+                return this.$refs.media.requestPictureInPicture
             }
             return false
+        },
+        /**
+         * Indirectly map props to state in order to modify volume.
+         * May be a bit hacky, but allows setters without emitting
+         * events upwards.
+         */
+        volume: {
+            get() { return this.modelValue.volume },
+            set(volume) { this.$emit('update:modelValue', {...this.modelValue, volume}) }
         }
     },
     watch: {
-        volume(volume) {
-            this.$refs.media.src.volume = volume / 100
+        'modelValue.volume.value'(value) {
+            this.$refs.media.volume = value / 100
         }
     },
     beforeUnmount() {
@@ -81,107 +104,112 @@ export default {
         this.$refs.media.addEventListener('enterpictureinpicture', () => { this.pipActive = true })
         this.$refs.media.addEventListener('leavepictureinpicture', () => { this.pipActive = false })
 
-        this.muted = this.$refs.media.src.muted
+        this.muted = this.$refs.media.muted
 
-        if (this.peer.src) {
-            if (this.peer.src instanceof File) {
-                let url = URL.createObjectURL(this.peer.src)
-                this.$refs.media.src = url
-                this.stream = this.$refs.media.captureStream()
-                const c = app.connection.up[this.peer.id]
-                c.stream = this.stream
-            } else if (this.peer.src instanceof MediaStream) {
-                this.$refs.media.srcObject = this.peer.src
-                this.stream = this.peer.src
-            }
-
-
-            this.stream.onaddtrack = (e) => {
-                let t = e.track
-                if(t.kind === 'audio') {
-                    let presenting = !!app.findUpMedia('local')
-
-                    if(presenting && !this.state.localMute) {
-                        app.muteLocalTracks(true)
-                        app.displayWarning('You have been muted')
+        if (this.modelValue.isUp) {
+            if (this.modelValue.src) {
+                // Networked stream from local file
+                if (this.modelValue.src instanceof File) {
+                    this.stream = this.$refs.media.captureStream()
+                    this.glnStream = app.connection.up[this.modelValue.id]
+                    this.glnStream.onclose = function(replace) {
+                        stopStream(this.stream)
+                        app.logger.info('revoling file-stream url')
+                        URL.revokeObjectURL(this.$refs.media.src)
+                        this.$refs.media.src = null
                     }
-                }
 
-                c.pc.addTrack(t, this.stream)
-                c.labels[t.id] = t.kind
-            }
-
-            this.stream.onremovetrack = (e) => {
-                let t = e.track
-                delete(c.labels[t.id])
-
-                /** @type {RTCRtpSender} */
-                let sender
-                c.pc.getSenders().forEach(s => {
-                    if(s.track === t) {
-                        sender = s
-                    }
-                })
-                if(sender) {
-                    c.pc.removeTrack(sender)
+                    let url = URL.createObjectURL(this.modelValue.src)
+                    this.$refs.media.src = url
+                // Local MediaStream (not part of Galene); e.g. Webcam test
+                } else if (this.modelValue.src instanceof MediaStream) {
+                    this.stream = this.modelValue.src
                 } else {
-                    console.warn('Removing unknown track')
+                    throw new Error('invalid Stream source type')
+                }
+            } else {
+                // Networked video camera stream; dealt with by addLocalMedia.
+                this.glnStream = app.connection.up[this.modelValue.id]
+                this.stream = this.glnStream.stream
+            }
+
+            // Networked? add stream object
+            if (this.glnStream) {
+                this.glnStream.stream = this.stream
+                this.glnStream.onstats = this.gotUpStats.bind(this)
+                this.glnStream.setStatsInterval(1000)
+
+                this.stream.onaddtrack = (e) => {
+                    let t = e.track
+                    this.glnStream.pc.addTrack(t, this.stream)
+                    this.glnStream.labels[t.id] = t.kind
                 }
 
-                if(Object.keys(c.labels).length === 0) {
-                    this.stream.onaddtrack = null
-                    this.stream.onremovetrack == null
-                    app.delUpMedia(c)
+                this.stream.onremovetrack = (e) => {
+                    delete(this.glnStream.labels[e.track.id])
+
+                    /** @type {RTCRtpSender} */
+                    this.glnStream.pc.getSenders().forEach(s => {
+                        if(s.track === e.track) {
+                            app.logger.info('removing sender track')
+                            this.glnStream.pc.removeTrack(s.track)
+                        }
+                    })
+
+                    if(Object.keys(this.glnStream.labels).length === 0) {
+                        this.stream.onaddtrack = null
+                        this.stream.onremovetrack == null
+                        app.stopUpMedia(this.glnStream)
+                    }
                 }
             }
-        }
 
-        else if (this.peer.isUp) {
-            this.$refs.media.srcObject = app.connection.up[this.peer.id].stream
-            this.stream = app.connection.up[this.peer.id]
-            this.stream.onstats = this.gotUpStats.bind(this, this.stream)
-            this.stream.setStatsInterval(2000)
+            this.$refs.media.srcObject = this.stream
         } else {
-            // Downstream:
-            this.$refs.media.srcObject = app.connection.down[this.peer.id].stream
-            this.stream = app.connection.down[this.peer.id]
-            this.stream.onstats = this.gotDownStats
+            // Networked down stream
+            this.glnStream = app.connection.down[this.modelValue.id]
+            this.stream = this.glnStream.stream
 
-            this.stream.ondowntrack = (track, transceiver, label, stream) => {
-                app.logger.debug(`stream event - ondowntrack [${this.stream.id}]`)
-                this.$refs.media.srcObject = this.stream.stream
-                this.$refs.media.play()
+            if(this.state.activityDetection) {
+                this.glnStream.onstats = this.gotDownStats
+                this.glnStream.setStatsInterval(1000)
             }
 
-            this.stream.onlabel = (label) => {
+            this.label = this.glnStream.username
+
+            this.glnStream.ondowntrack = (track, transceiver, label, stream) => {
+                app.logger.debug(`stream ondowntrack - [${this.glnStream.id}]`)
+                // An incoming audio-track; enable volume controls.
+                if (track.kind === 'audio') {
+                    app.logger.debug(`stream ondowntrack - enable audio controls`)
+                    this.hasAudio = true
+                }
+
+                if (!this.stream) {
+                    this.stream = stream
+                    this.$refs.media.srcObject = this.stream
+                    this.$refs.media.play()
+                }
+            }
+
+            this.glnStream.onlabel = (label) => {
                 this.label = label
             }
 
-            if(this.state.activityDetection) {
-                this.stream.setStatsInterval(activityDetectionInterval)
+            this.glnStream.onstatus = (status) => {
+                this.setMediaStatus()
             }
         }
 
-        this.stream.onstatus = (status) => {
-            this.setMediaStatus()
-        }
-
         this.setMediaStatus()
-
     },
     methods: {
-        /**
-         * @this {Stream}
-         * @param {Object<string,any>} stats
-         */
         gotDownStats(stats) {
-            if(!getInputElement('activitybox').checked)
-                return
-
-            let c = this
             let maxEnergy = 0
+            const activityDetectionPeriod = 700
+            const activityDetectionThreshold = 0.2
 
-            c.pc.getReceivers().forEach(r => {
+            this.glnStream.pc.getReceivers().forEach(r => {
                 let tid = r.track && r.track.id
                 let s = tid && stats[tid]
                 let energy = s && s['track'] && s['track'].audioEnergy
@@ -192,25 +220,22 @@ export default {
             // totalAudioEnergy is defined as the integral of the square of the
             // volume, so square the threshold.
             if(maxEnergy > activityDetectionThreshold * activityDetectionThreshold) {
-                c.userdata.lastVoiceActivity = Date.now()
-                setActive(c, true)
+                this.glnStream.userdata.lastVoiceActivity = Date.now()
+                this.activityDetected = true
             } else {
-                let last = c.userdata.lastVoiceActivity
+                let last = this.glnStream.userdata.lastVoiceActivity
                 if(!last || Date.now() - last > activityDetectionPeriod) {
-                    setActive(c, false)
+                    this.activityDetected = false
                 }
             }
         },
-        /**
-         * @this {Stream}
-         * @param {Object<string,any>} stats
-         */
-        gotUpStats(c, stats) {
+
+        gotUpStats() {
             let text = ''
 
-            this.stream.pc.getSenders().forEach(s => {
+            this.glnStream.pc.getSenders().forEach(s => {
                 let tid = s.track && s.track.id
-                let stats = tid && this.stream.stats[tid]
+                let stats = tid && this.glnStream.stats[tid]
                 let rate = stats && stats['outbound-rtp'] && stats['outbound-rtp'].rate
                 if(typeof rate === 'number') {
                     if(text) {
@@ -226,11 +251,11 @@ export default {
             if (this.pipActive) {
                 document.exitPictureInPicture()
             } else {
-                this.media.requestPictureInPicture()
+                this.$refs.media.requestPictureInPicture()
             }
         },
         setFullscreen() {
-            this.media.requestFullscreen()
+            this.$refs.media.requestFullscreen()
         },
         setMediaStatus() {
             app.logger.debug('setMediaStatus')
@@ -249,7 +274,7 @@ export default {
         },
         toggleMuteVolume() {
             this.muted = !this.muted
-            this.media.muted = this.muted
+            this.$refs.media.muted = this.muted
         }
     }
 }
@@ -257,21 +282,55 @@ export default {
 <style lang="postcss">
 .c-stream {
     display: flex;
+    flex-direction: column;
+    justify-items: center;
     position: relative;
 
-    & .controls {
-        background: rgba(0, 0, 0, 0.5);
-        height: 100%;
-        left: 0;
-        position: absolute;
-        width: var(--space-4);
-        z-index: 1000;
+    & .video-container {
+        height: 0px;
+        padding-top: 75%;
+        position: relative;
+
+        & video {
+            border: 2px solid var(--grey-400);
+            height: 100%;
+            left: 0;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            width: 100%;
+
+            &.activity-detected {
+                border: 2px solid var(--primary-color);
+            }
+        }
     }
 
-    & video {
-        height: 100%;
-        object-fit: cover;
-        width: 100%;
+    & .stream-bar {
+        align-items: center;
+        background: var(--grey-300);
+        border-top: 1px solid var(--grey-300);
+        display: flex;
+
+        & .soundmeter {
+            background: var(--grey-400);
+            border: 0;
+            height: var(--space-4);
+            margin: 0;
+            width: 2px;
+        }
+
+        & .buttons {
+            display: flex;
+        }
+
+        & .about {
+            color: var(--grey-200);
+            flex: 1;
+            font-weight: 600;
+            padding-right: var(--spacer);
+            text-align: right;
+        }
     }
 
 }

@@ -17,7 +17,6 @@ let safariScreenshareDone = false
 class Pyrite {
 
     constructor() {
-
         this.logger = new Logger(this)
         this.logger.setLevel('debug')
 
@@ -57,15 +56,17 @@ class Pyrite {
         let {c, id} = this.connection.newUpStream()
         c.kind = 'video'
 
-        const peer = {
+        this.state.streams.push({
             id: c.id,
             isUp: true,
             kind: c.kind,
             mirror: false,
             src: file,
-        }
-
-        this.state.streams.push(peer)
+            volume: {
+                locked: false,
+                value: 100,
+            },
+        })
         this.state.upMedia[c.kind].push(id)
         c.userdata.play = true
     }
@@ -108,11 +109,10 @@ class Pyrite {
             return
         }
 
-
+        // Connected to Galene; handle streams.
         if (this.state.connected) {
-            let id = this.findUpMedia('local')
-            let oldStream = id && this.connection.up[id]
-
+            let localStreamId = this.findUpMedia('local')
+            let oldStream = localStreamId && this.connection.up[localStreamId]
 
             if(!selecteAudioDevice && !selectedVideoDevice) {
                 this.logger.warn('addLocalMedia - no media; aborting')
@@ -127,10 +127,10 @@ class Pyrite {
                 this.stopUpMedia(oldStream)
             }
 
-            let {c, streamId} = this.newUpStream(id)
+            let {c, id} = this.newUpStream(localStreamId)
             c.kind = 'local'
             c.stream = this.localStream
-            this.state.upMedia[c.kind].push(streamId)
+            this.state.upMedia[c.kind].push(id)
 
             this.localStream.getTracks().forEach(t => {
                 c.labels[t.id] = t.kind
@@ -186,6 +186,8 @@ class Pyrite {
             }
             c.labels[t.id] = 'screenshare'
         })
+
+        return c
     }
 
 
@@ -358,14 +360,16 @@ class Pyrite {
             this.displayError(e)
         }
 
-        const peer = {
+        this.state.streams.push({
             id: c.id,
             isUp: false,
             kind: c.kind,
             mirror: true,
-        }
-
-        this.state.streams.push(peer)
+            volume: {
+                locked: false,
+                value: 100,
+            },
+        })
     }
 
 
@@ -470,14 +474,16 @@ class Pyrite {
     newUpStream(_id) {
         let {c, id} = this.connection.newUpStream(_id)
 
-        const peer = {
+        this.state.streams.push({
             id: c.id,
             isUp: true,
             kind: c.kind,
             mirror: true,
-        }
-
-        this.state.streams.push(peer)
+            volume: {
+                locked: false,
+                value: 100,
+            },
+        })
 
         c.onerror = (e) => {
             console.error(e)
@@ -544,8 +550,7 @@ class Pyrite {
             case 'mute':
                 if(privileged) {
                     this.muteLocalTracks(true)
-                    let by = username ? ' by ' + username : ''
-                    this.displayWarning(`You have been muted${by}`)
+                    this.displayWarning(`You have been muted${username ? ' by ' + username : ''}`)
                 } else {
                     console.error(`Got unprivileged message of kind ${kind}`)
                 }
@@ -639,13 +644,10 @@ class Pyrite {
      */
     stopUpMedia(c) {
         this.logger.debug(`stopping up-stream ${c.id}`)
-        c.stream.getTracks().forEach(t => {
-            t.stop()
-        })
+        c.stream.getTracks().forEach(t => t.stop())
 
         this.state.upMedia[c.kind].splice(this.state.upMedia[c.kind].indexOf(c.id), 1)
         this.state.streams.splice(this.state.streams.findIndex(i => i.id === c.id), 1)
-
     }
 }
 

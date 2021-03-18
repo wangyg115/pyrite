@@ -3,9 +3,9 @@
         <div class="group-controls">
             <button
                 v-if="state.permissions.present"
-                class="btn btn-menu tooltip"
+                class="btn btn-menu tooltip tooltip-left"
                 :class="{active: !state.muted, warning: state.muted}"
-                :data-tooltip="$t('mute microphone')"
+                :data-tooltip="state.muted ? $t('unmute microphone'): $t('mute microphone')"
                 @click="toggleMute"
             >
                 <Icon class="icon-small" name="mic" />
@@ -13,7 +13,7 @@
 
             <button
                 v-if="state.permissions.present"
-                class="btn btn-menu tooltip"
+                class="btn btn-menu tooltip tooltip-left"
                 :class="{active: state.upMedia.local.length, warning: !state.upMedia.local.length}"
                 :data-tooltip="`${$t('switch camera')} ${state.upMedia.local.length ? $t('off') : $t('on')}`"
                 @click="togglePresent"
@@ -23,7 +23,7 @@
 
             <button
                 v-if="state.permissions.present"
-                class="btn btn-menu tooltip"
+                class="btn btn-menu tooltip tooltip-left"
                 :class="{active: state.upMedia.screenshare.length}"
                 :data-tooltip="`${$t('switch screensharing')} ${state.upMedia.screenshare.length ? $t('off') : $t('on')}`"
                 @click="toggleShare"
@@ -33,11 +33,15 @@
 
             <button
                 v-if="state.permissions.present"
-                class="btn btn-menu tooltip"
+                class="btn btn-menu tooltip tooltip-left"
                 :class="{active: state.upMedia.video.length}"
                 :data-tooltip="playFiles"
             >
                 <FieldFile v-model="playFiles" @file="togglePlayFile" />
+            </button>
+
+            <button class="btn btn-menu no-feedback tooltip tooltip-left" :data-tooltip="`${$t('master audio volume')} ${volume.value}`">
+                <FieldSlider v-model="volume" />
             </button>
         </div>
     </nav>
@@ -48,7 +52,21 @@ export default {
     data() {
         return {
             playFiles: [],
-            state: app.state
+            state: app.state,
+            volume: {
+                locked: null,
+                value: 100,
+            }
+        }
+    },
+    watch: {
+        volume(volume) {
+            for (const description of this.state.streams) {
+                // Only downstreams have volume control:
+                if (!description.isUp && !description.volume.locked) {
+                    description.volume = volume
+                }
+            }
         }
     },
     methods: {
@@ -79,13 +97,13 @@ export default {
                 }
             }
         },
-        toggleShare() {
+        async toggleShare() {
             if (this.state.upMedia.screenshare.length) {
-                app.logger.debug('switching screenshare off')
-                app.delUpMediaKind('screenshare')
+                app.logger.debug('turn screenshare stream off')
+                app.stopUpMedia(this.screenStream)
             } else {
-                app.logger.debug('switching screenshare on')
-                app.addShareMedia()
+                app.logger.debug('turn screenshare stream on')
+                this.screenStream = await app.addShareMedia()
             }
         }
     }

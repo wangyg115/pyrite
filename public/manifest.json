@@ -1,7 +1,7 @@
 {
     "name": "Pyrite Video",
     "short_name": "Pyrite",
-    "description": "Video conferencing on steroids",
+    "description": "Galène Video conferencing UI",
     "background_color": "#1a202c",
     "theme_color": "#33c6c3",
     "display": "standalone",

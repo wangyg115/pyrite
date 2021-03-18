@@ -21,6 +21,14 @@
             <button
                 v-if="state.connected"
                 class="btn btn-menu tooltip"
+                :data-tooltip="state.chat.active ? $t('hide chat') : $t('show chat')"
+                @click="toggleChatActive"
+            >
+                <Icon class="icon-small" :name="state.chat.active ? 'chat-close' : 'chat'" />
+            </button>
+            <button
+                v-if="state.connected"
+                class="btn btn-menu warning tooltip"
                 :data-tooltip="$t('leave group')"
                 @click="disconnect"
             >
@@ -41,30 +49,11 @@ export default {
         disconnect() {
             app.disconnect()
         },
+        toggleChatActive() {
+            this.state.chat.active = !this.state.chat.active
+        },
         toggleMute() {
             app.muteLocalTracks(this.state.muted)
-        },
-        togglePresent() {
-            if (this.state.upMedia.local.length) {
-                app.logger.debug('switching present mode off')
-                app.delUpMediaKind('local')
-
-            } else {
-                app.logger.debug('switching present mode on')
-                let id = app.findUpMedia('local')
-                if(!id) {
-                    app.addLocalMedia()
-                }
-            }
-        },
-        toggleShare() {
-            if (this.state.upMedia.screenshare.length) {
-                app.logger.debug('switching screenshare off')
-                app.delUpMediaKind('screenshare')
-            } else {
-                app.logger.debug('switching screenshare on')
-                app.addShareMedia()
-            }
         }
     }
 }

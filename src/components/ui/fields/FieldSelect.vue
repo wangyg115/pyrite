@@ -11,7 +11,7 @@
                     v-model="searchQuery"
                     autocomplete="off"
                     :disabled="disabled"
-                    :placeholder="(modelValue && modelValue.id) ? options.find((o) => o.id === modelValue.id).name : placeholder"
+                    :placeholder="currentOption"
                     :readonly="!search"
                     @click="searchSelect($event, null, null, false)"
                     @input="searchSelect($event, null, 'query', false)"
@@ -95,6 +95,15 @@ export default {
             }
             return filteredOptions
         },
+        currentOption() {
+            if (this.modelValue && this.modelValue.id) {
+                const currentOption = this.options.find((o) => o.id === this.modelValue.id)
+                if (currentOption) {
+                    return currentOption.name
+                }
+            }
+            return this.placeholder
+        }
     },
     updated() {
         const input = this.$refs.input

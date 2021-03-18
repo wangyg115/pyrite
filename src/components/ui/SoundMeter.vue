@@ -1,13 +1,13 @@
 <template>
-    <canvas id="meter" ref="meter" />
+    <canvas id="meter" ref="meter" :class="{[orientation]: true}" />
 </template>
 <script>
 
 function volumeAudioProcess(event) {
-    var buf = event.inputBuffer.getChannelData(0)
-    var bufLength = buf.length
-    var sum = 0
-    var x
+    const buf = event.inputBuffer.getChannelData(0)
+    const bufLength = buf.length
+    let sum = 0
+    let x
 
     for (var i = 0; i < bufLength; i++) {
         x = buf[i]
@@ -18,7 +18,7 @@ function volumeAudioProcess(event) {
         sum += x * x
     }
 
-    var rms = Math.sqrt(sum / bufLength)
+    const rms = Math.sqrt(sum / bufLength)
     this.volume = Math.max(rms, this.volume * this.averaging)
 }
 
@@ -51,12 +51,12 @@ function createAudioMeter(audioContext, clipLevel, averaging, clipLag) {
     return processor
 }
 
-
-let meter = null
-
-
 export default {
     props: {
+        orientation: {
+            type: String,
+            default: () => 'horizontal'
+        },
         stream: {
             required: true,
             type: Object
@@ -75,7 +75,7 @@ export default {
         }
     },
     watch: {
-        streamId(streamId) {
+        streamId() {
             this.updateSoundmeter()
         }
     },
@@ -96,14 +96,22 @@ export default {
     },
     methods: {
         drawLoop: function() {
-            this.canvasContext.clearRect(0, 0, this.$refs.meter.width, this.$refs.meter.height)
+            if (this.orientation === 'horizontal') {
+                this.canvasContext.clearRect(0, 0, this.$refs.meter.width, this.$refs.meter.height)
+            } else {
+                this.canvasContext.clearRect(0, 0, this.$refs.meter.width, this.$refs.meter.height)
+            }
             if (this.meter.checkClipping()) {
                this.canvasContext.fillStyle = this.colors.warning
             } else {
                 this.canvasContext.fillStyle = this.colors.primary
             }
 
-            this.canvasContext.fillRect(0, 0, this.meter.volume * this.$refs.meter.width * 2.4, this.$refs.meter.height)
+            if (this.orientation === 'horizontal') {
+                this.canvasContext.fillRect(0, 0, this.meter.volume * this.$refs.meter.width * 2.4, this.$refs.meter.height)
+            } else {
+                this.canvasContext.fillRect(0, 0, this.$refs.meter.width, this.meter.volume * this.$refs.meter.height * 2.4)
+            }
             this.rafID = window.requestAnimationFrame(this.drawLoop)
         },
         updateSoundmeter: async function() {
@@ -121,7 +129,10 @@ canvas {
     border: 1px solid var(--grey-200);
     height: var(--spacer);
     margin: var(--spacer);
-    max-width: 300px;
     width: 100%;
+
+    &.vertical {
+        transform: scale(-1, -1);
+    }
 }
 </style>

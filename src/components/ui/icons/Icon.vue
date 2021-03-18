@@ -9,12 +9,15 @@
 </template>
 
 <script>
+import chat from './IconChat.vue'
+import chatClose from './IconChatClose.vue'
 import eye from './IconEye.vue'
 import error from './IconError.vue'
 import fullscreen from './IconFullscreen.vue'
 import groups from './IconGroups.vue'
 import headset from './IconHeadset.vue'
 import info from './IconInfo.vue'
+import lock from './IconLock.vue'
 import logo from './IconLogo.vue'
 import login from './IconLogin.vue'
 import logout from './IconLogout.vue'
@@ -36,12 +39,15 @@ import webcam from './IconWebcam.vue'
 
 export default {
   components: {
+      chat,
+      chatClose,
       eye,
       error,
       fullscreen,
       groups,
       headset,
       info,
+      lock,
       login,
       logo,
       logout,
