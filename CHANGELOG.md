@@ -1,3 +1,26 @@
+# [1.8.0](https://github.com/garage44/pyrite/compare/v1.7.0...v1.8.0) (2021-03-18)
+
+
+### Bug Fixes
+
+* activity detection, updated protocol, bumped galene docker to 0.3.2 ([08104d6](https://github.com/garage44/pyrite/commit/08104d61009b2553d1414cdbd43648c73eb5a644))
+* cleanup Stream handling of Galene streams ([d8c270d](https://github.com/garage44/pyrite/commit/d8c270d09e93a74402c28335d64ac5365e4d9964))
+* default to empty option for FieldSelect ([2fa8953](https://github.com/garage44/pyrite/commit/2fa8953ab53fe70594cf6d7e9a8c097abc87d6e2))
+* do not mute tracks when adding another one ([2086d7d](https://github.com/garage44/pyrite/commit/2086d7d4fe944fd3b748899df7b8b908c39b71eb))
+* incorrect references to Stream src ([4683e80](https://github.com/garage44/pyrite/commit/4683e80ff124bcd73f2a79a616f7b13993e74848))
+* localstream id; logout now shuts off webcam properly ([0565f9c](https://github.com/garage44/pyrite/commit/0565f9c2215037c4879107c724edd4ef10a0e356))
+* misc code cleanup & service worker ([093a0fa](https://github.com/garage44/pyrite/commit/093a0fa1cf34334b91ae5c1a03b9376b1a823426))
+* screenshare toggle off through button ([5357aa0](https://github.com/garage44/pyrite/commit/5357aa0d03c55604768bcd6c5d5ebd0484bb666c))
+* set remote username label for stream ([65f9d8e](https://github.com/garage44/pyrite/commit/65f9d8ea91a44bf3d10a28b38802a6acf209afde))
+* tooltip styling, toggle chat window, ui fixes ([57dbb8e](https://github.com/garage44/pyrite/commit/57dbb8ec1dc73f6959fecdd52f5a3d1d5c7b045d))
+* user input event on FieldSlider instead of change ([fbfc1ca](https://github.com/garage44/pyrite/commit/fbfc1cacb1ea4ebad19b5160ab33da8af0cba78d))
+
+
+### Features
+
+* basic main slider/individual sliders with lock ([f7ecd58](https://github.com/garage44/pyrite/commit/f7ecd58b07e57366f7a0a6f52f70086c33b25587))
+* hasAudio toggle/slider for downstreams ([7d72a1b](https://github.com/garage44/pyrite/commit/7d72a1b8073b3f148b93c2cd4212efb5699555db))
+
 # [1.7.0](https://github.com/garage44/pyrite/compare/v1.6.0...v1.7.0) (2021-02-23)
 
 
