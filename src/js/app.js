@@ -69,6 +69,7 @@ class Pyrite {
         })
         this.state.upMedia[c.kind].push(id)
         c.userdata.play = true
+        return c
     }
 
 
@@ -647,7 +648,6 @@ class Pyrite {
         c.stream.getTracks().forEach(t => t.stop())
 
         this.state.upMedia[c.kind].splice(this.state.upMedia[c.kind].indexOf(c.id), 1)
-        this.state.streams.splice(this.state.streams.findIndex(i => i.id === c.id), 1)
     }
 }
 

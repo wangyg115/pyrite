@@ -26,7 +26,7 @@
                 class="btn btn-menu tooltip tooltip-left"
                 :class="{active: state.upMedia.screenshare.length}"
                 :data-tooltip="`${$t('switch screensharing')} ${state.upMedia.screenshare.length ? $t('off') : $t('on')}`"
-                @click="toggleShare"
+                @click="toggleScreenshare"
             >
                 <Icon class="icon-small" name="screenshare" />
             </button>
@@ -97,10 +97,10 @@ export default {
                 }
             }
         },
-        async toggleShare() {
+        async toggleScreenshare() {
             if (this.state.upMedia.screenshare.length) {
                 app.logger.debug('turn screenshare stream off')
-                app.stopUpMedia(this.screenStream)
+                app.delUpMedia(this.screenStream)
             } else {
                 app.logger.debug('turn screenshare stream on')
                 this.screenStream = await app.addShareMedia()

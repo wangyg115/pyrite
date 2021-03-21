@@ -93,6 +93,7 @@ export default {
         }
     },
     beforeUnmount() {
+        app.logger.info(`unmounting stream component ${this.modelValue.id}`)
         if (this.$refs.media.src) {
              URL.revokeObjectURL(this.$refs.media.src)
              this.$refs.media.src = null
@@ -107,23 +108,31 @@ export default {
         this.muted = this.$refs.media.muted
 
         if (this.modelValue.isUp) {
+
             if (this.modelValue.src) {
                 // Networked stream from local file
                 if (this.modelValue.src instanceof File) {
-                    this.stream = this.$refs.media.captureStream()
+                    const url = URL.createObjectURL(this.modelValue.src)
+
+                    if (this.$refs.media.captureStream) {
+                        this.stream = this.$refs.media.captureStream()
+                    } else if (this.$refs.media.mozCaptureStream) {
+                        this.stream = this.$refs.media.mozCaptureStream()
+                    }
                     this.glnStream = app.connection.up[this.modelValue.id]
-                    this.glnStream.onclose = function(replace) {
-                        stopStream(this.stream)
-                        app.logger.info('revoling file-stream url')
+                    this.glnStream.userdata.play = true
+
+                    this.glnStream.onclose = (replace) =>{
+                        app.logger.info('revoking file-stream url')
                         URL.revokeObjectURL(this.$refs.media.src)
                         this.$refs.media.src = null
                     }
 
-                    let url = URL.createObjectURL(this.modelValue.src)
                     this.$refs.media.src = url
-                // Local MediaStream (not part of Galene); e.g. Webcam test
                 } else if (this.modelValue.src instanceof MediaStream) {
+                    // Local MediaStream (not part of Galene); e.g. Webcam test
                     this.stream = this.modelValue.src
+                    this.$refs.media.srcObject = this.stream
                 } else {
                     throw new Error('invalid Stream source type')
                 }
@@ -131,9 +140,10 @@ export default {
                 // Networked video camera stream; dealt with by addLocalMedia.
                 this.glnStream = app.connection.up[this.modelValue.id]
                 this.stream = this.glnStream.stream
+                this.$refs.media.srcObject = this.stream
             }
 
-            // Networked? add stream object
+            // Networked? add stream events to deal with the peer connection.
             if (this.glnStream) {
                 this.glnStream.stream = this.stream
                 this.glnStream.onstats = this.gotUpStats.bind(this)
@@ -152,7 +162,8 @@ export default {
                     this.glnStream.pc.getSenders().forEach(s => {
                         if(s.track === e.track) {
                             app.logger.info('removing sender track')
-                            this.glnStream.pc.removeTrack(s.track)
+                            console.log(s)
+                            this.glnStream.pc.removeTrack(s)
                         }
                     })
 
@@ -163,8 +174,6 @@ export default {
                     }
                 }
             }
-
-            this.$refs.media.srcObject = this.stream
         } else {
             // Networked down stream
             this.glnStream = app.connection.down[this.modelValue.id]
@@ -197,11 +206,15 @@ export default {
             }
 
             this.glnStream.onstatus = (status) => {
-                this.setMediaStatus()
+                if(['connected', 'completed'].includes(status)) {
+                    this.$refs.media.play().catch(e => {
+                        console.error(e)
+                        this.displayError(e)
+                    })
+
+                }
             }
         }
-
-        this.setMediaStatus()
     },
     methods: {
         gotDownStats(stats) {
@@ -256,21 +269,6 @@ export default {
         },
         setFullscreen() {
             this.$refs.media.requestFullscreen()
-        },
-        setMediaStatus() {
-            app.logger.debug('setMediaStatus')
-            let state = this.stream && this.stream.pc && this.stream.pc.iceConnectionState
-            this.mediaFailed = !(state === 'connected' || state === 'completed')
-
-            if(!this.mediaFailed) {
-                if(this.stream.userdata.play) {
-                    this.$refs.media.play().catch(e => {
-                        console.error(e)
-                        this.displayError(e)
-                    })
-                    delete(this.stream.userdata.play)
-                }
-            }
         },
         toggleMuteVolume() {
             this.muted = !this.muted
