@@ -11,7 +11,6 @@ class Logger {
         }
     }
 
-
     debug(...args) {
         if (this.level >= this.levels.debug) {
             if (this.app.env.isBrowser) {
@@ -23,24 +22,20 @@ class Logger {
         }
     }
 
-
     error(...args) {
         // eslint-disable-next-line no-console
         console.error(...args)
     }
-
 
     group(name) {
         // eslint-disable-next-line no-console
         console.group(name)
     }
 
-
     groupEnd() {
         // eslint-disable-next-line no-console
         console.groupEnd()
     }
-
 
     info(...args) {
         if (this.level >= this.levels.info) {
@@ -49,11 +44,9 @@ class Logger {
         }
     }
 
-
     setLevel(level) {
         this.level = this.levels[level]
     }
-
 
     verbose(...args) {
         if (this.level >= this.levels.verbose) {
@@ -61,7 +54,6 @@ class Logger {
             console.log(...['[pyrite]', ...args])
         }
     }
-
 
     warn(...args) {
         if (this.level >= this.levels.warn) {

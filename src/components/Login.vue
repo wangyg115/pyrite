@@ -1,7 +1,7 @@
 <template>
     <div class="c-login content">
         <header>
-            <Icon class="item-icon icon-small" name="login" /><em>{{ $route.params.groupId }}</em>
+            <Icon class="item-icon icon-small" name="Login" /><em>{{ $route.params.groupId }}</em>
         </header>
         <section>
             <form>
@@ -76,7 +76,7 @@ export default {
     data() {
         return {
             connecting: false,
-            state: app.state
+            state: app.state,
         }
     },
     methods: {
@@ -84,14 +84,11 @@ export default {
             this.connecting = true
             try {
                 app.store.save()
-                app.serverConnect()
+                app.connect()
             } finally {
                 this.connecting = false
             }
-        }
-    }
+        },
+    },
 }
 </script>
-<style lang="postcss">
-
-</style>

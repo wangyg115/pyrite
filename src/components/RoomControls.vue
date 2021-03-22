@@ -8,7 +8,7 @@
                 :data-tooltip="state.muted ? $t('unmute microphone'): $t('mute microphone')"
                 @click="toggleMute"
             >
-                <Icon class="icon-small" name="mic" />
+                <Icon class="icon-small" name="Mic" />
             </button>
 
             <button
@@ -18,7 +18,7 @@
                 :data-tooltip="`${$t('switch camera')} ${state.upMedia.local.length ? $t('off') : $t('on')}`"
                 @click="togglePresent"
             >
-                <Icon class="icon-small" name="webcam" />
+                <Icon class="icon-small" name="Webcam" />
             </button>
 
             <button
@@ -26,9 +26,9 @@
                 class="btn btn-menu tooltip tooltip-left"
                 :class="{active: state.upMedia.screenshare.length}"
                 :data-tooltip="`${$t('switch screensharing')} ${state.upMedia.screenshare.length ? $t('off') : $t('on')}`"
-                @click="toggleShare"
+                @click="toggleScreenshare"
             >
-                <Icon class="icon-small" name="screenshare" />
+                <Icon class="icon-small" name="ScreenShare" />
             </button>
 
             <button
@@ -56,17 +56,7 @@ export default {
             volume: {
                 locked: null,
                 value: 100,
-            }
-        }
-    },
-    watch: {
-        volume(volume) {
-            for (const description of this.state.streams) {
-                // Only downstreams have volume control:
-                if (!description.isUp && !description.volume.locked) {
-                    description.volume = volume
-                }
-            }
+            },
         }
     },
     methods: {
@@ -97,16 +87,26 @@ export default {
                 }
             }
         },
-        async toggleShare() {
+        async toggleScreenshare() {
             if (this.state.upMedia.screenshare.length) {
                 app.logger.debug('turn screenshare stream off')
-                app.stopUpMedia(this.screenStream)
+                app.delUpMedia(this.screenStream)
             } else {
                 app.logger.debug('turn screenshare stream on')
                 this.screenStream = await app.addShareMedia()
             }
-        }
-    }
+        },
+    },
+    watch: {
+        volume(volume) {
+            for (const description of this.state.streams) {
+                // Only downstreams have volume control:
+                if (!description.isUp && !description.volume.locked) {
+                    description.volume = volume
+                }
+            }
+        },
+    },
 }
 </script>
 

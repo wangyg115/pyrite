@@ -52,7 +52,6 @@ const volatileState = {
     users: [],
 }
 
-
 class Store {
 
     load() {
@@ -71,6 +70,5 @@ class Store {
         localStorage.setItem('store', JSON.stringify(persistantState))
     }
 }
-
 
 export default Store

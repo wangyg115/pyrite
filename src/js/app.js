@@ -1,6 +1,5 @@
-
-
-import { createI18n } from 'vue-i18n'
+// @ts-check
+import {createI18n} from 'vue-i18n'
 
 import env from './env.js'
 
@@ -9,10 +8,6 @@ import Logger from './logger.js'
 import protocol from './protocol.js'
 import router from '../js/router.js'
 import Store from './store.js'
-
-
-let safariScreenshareDone = false
-
 
 class Pyrite {
 
@@ -50,16 +45,15 @@ class Pyrite {
         })
     }
 
-
     async addFileMedia(file) {
         this.logger.info('add file media')
-        let {c, id} = this.connection.newUpStream()
-        c.kind = 'video'
+        const glnStream = this.connection.newUpStream()
+        glnStream.kind = 'video'
 
         this.state.streams.push({
-            id: c.id,
+            id: glnStream.id,
             isUp: true,
-            kind: c.kind,
+            kind: glnStream.kind,
             mirror: false,
             src: file,
             volume: {
@@ -67,10 +61,10 @@ class Pyrite {
                 value: 100,
             },
         })
-        this.state.upMedia[c.kind].push(id)
-        c.userdata.play = true
+        this.state.upMedia[glnStream.kind].push(glnStream.id)
+        glnStream.userdata.play = true
+        return glnStream
     }
-
 
     async addLocalMedia() {
         if (!this.state.connected && this.localStream) {
@@ -93,11 +87,11 @@ class Pyrite {
         if(selectedVideoDevice) {
             let resolution = this.state.resolution
             if(resolution) {
-                selectedVideoDevice.width = { ideal: resolution[0] }
-                selectedVideoDevice.height = { ideal: resolution[1] }
+                selectedVideoDevice.width = {ideal: resolution[0]}
+                selectedVideoDevice.height = {ideal: resolution[1]}
             } else if(this.state.blackboardMode) {
-                selectedVideoDevice.width = { ideal: 1920, min: 640 }
-                selectedVideoDevice.height = { ideal: 1080, min: 400 }
+                selectedVideoDevice.width = {ideal: 1920, min: 640}
+                selectedVideoDevice.height = {ideal: 1080, min: 400}
             }
         }
 
@@ -105,11 +99,11 @@ class Pyrite {
             this.localStream = await navigator.mediaDevices.getUserMedia(constraints)
             this.state.mediaReady = true
         } catch(e) {
-            this.displayError(e)
+            this.notify({level: 'error', message: e})
             return
         }
 
-        // Connected to Galene; handle streams.
+        // Connected to Galene; handle peer connection logic.
         if (this.state.connected) {
             let localStreamId = this.findUpMedia('local')
             let oldStream = localStreamId && this.connection.up[localStreamId]
@@ -127,13 +121,13 @@ class Pyrite {
                 this.stopUpMedia(oldStream)
             }
 
-            let {c, id} = this.newUpStream(localStreamId)
-            c.kind = 'local'
-            c.stream = this.localStream
-            this.state.upMedia[c.kind].push(id)
+            const glnStream = this.newUpStream(localStreamId)
+            glnStream.kind = 'local'
+            glnStream.stream = this.localStream
+            this.state.upMedia[glnStream.kind].push(glnStream.id)
 
             this.localStream.getTracks().forEach(t => {
-                c.labels[t.id] = t.kind
+                glnStream.labels[t.id] = t.kind
                 if(t.kind == 'audio') {
                     if(this.state.localMute) {
                         this.logger.info('muting local stream')
@@ -145,11 +139,10 @@ class Pyrite {
                         t.contentHint = 'detail'
                     }
                 }
-                c.pc.addTrack(t, this.localStream)
+                glnStream.pc.addTrack(t, this.localStream)
             })
         }
     }
-
 
     async addShareMedia() {
         this.logger.info('add share media')
@@ -160,45 +153,86 @@ class Pyrite {
             /** @ts-ignore */
             stream = await navigator.mediaDevices.getDisplayMedia({video: true})
         } catch(e) {
-            console.error(e)
-            this.displayError(e)
+            this.notify({level: 'error', message: e})
             return
         }
 
-        if(!safariScreenshareDone) {
-            if(this.env.isSafari) {
-                this.displayWarning('Screen sharing under Safari is experimental.  ' +
-                               'Please use a different browser if possible.')
-            }
+        const glnStream = this.newUpStream()
+        glnStream.kind = 'screenshare'
+        this.state.upMedia[glnStream.kind].push(glnStream.id)
 
-            safariScreenshareDone = true
-        }
-
-        let {c, id} = this.newUpStream()
-        c.kind = 'screenshare'
-        this.state.upMedia[c.kind].push(id)
-
-        c.stream = stream
+        glnStream.stream = stream
         stream.getTracks().forEach(t => {
-            c.pc.addTrack(t, stream)
+            glnStream.pc.addTrack(t, stream)
             t.onended = () => {
-                this.delUpMedia(c)
+                this.delUpMedia(glnStream)
             }
-            c.labels[t.id] = 'screenshare'
+            glnStream.labels[t.id] = 'screenshare'
         })
 
-        return c
+        return glnStream
     }
-
 
     changePresentation() {
         let id = this.findUpMedia('local')
         if(id) {
             this.logger.info('resettings local stream')
-            this.addLocalMedia(id)
+            this.addLocalMedia()
         }
     }
 
+    async connect() {
+        if(this.connection && this.connection.socket) {
+            this.connection.close()
+        }
+        this.connection = new protocol.ServerConnection()
+
+        this.connection.onconnected = this.onConnected.bind(this)
+        this.connection.onclose = this.onClose.bind(this)
+        this.connection.ondownstream = this.onDownStream.bind(this)
+        this.connection.onuser = this.onUser.bind(this)
+        this.connection.onjoined = this.onJoined.bind(this)
+
+        this.connection.onusermessage = (id, dest, username, time, privileged, kind, message) => {
+            switch(kind) {
+            case 'error':
+            case 'warning':
+            case 'info':
+                // eslint-disable-next-line no-case-declarations
+                let from = id ? (username || 'Anonymous') : 'The Server'
+                if(privileged) {
+                    this.notify({level: 'error', message: `${from} said: ${message}`})
+                }
+                break
+            case 'mute':
+                if(privileged) {
+                    this.muteLocalTracks(true)
+                    this.notify({
+                        level: 'warning',
+                        message: `You have been muted${username ? ' by ' + username : ''}`,
+                    })
+                }
+                break
+            case 'clearchat':
+                if(privileged) {
+                    this.state.messages = []
+                }
+                break
+            default:
+                break
+            }
+        }
+        let url = `ws${location.protocol === 'https:' ? 's' : ''}://${location.host}/ws`
+        this.logger.info(`connecting websocket ${url}`)
+        try {
+            await this.connection.connect(url)
+        } catch(e) {
+            this.notify({
+                level: 'error',
+                message: e.message ? e.message : "Couldn't connect to " + url,
+            })
+        }
+    }
 
     delLocalMedia() {
         if (!this.localStream) return
@@ -214,18 +248,10 @@ class Pyrite {
         delete this.localStream
     }
 
-
     delMedia(id) {
         this.logger.debug(`[delMedia] remove stream ${id} from state`)
         this.state.streams.splice(this.state.streams.findIndex(i => i.id === id), 1)
     }
-
-
-    delSetting(key) {
-        this.state[key] = null
-        this.store.save()
-    }
-
 
     delUpMedia(c) {
         this.stopUpMedia(c)
@@ -234,7 +260,6 @@ class Pyrite {
         c.close()
         delete(this.connection.up[c.id])
     }
-
 
     delUpMediaKind(kind) {
         this.logger.debug(`remove all up media from kind: ${kind}`)
@@ -251,7 +276,6 @@ class Pyrite {
         }
     }
 
-
     disconnect() {
         this.state.users = []
         this.state.streams = []
@@ -259,35 +283,6 @@ class Pyrite {
         this.delLocalMedia()
     }
 
-
-    /**
-     * @param {unknown} message
-     * @param {string} [level]
-     */
-    displayError(message, level) {
-        this.notify({level, message })
-    }
-
-
-    /**
-     * @param {unknown} message
-     */
-    displayMessage(message) {
-        return this.displayError(message, "info")
-    }
-
-
-    /**
-     * @param {unknown} message
-     */
-    displayWarning(message) {
-        return this.displayError(message, "warning")
-    }
-
-
-    /**
-    * @param {string} kind
-    */
     findUpMedia(kind) {
         for(let id in this.connection.up) {
             if(this.connection.up[id].kind === kind)
@@ -296,8 +291,6 @@ class Pyrite {
         return null
     }
 
-
-    /** @returns {number} */
     getMaxVideoThroughput() {
         switch(this.state.send.id) {
         case 'lowest':
@@ -309,43 +302,90 @@ class Pyrite {
         case 'unlimited':
             return null
         default:
-            console.error('Unknown video quality')
             return 700000
         }
     }
 
-
-    /**
-     * @this {ServerConnection}
-     * @param {number} code
-     * @param {string} reason
-     */
-    gotClose(code, reason) {
-        this.state.connected = false
-        this.delUpMediaKind(null)
-
-        this.displayError('Disconnected', 'error')
-
-        if(code != 1000) {
-            console.warn('Socket close', code, reason)
+    muteLocalTracks(mute) {
+        this.logger.info(`mute local tracks: ${mute}`)
+        this.state.muted = mute
+        for(let id in this.connection.up) {
+            const glnStream = this.connection.up[id]
+            if(glnStream.kind === 'local') {
+                let stream = glnStream.stream
+                stream.getTracks().forEach(t => {
+                    if(t.kind === 'audio') {
+                        t.enabled = !mute
+                    }
+                })
+            }
         }
     }
 
+    newUpStream(_id) {
+        const glnStream = this.connection.newUpStream(_id)
 
-    /** @this {ServerConnection} */
-    gotConnected() {
+        this.state.streams.push({
+            id: glnStream.id,
+            isUp: true,
+            kind: glnStream.kind,
+            mirror: true,
+            volume: {
+                locked: false,
+                value: 100,
+            },
+        })
+
+        glnStream.onerror = (e) => {
+            this.notify({level: 'error', message: e})
+            this.delUpMedia(glnStream)
+        }
+        glnStream.onabort = () => {
+            this.delUpMedia(glnStream)
+        }
+        glnStream.onnegotiationcompleted = () => {
+            this.setMaxVideoThroughput(glnStream, this.getMaxVideoThroughput())
+        }
+
+        return glnStream
+    }
+
+    notify(notification) {
+        if (!this.notificationId) {
+            this.notificationId = 1
+            notification.id = this.notificationId
+        }
+
+        if (typeof notification.timeout === 'undefined') {
+            notification.timeout = 3000
+        }
+
+        this.state.notifications.push(notification)
+        setTimeout(() => {
+            this.state.notifications.splice(this.state.notifications.findIndex(i => i.id === notification.id), 1)
+        }, notification.timeout)
+
+        this.notificationId += 1
+    }
+
+    onClose(code, reason) {
+        this.state.connected = false
+        this.delUpMediaKind(null)
+        this.notify({level: 'error', message: 'Disconnected'})
+
+        if(code != 1000) {
+            this.notify({level: 'error', message: `Socket close ${code}: ${reason}`})
+        }
+    }
+
+    onConnected() {
         const groupName = this.router.currentRoute.value.params.groupId
         this.logger.info(`joining group: ${groupName}`)
         this.connection.join(groupName, this.state.username, this.state.password)
         this.state.connected = true
     }
 
-
-    /**
-     * @this {ServerConnection}
-     * @param {Stream} c
-     */
-    gotDownStream(c) {
+    onDownStream(c) {
         this.logger.info(`new downstream ${c.id}`)
         c.onclose = (replace) => {
             if(!replace) {
@@ -354,10 +394,10 @@ class Pyrite {
             }
 
         }
-        c.onerror = (e) => {
-            this.logger.info(`[onerror] downstream ${c.id}`)
-            console.error(e)
-            this.displayError(e)
+        c.onerror = () => {
+            const message = `[onerror] downstream ${c.id}`
+            this.logger.info(message)
+            this.notify({level: 'error', message})
         }
 
         this.state.streams.push({
@@ -372,13 +412,7 @@ class Pyrite {
         })
     }
 
-
-    /**
-     * @this {ServerConnection}
-     * @param {string} group
-     * @param {Object<string,boolean>} perms
-     */
-    async gotJoined(kind, group, perms, message) {
+    async onJoined(kind, group, perms, message) {
         this.state.permissions = perms
         this.logger.info(`joined group ${group}`)
         this.logger.debug(`permissions: ${JSON.stringify(perms)}`)
@@ -401,7 +435,7 @@ class Pyrite {
                 return
             break
         default:
-            this.displayError('Unknown join message')
+            this.notify({level: 'error', message: 'Unknown join message'})
             this.connection.close()
             return
         }
@@ -410,7 +444,7 @@ class Pyrite {
 
         if(this.connection.permissions.present && !this.findUpMedia('local')) {
             if (!this.state.present) {
-                this.displayMessage('Press Ready to enable your camera or microphone')
+                this.notify({level: 'info', message: 'Press Ready to enable your camera or microphone'})
                 return
             }
 
@@ -427,13 +461,7 @@ class Pyrite {
         }
     }
 
-
-    /**
-     * @param {string} id
-     * @param {string} kind
-     * @param {string} name
-     */
-    gotUser(id, kind, name) {
+    onUser(id, kind, name) {
         switch(kind) {
         case 'add':
             this.state.users.push({id, name})
@@ -442,144 +470,10 @@ class Pyrite {
             this.state.users.splice(this.state.users.findIndex((u) => u.id === id), 1)
             break
         default:
-            console.warn('Unknown user kind', kind)
             break
         }
     }
 
-
-    /**
-    * @param {boolean} mute
-    */
-    muteLocalTracks(mute) {
-        this.logger.info(`mute local tracks: ${mute}`)
-        this.state.muted = mute
-        for(let id in this.connection.up) {
-            let c = this.connection.up[id]
-            if(c.kind === 'local') {
-                let stream = c.stream
-                stream.getTracks().forEach(t => {
-                    if(t.kind === 'audio') {
-                        t.enabled = !mute
-                    }
-                })
-            }
-        }
-    }
-
-
-    /**
-     * @param {string} [id]
-     */
-    newUpStream(_id) {
-        let {c, id} = this.connection.newUpStream(_id)
-
-        this.state.streams.push({
-            id: c.id,
-            isUp: true,
-            kind: c.kind,
-            mirror: true,
-            volume: {
-                locked: false,
-                value: 100,
-            },
-        })
-
-        c.onerror = (e) => {
-            console.error(e)
-            this.displayError(e)
-            this.delUpMedia(c)
-        }
-        c.onabort = () => {
-            this.delUpMedia(c)
-        }
-        c.onnegotiationcompleted = () => {
-            this.setMaxVideoThroughput(c, this.getMaxVideoThroughput())
-        }
-
-
-        return {c, id}
-    }
-
-
-    notify(notification) {
-        if (!this.notificationId) {
-            this.notificationId = 1
-            notification.id = this.notificationId
-        }
-
-        if (typeof notification.timeout === 'undefined') {
-            notification.timeout = 3000
-        }
-
-        this.state.notifications.push(notification)
-        setTimeout(() => {
-            this.state.notifications.splice(this.state.notifications.findIndex(i => i.id === notification.id), 1)
-        }, notification.timeout)
-
-        this.notificationId += 1
-    }
-
-
-    async serverConnect() {
-        if(this.connection && this.connection.socket) {
-            this.connection.close()
-        }
-        this.connection = new protocol.ServerConnection()
-
-        this.connection.onconnected = this.gotConnected.bind(this)
-        this.connection.onclose = this.gotClose.bind(this)
-        this.connection.ondownstream = this.gotDownStream.bind(this)
-        this.connection.onuser = this.gotUser.bind(this)
-        this.connection.onjoined = this.gotJoined.bind(this)
-
-        this.connection.onusermessage = (id, dest, username, time, privileged, kind, message) => {
-            switch(kind) {
-            case 'error':
-            case 'warning':
-            case 'info':
-                // eslint-disable-next-line no-case-declarations
-                let from = id ? (username || 'Anonymous') : 'The Server'
-                if(privileged) {
-                    this.displayError(`${from} said: ${message}`, kind)
-                }
-                else {
-                    console.error(`Got unprivileged message of kind ${kind}`)
-                }
-                break
-            case 'mute':
-                if(privileged) {
-                    this.muteLocalTracks(true)
-                    this.displayWarning(`You have been muted${username ? ' by ' + username : ''}`)
-                } else {
-                    console.error(`Got unprivileged message of kind ${kind}`)
-                }
-                break
-            case 'clearchat':
-                if(privileged) {
-                    this.state.messages = []
-                }
-                break
-            default:
-                console.warn(`Got unknown user message ${kind}`)
-                break
-            }
-        }
-        let url = `ws${location.protocol === 'https:' ? 's' : ''}://${location.host}/ws`
-        this.logger.info(`connecting websocket ${url}`)
-        try {
-            await this.connection.connect(url)
-        } catch(e) {
-            console.error(e)
-            this.displayError(e.message ? e.message : "Couldn't connect to " + url)
-        }
-    }
-
-
-    /**
-     * @param {Stream} c
-     * @param {number} [bps]
-     */
     async setMaxVideoThroughput(c, bps) {
         this.logger.debug(`set maxiumum video throughput: ${bps}`)
         let senders = c.pc.getSenders()
@@ -596,11 +490,8 @@ class Pyrite {
                 else
                     delete e.maxBitrate
             })
-            try {
-                await s.setParameters(p)
-            } catch(e) {
-                console.error(e)
-            }
+
+            await s.setParameters(p)
         }
     }
 
@@ -617,11 +508,11 @@ class Pyrite {
 
             if(d.kind === 'videoinput') {
                 if(!label) label = `Camera ${cn}`
-                this.state.devices.video.push({id: d.deviceId, name: label })
+                this.state.devices.video.push({id: d.deviceId, name: label})
                 cn++
             } else if(d.kind === 'audioinput') {
                 if(!label) label = `Microphone ${mn}`
-                this.state.devices.audio.push({id: d.deviceId, name: label })
+                this.state.devices.audio.push({id: d.deviceId, name: label})
                 mn++
             }
         })
@@ -638,16 +529,11 @@ class Pyrite {
         this.logger.info(`setMediaChoices: video(${this.state.devices.video.length}) audio(${this.state.devices.audio.length})`)
     }
 
-
-    /**
-     * @param {Stream} c
-     */
     stopUpMedia(c) {
         this.logger.debug(`stopping up-stream ${c.id}`)
         c.stream.getTracks().forEach(t => t.stop())
 
         this.state.upMedia[c.kind].splice(this.state.upMedia[c.kind].indexOf(c.id), 1)
-        this.state.streams.splice(this.state.streams.findIndex(i => i.id === c.id), 1)
     }
 }
 

@@ -13,39 +13,25 @@
         </div>
 
         <div v-for="group of groups" :key="group.name" class="group item">
-            <Icon class="item-icon icon-small" name="groups" />
+            <Icon class="item-icon icon-small" name="Groups" />
             <RouterLink class="name" :to="{name: 'groups', params: {groupId: group.name}}">
                 {{ group.name }}
             </RouterLink>
             <div class="count">
                 {{ group.clientCount }}
             </div>
-            <Icon class="icon-small" name="user" />
+            <Icon class="icon-small" name="User" />
         </div>
     </section>
 </template>
 
 <script>
 export default {
-    name: 'Groups',
     data() {
         return {
             groups: [],
             state: app.state,
         }
-    },
-    watch: {
-        'state.group'() {
-            this.updateRoute()
-        }
-    },
-
-    async mounted() {
-        this.intervalId = setInterval(this.pollGroups, 3000)
-        this.pollGroups()
-    },
-    unmounted() {
-        clearInterval(this.intervalId)
     },
     methods: {
         async pollGroups() {
@@ -57,8 +43,20 @@ export default {
             } else {
                 this.$router.replace({name: 'settings', params: {tabId: 'misc'}})
             }
-        }
-    }
+        },
+    },
+    async mounted() {
+        this.intervalId = setInterval(this.pollGroups, 3000)
+        this.pollGroups()
+    },
+    unmounted() {
+        clearInterval(this.intervalId)
+    },
+    watch: {
+        'state.group'() {
+            this.updateRoute()
+        },
+    },
 }
 </script>
 
@@ -69,5 +67,4 @@ export default {
         padding-left: 0;
     }
 }
-
 </style>

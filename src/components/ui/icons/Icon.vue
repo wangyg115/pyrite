@@ -1,80 +1,84 @@
 <template>
     <svg
-        class="icon" height="40"
+        class="icon"
+        height="40"
         viewBox="0 0 24 24"
         width="40"
     >
-        <component :is="name" />
+        <component :is="`Icon${name}`" />
     </svg>
 </template>
 
 <script>
-import chat from './IconChat.vue'
-import chatClose from './IconChatClose.vue'
-import eye from './IconEye.vue'
-import error from './IconError.vue'
-import fullscreen from './IconFullscreen.vue'
-import groups from './IconGroups.vue'
-import headset from './IconHeadset.vue'
-import info from './IconInfo.vue'
-import lock from './IconLock.vue'
-import logo from './IconLogo.vue'
-import login from './IconLogin.vue'
-import logout from './IconLogout.vue'
-import mic from './IconMic.vue'
-import micMute from './IconMicMute.vue'
-import operator from './IconOperator.vue'
-import pip from './IconPip.vue'
-import playFile from './IconPlayFile.vue'
-import present from './IconPresent.vue'
-import user from './IconUser.vue'
-import userUnknown from './IconUserUnknown.vue'
-import screenshare from './IconScreenShare.vue'
-import send from './IconSend.vue'
-import settings from './IconSettings.vue'
-import settingsMisc from './IconSettingsMisc.vue'
-import stopScreenshare from './IconStopScreenShare.vue'
-import warning from './IconWarning.vue'
-import webcam from './IconWebcam.vue'
+import IconChat from './IconChat.vue'
+import IconChatClose from './IconChatClose.vue'
+import IconError from './IconError.vue'
+import IconEye from './IconEye.vue'
+import IconFullscreen from './IconFullscreen.vue'
+import IconGroups from './IconGroups.vue'
+import IconHeadset from './IconHeadset.vue'
+import IconInfo from './IconInfo.vue'
+import IconLock from  './IconLock.vue'
+import IconLogin from './IconLogin.vue'
+import IconLogo from './IconLogo.vue'
+import IconLogout from './IconLogout.vue'
+import IconMenu from './IconMenu.vue'
+import IconMic from './IconMic.vue'
+import IconMicMute from './IconMicMute.vue'
+import IconOperator from './IconOperator.vue'
+import IconPip from './IconPip.vue'
+import IconPlayFile from './IconPlayFile.vue'
+import IconPresent from './IconPresent.vue'
+import IconScreenShare from './IconScreenShare.vue'
+import IconSend from './IconSend.vue'
+import IconSettings from './IconSettings.vue'
+import IconSettingsMisc from './IconSettingsMisc.vue'
+import IconStopScreenShare from './IconStopScreenShare.vue'
+import IconUser from './IconUser.vue'
+import IconUserUnknown from './IconUserUnknown.vue'
+import IconWarning from './IconWarning.vue'
+import IconWebcam from './IconWebcam.vue'
 
 export default {
-  components: {
-      chat,
-      chatClose,
-      eye,
-      error,
-      fullscreen,
-      groups,
-      headset,
-      info,
-      lock,
-      login,
-      logo,
-      logout,
-      mic,
-      micMute,
-      operator,
-      pip,
-      playFile,
-      present,
-      screenshare,
-      send,
-      settings,
-      settingsMisc,
-      stopScreenshare,
-      user,
-      userUnknown,
-      warning,
-      webcam
-  },
-  props: {
-    name: {
-        required: true,
-        type: String
-    }
-  }
+    components: {
+        IconChat,
+        IconChatClose,
+        IconError,
+        IconEye,
+        IconFullscreen,
+        IconGroups,
+        IconHeadset,
+        IconInfo,
+        IconLock,
+        IconLogin,
+        IconLogo,
+        IconLogout,
+        IconMenu,
+        IconMic,
+        IconMicMute,
+        IconOperator,
+        IconPip,
+        IconPlayFile,
+        IconPresent,
+        IconScreenShare,
+        IconSend,
+        IconSettings,
+        IconSettingsMisc,
+        IconStopScreenShare,
+        IconUser,
+        IconUserUnknown,
+        IconWarning,
+        IconWebcam,
+    },
+    props: {
+        name: {
+            required: true,
+            type: String,
+        },
+    },
 }
 </script>
+
 <style lang="postcss">
 .icon {
     fill: currentColor;
@@ -101,6 +105,4 @@ export default {
         width: 50px;
     }
 }
-
-
 </style>

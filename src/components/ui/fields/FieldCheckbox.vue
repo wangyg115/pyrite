@@ -22,24 +22,27 @@
         </div>
     </div>
 </template>
+
 <script>
 import Field from './field'
+
 export default {
-    extends: Field,
-    props: {
-        modelValue: {
-            required: true,
-            type: Boolean
-        }
-    },
     emits: ['update:modelValue'],
+    extends: Field,
     methods: {
         updateModel: function(event) {
             this.$emit('update:modelValue', event.target.checked)
         },
     },
+    props: {
+        modelValue: {
+            required: true,
+            type: Boolean,
+        },
+    },
 }
 </script>
+
 <style lang="postcss">
 .c-field-checkbox {
 
@@ -94,11 +97,11 @@ export default {
                 background: var(--primary-color);
 
                 &::before {
+                    background: var(--grey-50);
                     transform: translateX(calc(var(--spacer) * 2));
                 }
             }
         }
     }
 }
-
 </style>

@@ -31,25 +31,26 @@
         />
     </section>
 </template>
+
 <script>
 export default {
     data() {
         return {
             languages: [
                 {id: 'en', name: this.$t('English')},
-                {id: 'nl', name: this.$t('Nederlands')}
+                {id: 'nl', name: this.$t('Nederlands')},
             ],
             receiveOptions: [
                 {id: 'nothing', name: this.$t('Nothing')},
                 {id: 'audio', name: this.$t('Audio')},
                 {id: 'screenshare', name: this.$t('Screenshare')},
-                {id: 'everything', name: this.$t('Everything')}
+                {id: 'everything', name: this.$t('Everything')},
             ],
             sendOptions: [
                 {id: 'lowest', name: this.$t('Lowest')},
                 {id: 'low', name: this.$t('Low')},
                 {id: 'normal', name: this.$t('Normal')},
-                {id: 'unlimited', name: this.$t('Unlimited')}
+                {id: 'unlimited', name: this.$t('Unlimited')},
             ],
             state: app.state,
         }

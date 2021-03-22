@@ -21,7 +21,7 @@
                 :class="{visible}"
                 @click="visible = !visible"
             >
-                <icon class="icon icon-mini" :class="{active: visible}" name="eye" />
+                <Icon class="icon icon-mini" :class="{active: visible}" name="Eye" />
             </div>
         </div>
         <div v-if="help" class="help">
@@ -29,25 +29,27 @@
         </div>
     </div>
 </template>
+
 <script>
 import Field from './field'
+
 export default {
+    data() {
+        return {
+            visible: false,
+        }
+    },
+    emits: ['focus', 'update:modelValue'],
     extends: Field,
     props: {
         type: {
             default: 'text',
             type: String,
-            validator: function (value) {
+            validator: function(value) {
                 return ['password', 'text'].includes(value)
-            }
-        }
+            },
+        },
     },
-    emits: ['focus', 'update:modelValue'],
-    data() {
-        return {
-            visible: false,
-        }
-    }
 }
 </script>
 
