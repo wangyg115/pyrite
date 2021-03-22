@@ -476,7 +476,7 @@ ServerConnection.prototype.newUpStream = function(localId) {
 
     pc.ontrack = console.error;
 
-    return { c, id };
+    return c;
 };
 
 /**

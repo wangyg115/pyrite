@@ -84,7 +84,7 @@ export default {
             this.connecting = true
             try {
                 app.store.save()
-                app.serverConnect()
+                app.connect()
             } finally {
                 this.connecting = false
             }
