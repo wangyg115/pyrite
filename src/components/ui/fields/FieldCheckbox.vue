@@ -97,6 +97,7 @@ export default {
                 background: var(--primary-color);
 
                 &::before {
+                    background: var(--grey-50);
                     transform: translateX(calc(var(--spacer) * 2));
                 }
             }

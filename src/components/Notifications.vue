@@ -17,11 +17,6 @@
 
 <script>
 export default {
-    computed: {
-        levelIcon() {
-
-        },
-    },
     data() {
         return {
             state: app.state,

@@ -28,7 +28,7 @@
                 :data-tooltip="`${$t('switch screensharing')} ${state.upMedia.screenshare.length ? $t('off') : $t('on')}`"
                 @click="toggleScreenshare"
             >
-                <Icon class="icon-small" name="Screenshare" />
+                <Icon class="icon-small" name="ScreenShare" />
             </button>
 
             <button
