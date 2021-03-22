@@ -1,3 +1,10 @@
+## [1.8.6](https://github.com/garage44/pyrite/compare/v1.8.5...v1.8.6) (2021-03-22)
+
+
+### Bug Fixes
+
+* add package.json description ([41ab632](https://github.com/garage44/pyrite/commit/41ab632694551a6a299d37f196704c586bfcb4c3))
+
 ## [1.8.5](https://github.com/garage44/pyrite/compare/v1.8.4...v1.8.5) (2021-03-22)
 
 
