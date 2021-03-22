@@ -1,3 +1,10 @@
+## [1.8.3](https://github.com/garage44/pyrite/compare/v1.8.2...v1.8.3) (2021-03-22)
+
+
+### Bug Fixes
+
+* use VITE_VERSION and semantic release version ([49124e6](https://github.com/garage44/pyrite/commit/49124e6a891b988961e17a519cf5734438b4d7ef))
+
 ## [1.8.2](https://github.com/garage44/pyrite/compare/v1.8.1...v1.8.2) (2021-03-22)
 
 
