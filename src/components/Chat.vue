@@ -115,20 +115,23 @@ export default {
                     } else {
                         let c = commands[cmd]
                         if(!c) {
-                            app.displayError(`Uknown command /${cmd}, type /help for help`)
+                            app.notify({
+                                level: 'error',
+                                message: `Uknown command /${cmd}, type /help for help`,
+                            })
                             return
                         }
                         if(c.predicate) {
-                            let s = c.predicate()
-                            if(s) {
-                                app.displayError(s)
+                            const message = c.predicate()
+                            if(message) {
+                                app.notify({level: 'error', message})
                                 return
                             }
                         }
                         try {
                             c.f(cmd, rest)
                         } catch(e) {
-                            app.displayError(e)
+                            app.notify({level: 'error', message: e})
                         }
                         return
                     }

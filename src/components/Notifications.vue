@@ -6,7 +6,7 @@
             class="notification"
             :class="{[notification.level]: true}"
         >
-            <Icon class="icon icon-small" :name="notification.level" />
+            <Icon class="icon icon-small" :name="notification.level[0].toUpperCase() + notification.level.slice(1)" />
             <div class="message">
                 {{ notification.message }}
                 <span v-if="notification.link" class="cf link" @click="openUrl(notification.link.url)">{{ notification.link.text }}</span>
@@ -17,6 +17,11 @@
 
 <script>
 export default {
+    computed: {
+        levelIcon() {
+
+        },
+    },
     data() {
         return {
             state: app.state,

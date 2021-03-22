@@ -248,7 +248,7 @@ export default {
             this.glnStream.onstatus = (status) => {
                 if(['connected', 'completed'].includes(status)) {
                     this.$refs.media.play().catch(e => {
-                        this.displayError(e)
+                        app.notify({level: 'error', message: e})
                     })
 
                 }

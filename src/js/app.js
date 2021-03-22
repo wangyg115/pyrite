@@ -99,7 +99,7 @@ class Pyrite {
             this.localStream = await navigator.mediaDevices.getUserMedia(constraints)
             this.state.mediaReady = true
         } catch(e) {
-            this.displayError(e)
+            this.notify({level: 'error', message: e})
             return
         }
 
@@ -153,7 +153,7 @@ class Pyrite {
             /** @ts-ignore */
             stream = await navigator.mediaDevices.getDisplayMedia({video: true})
         } catch(e) {
-            this.displayError(e)
+            this.notify({level: 'error', message: e})
             return
         }
 
@@ -201,13 +201,16 @@ class Pyrite {
                 // eslint-disable-next-line no-case-declarations
                 let from = id ? (username || 'Anonymous') : 'The Server'
                 if(privileged) {
-                    this.displayError(`${from} said: ${message}`, kind)
+                    this.notify({level: 'error', message: `${from} said: ${message}`})
                 }
                 break
             case 'mute':
                 if(privileged) {
                     this.muteLocalTracks(true)
-                    this.displayWarning(`You have been muted${username ? ' by ' + username : ''}`)
+                    this.notify({
+                        level: 'warning',
+                        message: `You have been muted${username ? ' by ' + username : ''}`,
+                    })
                 }
                 break
             case 'clearchat':
@@ -224,7 +227,10 @@ class Pyrite {
         try {
             await this.connection.connect(url)
         } catch(e) {
-            this.displayError(e.message ? e.message : "Couldn't connect to " + url)
+            this.notify({
+                level: 'error',
+                message: e.message ? e.message : "Couldn't connect to " + url,
+            })
         }
     }
 
@@ -245,11 +251,6 @@ class Pyrite {
     delMedia(id) {
         this.logger.debug(`[delMedia] remove stream ${id} from state`)
         this.state.streams.splice(this.state.streams.findIndex(i => i.id === id), 1)
-    }
-
-    delSetting(key) {
-        this.state[key] = null
-        this.store.save()
     }
 
     delUpMedia(c) {
@@ -280,18 +281,6 @@ class Pyrite {
         this.state.streams = []
         this.connection.close()
         this.delLocalMedia()
-    }
-
-    displayError(message, level) {
-        this.notify({level, message})
-    }
-
-    displayMessage(message) {
-        return this.displayError(message, "info")
-    }
-
-    displayWarning(message) {
-        return this.displayError(message, "warning")
     }
 
     findUpMedia(kind) {
@@ -348,7 +337,7 @@ class Pyrite {
         })
 
         glnStream.onerror = (e) => {
-            this.displayError(e)
+            this.notify({level: 'error', message: e})
             this.delUpMedia(glnStream)
         }
         glnStream.onabort = () => {
@@ -382,11 +371,10 @@ class Pyrite {
     onClose(code, reason) {
         this.state.connected = false
         this.delUpMediaKind(null)
-
-        this.displayError('Disconnected', 'error')
+        this.notify({level: 'error', message: 'Disconnected'})
 
         if(code != 1000) {
-            this.displayError(`Socket close ${code}: ${reason}`)
+            this.notify({level: 'error', message: `Socket close ${code}: ${reason}`})
         }
     }
 
@@ -406,9 +394,10 @@ class Pyrite {
             }
 
         }
-        c.onerror = (e) => {
-            this.logger.info(`[onerror] downstream ${c.id}`)
-            this.displayError(e)
+        c.onerror = () => {
+            const message = `[onerror] downstream ${c.id}`
+            this.logger.info(message)
+            this.notify({level: 'error', message})
         }
 
         this.state.streams.push({
@@ -446,7 +435,7 @@ class Pyrite {
                 return
             break
         default:
-            this.displayError('Unknown join message')
+            this.notify({level: 'error', message: 'Unknown join message'})
             this.connection.close()
             return
         }
@@ -455,7 +444,7 @@ class Pyrite {
 
         if(this.connection.permissions.present && !this.findUpMedia('local')) {
             if (!this.state.present) {
-                this.displayMessage('Press Ready to enable your camera or microphone')
+                this.notify({level: 'info', message: 'Press Ready to enable your camera or microphone'})
                 return
             }
 
