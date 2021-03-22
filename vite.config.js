@@ -5,6 +5,9 @@ if (!process.env.VITE_VERSION) {
     process.env.VITE_VERSION = 'dev'
 }
 
+// eslint-disable-next-line no-console
+console.log('Build version:', process.env.VITE_VERSION)
+
 export default defineConfig({
     plugins: [
         vue(),

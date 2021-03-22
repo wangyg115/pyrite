@@ -12,7 +12,6 @@
     "lint": "yarn lint:js;yarn lint:css",
     "lint:js": "eslint \"src/**/*.{js,vue}\"",
     "lint:css": "stylelint \"src/**/*.{css,vue}\"",
-    "prepublishOnly": "npm run build",
     "semantic-release": "semantic-release"
   },
   "dependencies": {
@@ -55,7 +54,7 @@
       [
         "@semantic-release/exec",
         {
-          "publishCmd": "VITE_VERSION=${nextRelease.version} npm run build"
+          "publishCmd": "VITE_VERSION=${nextRelease.version} npm run build;npm run deploy"
         }
       ],
       "@semantic-release/changelog",
