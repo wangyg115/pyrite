@@ -14,9 +14,8 @@
         </div>
     </div>
 </template>
+
 <script>
-
-
 export default {
     data() {
         return {
@@ -30,6 +29,7 @@ export default {
                 this.visible = false
                 return
             }
+
             this.visible = !this.visible
         },
     },

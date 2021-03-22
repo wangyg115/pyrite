@@ -1,6 +1,6 @@
 
 
-import { createI18n } from 'vue-i18n'
+import {createI18n} from 'vue-i18n'
 
 import env from './env.js'
 
@@ -94,11 +94,11 @@ class Pyrite {
         if(selectedVideoDevice) {
             let resolution = this.state.resolution
             if(resolution) {
-                selectedVideoDevice.width = { ideal: resolution[0] }
-                selectedVideoDevice.height = { ideal: resolution[1] }
+                selectedVideoDevice.width = {ideal: resolution[0]}
+                selectedVideoDevice.height = {ideal: resolution[1]}
             } else if(this.state.blackboardMode) {
-                selectedVideoDevice.width = { ideal: 1920, min: 640 }
-                selectedVideoDevice.height = { ideal: 1080, min: 400 }
+                selectedVideoDevice.width = {ideal: 1920, min: 640}
+                selectedVideoDevice.height = {ideal: 1080, min: 400}
             }
         }
 
@@ -266,7 +266,7 @@ class Pyrite {
      * @param {string} [level]
      */
     displayError(message, level) {
-        this.notify({level, message })
+        this.notify({level, message})
     }
 
 
@@ -618,11 +618,11 @@ class Pyrite {
 
             if(d.kind === 'videoinput') {
                 if(!label) label = `Camera ${cn}`
-                this.state.devices.video.push({id: d.deviceId, name: label })
+                this.state.devices.video.push({id: d.deviceId, name: label})
                 cn++
             } else if(d.kind === 'audioinput') {
                 if(!label) label = `Microphone ${mn}`
-                this.state.devices.audio.push({id: d.deviceId, name: label })
+                this.state.devices.audio.push({id: d.deviceId, name: label})
                 mn++
             }
         })

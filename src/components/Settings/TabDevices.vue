@@ -39,7 +39,7 @@ export default {
             app.delLocalMedia()
         }
     },
-    components: {SoundMeter, Stream },
+    components: {SoundMeter, Stream},
     data() {
         return {
             description: null,

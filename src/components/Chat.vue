@@ -42,7 +42,8 @@
 
 <script>
 import commands from '../js/commands'
-import { nextTick } from 'vue'
+import {nextTick} from 'vue'
+
 export default {
     computed: {
         sortedMessages() {
@@ -69,7 +70,7 @@ export default {
             return date.toLocaleTimeString()
         },
         onChat(peerId, dest, nick, time, privileged, kind, message) {
-            this.state.messages.push({dest, kind, message, nick, peerId, privileged, time })
+            this.state.messages.push({dest, kind, message, nick, peerId, privileged, time})
             nextTick(() => {
                 this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
             })

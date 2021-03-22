@@ -1,6 +1,6 @@
 import './css/pyrite.css'
 import App from './App.vue'
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import FieldCheckbox from './components/ui/fields/FieldCheckbox.vue'
 import FieldFile from './components/ui/fields/FieldFile.vue'
 import FieldSelect from './components/ui/fields/FieldSelect.vue'

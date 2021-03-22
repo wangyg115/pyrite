@@ -31,6 +31,7 @@
 </template>
 <script>
 import UserContext from './UserContext.vue'
+
 export default {
     components: {UserContext},
     computed: {
