@@ -1,5 +1,6 @@
 {
   "name": "@garage44/pyrite",
+  "description": "Galène Video conferencing PWA",
   "version": "1.8.2",
   "publishConfig": {
     "access": "public"
