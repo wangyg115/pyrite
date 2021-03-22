@@ -36,5 +36,4 @@ jobs:
         RAND_PW: ${{secrets.RAND_PW}}
         RAND_USER: ${{secrets.RAND_USER}}
       run: |
-        npm run build
         npm run deploy
