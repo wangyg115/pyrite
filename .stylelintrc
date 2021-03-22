@@ -5,7 +5,7 @@
         "max-nesting-depth": 4,
         "property-no-vendor-prefix": true,
         "max-empty-lines": 2,
-        "indentation": 4,
+        "indentation": [4, {baseIndentLevel: 0}],
         "function-calc-no-unspaced-operator": true,
         "string-quotes": "double",
         "no-duplicate-selectors": true,
