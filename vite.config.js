@@ -1,8 +1,17 @@
-
-import { defineConfig } from 'vite'
+import {defineConfig} from 'vite'
+import semanticRelease from 'semantic-release'
 import vue from '@vitejs/plugin-vue'
 
-process.env.VITE_VERSION = '1.9'
+if (process.env.NODE_ENV === 'production') {
+    semanticRelease({
+        dryRun: true,
+        repositoryUrl: 'https://github.com/garage44/pyrite.git',
+    }).then(() => {
+
+    })
+} else {
+    process.env.VITE_VERSION = 'dev'
+}
 
 export default defineConfig({
     plugins: [
