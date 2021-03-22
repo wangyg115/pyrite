@@ -1,3 +1,10 @@
+## [1.8.5](https://github.com/garage44/pyrite/compare/v1.8.4...v1.8.5) (2021-03-22)
+
+
+### Bug Fixes
+
+* cleanup deploy step ([dff9247](https://github.com/garage44/pyrite/commit/dff9247df4fb911300d879510d59b1ce3e282227))
+
 ## [1.8.4](https://github.com/garage44/pyrite/compare/v1.8.3...v1.8.4) (2021-03-22)
 
 
