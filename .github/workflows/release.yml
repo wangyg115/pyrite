@@ -28,12 +28,8 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      run: npx semantic-release
-    - name: Deploy frontend
-      env:
         RAND_ENDPOINT: ${{secrets.RAND_ENDPOINT}}
         RAND_CHANNEL: ${{secrets.RAND_CHANNEL}}
         RAND_PW: ${{secrets.RAND_PW}}
         RAND_USER: ${{secrets.RAND_USER}}
-      run: |
-        npm run deploy
+      run: npx semantic-release
