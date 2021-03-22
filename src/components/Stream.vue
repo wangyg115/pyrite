@@ -202,7 +202,6 @@ export default {
                     this.glnStream.pc.getSenders().forEach(s => {
                         if(s.track === e.track) {
                             app.logger.info('removing sender track')
-                            console.log(s)
                             this.glnStream.pc.removeTrack(s)
                         }
                     })
@@ -248,7 +247,6 @@ export default {
             this.glnStream.onstatus = (status) => {
                 if(['connected', 'completed'].includes(status)) {
                     this.$refs.media.play().catch(e => {
-                        console.error(e)
                         this.displayError(e)
                     })
 

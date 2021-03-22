@@ -26,9 +26,8 @@ module.exports = {
         'import/first': [2],
         'import/newline-after-import': [2, {count: 1}],
         indent: ['error', 4],
-        'init-declarations': 'off',
         'no-cond-assign': ['error', 'always'],
-        'no-console': 'off',
+        'no-console': [2],
         'no-inline-comments': 'off',
         'no-multiple-empty-lines': [2, {max: 2, maxBOF: 0, maxEOF: 1}],
         'object-curly-spacing': [2, 'never'],
@@ -64,7 +63,7 @@ module.exports = {
             ],
             stopAfterFirstProblem: true,
         }],
-        'sort-imports': ['error', {
+        'sort-imports': [2, {
             ignoreCase: true,
             ignoreDeclarationSort: false,
             ignoreMemberSort: false,
@@ -81,8 +80,7 @@ module.exports = {
         strict: [2, 'global'],
 
         'use-isnan': 2,
-        'vars-on-top': 0,
-        'vue/attributes-order': ['error', {
+        'vue/attributes-order': [2, {
             alphabetical: true,
             order: [
                 'DEFINITION',

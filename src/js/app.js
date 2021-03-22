@@ -9,9 +9,6 @@ import router from '../js/router.js'
 import Store from './store.js'
 
 
-let safariScreenshareDone = false
-
-
 class Pyrite {
 
     constructor() {
@@ -159,18 +156,8 @@ class Pyrite {
             /** @ts-ignore */
             stream = await navigator.mediaDevices.getDisplayMedia({video: true})
         } catch(e) {
-            console.error(e)
             this.displayError(e)
             return
-        }
-
-        if(!safariScreenshareDone) {
-            if(this.env.isSafari) {
-                this.displayWarning('Screen sharing under Safari is experimental.  ' +
-                               'Please use a different browser if possible.')
-            }
-
-            safariScreenshareDone = true
         }
 
         let {c, id} = this.newUpStream()
@@ -308,7 +295,6 @@ class Pyrite {
         case 'unlimited':
             return null
         default:
-            console.error('Unknown video quality')
             return 700000
         }
     }
@@ -326,7 +312,7 @@ class Pyrite {
         this.displayError('Disconnected', 'error')
 
         if(code != 1000) {
-            console.warn('Socket close', code, reason)
+            this.displayError(`Socket close ${code}: ${reason}`)
         }
     }
 
@@ -355,7 +341,6 @@ class Pyrite {
         }
         c.onerror = (e) => {
             this.logger.info(`[onerror] downstream ${c.id}`)
-            console.error(e)
             this.displayError(e)
         }
 
@@ -441,7 +426,6 @@ class Pyrite {
             this.state.users.splice(this.state.users.findIndex((u) => u.id === id), 1)
             break
         default:
-            console.warn('Unknown user kind', kind)
             break
         }
     }
@@ -485,7 +469,6 @@ class Pyrite {
         })
 
         c.onerror = (e) => {
-            console.error(e)
             this.displayError(e)
             this.delUpMedia(c)
         }
@@ -542,16 +525,11 @@ class Pyrite {
                 if(privileged) {
                     this.displayError(`${from} said: ${message}`, kind)
                 }
-                else {
-                    console.error(`Got unprivileged message of kind ${kind}`)
-                }
                 break
             case 'mute':
                 if(privileged) {
                     this.muteLocalTracks(true)
                     this.displayWarning(`You have been muted${username ? ' by ' + username : ''}`)
-                } else {
-                    console.error(`Got unprivileged message of kind ${kind}`)
                 }
                 break
             case 'clearchat':
@@ -560,7 +538,6 @@ class Pyrite {
                 }
                 break
             default:
-                console.warn(`Got unknown user message ${kind}`)
                 break
             }
         }
@@ -569,7 +546,6 @@ class Pyrite {
         try {
             await this.connection.connect(url)
         } catch(e) {
-            console.error(e)
             this.displayError(e.message ? e.message : "Couldn't connect to " + url)
         }
     }
@@ -595,11 +571,8 @@ class Pyrite {
                 else
                     delete e.maxBitrate
             })
-            try {
-                await s.setParameters(p)
-            } catch(e) {
-                console.error(e)
-            }
+
+            await s.setParameters(p)
         }
     }
 
