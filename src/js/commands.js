@@ -11,15 +11,6 @@
  * @property {(c: string, r: string) => void} f
  */
 
-/**
- * The set of commands known to the command-line parser.
- *
- * @type {Object.<string,command>}
- */
-
-/**
- * @param {string} user
- */
 function findUserId(username) {
     for(const user of app.state.users) {
         if(user.name === username) {
@@ -29,11 +20,6 @@ function findUserId(username) {
     return null
 }
 
-
-/**
-   @param {string} c
-   @param {string} r
-*/
 function userCommand(c, r) {
     let p = parseCommand(r)
     if(!p[0]) throw new Error(`/${c} requires parameters`)
@@ -49,7 +35,6 @@ function userMessage(c, r) {
     if(!id) throw new Error(`Unknown user ${p[0]}`)
     app.connection.userMessage(c, id, p[1])
 }
-
 
 let commands = {}
 
@@ -243,11 +228,9 @@ commands.wall = {
 
 }
 
-
 /**
- * parseCommand splits a string into two space-separated parts.  The first
- * part may be quoted and may include backslash escapes.
- *
+ * parseCommand splits a string into two space-separated parts.
+ * The first part may be quoted and may include backslash escapes.
  * @param {string} line
  * @returns {string[]}
  */

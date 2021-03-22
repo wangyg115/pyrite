@@ -62,7 +62,6 @@ export default {
             user-select: none;
             width: 200px;
 
-
             &:hover {
                 cursor: pointer;
             }

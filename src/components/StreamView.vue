@@ -40,6 +40,7 @@ export default {
     },
 }
 </script>
+
 <style lang="postcss">
 /**
  * 'gallery'-type grid-system:

@@ -8,7 +8,6 @@ import protocol from './protocol.js'
 import router from '../js/router.js'
 import Store from './store.js'
 
-
 class Pyrite {
 
     constructor() {
@@ -45,7 +44,6 @@ class Pyrite {
         })
     }
 
-
     async addFileMedia(file) {
         this.logger.info('add file media')
         let {c, id} = this.connection.newUpStream()
@@ -66,7 +64,6 @@ class Pyrite {
         c.userdata.play = true
         return c
     }
-
 
     async addLocalMedia() {
         if (!this.state.connected && this.localStream) {
@@ -146,7 +143,6 @@ class Pyrite {
         }
     }
 
-
     async addShareMedia() {
         this.logger.info('add share media')
         let stream = null
@@ -176,7 +172,6 @@ class Pyrite {
         return c
     }
 
-
     changePresentation() {
         let id = this.findUpMedia('local')
         if(id) {
@@ -184,7 +179,6 @@ class Pyrite {
             this.addLocalMedia(id)
         }
     }
-
 
     delLocalMedia() {
         if (!this.localStream) return
@@ -200,18 +194,15 @@ class Pyrite {
         delete this.localStream
     }
 
-
     delMedia(id) {
         this.logger.debug(`[delMedia] remove stream ${id} from state`)
         this.state.streams.splice(this.state.streams.findIndex(i => i.id === id), 1)
     }
 
-
     delSetting(key) {
         this.state[key] = null
         this.store.save()
     }
-
 
     delUpMedia(c) {
         this.stopUpMedia(c)
@@ -220,7 +211,6 @@ class Pyrite {
         c.close()
         delete(this.connection.up[c.id])
     }
-
 
     delUpMediaKind(kind) {
         this.logger.debug(`remove all up media from kind: ${kind}`)
@@ -237,7 +227,6 @@ class Pyrite {
         }
     }
 
-
     disconnect() {
         this.state.users = []
         this.state.streams = []
@@ -245,35 +234,18 @@ class Pyrite {
         this.delLocalMedia()
     }
 
-
-    /**
-     * @param {unknown} message
-     * @param {string} [level]
-     */
     displayError(message, level) {
         this.notify({level, message})
     }
 
-
-    /**
-     * @param {unknown} message
-     */
     displayMessage(message) {
         return this.displayError(message, "info")
     }
 
-
-    /**
-     * @param {unknown} message
-     */
     displayWarning(message) {
         return this.displayError(message, "warning")
     }
 
-
-    /**
-    * @param {string} kind
-    */
     findUpMedia(kind) {
         for(let id in this.connection.up) {
             if(this.connection.up[id].kind === kind)
@@ -282,8 +254,6 @@ class Pyrite {
         return null
     }
 
-
-    /** @returns {number} */
     getMaxVideoThroughput() {
         switch(this.state.send.id) {
         case 'lowest':
@@ -299,12 +269,6 @@ class Pyrite {
         }
     }
 
-
-    /**
-     * @this {ServerConnection}
-     * @param {number} code
-     * @param {string} reason
-     */
     gotClose(code, reason) {
         this.state.connected = false
         this.delUpMediaKind(null)
@@ -316,8 +280,6 @@ class Pyrite {
         }
     }
 
-
-    /** @this {ServerConnection} */
     gotConnected() {
         const groupName = this.router.currentRoute.value.params.groupId
         this.logger.info(`joining group: ${groupName}`)
@@ -325,11 +287,6 @@ class Pyrite {
         this.state.connected = true
     }
 
-
-    /**
-     * @this {ServerConnection}
-     * @param {Stream} c
-     */
     gotDownStream(c) {
         this.logger.info(`new downstream ${c.id}`)
         c.onclose = (replace) => {
@@ -356,12 +313,6 @@ class Pyrite {
         })
     }
 
-
-    /**
-     * @this {ServerConnection}
-     * @param {string} group
-     * @param {Object<string,boolean>} perms
-     */
     async gotJoined(kind, group, perms, message) {
         this.state.permissions = perms
         this.logger.info(`joined group ${group}`)
@@ -411,12 +362,6 @@ class Pyrite {
         }
     }
 
-
-    /**
-     * @param {string} id
-     * @param {string} kind
-     * @param {string} name
-     */
     gotUser(id, kind, name) {
         switch(kind) {
         case 'add':
@@ -430,10 +375,6 @@ class Pyrite {
         }
     }
 
-
-    /**
-    * @param {boolean} mute
-    */
     muteLocalTracks(mute) {
         this.logger.info(`mute local tracks: ${mute}`)
         this.state.muted = mute
@@ -450,10 +391,6 @@ class Pyrite {
         }
     }
 
-
-    /**
-     * @param {string} [id]
-     */
     newUpStream(_id) {
         let {c, id} = this.connection.newUpStream(_id)
 
@@ -479,10 +416,8 @@ class Pyrite {
             this.setMaxVideoThroughput(c, this.getMaxVideoThroughput())
         }
 
-
         return {c, id}
     }
-
 
     notify(notification) {
         if (!this.notificationId) {
@@ -501,7 +436,6 @@ class Pyrite {
 
         this.notificationId += 1
     }
-
 
     async serverConnect() {
         if(this.connection && this.connection.socket) {
@@ -549,7 +483,6 @@ class Pyrite {
             this.displayError(e.message ? e.message : "Couldn't connect to " + url)
         }
     }
-
 
     /**
      * @param {Stream} c
@@ -610,10 +543,6 @@ class Pyrite {
         this.logger.info(`setMediaChoices: video(${this.state.devices.video.length}) audio(${this.state.devices.audio.length})`)
     }
 
-
-    /**
-     * @param {Stream} c
-     */
     stopUpMedia(c) {
         this.logger.debug(`stopping up-stream ${c.id}`)
         c.stream.getTracks().forEach(t => t.stop())

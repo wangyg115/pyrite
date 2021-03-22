@@ -8,5 +8,4 @@ const env = {}
 if (globalThis.navigator) { env.isBrowser = true }
 env.isSafari = isSafari()
 
-
 export default env

@@ -29,6 +29,7 @@
         </div>
     </section>
 </template>
+
 <script>
 import SoundMeter from '../ui/SoundMeter.vue'
 import Stream from '../Stream.vue'

@@ -29,6 +29,7 @@
         </div>
     </section>
 </template>
+
 <script>
 import UserContext from './UserContext.vue'
 

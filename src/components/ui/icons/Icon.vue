@@ -78,6 +78,7 @@ export default {
     },
 }
 </script>
+
 <style lang="postcss">
 .icon {
     fill: currentColor;

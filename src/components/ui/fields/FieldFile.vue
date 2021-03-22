@@ -11,6 +11,7 @@
         >
     </label>
 </template>
+
 <script>
 import Field from './field'
 
@@ -52,6 +53,7 @@ export default {
     },
 }
 </script>
+
 <style lang="postcss">
 .c-field-file {
     align-items: center;

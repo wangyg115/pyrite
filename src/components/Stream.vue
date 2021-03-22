@@ -35,6 +35,7 @@
         </div>
     </div>
 </template>
+
 <script>
 import SoundMeter from './ui/SoundMeter.vue'
 
@@ -271,6 +272,7 @@ export default {
     },
 }
 </script>
+
 <style lang="postcss">
 .c-stream {
     display: flex;

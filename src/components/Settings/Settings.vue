@@ -62,6 +62,7 @@ export default {
     },
 }
 </script>
+
 <style lang="postcss">
 .tabs {
     padding-left: var(--space-1);

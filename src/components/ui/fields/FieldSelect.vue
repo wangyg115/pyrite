@@ -202,8 +202,8 @@ export default {
     },
 }
 </script>
-<style lang="postcss">
 
+<style lang="postcss">
 .c-field-select {
     max-width: 350px;
     width: 100%;
@@ -273,5 +273,4 @@ export default {
         }
     }
 }
-
 </style>

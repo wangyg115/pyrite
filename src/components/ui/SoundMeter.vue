@@ -1,8 +1,8 @@
 <template>
     <canvas id="meter" ref="meter" :class="{[orientation]: true}" />
 </template>
-<script>
 
+<script>
 function volumeAudioProcess(event) {
     const buf = event.inputBuffer.getChannelData(0)
     const bufLength = buf.length
@@ -122,8 +122,8 @@ export default {
         },
     },
 }
-
 </script>
+
 <style lang="postcss">
 canvas {
     border: 1px solid var(--grey-200);
