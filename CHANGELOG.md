@@ -1,3 +1,11 @@
+## [1.8.2](https://github.com/garage44/pyrite/compare/v1.8.1...v1.8.2) (2021-03-22)
+
+
+### Bug Fixes
+
+* misc icons ([0da0a8d](https://github.com/garage44/pyrite/commit/0da0a8d72c1ce61957384933f34a9d0311c059bb))
+* stream handling/cleanup ([57e71e8](https://github.com/garage44/pyrite/commit/57e71e8ade80ec89f4d1e662efc8b3b5b40b50ee))
+
 ## [1.8.1](https://github.com/garage44/pyrite/compare/v1.8.0...v1.8.1) (2021-03-18)
 
 
