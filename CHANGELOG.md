@@ -1,3 +1,10 @@
+## [1.8.7](https://github.com/garage44/pyrite/compare/v1.8.6...v1.8.7) (2021-03-22)
+
+
+### Bug Fixes
+
+* github actions develop only on test ([67eb341](https://github.com/garage44/pyrite/commit/67eb341d4567db9c8539f5b6ad8556aeb23e81d8))
+
 ## [1.8.6](https://github.com/garage44/pyrite/compare/v1.8.5...v1.8.6) (2021-03-22)
 
 
