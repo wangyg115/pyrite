@@ -6,17 +6,17 @@
                 :data-tooltip="$t('settings')"
                 :to="{name: 'settings', params: {tabId: 'misc'}}"
             >
-                <Icon class="icon-small" name="settings" />
+                <Icon class="icon-small" name="Settings" />
             </RouterLink>
             <RouterLink
                 v-if="state.group" class="btn btn-menu tooltip"
                 :data-tooltip="$t('current group')"
                 :to="{name: 'groups', params: {groupId: state.group}}"
             >
-                <Icon class="icon-small" name="groups" />
+                <Icon class="icon-small" name="Groups" />
             </RouterLink>
             <button v-else class="btn btn-menu" disabled>
-                <Icon class="icon-small" name="groups" />
+                <Icon class="icon-small" name="Groups" />
             </button>
             <button
                 v-if="state.connected"
@@ -24,7 +24,7 @@
                 :data-tooltip="state.chat.active ? $t('hide chat') : $t('show chat')"
                 @click="toggleChatActive"
             >
-                <Icon class="icon-small" :name="state.chat.active ? 'chat-close' : 'chat'" />
+                <Icon class="icon-small" :name="state.chat.active ? 'ChatClose' : 'Chat'" />
             </button>
             <button
                 v-if="state.connected"
@@ -32,7 +32,7 @@
                 :data-tooltip="$t('leave group')"
                 @click="disconnect"
             >
-                <Icon class="icon-small" name="logout" />
+                <Icon class="icon-small" name="Logout" />
             </button>
         </div>
     </nav>

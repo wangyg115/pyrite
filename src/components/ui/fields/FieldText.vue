@@ -21,7 +21,7 @@
                 :class="{visible}"
                 @click="visible = !visible"
             >
-                <Icon class="icon icon-mini" :class="{active: visible}" name="eye" />
+                <Icon class="icon icon-mini" :class="{active: visible}" name="Eye" />
             </div>
         </div>
         <div v-if="help" class="help">

@@ -1,7 +1,7 @@
 <template>
     <div class="c-login content">
         <header>
-            <Icon class="item-icon icon-small" name="login" /><em>{{ $route.params.groupId }}</em>
+            <Icon class="item-icon icon-small" name="Login" /><em>{{ $route.params.groupId }}</em>
         </header>
         <section>
             <form>

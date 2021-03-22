@@ -4,7 +4,7 @@
         <Stream v-for="(description, index) in state.streams" :key="description.id" v-model="state.streams[index]" />
     </div>
     <div v-else class="stream-placeholder">
-        <Icon class="icon" name="groups" />
+        <Icon class="icon" name="Groups" />
     </div>
 </template>
 

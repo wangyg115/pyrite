@@ -8,7 +8,7 @@
                 :data-tooltip="state.muted ? $t('unmute microphone'): $t('mute microphone')"
                 @click="toggleMute"
             >
-                <Icon class="icon-small" name="mic" />
+                <Icon class="icon-small" name="Mic" />
             </button>
 
             <button
@@ -18,7 +18,7 @@
                 :data-tooltip="`${$t('switch camera')} ${state.upMedia.local.length ? $t('off') : $t('on')}`"
                 @click="togglePresent"
             >
-                <Icon class="icon-small" name="webcam" />
+                <Icon class="icon-small" name="Webcam" />
             </button>
 
             <button
@@ -28,7 +28,7 @@
                 :data-tooltip="`${$t('switch screensharing')} ${state.upMedia.screenshare.length ? $t('off') : $t('on')}`"
                 @click="toggleScreenshare"
             >
-                <Icon class="icon-small" name="screenshare" />
+                <Icon class="icon-small" name="Screenshare" />
             </button>
 
             <button

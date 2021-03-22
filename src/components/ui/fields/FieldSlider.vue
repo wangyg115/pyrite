@@ -1,7 +1,7 @@
 <template>
     <Icon
         v-if="modelValue.locked" class="icon icon-mini locked"
-        name="lock"
+        name="Lock"
         @click="onClick(false)"
     />
     <input

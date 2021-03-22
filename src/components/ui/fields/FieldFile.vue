@@ -1,6 +1,6 @@
 <template>
     <label class="c-field-file">
-        <Icon class="icon icon-small" name="playFile" />
+        <Icon class="icon icon-small" name="PlayFile" />
         <input
             ref="input"
             accept="audio/*,video/*"

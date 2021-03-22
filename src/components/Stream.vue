@@ -14,10 +14,10 @@
         <div v-if="controls" class="stream-bar">
             <div class="buttons">
                 <button class="btn btn-menu tooltip" :data-tooltip="$t('picture-in-picture')" @click="setPip">
-                    <Icon class="icon-mini" name="pip" />
+                    <Icon class="icon-mini" name="Pip" />
                 </button>
                 <button class="btn btn-menu tooltip" :data-tooltip="$t('fullscreen')" @click="setFullscreen">
-                    <Icon class="icon-mini" name="fullscreen" />
+                    <Icon class="icon-mini" name="Fullscreen" />
                 </button>
             </div>
             <div class="about">

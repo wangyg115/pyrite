@@ -1,7 +1,7 @@
 <template>
     <section>
         <div v-for="user of sortedUsers" :key="user.id" class="user item">
-            <Icon class="item-icon icon-small" name="user" />
+            <Icon class="item-icon icon-small" name="User" />
             <div class="name">
                 <template v-if="user.name">
                     {{ user.name }}
@@ -18,11 +18,11 @@
                     <Icon
                         v-if="state.permissions.present"
                         class="icon icon-mini"
-                        name="present"
+                        name="Present"
                     />
                 </span>
                 <span class="tooltip" :data-tooltip="$t('operator role')">
-                    <Icon v-if="state.permissions.op" class="icon icon-mini" name="operator" />
+                    <Icon v-if="state.permissions.op" class="icon icon-mini" name="Operator" />
                 </span>
             </div>
             <UserContext />

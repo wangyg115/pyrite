@@ -6,14 +6,14 @@
                 :data-tooltip="$t('miscellaneous')"
                 :to="{name: 'settings', params: {tabId: 'misc'}}"
             >
-                <Icon class="icon-small" name="settingsMisc" />
+                <Icon class="icon-small" name="SettingsMisc" />
             </RouterLink>
             <RouterLink
                 class="btn btn-menu tab tooltip"
                 :data-tooltip="$t('devices')"
                 :to="{name: 'settings', params: {tabId: 'devices'}}"
             >
-                <Icon class="icon-small" name="headset" />
+                <Icon class="icon-small" name="Headset" />
             </RouterLink>
         </ul>
 

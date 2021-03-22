@@ -3,7 +3,7 @@
         <div class="presence">
             <header>
                 <RouterLink class="logo" :to="{name: 'settings', params: {tabId: 'misc'}}">
-                    <Icon class="icon icon-small" name="logo" />PYRITE VIDEO
+                    <Icon class="icon icon-small" name="Logo" />PYRITE VIDEO
                 </RouterLink>
                 <div class="version">
                     {{ version }}

@@ -1,15 +1,15 @@
 <template>
     <div v-click-outside="toggleMenu.bind(this)" class="c-user-context">
-        <sIcon class="icon icon-small" name="menu" @click="toggleMenu" />
+        <Icon class="icon icon-small" name="Menu" @click="toggleMenu" />
         <div v-if="visible" class="actions">
             <button class="action">
-                <Icon class="icon icon-mini" name="mic" /> Mute user
+                <Icon class="icon icon-mini" name="Mic" /> Mute user
             </button>
             <button class="action">
-                <Icon class="icon icon-mini" name="operator" />Make Operator
+                <Icon class="icon icon-mini" name="Operator" />Make Operator
             </button>
             <button class="action">
-                <Icon class="icon icon-mini" name="present" />Make presenter
+                <Icon class="icon icon-mini" name="Present" />Make presenter
             </button>
         </div>
     </div>
