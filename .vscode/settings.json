@@ -1,12 +1,13 @@
 {
     "eslint.enable": true,
-    "eslint.validate": ["javascript", "vue-html"],
+    "eslint.validate": ["javascript", "vue"],
     "vetur.validation.template": false,
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true,
-        "source.fixAll.stylelint": true
+        "source.fixAll": true
     },
+    "editor.formatOnSave": false,
     "files.associations": {
         "*.css": "postcss"
-    }
+    },
+    "stylelint.validate": ["css", "vue"]
 }

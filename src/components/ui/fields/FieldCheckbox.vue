@@ -24,18 +24,19 @@
 </template>
 <script>
 import Field from './field'
+
 export default {
-    extends: Field,
-    props: {
-        modelValue: {
-            required: true,
-            type: Boolean
-        }
-    },
     emits: ['update:modelValue'],
+    extends: Field,
     methods: {
         updateModel: function(event) {
             this.$emit('update:modelValue', event.target.checked)
+        },
+    },
+    props: {
+        modelValue: {
+            required: true,
+            type: Boolean,
         },
     },
 }
@@ -100,5 +101,4 @@ export default {
         }
     }
 }
-
 </style>

@@ -34,22 +34,20 @@ import SoundMeter from '../ui/SoundMeter.vue'
 import Stream from '../Stream.vue'
 
 export default {
-    components: {Stream, SoundMeter},
+    beforeUnmount() {
+        if (!this.state.connected) {
+            app.delLocalMedia()
+        }
+    },
+    components: {SoundMeter, Stream },
     data() {
         return {
             description: null,
+            state: app.state,
             stream: null,
             streamId: null,
-            state: app.state,
         }
 
-    },
-    watch: {
-        async 'state.audio' () {
-            await app.addLocalMedia()
-            this.stream = app.localStream
-            this.streamId = app.localStream.id
-        }
     },
     async mounted() {
         // Not a media stream yet? Create one for the audio settings
@@ -70,10 +68,12 @@ export default {
             },
         }
     },
-    beforeUnmount() {
-        if (!this.state.connected) {
-            app.delLocalMedia()
-        }
-    }
+    watch: {
+        async 'state.audio'() {
+            await app.addLocalMedia()
+            this.stream = app.localStream
+            this.streamId = app.localStream.id
+        },
+    },
 }
 </script>

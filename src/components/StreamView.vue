@@ -4,7 +4,7 @@
         <Stream v-for="(description, index) in state.streams" :key="description.id" v-model="state.streams[index]" />
     </div>
     <div v-else class="stream-placeholder">
-        <icon class="icon" name="groups" />
+        <Icon class="icon" name="groups" />
     </div>
 </template>
 
@@ -14,29 +14,30 @@ import Stream from './Stream.vue'
 
 export default {
     components: {Login, Stream},
-    data() {
-        return {
-            gridMode: 'gallery',
-            state: app.state
-        }
-    },
     computed: {
         gridClass() {
             const classes={}
             const streams = this.state.streams.length
+
             if (streams <= 4) {
                 classes[`${this.gridMode}-4`] = true
             } else if (streams >= 5 && streams <= 9) {
                 classes[`${this.gridMode}-9`] = true
-            } else if (streams >= 10 && stream <= 20) {
+            } else if (streams >= 10 && streams <= 20) {
                 classes[`${this.gridMode}-20`] = true
             } else if (streams > 20) {
                 classes[`${this.gridMode}-x`] = true
             }
 
             return classes
+        },
+    },
+    data() {
+        return {
+            gridMode: 'gallery',
+            state: app.state,
         }
-    }
+    },
 }
 </script>
 <style lang="postcss">

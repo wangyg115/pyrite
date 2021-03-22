@@ -1,5 +1,5 @@
 <template>
-    <icon
+    <Icon
         v-if="modelValue.locked" class="icon icon-mini locked"
         name="lock"
         @click="onClick(false)"
@@ -18,17 +18,10 @@
 
 <script>
 export default {
-    props: {
-        modelValue: {
-            type: Object,
-            required: true
-        }
-    },
     emits: ['update:modelValue'],
     methods: {
         onClick(doubleClick) {
             // Locked feature is disabled:
-            console.log('moDELVAL', this.modelValue)
             if (this.modelValue.locked === null) return
 
             if (doubleClick) {
@@ -40,13 +33,13 @@ export default {
                     this.timeoutId = null
                     this.$emit('update:modelValue', {
                         locked: !this.modelValue.locked,
-                        value:  this.modelValue.value
+                        value:  this.modelValue.value,
                     })
                 }
             } else {
                 this.$emit('update:modelValue', {
                     locked: !this.modelValue.locked,
-                    value:  this.modelValue.value
+                    value:  this.modelValue.value,
                 })
             }
         },
@@ -54,8 +47,14 @@ export default {
             if (this.modelValue.locked) return
             this.$emit('update:modelValue', {
                 locked: this.modelValue.locked,
-                value: parseInt(event.target.value, 10)
+                value: parseInt(event.target.value, 10),
             })
+        },
+    },
+    props: {
+        modelValue: {
+            required: true,
+            type: Object,
         },
     },
 }

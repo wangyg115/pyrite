@@ -27,7 +27,7 @@
                 :disabled="rawMessage === ''"
                 @click="sendMessage"
             >
-                <icon class="icon icon-mini" name="send" />
+                <Icon class="icon icon-mini" name="send" />
             </button>
             <textarea
                 v-model="rawMessage"
@@ -44,29 +44,19 @@
 import commands from '../js/commands'
 import { nextTick } from 'vue'
 export default {
+    computed: {
+        sortedMessages() {
+            const messages = this.state.messages
+            return messages.sort((a, b) => a.time - b.time)
+        },
+    },
     data() {
         return {
             rawMessage: '',
             state: app.state,
         }
     },
-    computed: {
-        sortedMessages() {
-            const messages = this.state.messages
-            return messages.sort((a, b) => a.time - b.time)
-        }
-    },
-    mounted() {
-        app.connection.onchat = this.onChat.bind(this)
-        app.connection.onclearchat = this.clearChat.bind(this)
-    },
     methods: {
-        onChat(peerId, dest, nick, time, privileged, kind, message) {
-            this.state.messages.push({peerId, dest, nick, time, privileged, kind, message})
-            nextTick(() => {
-                this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
-            })
-        },
         clearChat() {
             app.logger.debug('clearing chat from remote')
             this.state.messages = []
@@ -77,6 +67,12 @@ export default {
         formatTime(ts) {
             const date = new Date(ts)
             return date.toLocaleTimeString()
+        },
+        onChat(peerId, dest, nick, time, privileged, kind, message) {
+            this.state.messages.push({dest, kind, message, nick, peerId, privileged, time })
+            nextTick(() => {
+                this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
+            })
         },
         sendMessage(e) {
             this.rawMessage = this.rawMessage.trim()
@@ -110,7 +106,7 @@ export default {
                         rest = this.rawMessage.slice(space + 1)
                     }
 
-                     this.rawMessage = ''
+                    this.rawMessage = ''
 
                     if(cmd === 'me') {
                         message = rest
@@ -143,8 +139,12 @@ export default {
 
             app.connection.chat(me ? 'me' : '', '', message)
             this.rawMessage = ''
-        }
-    }
+        },
+    },
+    mounted() {
+        app.connection.onchat = this.onChat.bind(this)
+        app.connection.onclearchat = this.clearChat.bind(this)
+    },
 }
 </script>
 

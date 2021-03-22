@@ -1,6 +1,7 @@
 <template>
     <svg
-        class="icon" height="40"
+        class="icon"
+        height="40"
         viewBox="0 0 24 24"
         width="40"
     >
@@ -11,68 +12,70 @@
 <script>
 import chat from './IconChat.vue'
 import chatClose from './IconChatClose.vue'
-import eye from './IconEye.vue'
 import error from './IconError.vue'
+import eye from './IconEye.vue'
 import fullscreen from './IconFullscreen.vue'
 import groups from './IconGroups.vue'
 import headset from './IconHeadset.vue'
 import info from './IconInfo.vue'
 import lock from './IconLock.vue'
-import logo from './IconLogo.vue'
 import login from './IconLogin.vue'
+import logo from './IconLogo.vue'
 import logout from './IconLogout.vue'
+import menu from './IconMenu.vue'
 import mic from './IconMic.vue'
 import micMute from './IconMicMute.vue'
 import operator from './IconOperator.vue'
 import pip from './IconPip.vue'
 import playFile from './IconPlayFile.vue'
 import present from './IconPresent.vue'
-import user from './IconUser.vue'
-import userUnknown from './IconUserUnknown.vue'
 import screenshare from './IconScreenShare.vue'
 import send from './IconSend.vue'
 import settings from './IconSettings.vue'
 import settingsMisc from './IconSettingsMisc.vue'
 import stopScreenshare from './IconStopScreenShare.vue'
+import user from './IconUser.vue'
+import userUnknown from './IconUserUnknown.vue'
 import warning from './IconWarning.vue'
 import webcam from './IconWebcam.vue'
 
 export default {
-  components: {
-      chat,
-      chatClose,
-      eye,
-      error,
-      fullscreen,
-      groups,
-      headset,
-      info,
-      lock,
-      login,
-      logo,
-      logout,
-      mic,
-      micMute,
-      operator,
-      pip,
-      playFile,
-      present,
-      screenshare,
-      send,
-      settings,
-      settingsMisc,
-      stopScreenshare,
-      user,
-      userUnknown,
-      warning,
-      webcam
-  },
-  props: {
-    name: {
-        required: true,
-        type: String
-    }
-  }
+    components: {
+        chat,
+        chatClose,
+        error,
+        eye,
+        fullscreen,
+        groups,
+        headset,
+        info,
+        lock,
+        login,
+        logo,
+        logout,
+        menu,
+        mic,
+        micMute,
+        operator,
+        pip,
+        playFile,
+        present,
+        screenshare,
+        send,
+        settings,
+        settingsMisc,
+        stopScreenshare,
+        user,
+        userUnknown,
+        warning,
+        webcam,
+    },
+    props: {
+        name: {
+            required: true,
+            type: String,
+        },
+    },
 }
 </script>
 <style lang="postcss">
@@ -101,6 +104,4 @@ export default {
         width: 50px;
     }
 }
-
-
 </style>

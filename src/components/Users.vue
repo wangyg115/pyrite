@@ -15,27 +15,38 @@
             </div>
             <div v-if="state.users[0].id === user.id" class="me">
                 <span class="tooltip" :data-tooltip="$t('presenter role')">
-                    <icon
+                    <Icon
                         v-if="state.permissions.present"
                         class="icon icon-mini"
                         name="present"
                     />
                 </span>
                 <span class="tooltip" :data-tooltip="$t('operator role')">
-                    <icon v-if="state.permissions.op" class="icon icon-mini" name="operator" />
+                    <Icon v-if="state.permissions.op" class="icon icon-mini" name="operator" />
                 </span>
             </div>
+            <UserContext />
         </div>
     </section>
 </template>
 <script>
+import UserContext from './UserContext.vue'
 export default {
-    data() {
-        return {
-            state: app.state
-        }
-    },
+    components: {UserContext},
     computed: {
+        sortedUsers() {
+            const users = [...this.state.users]
+            users.sort(function(a, b) {
+                const aLowerName = a.name.toLowerCase()
+                const bLowerName = b.name.toLowerCase()
+                if(aLowerName < bLowerName) return -1
+                else if(aLowerName > bLowerName) return +1
+                else if(a.name < b.name) return -1
+                else if(a.name > b.name) return +1
+                return 0
+            })
+            return users
+        },
         userRights() {
             let text = ''
 
@@ -48,20 +59,12 @@ export default {
 
             return text
         },
-        sortedUsers() {
-            const users = [...this.state.users]
-            users.sort(function (a, b) {
-                const aLowerName = a.name.toLowerCase()
-                const bLowerName = b.name.toLowerCase()
-                if(aLowerName < bLowerName) return -1
-                else if(aLowerName > bLowerName) return +1
-                else if(a.name < b.name) return -1
-                else if(a.name > b.name) return +1
-                return 0
-            })
-            return users
-        },
-    }
+    },
+    data() {
+        return {
+            state: app.state,
+        }
+    },
 }
 </script>
 

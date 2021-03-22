@@ -69,7 +69,7 @@ function recordingPredicate() {
 
 commands.help = {
     description: 'display this help',
-    f: (c, r) => {
+    f: () => {
         /** @type {string[]} */
         let cs = []
         for(let cmd in commands) {
@@ -85,19 +85,19 @@ commands.help = {
         for(let i = 0; i < cs.length; i++)
             s = s + cs[i] + '\n'
         app.state.messages.push({
-            peerId: null,
             dest: null,
-            nick: null,
-            time: Date.now(),
-            privileged: false,
             kind: null,
-            message: s
+            message: s,
+            nick: null,
+            peerId: null,
+            privileged: false,
+            time: Date.now(),
         })
     },
 }
 
 commands.me = {
-    f: (c, r) => {
+    f: () => {
         // handled as a special case
         throw new Error("this shouldn't happen")
     },
@@ -105,7 +105,7 @@ commands.me = {
 
 commands.leave = {
     description: "leave group",
-    f: (c, r) => {
+    f: () => {
         if(!app.connection)
             throw new Error('Not connected')
         app.connection.close()
@@ -113,57 +113,57 @@ commands.leave = {
 }
 
 commands.clear = {
-    predicate: operatorPredicate,
     description: 'clear the chat history',
-    f: (c, r) => {
+    f: () => {
         app.connection.groupAction('clearchat')
     },
+    predicate: operatorPredicate,
 }
 
 commands.lock = {
-    predicate: operatorPredicate,
     description: 'lock this group',
-    parameters: '[message]',
     f: (c, r) => {
         app.connection.groupAction('lock', r)
     },
+    parameters: '[message]',
+    predicate: operatorPredicate,
 }
 
 commands.unlock = {
-    predicate: operatorPredicate,
     description: 'unlock this group, revert the effect of /lock',
-    f: (c, r) => {
+    f: () => {
         app.connection.groupAction('unlock')
     },
+    predicate: operatorPredicate,
 }
 
 commands.record = {
-    predicate: recordingPredicate,
     description: 'start recording',
-    f: (c, r) => {
+    f: () => {
         app.connection.groupAction('record')
     },
+    predicate: recordingPredicate,
 }
 
 commands.unrecord = {
-    predicate: recordingPredicate,
     description: 'stop recording',
-    f: (c, r) => {
+    f: () => {
         app.connection.groupAction('unrecord')
     },
+    predicate: recordingPredicate,
 }
 
 commands.subgroups = {
-    predicate: operatorPredicate,
     description: 'list subgroups',
-    f: (c, r) => {
+    f: () => {
         app.connection.groupAction('subgroups')
     },
+    predicate: operatorPredicate,
 }
 
 commands.renegotiate = {
     description: 'renegotiate media streams',
-    f: (c, r) => {
+    f: () => {
         for(let id in app.connection.up) {
             app.connection.up[id].restartIce()
         }
@@ -174,74 +174,74 @@ commands.renegotiate = {
 }
 
 commands.kick = {
-    parameters: 'user [message]',
     description: 'kick out a user',
-    predicate: operatorPredicate,
     f: userCommand,
+    parameters: 'user [message]',
+    predicate: operatorPredicate,
 }
 
 commands.op = {
-    parameters: 'user',
     description: 'give operator status',
-    predicate: operatorPredicate,
     f: userCommand,
+    parameters: 'user',
+    predicate: operatorPredicate,
 }
 
 commands.unop = {
-    parameters: 'user',
     description: 'revoke operator status',
-    predicate: operatorPredicate,
     f: userCommand,
+    parameters: 'user',
+    predicate: operatorPredicate,
 }
 
 commands.present = {
-    parameters: 'user',
     description: 'give user the right to present',
-    predicate: operatorPredicate,
     f: userCommand,
+    parameters: 'user',
+    predicate: operatorPredicate,
 }
 
 commands.unpresent = {
-    parameters: 'user',
     description: 'revoke the right to present',
-    predicate: operatorPredicate,
     f: userCommand,
+    parameters: 'user',
+    predicate: operatorPredicate,
 }
 
 commands.mute = {
-    parameters: 'user',
     description: 'mute a remote user',
-    predicate: operatorPredicate,
     f: userMessage,
+    parameters: 'user',
+    predicate: operatorPredicate,
 }
 
 commands.muteall = {
     description: 'mute all remote users',
+    f: () => {
+        app.connection.userMessage('mute', null, null, true)
+    },
     predicate: operatorPredicate,
-    f: (c, r) => {
-        app.connection.userMessage('mute', null, null, true);
-    }
 }
 
 commands.warn = {
-    parameters: 'user message',
     description: 'send a warning to a user',
-    predicate: operatorPredicate,
     f: (c, r) => {
         userMessage('warning', r)
     },
+    parameters: 'user message',
+    predicate: operatorPredicate,
 }
 
 commands.wall = {
-    parameters: 'message',
     description: 'send a warning to all users',
-    predicate: operatorPredicate,
     f: (c, r) => {
         if(!r) throw new Error('empty message')
         app.connection.userMessage('warning', '', r)
     },
-}
+    parameters: 'message',
+    predicate: operatorPredicate,
 
+}
 
 
 /**

@@ -3,7 +3,7 @@
         <div class="presence">
             <header>
                 <RouterLink class="logo" :to="{name: 'settings', params: {tabId: 'misc'}}">
-                    <icon class="icon icon-small" name="logo" />PYRITE VIDEO
+                    <Icon class="icon icon-small" name="logo" />PYRITE VIDEO
                 </RouterLink>
                 <div class="version">
                     {{ version }}
@@ -22,22 +22,22 @@
 </template>
 
 <script>
-import Notifications from './components/Notifications.vue'
-import Users from './components/Users.vue'
 import Chat from './components/Chat.vue'
 import GeneralControls from './components/GeneralControls.vue'
-import RoomControls from './components/RoomControls.vue'
 import Groups from './components/Groups.vue'
+import Notifications from './components/Notifications.vue'
+import RoomControls from './components/RoomControls.vue'
+import Users from './components/Users.vue'
 
 export default {
-    name: 'App',
     components: {Chat, GeneralControls, Groups, Notifications, RoomControls, Users},
-        data() {
+    data() {
         return {
             state: app.state,
             version: import.meta.env.VITE_VERSION,
         }
-    }
+    },
+    name: 'App',
 }
 </script>
 

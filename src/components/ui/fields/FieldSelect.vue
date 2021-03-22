@@ -47,44 +47,18 @@
 
 <script>
 import Field from './field'
+
 export default {
-    extends: Field,
-    props: {
-        empty: {
-            default: 'no options available',
-            type: String,
-        },
-        idfield: {
-            type: String,
-            default: () => 'id',
-        },
-        options: {
-            default: () => [],
-            type: Array,
-        },
-        placeholder: {
-            type: String,
-            default: () => '...'
-        },
-        search: {
-            default: false,
-            type: Boolean,
-        },
-        modelValue: {
-            type:Object,
-            required: true
-        }
-    },
-    emits: ['update:modelValue'],
-    data: function() {
-        return {
-            searchQuery: '',
-            searchSelected: this.modelValue,
-            selectedOption: null,
-            visible: false,
-        }
-    },
     computed: {
+        currentOption() {
+            if (this.modelValue && this.modelValue.id) {
+                const currentOption = this.options.find((o) => o.id === this.modelValue.id)
+                if (currentOption) {
+                    return currentOption.name
+                }
+            }
+            return this.placeholder
+        },
         filteredOptions() {
             let filteredOptions = []
             for (const option of this.options) {
@@ -95,28 +69,17 @@ export default {
             }
             return filteredOptions
         },
-        currentOption() {
-            if (this.modelValue && this.modelValue.id) {
-                const currentOption = this.options.find((o) => o.id === this.modelValue.id)
-                if (currentOption) {
-                    return currentOption.name
-                }
-            }
-            return this.placeholder
+    },
+    data: function() {
+        return {
+            searchQuery: '',
+            searchSelected: this.modelValue,
+            selectedOption: null,
+            visible: false,
         }
     },
-    updated() {
-        const input = this.$refs.input
-        const options = this.$refs.options
-        let selected
-        if (this.searchSelected.id) {
-            selected = document.querySelector(`#option-${this.searchSelected.id}`)
-        }
-
-        if (selected) {
-            options.scrollTop = selected.offsetTop - input.offsetHeight - selected.offsetHeight
-        }
-    },
+    emits: ['update:modelValue'],
+    extends: Field,
     methods: {
         emptySelectOption: function() {
             // Handle syncing an empty option to the model.
@@ -198,7 +161,45 @@ export default {
                 }
             }
         },
-    }
+    },
+    props: {
+        empty: {
+            default: 'no options available',
+            type: String,
+        },
+        idfield: {
+            default: () => 'id',
+            type: String,
+        },
+        modelValue: {
+            required: true,
+            type:Object,
+        },
+        options: {
+            default: () => [],
+            type: Array,
+        },
+        placeholder: {
+            default: () => '...',
+            type: String,
+        },
+        search: {
+            default: false,
+            type: Boolean,
+        },
+    },
+    updated() {
+        const input = this.$refs.input
+        const options = this.$refs.options
+        let selected
+        if (this.searchSelected.id) {
+            selected = document.querySelector(`#option-${this.searchSelected.id}`)
+        }
+
+        if (selected) {
+            options.scrollTop = selected.offsetTop - input.offsetHeight - selected.offsetHeight
+        }
+    },
 }
 </script>
 <style lang="postcss">

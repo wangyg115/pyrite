@@ -27,25 +27,11 @@
 
 <script>
 export default {
-    name: 'Groups',
     data() {
         return {
             groups: [],
             state: app.state,
         }
-    },
-    watch: {
-        'state.group'() {
-            this.updateRoute()
-        }
-    },
-
-    async mounted() {
-        this.intervalId = setInterval(this.pollGroups, 3000)
-        this.pollGroups()
-    },
-    unmounted() {
-        clearInterval(this.intervalId)
     },
     methods: {
         async pollGroups() {
@@ -57,8 +43,20 @@ export default {
             } else {
                 this.$router.replace({name: 'settings', params: {tabId: 'misc'}})
             }
-        }
-    }
+        },
+    },
+    async mounted() {
+        this.intervalId = setInterval(this.pollGroups, 3000)
+        this.pollGroups()
+    },
+    unmounted() {
+        clearInterval(this.intervalId)
+    },
+    watch: {
+        'state.group'() {
+            this.updateRoute()
+        },
+    },
 }
 </script>
 
@@ -69,5 +67,4 @@ export default {
         padding-left: 0;
     }
 }
-
 </style>

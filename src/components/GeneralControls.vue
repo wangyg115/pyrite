@@ -42,7 +42,7 @@
 export default {
     data() {
         return {
-            state: app.state
+            state: app.state,
         }
     },
     methods: {
@@ -54,8 +54,8 @@ export default {
         },
         toggleMute() {
             app.muteLocalTracks(this.state.muted)
-        }
-    }
+        },
+    },
 }
 </script>
 

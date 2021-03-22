@@ -52,47 +52,10 @@ function createAudioMeter(audioContext, clipLevel, averaging, clipLag) {
 }
 
 export default {
-    props: {
-        orientation: {
-            type: String,
-            default: () => 'horizontal'
-        },
-        stream: {
-            required: true,
-            type: Object
-        },
-        /**
-         * Stream id is passed to be able to react to stream changes.
-         */
-        streamId: {
-            required: true,
-            type: String
-        }
-    },
     data() {
         return {
-            state: app.state
+            state: app.state,
         }
-    },
-    watch: {
-        streamId() {
-            this.updateSoundmeter()
-        }
-    },
-    unmounted: function() {
-        // Stop the volume meter.
-        window.cancelAnimationFrame(this.rafID)
-    },
-    mounted: async function() {
-        this.canvasContext = this.$refs.meter.getContext('2d')
-        const computedStyle = getComputedStyle(document.querySelector('.theme'))
-        this.colors = {
-            primary: computedStyle.getPropertyValue('--primary-color'),
-            warning: computedStyle.getPropertyValue('--warning-color'),
-        }
-
-        this.updateSoundmeter()
-        this.drawLoop()
     },
     methods: {
         drawLoop: function() {
@@ -102,7 +65,7 @@ export default {
                 this.canvasContext.clearRect(0, 0, this.$refs.meter.width, this.$refs.meter.height)
             }
             if (this.meter.checkClipping()) {
-               this.canvasContext.fillStyle = this.colors.warning
+                this.canvasContext.fillStyle = this.colors.warning
             } else {
                 this.canvasContext.fillStyle = this.colors.primary
             }
@@ -120,7 +83,44 @@ export default {
             this.meter = createAudioMeter(this.audioContext)
             mediaStreamSource.connect(this.meter)
         },
-    }
+    },
+    mounted: async function() {
+        this.canvasContext = this.$refs.meter.getContext('2d')
+        const computedStyle = getComputedStyle(document.querySelector('.theme'))
+        this.colors = {
+            primary: computedStyle.getPropertyValue('--primary-color'),
+            warning: computedStyle.getPropertyValue('--warning-color'),
+        }
+
+        this.updateSoundmeter()
+        this.drawLoop()
+    },
+    props: {
+        orientation: {
+            default: () => 'horizontal',
+            type: String,
+        },
+        stream: {
+            required: true,
+            type: Object,
+        },
+        /**
+         * Stream id is passed to be able to react to stream changes.
+         */
+        streamId: {
+            required: true,
+            type: String,
+        },
+    },
+    unmounted: function() {
+        // Stop the volume meter.
+        window.cancelAnimationFrame(this.rafID)
+    },
+    watch: {
+        streamId() {
+            this.updateSoundmeter()
+        },
+    },
 }
 
 </script>

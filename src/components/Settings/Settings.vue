@@ -6,14 +6,14 @@
                 :data-tooltip="$t('miscellaneous')"
                 :to="{name: 'settings', params: {tabId: 'misc'}}"
             >
-                <icon class="icon-small" name="settingsMisc" />
+                <Icon class="icon-small" name="settingsMisc" />
             </RouterLink>
             <RouterLink
                 class="btn btn-menu tab tooltip"
                 :data-tooltip="$t('devices')"
                 :to="{name: 'settings', params: {tabId: 'devices'}}"
             >
-                <icon class="icon-small" name="headset" />
+                <Icon class="icon-small" name="headset" />
             </RouterLink>
         </ul>
 
@@ -36,7 +36,6 @@ import TabDevices from './TabDevices.vue'
 import TabMisc from './TabMisc.vue'
 
 export default {
-    name: 'Settings',
     components: {TabDevices, TabMisc},
     data() {
         return {
@@ -44,46 +43,12 @@ export default {
         }
     },
     methods: {
-        changeActivitybox(e) {
-            if(!(this instanceof HTMLInputElement))
-                throw new Error('Unexpected type for this')
-            updateSettings({activityDetection: this.checked})
-            for(let id in serverConnection.down) {
-                let c = serverConnection.down[id]
-                if(this.checked)
-                    c.setStatsInterval(activityDetectionInterval)
-                else {
-                    c.setStatsInterval(0)
-                    setActive(c, false)
-                }
-            }
-        },
         changeAudioSelect() {
             app.changePresentation()
         },
         changeVideoSelect() {
             if (this.state.connected) {
                 app.changePresentation()
-            }
-        },
-        changeBlackboardbox() {
-            app.changePresentation()
-        },
-        changeRequestSelect() {
-            e.preventDefault()
-            if(!(this instanceof HTMLSelectElement))
-                throw new Error('Unexpected type for this')
-            updateSettings({request: this.value})
-            serverConnection.request(this.value)
-        },
-        async changeSendSelect() {
-            if(!(this instanceof HTMLSelectElement))
-            throw new Error('Unexpected type for this')
-            updateSettings({send: this.value})
-            let t = getMaxVideoThroughput()
-            for(let id in serverConnection.up) {
-                let c = serverConnection.up[id]
-                await setMaxVideoThroughput(c, t)
             }
         },
         saveSettings() {
@@ -94,8 +59,8 @@ export default {
         },
         setTab: function(category, tab) {
             app.state.tabs[category] = {active: tab}
-        }
-    }
+        },
+    },
 }
 </script>
 <style lang="postcss">

@@ -76,7 +76,7 @@ export default {
     data() {
         return {
             connecting: false,
-            state: app.state
+            state: app.state,
         }
     },
     methods: {
@@ -88,10 +88,7 @@ export default {
             } finally {
                 this.connecting = false
             }
-        }
-    }
+        },
+    },
 }
 </script>
-<style lang="postcss">
-
-</style>

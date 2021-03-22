@@ -56,17 +56,7 @@ export default {
             volume: {
                 locked: null,
                 value: 100,
-            }
-        }
-    },
-    watch: {
-        volume(volume) {
-            for (const description of this.state.streams) {
-                // Only downstreams have volume control:
-                if (!description.isUp && !description.volume.locked) {
-                    description.volume = volume
-                }
-            }
+            },
         }
     },
     methods: {
@@ -105,8 +95,18 @@ export default {
                 app.logger.debug('turn screenshare stream on')
                 this.screenStream = await app.addShareMedia()
             }
-        }
-    }
+        },
+    },
+    watch: {
+        volume(volume) {
+            for (const description of this.state.streams) {
+                // Only downstreams have volume control:
+                if (!description.isUp && !description.volume.locked) {
+                    description.volume = volume
+                }
+            }
+        },
+    },
 }
 </script>
 

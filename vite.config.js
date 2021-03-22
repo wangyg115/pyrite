@@ -1,9 +1,8 @@
 
 import { defineConfig } from 'vite'
-import pyritePackage from './package.json'
 import vue from '@vitejs/plugin-vue'
 
-process.env.VITE_VERSION = pyritePackage.version
+process.env.VITE_VERSION = '1.9'
 
 export default defineConfig({
     plugins: [

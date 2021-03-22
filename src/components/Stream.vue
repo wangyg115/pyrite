@@ -39,31 +39,16 @@
 import SoundMeter from './ui/SoundMeter.vue'
 
 export default {
+    beforeUnmount() {
+        app.logger.info(`unmounting stream component ${this.modelValue.id}`)
+        if (this.$refs.media.src) {
+            URL.revokeObjectURL(this.$refs.media.src)
+            this.$refs.media.src = null
+        }
+
+        this.$refs.media.srcObject = null
+    },
     components: {SoundMeter},
-    props: {
-        controls: {
-            type: Boolean,
-            default() {return true}
-        },
-        modelValue: {
-            type: Object,
-            required: true
-        }
-    },
-    emits: ['update:modelValue'],
-    data() {
-        return {
-            activityDetected: false,
-            hasAudio: false,
-            label: '',
-            media: null,
-            mediaFailed: false,
-            muted: false,
-            pipActive: false,
-            stream: null,
-            state: app.state,
-        }
-    },
     computed: {
         fullscreenEnabled() {
             if (this.$refs.media) {
@@ -77,29 +62,84 @@ export default {
             }
             return false
         },
-        /**
-         * Indirectly map props to state in order to modify volume.
-         * May be a bit hacky, but allows setters without emitting
-         * events upwards.
-         */
         volume: {
             get() { return this.modelValue.volume },
-            set(volume) { this.$emit('update:modelValue', {...this.modelValue, volume}) }
+            set(volume) { this.$emit('update:modelValue', {...this.modelValue, volume}) },
+        },
+    },
+    data() {
+        return {
+            activityDetected: false,
+            hasAudio: false,
+            label: '',
+            media: null,
+            mediaFailed: false,
+            muted: false,
+            pipActive: false,
+            state: app.state,
+            stream: null,
         }
     },
-    watch: {
-        'modelValue.volume.value'(value) {
-            this.$refs.media.volume = value / 100
-        }
-    },
-    beforeUnmount() {
-        app.logger.info(`unmounting stream component ${this.modelValue.id}`)
-        if (this.$refs.media.src) {
-             URL.revokeObjectURL(this.$refs.media.src)
-             this.$refs.media.src = null
-        }
+    emits: ['update:modelValue'],
+    methods: {
+        gotDownStats(stats) {
+            let maxEnergy = 0
+            const activityDetectionPeriod = 700
+            const activityDetectionThreshold = 0.2
 
-        this.$refs.media.srcObject = null
+            this.glnStream.pc.getReceivers().forEach(r => {
+                let tid = r.track && r.track.id
+                let s = tid && stats[tid]
+                let energy = s && s['track'] && s['track'].audioEnergy
+                if(typeof energy === 'number')
+                    maxEnergy = Math.max(maxEnergy, energy)
+            })
+
+            // totalAudioEnergy is defined as the integral of the square of the
+            // volume, so square the threshold.
+            if(maxEnergy > activityDetectionThreshold * activityDetectionThreshold) {
+                this.glnStream.userdata.lastVoiceActivity = Date.now()
+                this.activityDetected = true
+            } else {
+                let last = this.glnStream.userdata.lastVoiceActivity
+                if(!last || Date.now() - last > activityDetectionPeriod) {
+                    this.activityDetected = false
+                }
+            }
+        },
+
+        gotUpStats() {
+            let text = ''
+
+            this.glnStream.pc.getSenders().forEach(s => {
+                let tid = s.track && s.track.id
+                let stats = tid && this.glnStream.stats[tid]
+                let rate = stats && stats['outbound-rtp'] && stats['outbound-rtp'].rate
+                if(typeof rate === 'number') {
+                    if(text) {
+                        text = text + ' + '
+                    }
+                    text = text + Math.round(rate / 1000) + 'kbps'
+                }
+            })
+
+            this.label = text
+        },
+        setFullscreen() {
+            this.$refs.media.requestFullscreen()
+        },
+        setPip() {
+            if (this.pipActive) {
+                document.exitPictureInPicture()
+            } else {
+                this.$refs.media.requestPictureInPicture()
+            }
+        },
+
+        toggleMuteVolume() {
+            this.muted = !this.muted
+            this.$refs.media.muted = this.muted
+        },
     },
     mounted() {
         this.$refs.media.addEventListener('enterpictureinpicture', () => { this.pipActive = true })
@@ -122,7 +162,7 @@ export default {
                     this.glnStream = app.connection.up[this.modelValue.id]
                     this.glnStream.userdata.play = true
 
-                    this.glnStream.onclose = (replace) =>{
+                    this.glnStream.onclose = () =>{
                         app.logger.info('revoking file-stream url')
                         URL.revokeObjectURL(this.$refs.media.src)
                         this.$refs.media.src = null
@@ -216,65 +256,21 @@ export default {
             }
         }
     },
-    methods: {
-        gotDownStats(stats) {
-            let maxEnergy = 0
-            const activityDetectionPeriod = 700
-            const activityDetectionThreshold = 0.2
-
-            this.glnStream.pc.getReceivers().forEach(r => {
-                let tid = r.track && r.track.id
-                let s = tid && stats[tid]
-                let energy = s && s['track'] && s['track'].audioEnergy
-                if(typeof energy === 'number')
-                    maxEnergy = Math.max(maxEnergy, energy)
-            })
-
-            // totalAudioEnergy is defined as the integral of the square of the
-            // volume, so square the threshold.
-            if(maxEnergy > activityDetectionThreshold * activityDetectionThreshold) {
-                this.glnStream.userdata.lastVoiceActivity = Date.now()
-                this.activityDetected = true
-            } else {
-                let last = this.glnStream.userdata.lastVoiceActivity
-                if(!last || Date.now() - last > activityDetectionPeriod) {
-                    this.activityDetected = false
-                }
-            }
+    props: {
+        controls: {
+            default() {return true},
+            type: Boolean,
         },
-
-        gotUpStats() {
-            let text = ''
-
-            this.glnStream.pc.getSenders().forEach(s => {
-                let tid = s.track && s.track.id
-                let stats = tid && this.glnStream.stats[tid]
-                let rate = stats && stats['outbound-rtp'] && stats['outbound-rtp'].rate
-                if(typeof rate === 'number') {
-                    if(text) {
-                        text = text + ' + '
-                    }
-                    text = text + Math.round(rate / 1000) + 'kbps'
-                }
-            })
-
-            this.label = text
+        modelValue: {
+            required: true,
+            type: Object,
         },
-        setPip() {
-            if (this.pipActive) {
-                document.exitPictureInPicture()
-            } else {
-                this.$refs.media.requestPictureInPicture()
-            }
+    },
+    watch: {
+        'modelValue.volume.value'(value) {
+            this.$refs.media.volume = value / 100
         },
-        setFullscreen() {
-            this.$refs.media.requestFullscreen()
-        },
-        toggleMuteVolume() {
-            this.muted = !this.muted
-            this.$refs.media.muted = this.muted
-        }
-    }
+    },
 }
 </script>
 <style lang="postcss">

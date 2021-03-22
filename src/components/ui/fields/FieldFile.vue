@@ -13,21 +13,16 @@
 </template>
 <script>
 import Field from './field'
+
 export default {
-    extends: Field,
-    props: {
-        modelValue: {
-            type:Object,
-            required: true
-        }
-    },
-    emits: ['file', 'update:modelValue'],
     data() {
         return {
             files: this.modelValue,
             visible: false,
         }
     },
+    emits: ['file', 'update:modelValue'],
+    extends: Field,
     methods: {
         previewFiles(event) {
             const files = event.target.files
@@ -47,8 +42,14 @@ export default {
                 this.files = []
                 this.$emit('update:modelValue', [...this.files])
             }
-        }
-    }
+        },
+    },
+    props: {
+        modelValue: {
+            required: true,
+            type:Object,
+        },
+    },
 }
 </script>
 <style lang="postcss">
