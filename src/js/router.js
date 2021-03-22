@@ -1,4 +1,3 @@
-
 import Settings from '../components/Settings/Settings.vue'
 import StreamView from '../components/StreamView.vue'
 import {createRouter, createWebHistory} from 'vue-router'

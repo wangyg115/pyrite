@@ -31,7 +31,6 @@
 </template>
 
 <script>
-
 import TabDevices from './TabDevices.vue'
 import TabMisc from './TabMisc.vue'
 
