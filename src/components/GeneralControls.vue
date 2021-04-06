@@ -26,10 +26,12 @@
             >
                 <Icon class="icon-small" :name="state.chat.active ? 'ChatClose' : 'Chat'" />
             </button>
-            <GeneralContext />
+            <button class="btn btn-menu no-feedback">
+                <GeneralContext />
+            </button>
             <button
                 v-if="state.connected"
-                class="btn btn-menu warning tooltip"
+                class="btn btn-menu btn-logout warning tooltip"
                 :data-tooltip="$t('leave group')"
                 @click="disconnect"
             >
@@ -70,5 +72,9 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    & .btn-logout {
+        margin-top: var(--space-1);
+    }
 }
 </style>
