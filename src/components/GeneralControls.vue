@@ -26,6 +26,7 @@
             >
                 <Icon class="icon-small" :name="state.chat.active ? 'ChatClose' : 'Chat'" />
             </button>
+            <GeneralContext />
             <button
                 v-if="state.connected"
                 class="btn btn-menu warning tooltip"
@@ -39,7 +40,10 @@
 </template>
 
 <script>
+import GeneralContext from './GeneralContext.vue'
+
 export default {
+    components: {GeneralContext},
     data() {
         return {
             state: app.state,

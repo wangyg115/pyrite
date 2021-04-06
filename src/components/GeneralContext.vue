@@ -3,16 +3,16 @@
         <Icon class="icon icon-small" name="Menu" @click="toggleMenu" />
         <div v-if="active" class="actions">
             <button class="action">
-                <Icon class="icon icon-mini" name="Mic" /> Mute user
+                <Icon class="icon icon-mini" name="Record" /> Start Recording
             </button>
             <button class="action">
-                <Icon class="icon icon-mini" name="Operator" />Make Operator
+                <Icon class="icon icon-mini" name="Refresh" />Renegotiate Media
             </button>
             <button class="action">
-                <Icon class="icon icon-mini" name="Present" />Make presenter
+                <Icon class="icon icon-mini" name="MicMute" />Mute all Users
             </button>
             <button class="action">
-                <Icon class="icon icon-mini" name="Logout" />Kick User
+                <Icon class="icon icon-mini" name="Lock" />Lock Group
             </button>
         </div>
     </div>
@@ -38,3 +38,4 @@ export default {
     },
 }
 </script>
+

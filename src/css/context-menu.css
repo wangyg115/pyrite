@@ -1,0 +1,55 @@
+.context-menu {
+    display: flex;    
+    flex-direction: column;
+    position: relative;
+
+    &.active {
+
+        & > svg {
+            color: var(--primary-color);
+        }
+    }
+
+    & > .icon {
+        align-self: center;
+        margin: var(--spacer);
+        transition: all 0.25s ease-in;
+        
+        &:hover {
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+    }
+
+    & .actions {
+        background: var(--grey-400);
+        border: 1px solid var(--grey-300);
+        box-shadow: var(--shadow);        
+        margin-left: var(--space-3);
+        position: absolute;
+        z-index: 10;
+
+        & button {
+            align-items: center;
+            background: none;
+            color: var(--grey-200);
+            display: flex;
+            font-size: var(--text-base);
+            margin: 0;
+            padding: calc(var(--spacer) / 2) 0;
+            text-align: left;
+            user-select: none;
+            width: 200px;
+
+            & svg {
+                color: var(--primary-color);
+                margin: var(--spacer);
+            }
+
+            &:hover {
+                background: var(--grey-300);
+                cursor: pointer;
+            }
+        }
+    }
+}

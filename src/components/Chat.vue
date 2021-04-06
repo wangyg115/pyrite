@@ -27,7 +27,7 @@
                 :disabled="rawMessage === ''"
                 @click="sendMessage"
             >
-                <Icon class="icon icon-mini" name="send" />
+                <Icon class="icon icon-mini" name="Send" />
             </button>
             <textarea
                 v-model="rawMessage"

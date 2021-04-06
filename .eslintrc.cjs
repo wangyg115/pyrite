@@ -70,10 +70,6 @@ module.exports = {
             ignoreMemberSort: false,
             memberSyntaxSortOrder: ['none',  'all', 'single', 'multiple'],
         }],
-        'sort-keys': [2, 'asc', {
-            caseSensitive: false,
-            natural: true,
-        }],
         'sort-vars': [2, {ignoreCase: true}],
         'space-before-function-paren': [2, 'never'],
         'space-in-brackets': [0, 'never'],
@@ -107,5 +103,12 @@ module.exports = {
         }],
         'vue/order-in-components': 'off',
         'vue/padding-line-between-blocks': [2],
+        'vue/sort-keys': [2, 'asc', {
+            caseSensitive: false,
+            ignoreChildrenOf: ['model'],
+            ignoreGrandchildrenOf: ['computed', 'directives', 'inject', 'props', 'watch'],
+            minKeys: 2,
+            natural: false,
+        }],
     },
 }

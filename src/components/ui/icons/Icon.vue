@@ -29,6 +29,8 @@ import IconOperator from './IconOperator.vue'
 import IconPip from './IconPip.vue'
 import IconPlayFile from './IconPlayFile.vue'
 import IconPresent from './IconPresent.vue'
+import IconRecord from './IconRecord.vue'
+import IconRefresh from './IconRefresh.vue'
 import IconScreenShare from './IconScreenShare.vue'
 import IconSend from './IconSend.vue'
 import IconSettings from './IconSettings.vue'
@@ -60,6 +62,8 @@ export default {
         IconPip,
         IconPlayFile,
         IconPresent,
+        IconRecord,
+        IconRefresh,
         IconScreenShare,
         IconSend,
         IconSettings,
@@ -86,18 +90,18 @@ export default {
     width: 40px;
 
     &.icon-tiny {
-        height: calc(var(--space-1) / 2);
-        width: calc(var(--space-1) / 2);
+        height: calc(var(--spacer) * 1.75);
+        width: calc(var(--spacer) * 1.75);
     }
 
     &.icon-mini {
-        height: var(--space-1);
-        width: var(--space-1);
+        height: calc(var(--spacer) * 2.5);
+        width: calc(var(--spacer) * 2.5);
     }
 
     &.icon-small {
-        height: var(--space-2);
-        width: var(--space-2);
+        height: calc(var(--spacer) * 3.5);
+        width: calc(var(--spacer) * 3.5);
     }
 
     &.icon-large {
