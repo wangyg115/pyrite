@@ -1,4 +1,4 @@
-name: release
+name: main
 
 on:
   push:
@@ -24,10 +24,9 @@ jobs:
       run: |
         npm ci
         npm run lint
-    - name: Release
+    - name: Deploy & Release (Production)
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         RAND_ENDPOINT: ${{secrets.RAND_ENDPOINT}}
         RAND_CHANNEL: ${{secrets.RAND_CHANNEL}}
         RAND_PW: ${{secrets.RAND_PW}}

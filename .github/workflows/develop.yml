@@ -1,4 +1,4 @@
-name: test
+name: develop
 
 on:
   push:
@@ -24,3 +24,10 @@ jobs:
       run: |
         npm ci
         npm run lint
+    - name: Deploy (Beta)
+      env:
+        RAND_ENDPOINT: ${{secrets.RAND_ENDPOINT}}
+        RAND_CHANNEL: ${{secrets.RAND_CHANNEL_DEVELOP}}
+        RAND_PW: ${{secrets.RAND_PW}}
+        RAND_USER: ${{secrets.RAND_USER}}
+      run: VITE_VERSION=dev npm run build;npm run deploy
