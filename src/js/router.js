@@ -1,4 +1,5 @@
 import Settings from '../components/Settings/Settings.vue'
+import Splash from '../components/Splash.vue'
 import StreamView from '../components/StreamView.vue'
 import {createRouter, createWebHistory} from 'vue-router'
 
@@ -8,7 +9,19 @@ const routes = [
         name: "settings",
         path: "/settings/:tabId",
     },
-    {path: '/', redirect: {name: 'settings', params: {tabId: 'misc'}}},
+    {
+        component: Splash,
+        path: '/', 
+        redirect: (to) => {
+            return {name: 'splash'}
+        },
+    },
+    {
+        component: Splash,
+        name: "splash",
+        path: "/",
+    },
+
     {
         component: StreamView,
         name: "groups",
