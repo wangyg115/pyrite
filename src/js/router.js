@@ -12,7 +12,7 @@ const routes = [
     {
         name: 'main',
         path: '/', 
-        redirect: (to) => {
+        redirect: () => {
             return {name: 'splash'}
         },
     },
