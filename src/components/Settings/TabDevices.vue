@@ -1,14 +1,16 @@
 <template>
     <section v-if="$route.params.tabId === 'devices'" class="tab-content active">
-        <div id="mediaoptions">
-            <Stream v-if="description" v-model="description" :controls="false" />
-            <FieldSelect
-                v-model="$s.video"
-                :help="$t('select the video camera to use')"
-                :label="$t('Camera')"
-                name="video"
-                :options="$s.devices.video"
-            />
+        <div>
+            <div class="camera-field">
+                <FieldSelect
+                    v-model="$s.video"
+                    :help="$t('select the video camera to use')"
+                    :label="$t('Camera')"
+                    name="video"
+                    :options="$s.devices.video"
+                />
+                <Stream v-if="description" v-model="description" :controls="false" />
+            </div>
 
             <FieldSelect
                 v-model="$s.audio"
@@ -18,7 +20,9 @@
                 :options="$s.devices.audio"
             />
 
-            <SoundMeter v-if="streamId && stream" :stream="stream" :stream-id="streamId" />
+            <div class="soundmeter">
+                <SoundMeter v-if="streamId && stream" :stream="stream" :stream-id="streamId" />
+            </div>
 
             <FieldCheckbox
                 v-model="$s.blackboardMode"
@@ -77,3 +81,22 @@ export default {
     },
 }
 </script>
+
+<style lang="postcss">
+.camera-field {
+    align-items: "stretch";
+    display: flex;
+    justify-content: "space-between";
+    position: relative;
+
+    & .c-stream {
+        background: var(--grey-400);
+        border: var(--border) solid var(--grey-200);
+        position: absolute;
+        right: 0;
+        /* height: 80px; */
+        width: 180px;
+    }
+}
+
+</style>

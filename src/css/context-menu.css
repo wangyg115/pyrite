@@ -1,7 +1,7 @@
 .context-menu {
     display: flex;    
     flex-direction: column;
-    position: relative;
+    position: relative;    
 
     &.active {
 
@@ -27,7 +27,7 @@
         box-shadow: var(--shadow);        
         margin-left: var(--space-2);
         position: absolute;
-        z-index: 10;
+        z-index: 10000;
 
         & button {
             align-items: center;

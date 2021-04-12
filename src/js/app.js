@@ -1,4 +1,3 @@
-// @ts-check
 import {createI18n} from 'vue-i18n'
 
 import env from './env.js'
@@ -73,8 +72,8 @@ class Pyrite {
 
         await this.setMediaChoices()
 
-        const selecteAudioDevice = this.state.audio.id !== null ? {deviceId: this.state.audio.id} : false
-        const selectedVideoDevice = this.state.video.id !== null ? {deviceId: this.state.video.id} : false
+        const selecteAudioDevice = this.state.audio.id !== null && ['both', 'mike'].includes(this.state.present) ? {deviceId: this.state.audio.id} : false
+        const selectedVideoDevice = this.state.video.id !== null && this.state.present === 'both' ? {deviceId: this.state.video.id} : false
 
         // Verify whether the local mediastream is using the right devices.
         this.logger.debug(`addLocalMedia ${this.state.audio.name} / ${this.state.video.name}`)

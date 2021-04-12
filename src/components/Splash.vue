@@ -6,7 +6,7 @@
         </div>
 
         <div class="propaganda">
-            Communication Suite
+            Video Communication
         </div>
     </div>
 </template>
@@ -19,9 +19,8 @@
     justify-content: center;
 
     & .icon {
-        height: 30%;
-        /* opacity: 0.5; */
-        width: 30%;
+        height: 50%;
+        width: 50%;
     }
 
     & .title {

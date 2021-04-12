@@ -1,5 +1,5 @@
 <template>
-    <div class="content">
+    <div class="c-settings content">
         <ul class="tabs">
             <RouterLink
                 class="btn btn-menu tab tooltip"
@@ -21,11 +21,10 @@
         <TabDevices v-else-if="$route.params.tabId === 'devices'" />
 
         <button
-            id="connectbutton"
-            class="btn btn-widget"
+            class="btn btn-widget btn-save"
             @click="saveSettings"
         >
-            {{ $t('Save') }}
+            {{ $t('Save Settings') }}
         </button>
     </div>
 </template>
@@ -56,7 +55,15 @@ export default {
 </script>
 
 <style lang="postcss">
-.tabs {
-    padding-left: var(--space-1);
+.c-settings {
+
+    & .tabs {
+        padding-left: var(--space-1);
+    }
+
+    & .btn-save {
+        margin-top: var(--space-1);
+    }
 }
+
 </style>

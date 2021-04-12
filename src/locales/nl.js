@@ -30,7 +30,7 @@ export default {
     Password: 'Wachtwoord',
     'picture-in-picture': 'picture-in-picture',
     Receive: 'Ontvangen',
-    Save: 'Opslaan',
+    'Save Settings': 'Instellingen Opslaan',
     Screenshare: 'Schermdeling',
     'select the microphone to use': 'selecteer de microfoon om te gebruiken',
     'select the video camera to use': 'selecteer de video camera om te gebruiken',
