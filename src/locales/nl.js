@@ -19,7 +19,7 @@ export default {
     'leave group': 'verlaat groep',
     Low: 'Laag',
     Lowest: 'Laagste',
-    'Media on join': 'Media bij aanmelden',
+    Media: 'Media',
     Microphone: 'Microfoon',
     miscellaneous: 'diversen',
     'mute microphone': 'demp microfoon',
