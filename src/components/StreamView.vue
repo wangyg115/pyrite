@@ -1,7 +1,7 @@
 <template>
-    <Login v-if="!state.connected" class="content" />
-    <div v-else-if="state.streams.length" class="c-stream-view" :class="gridClass">
-        <Stream v-for="(description, index) in state.streams" :key="description.id" v-model="state.streams[index]" />
+    <Login v-if="!$s.connected" class="content" />
+    <div v-else-if="$s.streams.length" class="c-stream-view" :class="gridClass">
+        <Stream v-for="(description, index) in $s.streams" :key="description.id" v-model="$s.streams[index]" />
     </div>
     <div v-else class="stream-placeholder">
         <Icon class="icon" name="Groups" />
@@ -17,7 +17,7 @@ export default {
     computed: {
         gridClass() {
             const classes={}
-            const streams = this.state.streams.length
+            const streams = this.$s.streams.length
 
             if (streams <= 4) {
                 classes[`${this.gridMode}-4`] = true
@@ -35,7 +35,6 @@ export default {
     data() {
         return {
             gridMode: 'gallery',
-            state: app.state,
         }
     },
 }

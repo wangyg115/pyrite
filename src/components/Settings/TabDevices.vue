@@ -3,25 +3,25 @@
         <div id="mediaoptions">
             <Stream v-if="description" v-model="description" :controls="false" />
             <FieldSelect
-                v-model="state.video"
+                v-model="$s.video"
                 :help="$t('select the video camera to use')"
                 :label="$t('Camera')"
                 name="video"
-                :options="state.devices.video"
+                :options="$s.devices.video"
             />
 
             <FieldSelect
-                v-model="state.audio"
+                v-model="$s.audio"
                 :help="$t('select the microphone to use')"
                 :label="$t('Microphone')"
                 name="audio"
-                :options="state.devices.audio"
+                :options="$s.devices.audio"
             />
 
             <SoundMeter v-if="streamId && stream" :stream="stream" :stream-id="streamId" />
 
             <FieldCheckbox
-                v-model="state.blackboardMode"
+                v-model="$s.blackboardMode"
                 :help="$t('Increases resolution and lowers framerate')"
                 :label="$t('Blackboard mode')"
                 name="blackboard"
@@ -36,7 +36,7 @@ import Stream from '../Stream.vue'
 
 export default {
     beforeUnmount() {
-        if (!this.state.connected) {
+        if (!this.$s.connected) {
             app.delLocalMedia()
         }
     },
@@ -44,7 +44,6 @@ export default {
     data() {
         return {
             description: null,
-            state: app.state,
             stream: null,
             streamId: null,
         }
@@ -70,7 +69,7 @@ export default {
         }
     },
     watch: {
-        async 'state.audio'() {
+        async '$s.audio'() {
             await app.addLocalMedia()
             this.stream = app.localStream
             this.streamId = app.localStream.id

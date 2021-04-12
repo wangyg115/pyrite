@@ -219,7 +219,7 @@ export default {
             this.glnStream = app.connection.down[this.modelValue.id]
             this.stream = this.glnStream.stream
 
-            if(this.state.activityDetection) {
+            if(this.$s.activityDetection) {
                 this.glnStream.onstats = this.gotDownStats
                 this.glnStream.setStatsInterval(1000)
             }

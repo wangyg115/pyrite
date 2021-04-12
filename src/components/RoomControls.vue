@@ -2,39 +2,39 @@
     <nav class="c-controls">
         <div class="group-controls">
             <button
-                v-if="state.permissions.present"
+                v-if="$s.permissions.present"
                 class="btn btn-menu tooltip tooltip-left"
-                :class="{active: !state.muted, warning: state.muted}"
-                :data-tooltip="state.muted ? $t('unmute microphone'): $t('mute microphone')"
+                :class="{active: !$s.muted, warning: $s.muted}"
+                :data-tooltip="$s.muted ? $t('unmute microphone'): $t('mute microphone')"
                 @click="toggleMute"
             >
                 <Icon class="icon-small" name="Mic" />
             </button>
 
             <button
-                v-if="state.permissions.present"
+                v-if="$s.permissions.present"
                 class="btn btn-menu tooltip tooltip-left"
-                :class="{active: state.upMedia.local.length, warning: !state.upMedia.local.length}"
-                :data-tooltip="`${$t('switch camera')} ${state.upMedia.local.length ? $t('off') : $t('on')}`"
+                :class="{active: $s.upMedia.local.length, warning: !$s.upMedia.local.length}"
+                :data-tooltip="`${$t('switch camera')} ${$s.upMedia.local.length ? $t('off') : $t('on')}`"
                 @click="togglePresent"
             >
                 <Icon class="icon-small" name="Webcam" />
             </button>
 
             <button
-                v-if="state.permissions.present"
+                v-if="$s.permissions.present"
                 class="btn btn-menu tooltip tooltip-left"
-                :class="{active: state.upMedia.screenshare.length}"
-                :data-tooltip="`${$t('switch screensharing')} ${state.upMedia.screenshare.length ? $t('off') : $t('on')}`"
+                :class="{active: $s.upMedia.screenshare.length}"
+                :data-tooltip="`${$t('switch screensharing')} ${$s.upMedia.screenshare.length ? $t('off') : $t('on')}`"
                 @click="toggleScreenshare"
             >
                 <Icon class="icon-small" name="ScreenShare" />
             </button>
 
             <button
-                v-if="state.permissions.present"
+                v-if="$s.permissions.present"
                 class="btn btn-menu tooltip tooltip-left"
-                :class="{active: state.upMedia.video.length}"
+                :class="{active: $s.upMedia.video.length}"
                 :data-tooltip="playFiles"
             >
                 <FieldFile v-model="playFiles" @file="togglePlayFile" />
@@ -52,7 +52,6 @@ export default {
     data() {
         return {
             playFiles: [],
-            state: app.state,
             volume: {
                 locked: null,
                 value: 100,
@@ -64,7 +63,7 @@ export default {
             app.disconnect()
         },
         toggleMute() {
-            app.muteLocalTracks(!this.state.muted)
+            app.muteLocalTracks(!this.$s.muted)
         },
         togglePlayFile(file) {
             if (file) {
@@ -75,7 +74,7 @@ export default {
             }
         },
         togglePresent() {
-            if (this.state.upMedia.local.length) {
+            if (this.$s.upMedia.local.length) {
                 app.logger.debug('switching present mode off')
                 app.delUpMediaKind('local')
 
@@ -88,7 +87,7 @@ export default {
             }
         },
         async toggleScreenshare() {
-            if (this.state.upMedia.screenshare.length) {
+            if (this.$s.upMedia.screenshare.length) {
                 app.logger.debug('turn screenshare stream off')
                 app.delUpMedia(this.screenStream)
             } else {
@@ -99,7 +98,7 @@ export default {
     },
     watch: {
         volume(volume) {
-            for (const description of this.state.streams) {
+            for (const description of this.$s.streams) {
                 // Only downstreams have volume control:
                 if (!description.isUp && !description.volume.locked) {
                     description.volume = volume

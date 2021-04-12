@@ -36,28 +36,20 @@ import TabMisc from './TabMisc.vue'
 
 export default {
     components: {TabDevices, TabMisc},
-    data() {
-        return {
-            state: app.state,
-        }
-    },
     methods: {
         changeAudioSelect() {
             app.changePresentation()
         },
         changeVideoSelect() {
-            if (this.state.connected) {
+            if (this.$s.connected) {
                 app.changePresentation()
             }
         },
         saveSettings() {
-            app.i18n.global.locale = this.state.language.id
-            app.logger.debug(`settings language to ${this.state.language.id}`)
+            app.i18n.global.locale = this.$s.language.id
+            app.logger.debug(`settings language to ${this.$s.language.id}`)
             app.store.save()
             app.notify({level: 'info', message: 'Settings stored'})
-        },
-        setTab: function(category, tab) {
-            app.state.tabs[category] = {active: tab}
         },
     },
 }

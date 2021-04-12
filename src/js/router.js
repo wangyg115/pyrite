@@ -6,11 +6,11 @@ import {createRouter, createWebHistory} from 'vue-router'
 const routes = [
     {
         component: Settings,
-        name: "settings",
-        path: "/settings/:tabId",
+        name: 'settings',
+        path: '/settings/:tabId',
     },
     {
-        component: Splash,
+        name: 'main',
         path: '/', 
         redirect: (to) => {
             return {name: 'splash'}
@@ -18,14 +18,13 @@ const routes = [
     },
     {
         component: Splash,
-        name: "splash",
-        path: "/",
+        name: 'splash',
+        path: '/',
     },
-
     {
         component: StreamView,
-        name: "groups",
-        path: "/groups/:groupId",
+        name: 'groups',
+        path: '/groups/:groupId',
     },
 ]
 

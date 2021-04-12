@@ -2,7 +2,7 @@
     <section class="c-groups">
         <div class="group item">
             <FieldText
-                v-model="state.group"
+                v-model="$s.group"
                 autocomplete="username"
                 class="custom-group"
                 :help="$t('custom input for unlisted groups')"
@@ -30,7 +30,6 @@ export default {
     data() {
         return {
             groups: [],
-            state: app.state,
         }
     },
     methods: {
@@ -38,8 +37,8 @@ export default {
             this.groups = await (await fetch('/public-groups.json')).json()
         },
         updateRoute() {
-            if (this.state.group) {
-                this.$router.replace({name: 'groups', params: {groupId: this.state.group}})
+            if (this.$s.group) {
+                this.$router.replace({name: 'groups', params: {groupId: this.$s.group}})
             } else {
                 this.$router.replace({name: 'settings', params: {tabId: 'misc'}})
             }
@@ -53,7 +52,7 @@ export default {
         clearInterval(this.intervalId)
     },
     watch: {
-        'state.group'() {
+        '$s.group'() {
             this.updateRoute()
         },
     },

@@ -9,9 +9,9 @@
                 <Icon class="icon-small" name="Settings" />
             </RouterLink>
             <RouterLink
-                v-if="state.group" class="btn btn-menu tooltip"
+                v-if="$s.group" class="btn btn-menu tooltip"
                 :data-tooltip="$t('current group')"
-                :to="{name: 'groups', params: {groupId: state.group}}"
+                :to="{name: 'groups', params: {groupId: $s.group}}"
             >
                 <Icon class="icon-small" name="Groups" />
             </RouterLink>
@@ -19,18 +19,18 @@
                 <Icon class="icon-small" name="Groups" />
             </button>
             <button
-                v-if="state.connected"
+                v-if="$s.connected"
                 class="btn btn-menu tooltip"
-                :data-tooltip="state.chat.active ? $t('hide chat') : $t('show chat')"
+                :data-tooltip="$s.chat.active ? $t('hide chat') : $t('show chat')"
                 @click="toggleChatActive"
             >
-                <Icon class="icon-small" :name="state.chat.active ? 'ChatClose' : 'Chat'" />
+                <Icon class="icon-small" :name="$s.chat.active ? 'ChatClose' : 'Chat'" />
             </button>
-            <button class="btn btn-menu no-feedback">
+            <button v-if="$s.connected" class="btn btn-menu no-feedback">
                 <GeneralContext />
             </button>
             <button
-                v-if="state.connected"
+                v-if="$s.connected"
                 class="btn btn-menu btn-logout warning tooltip"
                 :data-tooltip="$t('leave group')"
                 @click="disconnect"
@@ -46,20 +46,15 @@ import GeneralContext from './GeneralContext.vue'
 
 export default {
     components: {GeneralContext},
-    data() {
-        return {
-            state: app.state,
-        }
-    },
     methods: {
         disconnect() {
             app.disconnect()
         },
         toggleChatActive() {
-            this.state.chat.active = !this.state.chat.active
+            this.$s.chat.active = !this.$s.chat.active
         },
         toggleMute() {
-            app.muteLocalTracks(this.state.muted)
+            app.muteLocalTracks(this.$s.muted)
         },
     },
 }

@@ -1,49 +1,116 @@
+<!-- eslint-disable vue/attribute-hyphenation -->
 <template>
-    <g
-        id="layer1"
-        inkscape:groupmode="layer"
-        inkscape:label="Layer 1"
-    >
-        <g
-            id="g1533"
-            transform="translate(0,-0.02267634)"
-        >
-            <g
-                id="g1556"
-            >
-                <g
-                    id="g1564"
-                >
-                    <circle
-                        id="path1558-3"
-                        cx="12.037825"
-                        cy="9.7591515"
-                        rx="7.2093797"
-                        ry="7.3301554"
-                        style="fill: none;fill-opacity: 1;paint-order: fill markers stroke;stroke: #222835;stroke-dasharray: none;stroke-linejoin: bevel;stroke-miterlimit: 4;stroke-opacity: 1;stroke-width: 2.80262;"
-                    />
-                    <path
-                        id="path878"
-                        d="M 45.337891 3.6582031 C 32.90265 3.6638724 21.566923 10.782156 16.160156 21.980469 C 10.361218 33.99093 12.511204 48.328425 21.576172 58.111328 C 21.693443 58.237791 21.841466 58.34001 21.929688 58.488281 C 27.968124 68.639892 21.929688 87.050781 21.929688 87.050781 L 45.355469 68.494141 C 45.355469 68.494141 53.417312 67.736042 57.1875 66.257812 C 69.60417 61.389407 77.773366 49.413165 77.773438 36.076172 L 67.380859 36.076172 A 22.029875 22.029875 0 0 1 67.384766 36.470703 A 22.029875 22.029875 0 0 1 45.353516 58.5 A 22.029875 22.029875 0 0 1 23.324219 36.470703 A 22.029875 22.029875 0 0 1 45.353516 14.441406 A 22.029875 22.029875 0 0 1 47 14.503906 L 47.820312 3.7519531 C 46.994369 3.6889295 46.166242 3.657779 45.337891 3.6582031 z "
-                        style="fill: #33c6c3;fill-opacity: 1;paint-order: fill markers stroke;stroke: none;stroke-dasharray: none;stroke-linecap: butt;stroke-linejoin: bevel;stroke-miterlimit: 4;stroke-opacity: 1;stroke-width: 2.59149;"
-                        transform="matrix(0.26458333,0,0,0.26458333,0,0.02267634)"
-                    />
-                    <ellipse
-                        id="path894"
-                        cx="12"
-                        cy="9.6159058"
-                        r="2.0255728"
-                        style="fill: #33c6c3;fill-opacity: 1;paint-order: fill markers stroke;stroke: #1a202c;stroke-dasharray: none;stroke-linecap: butt;stroke-linejoin: bevel;stroke-miterlimit: 4;stroke-opacity: 1;stroke-width: 1.07;"
-                    />
-                    <circle
-                        id="path1558"
-                        cx="12.125657"
-                        cy="9.6589193"
-                        r="2.5357502"
-                        style="fill: none;fill-opacity: 1;font-variation-settings: normal;opacity: 1;paint-order: fill markers stroke;stop-color: #000000;stop-opacity: 1;stroke: #ffffff;stroke-dasharray: none;stroke-dashoffset: 0;stroke-linecap: butt;stroke-linejoin: bevel;stroke-miterlimit: 4;stroke-opacity: 1;stroke-width: 2.223;vector-effect: none;"
-                    />
-                </g>
-            </g>
-        </g>
-    </g>
+    <path
+        id="path1883"
+        class="shard dark"
+        d="m 5.4804785,14.410944 a 7.1183372,7.1183372 0 0 0 5.2827995,4.444952 l 2.565838,-4.444952 z"
+    />
+    <path
+        id="path1881"
+        class="shard primary"
+        d="m 15.191999,12.207584 -3.886627,6.73271 a 7.1183372,7.1183372 0 0 0 0.824501,0.04797 7.1183372,7.1183372 0 0 0 5.486219,-2.58279 z"
+    />
+    <path
+        id="path1879"
+        class="shard dark"
+        d="M 14.215653,9.4927872 17.952241,15.96509 A 7.1183372,7.1183372 0 0 0 19.248144,11.869992 7.1183372,7.1183372 0 0 0 18.839139,9.4927872 Z"
+    />
+    <path
+        id="path1877"
+        class="shard primary"
+        d="m 6.6768355,7.2944764 a 7.1183372,7.1183372 0 0 0 -1.665233,4.5755156 7.1183372,7.1183372 0 0 0 0.295753,2.029876 h 5.1825315 z"
+    />
+    <path
+        id="path1875"
+        class="shard primary"
+        d="m 13.714316,4.9306159 -2.338973,4.0510954 h 7.260376 A 7.1183372,7.1183372 0 0 0 13.714316,4.9306159 Z"
+    />
+    <path
+        id="path1841"
+        class="shard dark"
+        d="M 12.129873,4.7517214 A 7.1183372,7.1183372 0 0 0 7.0378715,6.8962918 L 9.5131795,11.18435 13.181961,4.8299879 a 7.1183372,7.1183372 0 0 0 -1.052088,-0.078266 z"
+    />
+    <circle
+        id="circle1843"    
+        class="pupil primary"
+        cx="12.129838"
+        cy="11.870106"
+        r="1.5759634"
+    />
 </template>
+
+<style lang="postcss">
+@keyframes anim-1 {
+
+    0%,
+    55% {
+        fill: var(--grey-300);
+        opacity: 0;
+    }
+
+    100% {
+        fill: var(--primary-color);
+        opacity: 1;
+    }
+}
+
+@keyframes anim-2 {
+
+    0%,
+    55% {
+        fill: transparent;
+  
+    }
+
+    100% {
+        fill: var(--grey-400);
+    }
+}
+
+@keyframes anim-3 {
+
+    0% {
+        fill: transparent;  
+        opacity: 0.5;
+    }
+
+    50% {fill: var(--grey-400);}
+    52% {fill: var(--primary-color);}
+    60% {fill: var(--grey-400);}
+    65% {fill: var(--primary-color);}
+    70% {fill: var(--grey-400);}
+    75% {fill: var(--primary-color);}
+    80% {fill: var(--grey-400);}
+    83% {fill: var(--primary-color);}
+    85% {fill: var(--grey-400);}
+    87% {fill: var(--primary-color);}
+
+    100% {
+        fill: var(--primary-color);
+        opacity: 1;
+    }
+}
+
+.dark {
+    fill: var(--grey-400);
+}
+
+.primary {
+    fill: var(--primary-color);
+}
+
+.logo-animated {
+
+    & .shard.primary {
+        animation: 1.6s ease-in-out running anim-1;
+    }
+
+    & .shard.dark {
+        animation: 1.4s ease-in-out running anim-2;
+    }
+
+    & .pupil {
+        animation: 1s ease-in-out running anim-3;
+    }
+}
+</style>

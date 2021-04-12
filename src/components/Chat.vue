@@ -47,20 +47,19 @@ import {nextTick} from 'vue'
 export default {
     computed: {
         sortedMessages() {
-            const messages = this.state.messages
+            const messages = this.$s.messages
             return messages.sort((a, b) => a.time - b.time)
         },
     },
     data() {
         return {
             rawMessage: '',
-            state: app.state,
         }
     },
     methods: {
         clearChat() {
             app.logger.debug('clearing chat from remote')
-            this.state.messages = []
+            this.$s.messages = []
         },
         formatMessage(message) {
             return message.split('\n')
@@ -70,7 +69,7 @@ export default {
             return date.toLocaleTimeString()
         },
         onChat(peerId, dest, nick, time, privileged, kind, message) {
-            this.state.messages.push({dest, kind, message, nick, peerId, privileged, time})
+            this.$s.messages.push({dest, kind, message, nick, peerId, privileged, time})
             nextTick(() => {
                 this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
             })

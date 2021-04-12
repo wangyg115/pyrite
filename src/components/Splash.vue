@@ -1,9 +1,12 @@
 <template>
     <div class="c-splash">
-        <Icon class="icon" name="Logo" />
+        <Icon class="icon logo-animated" name="Logo" />
+        <div class="title">
+            PYRITE
+        </div>
 
-        <div class="slogan">
-            Friendly<br>Video Conferences
+        <div class="propaganda">
+            Communication Suite
         </div>
     </div>
 </template>
@@ -16,16 +19,23 @@
     justify-content: center;
 
     & .icon {
-        height: 50%;
-        opacity: 0.5;
-        width: 50%;
+        height: 30%;
+        /* opacity: 0.5; */
+        width: 30%;
     }
 
-    & .slogan {
+    & .title {
         color: var(--primary-color);
-        font-size: 2rem;
+        font-family: var(--font-mono);
+        font-size: var(--text-huge);
+        font-weight: 600;
+    }
+
+    & .propaganda {
+        color: var(--grey-200);
+        font-size: var(--text-large);
+        font-style: italic;
         font-weight: 500;
-        opacity: 0.5;
         text-align: center;
     }
 }

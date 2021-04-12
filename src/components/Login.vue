@@ -6,7 +6,7 @@
         <section>
             <form>
                 <FieldText
-                    v-model="state.username"
+                    v-model="$s.username"
                     autocomplete="username"
                     :label="$t('Username')"
                     name="username"
@@ -14,7 +14,7 @@
                 />
 
                 <FieldText
-                    v-model="state.password"
+                    v-model="$s.password"
                     autocomplete="current-password"
                     :label="$t('Password')"
                     name="pasword"
@@ -28,7 +28,7 @@
                     <p class="switch-radio">
                         <input
                             id="presentoff"
-                            v-model="state.present"
+                            v-model="$s.present"
                             checked
                             name="presentradio"
                             type="radio"
@@ -39,7 +39,7 @@
                     <p class="switch-radio">
                         <input
                             id="presentmike"
-                            v-model="state.present"
+                            v-model="$s.present"
                             name="presentradio"
                             type="radio"
                             value="mike"
@@ -49,7 +49,7 @@
                     <p class="switch-radio">
                         <input
                             id="presentboth"
-                            v-model="state.present"
+                            v-model="$s.present"
                             name="presentradio"
                             type="radio"
                             value="both"
@@ -76,7 +76,6 @@ export default {
     data() {
         return {
             connecting: false,
-            state: app.state,
         }
     },
     methods: {

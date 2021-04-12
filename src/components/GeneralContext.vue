@@ -3,15 +3,15 @@
         <Icon class="icon icon-small" name="Menu" @click="toggleMenu" />
         <div v-if="active" class="actions">
             <button class="action">
-                <Icon class="icon icon-mini" name="Record" /> Start Recording
-            </button>
-            <button class="action">
                 <Icon class="icon icon-mini" name="Refresh" />Renegotiate Media
             </button>
-            <button class="action">
+            <button v-if="$s.permissions.op" class="action">
+                <Icon class="icon icon-mini" name="Record" /> Start Recording
+            </button>
+            <button v-if="$s.permissions.op" class="action">
                 <Icon class="icon icon-mini" name="MicMute" />Mute all Users
             </button>
-            <button class="action">
+            <button v-if="$s.permissions.op" class="action">
                 <Icon class="icon icon-mini" name="Lock" />Lock Group
             </button>
         </div>

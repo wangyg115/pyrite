@@ -1,22 +1,22 @@
 <template>
-    <div class="app-view theme theme-dark" :class="{connected: state.connected, 'chat-active': state.chat.active}">
+    <div class="app-view theme theme-dark" :class="{connected: $s.connected, 'chat-active': $s.chat.active}">
         <div class="presence">
             <header>
-                <RouterLink class="logo" :to="{name: 'settings', params: {tabId: 'misc'}}">
-                    <Icon class="icon icon-small" name="Logo" />PYRITE VIDEO
+                <RouterLink class="logo" :to="{name: 'main'}">
+                    <Icon class="icon icon-small" name="Logo" />PYRITE
                 </RouterLink>
                 <div class="version">
                     {{ version }}
                 </div>
             </header>
-            <Users v-if="state.connected" />
+            <Users v-if="$s.connected" />
             <Groups v-else />
         </div>
 
         <GeneralControls />
-        <Chat v-if="state.connected && state.chat.active" />
+        <Chat v-if="$s.connected && $s.chat.active" />
         <RouterView />
-        <RoomControls v-if="state.connected" />
+        <RoomControls v-if="$s.connected" />
         <Notifications />
     </div>
 </template>
@@ -33,7 +33,6 @@ export default {
     components: {Chat, GeneralControls, Groups, Notifications, RoomControls, Users},
     data() {
         return {
-            state: app.state,
             version: import.meta.env.VITE_VERSION,
         }
     },

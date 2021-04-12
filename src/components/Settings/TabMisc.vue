@@ -1,14 +1,14 @@
 <template>
     <section v-if="$route.params.tabId === 'misc'" class="tab-content active">
         <FieldSelect
-            v-model="state.language"
+            v-model="$s.language"
             :help="$t('change the user interface language')"
             :label="$t('Language')"
             name="language"
             :options="languages"
         />
         <FieldSelect
-            v-model="state.send"
+            v-model="$s.send"
             :help="$t('Bandwidth to use when sending media')"
             :label="$t('Send')"
             name="send"
@@ -16,7 +16,7 @@
         />
 
         <FieldSelect
-            v-model="state.request"
+            v-model="$s.request"
             :help="$t('Types of media to receive')"
             :label="$t('Receive')"
             name="request"
@@ -24,7 +24,7 @@
         />
 
         <FieldCheckbox
-            v-model="state.activityDetection"
+            v-model="$s.activityDetection"
             :help="$t('Detect whether someone is speaking')"
             :label="$t('Activity detection')"
             name="activity"
@@ -52,7 +52,6 @@ export default {
                 {id: 'normal', name: this.$t('Normal')},
                 {id: 'unlimited', name: this.$t('Unlimited')},
             ],
-            state: app.state,
         }
     },
 }
