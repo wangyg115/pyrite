@@ -3,35 +3,39 @@ import Splash from '../components/Splash.vue'
 import StreamView from '../components/StreamView.vue'
 import {createRouter, createWebHistory} from 'vue-router'
 
-const routes = [
-    {
-        component: Settings,
-        name: 'settings',
-        path: '/settings/:tabId',
-    },
-    {
-        name: 'main',
-        path: '/', 
-        redirect: () => {
-            return {name: 'splash'}
+export default function(app) {
+    const routes = [
+        {
+            component: Settings,
+            name: 'settings',
+            path: '/settings/:tabId',
         },
-    },
-    {
-        component: Splash,
-        name: 'splash',
-        path: '/',
-    },
-    {
-        component: StreamView,
-        name: 'groups',
-        path: '/groups/:groupId',
-    },
-]
-
-const router = createRouter({
-    history: createWebHistory(),
-    linkActiveClass: 'active',
-    routes,
-})
-
-export default router
+        {
+            name: 'main',
+            path: '/', 
+            redirect: () => {
+                if (app.state.connected) {
+                    return {name: 'groups', params: {groupId: app.state.group}}
+                } else {
+                    return {name: 'splash'}
+                }                
+            },
+        },
+        {
+            component: Splash,
+            name: 'splash',
+            path: '/',
+        },
+        {
+            component: StreamView,
+            name: 'groups',
+            path: '/groups/:groupId',
+        },
+    ]
+    
+    return createRouter({
+        history: createWebHistory(),
+        linkActiveClass: 'active',
+        routes,
+    })
+}

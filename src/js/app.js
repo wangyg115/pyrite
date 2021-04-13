@@ -15,7 +15,7 @@ class Pyrite {
         this.logger.setLevel('debug')
 
         this.env = env
-        this.router = router
+        this.router = router(this)
         this.protocol = protocol
 
         this.logger.debug('loading store')

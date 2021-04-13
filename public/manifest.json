@@ -1,7 +1,7 @@
 {
     "name": "Pyrite Video",
     "short_name": "Pyrite",
-    "description": "Galène Video conferencing UI",
+    "description": "Pyrite Video Communication",
     "background_color": "#1a202c",
     "theme_color": "#33c6c3",
     "display": "standalone",
@@ -15,5 +15,5 @@
     ],
     "orientation": "landscape",
     "start_url": "/",
-    "version": "1.4"
+    "version": "1.8"
 }
