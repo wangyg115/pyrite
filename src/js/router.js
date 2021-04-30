@@ -1,3 +1,4 @@
+import Login from '../components/Login.vue'
 import Settings from '../components/Settings/Settings.vue'
 import Splash from '../components/Splash.vue'
 import StreamView from '../components/StreamView.vue'
@@ -26,10 +27,26 @@ export default function(app) {
             name: 'splash',
             path: '/',
         },
+        
         {
-            component: StreamView,
             name: 'groups',
             path: '/groups/:groupId',
+            redirect: () => {
+                if (!app.state.connected) {
+                    return {name: 'groupsDisconnected'}
+                }
+                return {name: 'groupsConnected'}
+            },
+        },
+        {
+            component: StreamView,
+            name: 'groupsConnected',
+            path: '/groups/:groupId',
+        },
+        {
+            component: Login,
+            name: 'groupsDisconnected',
+            path: '/groups/:groupId/login',
         },
     ]
     

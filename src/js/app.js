@@ -32,12 +32,12 @@ class Pyrite {
         })
 
         this.router.beforeResolve((to, from, next) => {
-            // Group can only be changed when not connected to one already.
+            
             if (!this.state.connected) {
-                if (to.name === 'groups') {
+                // Navigating groups will change the internally used groupId;
+                // but only when not connected to a group already.
+                if (to.name === 'groupsDisconnected') {
                     this.state.group = to.params.groupId
-                } else if (to.name === 'settings') {
-                    this.state.group = null
                 }
             }
             next()

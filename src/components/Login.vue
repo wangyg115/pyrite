@@ -84,13 +84,14 @@ export default {
         }
     },
     methods: {
-        login() {
+        async login() {
             this.connecting = true
             try {
                 app.store.save()
-                app.connect()
+                await app.connect()
             } finally {
                 this.connecting = false
+                this.$router.replace({name: 'groupsConnected', params: {groupId: this.$router.currentRoute.value.params.groupId}})
             }
         },
     },

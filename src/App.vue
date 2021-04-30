@@ -2,9 +2,13 @@
     <div class="app-view theme theme-dark" :class="{connected: $s.connected, 'chat-active': $s.chat.active}">
         <div class="presence">
             <header>
-                <RouterLink class="logo" :to="{name: 'main'}">
+                <RouterLink v-if="!$s.connected" class="logo" :to="{name: 'main'}">
                     <Icon class="icon icon-small" name="Logo" />PYRITE
                 </RouterLink>
+                <div v-else class="logo no-back-link">
+                    <Icon class="icon icon-small" name="Logo" />PYRITE
+                </div>
+
                 <div class="version">
                     {{ version }}
                 </div>
@@ -49,8 +53,13 @@ export default {
 
     & .logo {
         align-items: center;
+        color: var(--primary-color);
         display: flex;
         justify-content: center;
+
+        &.no-back-link:hover {
+            cursor: not-allowed;
+        }
     }
 
     &.connected {

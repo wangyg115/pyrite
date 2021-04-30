@@ -6,10 +6,20 @@
         </div>
 
         <div class="propaganda">
-            Video Communication
+            {{ $t('Video Communication') }}
         </div>
     </div>
 </template>
+
+<script>
+export default {
+    mounted() {
+        if (!this.$s.connected) {
+            this.$s.group = null
+        }        
+    },
+}
+</script>
 
 <style lang="postcss">
 .c-splash {

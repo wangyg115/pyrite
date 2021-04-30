@@ -5,7 +5,7 @@
                 v-model="$s.group"
                 autocomplete="username"
                 class="custom-group"
-                :help="$t('custom input for unlisted groups')"
+                :help="$t('For unlisted groups')"
                 name="username"
                 placeholder="..."
                 @focus="updateRoute"
@@ -38,9 +38,11 @@ export default {
         },
         updateRoute() {
             if (this.$s.group) {
+                // Update the group route when the user sets the group name.
                 this.$router.replace({name: 'groups', params: {groupId: this.$s.group}})
             } else {
-                this.$router.replace({name: 'settings', params: {tabId: 'misc'}})
+                // By default show the splash page when emptying the group input.
+                this.$router.replace({name: 'splash'})
             }
         },
     },
@@ -52,8 +54,20 @@ export default {
         clearInterval(this.intervalId)
     },
     watch: {
-        '$s.group'() {
-            this.updateRoute()
+        /**
+         * Note that the behaviour is that filling the custom group 
+         * input does NOT trigger the 'groupsDisconnected' view automatically, 
+         * while using the listed groups selection does. This is intended 
+         * behaviour, in order to keep the history clean.
+         */
+        '$s.group': {
+            immediate: false,
+            handler() {
+                if (this.$router.currentRoute.value.name === 'groupsDisconnected') {
+                    app.logger.debug(`updating group route: ${this.$s.group}`)
+                    this.updateRoute()
+                }
+            },
         },
     },
 }

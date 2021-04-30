@@ -8,8 +8,10 @@
             >
                 <Icon class="icon-small" name="Settings" />
             </RouterLink>
+
             <RouterLink
                 v-if="$s.group" class="btn btn-menu tooltip"
+                :class="{active: ['groupsConnected', 'groupsDisconnected'].includes($route.name)}"
                 :data-tooltip="$t('current group')"
                 :to="{name: 'groups', params: {groupId: $s.group}}"
             >
@@ -18,6 +20,7 @@
             <button v-else class="btn btn-menu" disabled>
                 <Icon class="icon-small" name="Groups" />
             </button>
+
             <button
                 v-if="$s.connected"
                 class="btn btn-menu tooltip"
@@ -48,7 +51,9 @@ export default {
     components: {GeneralContext},
     methods: {
         disconnect() {
+            this.$s.group = ''
             app.disconnect()
+            this.$router.push({name: 'splash'})
         },
         toggleChatActive() {
             this.$s.chat.active = !this.$s.chat.active

@@ -1,15 +1,13 @@
 <template>
-    <div class="c-stream">
-        <div class="video-container">
-            <video
-                ref="media"
-                :autoplay="true"
-                class="media"
-                :class="{'media-failed': mediaFailed, mirror: modelValue.mirror, 'activity-detected': activityDetected}"
-                :muted="modelValue.isUp"
-                :playsinline="true"
-            />
-        </div>
+    <div ref="root" class="c-stream">
+        <video
+            ref="media"
+            :autoplay="true"
+            class="media"
+            :class="{'media-failed': mediaFailed, mirror: modelValue.mirror, 'activity-detected': activityDetected}"
+            :muted="modelValue.isUp"
+            :playsinline="true"
+        />
 
         <div v-if="controls" class="stream-bar">
             <div class="buttons">
@@ -250,7 +248,6 @@ export default {
                     this.$refs.media.play().catch(e => {
                         app.notify({level: 'error', message: e})
                     })
-
                 }
             }
         }
@@ -275,36 +272,29 @@ export default {
 
 <style lang="postcss">
 .c-stream {
+    background: var(--grey-500);
     display: flex;
     flex-direction: column;
     justify-items: center;
     position: relative;
 
-    & .video-container {
-        height: 0px;
-        padding-top: 75%;
-        position: relative;
+    & video {
+        border: 2px solid var(--grey-400);
+        object-fit: cover;
 
-        & video {
-            border: 2px solid var(--grey-400);
-            height: 100%;
-            left: 0;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            width: 100%;
-
-            &.activity-detected {
-                border: 2px solid var(--primary-color);
-            }
+        &.activity-detected {
+            border: 2px solid var(--primary-color);
         }
     }
 
     & .stream-bar {
         align-items: center;
-        background: var(--grey-300);
+        background: var(--grey-500);
         border-top: 1px solid var(--grey-300);
+        bottom: 0;
         display: flex;
+        position: absolute;
+        width: 100%;
 
         & .soundmeter {
             background: var(--grey-400);
