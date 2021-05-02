@@ -11,7 +11,11 @@
 
         <div v-if="controls" class="stream-bar">
             <div class="buttons">
-                <button class="btn btn-menu tooltip" :data-tooltip="$t('picture-in-picture')" @click="setPip">
+                <button
+                    v-if="pip.enabled" class="btn btn-menu tooltip"
+                    :data-tooltip="$t('picture-in-picture')"
+                    @click="setPip"
+                >
                     <Icon class="icon-mini" name="Pip" />
                 </button>
                 <button class="btn btn-menu tooltip" :data-tooltip="$t('fullscreen')" @click="setFullscreen">
@@ -74,7 +78,10 @@ export default {
             media: null,
             mediaFailed: false,
             muted: false,
-            pipActive: false,
+            pip: {
+                active: false,
+                enabled: false,
+            },
             state: app.state,
             stream: null,
         }
@@ -128,21 +135,25 @@ export default {
             this.$refs.media.requestFullscreen()
         },
         setPip() {
-            if (this.pipActive) {
+            if (this.pip.active) {
                 document.exitPictureInPicture()
             } else {
                 this.$refs.media.requestPictureInPicture()
             }
         },
-
         toggleMuteVolume() {
             this.muted = !this.muted
             this.$refs.media.muted = this.muted
         },
     },
     mounted() {
-        this.$refs.media.addEventListener('enterpictureinpicture', () => { this.pipActive = true })
-        this.$refs.media.addEventListener('leavepictureinpicture', () => { this.pipActive = false })
+        // Firefox doesn't support this API (yet).
+        if (this.$refs.media.requestPictureInPicture) {
+            this.pip.enabled = true
+
+            this.$refs.media.addEventListener('enterpictureinpicture', () => { this.pip.active = true })
+            this.$refs.media.addEventListener('leavepictureinpicture', () => { this.pip.active = false })
+        }
 
         this.muted = this.$refs.media.muted
 
