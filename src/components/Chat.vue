@@ -1,6 +1,6 @@
 <template>
     <div class="c-chat">
-        <div ref="messages" class="messages">
+        <div ref="messages" class="messages scroller">
             <div
                 v-for="message of sortedMessages" :key="message.message"
                 class="message"
@@ -163,7 +163,6 @@ export default {
     & .messages {
         background: var(--grey-500);
         border-left: var(--border) solid var(--grey-300);
-
         flex: 1;
         overflow-y: scroll;
         padding-top: calc(var(--spacer) * 2);

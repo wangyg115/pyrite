@@ -56,7 +56,7 @@ export default {
             const height = this.$refs.view.offsetHeight - (margin * 2)
 
             let max = 0
-        
+
             // loop (i recommend you optimize this)
             let i = 1
             while (i < 5000) {

@@ -7,7 +7,6 @@
     <input
         :class="{ locked: modelValue.locked }"
         :disabled="modelValue.locked"
-        orient="vertical"
         step="1"
         type="range"
         :value="modelValue.value"
@@ -72,9 +71,29 @@ input[type="range"] {
     appearance: none;
     background: var(--grey-500);
     border: 1px solid var(--grey-300);
+    height: var(--spacer);
     overflow: hidden;
     transform: rotate(-90deg);
-    width: var(--space-4);
+    width: 100%;
+
+    &::-moz-range-track {
+        overflow: hidden;
+        width: 2px !important;
+
+        &:hover {
+            cursor: ew-resize;
+        }
+    }
+
+    &::-moz-range-thumb {
+        background: var(--grey-200);
+        border: 0;
+        border-radius: 0;
+        box-shadow: -80px 0 0 80px var(--primary-color);
+        display: none;
+        height: 100%;
+        width: var(--space-1);
+    }
 
     &::-webkit-slider-runnable-track {
         appearance: none;
@@ -84,7 +103,7 @@ input[type="range"] {
 
     &::-webkit-slider-thumb {
         appearance: none;
-        background: var(--grey-500);
+        background: var(--grey-200);
         box-shadow: -80px 0 0 80px var(--primary-color);
         cursor: ew-resize;
         height: var(--spacer);
