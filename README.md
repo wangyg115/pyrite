@@ -2,14 +2,10 @@
 
 ![Pyrite build passing](https://github.com/garage44/pyrite/actions/workflows/test.yml/badge.svg)
 
-Pyrite is a video conferencing PWA for the [Galène](https://github.com/jech/galene)
-Video Conferencing server. Pyrite's purpose is to develop an extendable reactive,
-component-based (Vue3) frontend that has the same rich feature-set as the
-original frontend, while extending it with features like i18n, customizable theming,
-PWA modus, advanced device config, context-aware UX controls and more. You're free t
-o try out the public [Pyrite server](https://pyrite.video) to get
-an idea of what Pyrite & Galène can do. New features are first tested on the
-[beta channel](https://beta.pyrite.video).
+Pyrite is a video conferencing PWA for the [Galène](https://github.com/jech/galene) SFU. Pyrite's purpose is to establish an extendable 
+component-based (Vue 3) frontend for Galène, with additional features like 
+i18n, customizable theming, PWA modus, context-aware UX controls, an admin 
+interface and more. You're free to try out the public [Pyrite server](https://pyrite.video) to get an idea about Pyrite. The *develop* branch is continuously deployed on the [beta server](https://beta.pyrite.video).
 
 ## Getting started
 
