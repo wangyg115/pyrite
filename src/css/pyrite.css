@@ -27,7 +27,7 @@
 }
 
 ::-webkit-scrollbar {
-    width: 6px; /** Approximately the same as 'thin' on Firefox */
+    width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -37,10 +37,6 @@
     background: var(--primary-color);
 }
 
-/**
- * Only Firefox scrollbars can be customized with this class.
- * Blink-browsers use the ::-webkit prefix above.
- */
 .scroller {
     scrollbar-color: var(--primary-color) transparent;
     scrollbar-width: thin;
@@ -100,4 +96,3 @@ button {
     background: var(--primary-color);
     color: var(--grey-0);
 }
-
