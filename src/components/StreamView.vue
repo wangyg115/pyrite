@@ -2,7 +2,7 @@
     <div ref="view" class="c-stream-view">
         <Stream
             v-for="(description, index) in $s.streams" :key="description.id"
-            :ref="el => { if (el) streamsRef[index] = el }"
+            :ref="el => { if (el) { streamsRef[index] = el } else {streamsRef.splice(index, 1)}}"
             v-model="$s.streams[index]"
         />
         <Icon v-if="!$s.streams.length" class="icon logo-animated" name="Logo" />
@@ -29,6 +29,9 @@ export default {
         this.resizeObserver.observe(this.$refs.view)
     },
     methods: {
+        /**
+         * Thanks to https://alicunde.github.io/Videoconference-Dish-CSS-JS/
+         */
         area(increment, streamCount, width, height, margin = 8) {
             let i = 0
             let w = 0
@@ -98,7 +101,7 @@ export default {
 
 @keyframes show {
 
-    0% {
+    0%{
         opacity: 0;
         transform: scale(0.4) translateY(20px);
     }
