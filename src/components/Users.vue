@@ -25,7 +25,7 @@
                     <Icon v-if="$s.permissions.op" class="icon icon-mini" name="Operator" />
                 </span>
             </div>
-            <UserContext />
+            <UserContext :user="user" />
         </div>
     </section>
 </template>

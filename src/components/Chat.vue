@@ -1,5 +1,13 @@
 <template>
     <div class="c-chat">
+        <div class="user-tabs">
+            <div v-for="(tab, key) in $s.chat.tabs" :key="key" class="user-tab">
+                {{ tab.name }} 
+                <button class="btn" @click="closeUserChat(tab)">
+                    <Icon class="icon icon-tiny" name="Close" />
+                </button>
+            </div>
+        </div>
         <div ref="messages" class="messages scroller">
             <div
                 v-for="message of sortedMessages" :key="message.message"
@@ -60,6 +68,9 @@ export default {
         clearChat() {
             app.logger.debug('clearing chat from remote')
             this.$s.messages = []
+        },
+        closeUserChat(tab) {
+            delete this.$s.chat.tabs[tab.id]
         },
         formatMessage(message) {
             return message.split('\n')
@@ -159,6 +170,17 @@ export default {
     overflow: auto;
     resize: horizontal;
     width: 350px;
+
+    & .user-tabs {
+        display: flex;
+        padding: var(--spacer);
+        width: 100%;
+
+        & .user-tab {
+            background: var(--grey-300);
+            padding: var(--spacer);
+        }
+    }
 
     & .messages {
         background: var(--grey-500);

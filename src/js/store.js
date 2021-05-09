@@ -4,9 +4,6 @@ const persistantState = reactive({
     activityDetection: true,
     audio: {id: null, name: ''},
     blackboardMode: false,
-    chat: {
-        active: true,
-    },
     group: null,
     language: {id: 'en'},
     loading: true,
@@ -26,6 +23,10 @@ const persistantState = reactive({
  * State is always overwritten by these properties.
  */
 const volatileState = {
+    chat: {
+        active: true,
+        tabs: {},
+    },
     connected: false,
     devices: {
         audio: [],

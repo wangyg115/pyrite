@@ -11,7 +11,7 @@
 
 <script>
 import IconChat from './IconChat.vue'
-import IconChatClose from './IconChatClose.vue'
+import IconClose from './IconClose.vue'
 import IconError from './IconError.vue'
 import IconEye from './IconEye.vue'
 import IconFullscreen from './IconFullscreen.vue'
@@ -44,7 +44,7 @@ import IconWebcam from './IconWebcam.vue'
 export default {
     components: {
         IconChat,
-        IconChatClose,
+        IconClose,
         IconError,
         IconEye,
         IconFullscreen,

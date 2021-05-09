@@ -24,10 +24,11 @@
             <button
                 v-if="$s.connected"
                 class="btn btn-menu tooltip"
+                :class="{ active: $s.chat.active }"
                 :data-tooltip="$s.chat.active ? $t('hide chat') : $t('show chat')"
                 @click="toggleChatActive"
             >
-                <Icon class="icon-small" :name="$s.chat.active ? 'ChatClose' : 'Chat'" />
+                <Icon class="icon-small" name="Chat" />
             </button>
             <button v-if="$s.connected" class="btn btn-menu no-feedback">
                 <GeneralContext />
