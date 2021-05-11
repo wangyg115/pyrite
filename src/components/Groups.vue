@@ -3,10 +3,9 @@
         <div class="group item">
             <FieldText
                 v-model="$s.group"
-                autocomplete="username"
                 class="custom-group"
                 :help="$t('For unlisted groups')"
-                name="username"
+                name="group"
                 placeholder="..."
                 @focus="updateRoute"
             />
@@ -14,7 +13,7 @@
 
         <div v-for="group of groups" :key="group.name" class="group item">
             <Icon class="item-icon icon-small" name="Groups" />
-            <RouterLink class="name" :to="{name: 'groups', params: {groupId: group.name}}">
+            <RouterLink class="name" :class="{active: $s.group === group.name}" :to="{name: 'groups', params: {groupId: group.name}}">
                 {{ group.name }}
             </RouterLink>
             <div class="count">
@@ -55,9 +54,9 @@ export default {
     },
     watch: {
         /**
-         * Note that the behaviour is that filling the custom group 
-         * input does NOT trigger the 'groupsDisconnected' view automatically, 
-         * while using the listed groups selection does. This is intended 
+         * Note that the behaviour is that filling the custom group
+         * input does NOT trigger the 'groupsDisconnected' view automatically,
+         * while using the listed groups selection does. This is intended
          * behaviour, in order to keep the history clean.
          */
         '$s.group': {
