@@ -14,9 +14,9 @@
 <script>
 export default {
     mounted() {
-        if (!this.$s.connected) {
-            this.$s.group = null
-        }        
+        if (!this.$s.group.connected) {
+            this.$s.group.name = ''
+        }
     },
 }
 </script>

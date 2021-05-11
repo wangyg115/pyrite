@@ -40,7 +40,7 @@ export default {
             app.changePresentation()
         },
         changeVideoSelect() {
-            if (this.$s.connected) {
+            if (this.$s.group.connected) {
                 app.changePresentation()
             }
         },

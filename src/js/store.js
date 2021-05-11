@@ -4,7 +4,6 @@ const persistantState = reactive({
     activityDetection: true,
     audio: {id: null, name: ''},
     blackboardMode: false,
-    group: null,
     language: {id: 'en'},
     loading: true,
     localMute: false,
@@ -30,10 +29,13 @@ const volatileState = {
         active: true,
         tabs: {},
     },
-    connected: false,
     devices: {
         audio: [],
         video: [],
+    },
+    group: {
+        connected: false,
+        name: '',
     },
     mediaReady: false,
     messages: [],

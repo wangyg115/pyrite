@@ -40,7 +40,7 @@ import Stream from '../Stream.vue'
 
 export default {
     beforeUnmount() {
-        if (!this.$s.connected) {
+        if (!this.$s.group.connected) {
             app.delLocalMedia()
         }
     },

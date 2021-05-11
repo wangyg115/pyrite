@@ -15,8 +15,8 @@ export default function(app) {
             name: 'main',
             path: '/',
             redirect: () => {
-                if (app.$s.connected) {
-                    return {name: 'groups', params: {groupId: app.$s.group}}
+                if (app.$s.group.connected) {
+                    return {name: 'groups', params: {groupId: app.$s.group.name}}
                 } else {
                     return {name: 'splash'}
                 }
@@ -32,7 +32,7 @@ export default function(app) {
             name: 'groups',
             path: '/groups/:groupId',
             redirect: () => {
-                if (!app.$s.connected) {
+                if (!app.$s.group.connected) {
                     return {name: 'groupsDisconnected'}
                 }
                 return {name: 'groupsConnected'}

@@ -10,10 +10,10 @@
             </RouterLink>
 
             <RouterLink
-                v-if="$s.group" class="btn btn-menu tooltip"
+                v-if="$s.group.name" class="btn btn-menu tooltip"
                 :class="{active: ['groupsConnected', 'groupsDisconnected'].includes($route.name)}"
                 :data-tooltip="$t('current group')"
-                :to="{name: 'groups', params: {groupId: $s.group}}"
+                :to="{name: 'groups', params: {groupId: $s.group.name}}"
             >
                 <Icon class="icon-small" name="Groups" />
             </RouterLink>
@@ -22,7 +22,7 @@
             </button>
 
             <button
-                v-if="$s.connected"
+                v-if="$s.group.connected"
                 class="btn btn-menu tooltip"
                 :class="{ active: $s.chat.active }"
                 :data-tooltip="$s.chat.active ? $t('hide chat') : $t('show chat')"
@@ -30,11 +30,11 @@
             >
                 <Icon class="icon-small" name="Chat" />
             </button>
-            <button v-if="$s.connected" class="btn btn-menu no-feedback">
+            <button v-if="$s.group.connected" class="btn btn-menu no-feedback">
                 <GeneralContext />
             </button>
             <button
-                v-if="$s.connected"
+                v-if="$s.group.connected"
                 class="btn btn-menu btn-logout warning tooltip"
                 :data-tooltip="$t('leave group')"
                 @click="disconnect"
@@ -52,7 +52,7 @@ export default {
     components: {GeneralContext},
     methods: {
         disconnect() {
-            this.$s.group = ''
+            this.$s.group.name = ''
             app.disconnect()
             this.$router.push({name: 'splash'})
         },

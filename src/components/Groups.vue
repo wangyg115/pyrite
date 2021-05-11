@@ -2,7 +2,7 @@
     <section class="c-groups">
         <div class="group item">
             <FieldText
-                v-model="$s.group"
+                v-model="$s.group.name"
                 class="custom-group"
                 :help="$t('For unlisted groups')"
                 name="group"
@@ -13,7 +13,7 @@
 
         <div v-for="group of groups" :key="group.name" class="group item">
             <Icon class="item-icon icon-small" name="Groups" />
-            <RouterLink class="name" :class="{active: $s.group === group.name}" :to="{name: 'groups', params: {groupId: group.name}}">
+            <RouterLink class="name" :class="{active: $s.group.name === group.name}" :to="{name: 'groups', params: {groupId: group.name}}">
                 {{ group.name }}
             </RouterLink>
             <div class="count">
@@ -36,9 +36,9 @@ export default {
             this.groups = await (await fetch('/public-groups.json')).json()
         },
         updateRoute() {
-            if (this.$s.group) {
+            if (this.$s.group.name) {
                 // Update the group route when the user sets the group name.
-                this.$router.replace({name: 'groups', params: {groupId: this.$s.group}})
+                this.$router.replace({name: 'groups', params: {groupId: this.$s.group.name}})
             } else {
                 // By default show the splash page when emptying the group input.
                 this.$router.replace({name: 'splash'})
@@ -59,11 +59,11 @@ export default {
          * while using the listed groups selection does. This is intended
          * behaviour, in order to keep the history clean.
          */
-        '$s.group': {
+        '$s.group.name': {
             immediate: false,
             handler() {
                 if (this.$router.currentRoute.value.name === 'groupsDisconnected') {
-                    app.logger.debug(`updating group route: ${this.$s.group}`)
+                    app.logger.debug(`updating group route: ${this.$s.group.name}`)
                     this.updateRoute()
                 }
             },

@@ -33,11 +33,11 @@ class Pyrite {
 
         this.router.beforeResolve((to, from, next) => {
 
-            if (!this.$s.connected) {
+            if (!this.$s.group.connected) {
                 // Navigating groups will change the internally used groupId;
                 // but only when not connected to a group already.
                 if (to.name === 'groupsDisconnected') {
-                    this.$s.group = to.params.groupId
+                    this.$s.group.name = to.params.groupId
                 }
             }
             next()
@@ -66,7 +66,7 @@ class Pyrite {
     }
 
     async addLocalMedia() {
-        if (!this.$s.connected && this.localStream) {
+        if (!this.$s.group.connected && this.localStream) {
             this.delLocalMedia()
         }
 
@@ -103,7 +103,7 @@ class Pyrite {
         }
 
         // Connected to Galene; handle peer connection logic.
-        if (this.$s.connected) {
+        if (this.$s.group.connected) {
             let localStreamId = this.findUpMedia('local')
             let oldStream = localStreamId && this.connection.up[localStreamId]
 
@@ -368,7 +368,7 @@ class Pyrite {
     }
 
     onClose(code, reason) {
-        this.$s.connected = false
+        this.$s.group.connected = false
         this.delUpMediaKind(null)
         this.notify({level: 'error', message: 'Disconnected'})
 
@@ -382,7 +382,7 @@ class Pyrite {
         const groupName = this.router.currentRoute.value.params.groupId
         this.logger.info(`joining group: ${groupName}`)
         this.connection.join(groupName, this.$s.user.name, this.$s.password)
-        this.$s.connected = true
+        this.$s.group.connected = true
     }
 
     onDownStream(c) {
