@@ -12,7 +12,7 @@
  */
 
 function findUserId(username) {
-    for(const user of app.state.users) {
+    for(const user of app.$s.users) {
         if(user.name === username) {
             return user.id
         }
@@ -69,7 +69,7 @@ commands.help = {
         let s = ''
         for(let i = 0; i < cs.length; i++)
             s = s + cs[i] + '\n'
-        app.state.messages.push({
+        app.$s.messages.push({
             dest: null,
             kind: null,
             message: s,

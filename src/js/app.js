@@ -20,10 +20,10 @@ class Pyrite {
 
         this.logger.debug('loading store')
         this.store = new Store()
-        this.state = this.store.load()
+        this.$s = this.store.load()
 
         this.i18n = createI18n({
-            locale: this.state.language.id,
+            locale: this.$s.language.id,
             messages: {
                 nl: localeNL,
             },
@@ -32,12 +32,12 @@ class Pyrite {
         })
 
         this.router.beforeResolve((to, from, next) => {
-            
-            if (!this.state.connected) {
+
+            if (!this.$s.connected) {
                 // Navigating groups will change the internally used groupId;
                 // but only when not connected to a group already.
                 if (to.name === 'groupsDisconnected') {
-                    this.state.group = to.params.groupId
+                    this.$s.group = to.params.groupId
                 }
             }
             next()
@@ -49,7 +49,7 @@ class Pyrite {
         const glnStream = this.connection.newUpStream()
         glnStream.kind = 'video'
 
-        this.state.streams.push({
+        this.$s.streams.push({
             id: glnStream.id,
             isUp: true,
             kind: glnStream.kind,
@@ -60,23 +60,23 @@ class Pyrite {
                 value: 100,
             },
         })
-        this.state.upMedia[glnStream.kind].push(glnStream.id)
+        this.$s.upMedia[glnStream.kind].push(glnStream.id)
         glnStream.userdata.play = true
         return glnStream
     }
 
     async addLocalMedia() {
-        if (!this.state.connected && this.localStream) {
+        if (!this.$s.connected && this.localStream) {
             this.delLocalMedia()
         }
 
         await this.setMediaChoices()
 
-        const selecteAudioDevice = this.state.audio.id !== null && ['both', 'mike'].includes(this.state.present) ? {deviceId: this.state.audio.id} : false
-        const selectedVideoDevice = this.state.video.id !== null && this.state.present === 'both' ? {deviceId: this.state.video.id} : false
+        const selecteAudioDevice = this.$s.audio.id !== null && ['both', 'mike'].includes(this.$s.present) ? {deviceId: this.$s.audio.id} : false
+        const selectedVideoDevice = this.$s.video.id !== null && this.$s.present === 'both' ? {deviceId: this.$s.video.id} : false
 
         // Verify whether the local mediastream is using the right devices.
-        this.logger.debug(`addLocalMedia ${this.state.audio.name} / ${this.state.video.name}`)
+        this.logger.debug(`addLocalMedia ${this.$s.audio.name} / ${this.$s.video.name}`)
 
         const constraints = {
             audio: selecteAudioDevice,
@@ -84,11 +84,11 @@ class Pyrite {
         }
 
         if(selectedVideoDevice) {
-            let resolution = this.state.resolution
+            let resolution = this.$s.resolution
             if(resolution) {
                 selectedVideoDevice.width = {ideal: resolution[0]}
                 selectedVideoDevice.height = {ideal: resolution[1]}
-            } else if(this.state.blackboardMode) {
+            } else if(this.$s.blackboardMode) {
                 selectedVideoDevice.width = {ideal: 1920, min: 640}
                 selectedVideoDevice.height = {ideal: 1080, min: 400}
             }
@@ -96,14 +96,14 @@ class Pyrite {
 
         try {
             this.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-            this.state.mediaReady = true
+            this.$s.mediaReady = true
         } catch(e) {
             this.notify({level: 'error', message: e})
             return
         }
 
         // Connected to Galene; handle peer connection logic.
-        if (this.state.connected) {
+        if (this.$s.connected) {
             let localStreamId = this.findUpMedia('local')
             let oldStream = localStreamId && this.connection.up[localStreamId]
 
@@ -123,17 +123,17 @@ class Pyrite {
             const glnStream = this.newUpStream(localStreamId)
             glnStream.kind = 'local'
             glnStream.stream = this.localStream
-            this.state.upMedia[glnStream.kind].push(glnStream.id)
+            this.$s.upMedia[glnStream.kind].push(glnStream.id)
 
             this.localStream.getTracks().forEach(t => {
                 glnStream.labels[t.id] = t.kind
                 if(t.kind == 'audio') {
-                    if(this.state.localMute) {
+                    if(this.$s.localMute) {
                         this.logger.info('muting local stream')
                         t.enabled = false
                     }
                 } else if(t.kind == 'video') {
-                    if(this.state.blackboardMode) {
+                    if(this.$s.blackboardMode) {
                         /** @ts-ignore */
                         t.contentHint = 'detail'
                     }
@@ -158,7 +158,7 @@ class Pyrite {
 
         const glnStream = this.newUpStream()
         glnStream.kind = 'screenshare'
-        this.state.upMedia[glnStream.kind].push(glnStream.id)
+        this.$s.upMedia[glnStream.kind].push(glnStream.id)
 
         glnStream.stream = stream
         stream.getTracks().forEach(t => {
@@ -214,7 +214,7 @@ class Pyrite {
                 break
             case 'clearchat':
                 if(privileged) {
-                    this.state.messages = []
+                    this.$s.messages = []
                 }
                 break
             default:
@@ -249,7 +249,7 @@ class Pyrite {
 
     delMedia(id) {
         this.logger.debug(`[delMedia] remove stream ${id} from state`)
-        this.state.streams.splice(this.state.streams.findIndex(i => i.id === id), 1)
+        this.$s.streams.splice(this.$s.streams.findIndex(i => i.id === id), 1)
     }
 
     delUpMedia(c) {
@@ -271,13 +271,13 @@ class Pyrite {
             this.delMedia(id)
             delete(this.connection.up[id])
             this.logger.debug(`remove up media stream: ${id}`)
-            this.state.upMedia[kind].splice(this.state.upMedia[kind].indexOf(id), 1)
+            this.$s.upMedia[kind].splice(this.$s.upMedia[kind].indexOf(id), 1)
         }
     }
 
     disconnect() {
-        this.state.users = []
-        this.state.streams = []
+        this.$s.users = []
+        this.$s.streams = []
         this.connection.close()
         this.delLocalMedia()
     }
@@ -291,7 +291,7 @@ class Pyrite {
     }
 
     getMaxVideoThroughput() {
-        switch(this.state.send.id) {
+        switch(this.$s.send.id) {
         case 'lowest':
             return 150000
         case 'low':
@@ -307,7 +307,7 @@ class Pyrite {
 
     muteLocalTracks(mute) {
         this.logger.info(`mute local tracks: ${mute}`)
-        this.state.muted = mute
+        this.$s.muted = mute
         for(let id in this.connection.up) {
             const glnStream = this.connection.up[id]
             if(glnStream.kind === 'local') {
@@ -324,7 +324,7 @@ class Pyrite {
     newUpStream(_id) {
         const glnStream = this.connection.newUpStream(_id)
 
-        this.state.streams.push({
+        this.$s.streams.push({
             id: glnStream.id,
             isUp: true,
             kind: glnStream.kind,
@@ -359,16 +359,16 @@ class Pyrite {
             notification.timeout = 3000
         }
 
-        this.state.notifications.push(notification)
+        this.$s.notifications.push(notification)
         setTimeout(() => {
-            this.state.notifications.splice(this.state.notifications.findIndex(i => i.id === notification.id), 1)
+            this.$s.notifications.splice(this.$s.notifications.findIndex(i => i.id === notification.id), 1)
         }, notification.timeout)
 
         this.notificationId += 1
     }
 
     onClose(code, reason) {
-        this.state.connected = false
+        this.$s.connected = false
         this.delUpMediaKind(null)
         this.notify({level: 'error', message: 'Disconnected'})
 
@@ -378,10 +378,11 @@ class Pyrite {
     }
 
     onConnected() {
+        this.$s.user.id = this.connection.id
         const groupName = this.router.currentRoute.value.params.groupId
         this.logger.info(`joining group: ${groupName}`)
-        this.connection.join(groupName, this.state.username, this.state.password)
-        this.state.connected = true
+        this.connection.join(groupName, this.$s.user.name, this.$s.password)
+        this.$s.connected = true
     }
 
     onDownStream(c) {
@@ -399,7 +400,7 @@ class Pyrite {
             this.notify({level: 'error', message})
         }
 
-        this.state.streams.push({
+        this.$s.streams.push({
             id: c.id,
             isUp: false,
             kind: c.kind,
@@ -412,7 +413,7 @@ class Pyrite {
     }
 
     async onJoined(kind, group, perms, message) {
-        this.state.permissions = perms
+        this.$s.permissions = perms
         this.logger.info(`joined group ${group}`)
         this.logger.debug(`permissions: ${JSON.stringify(perms)}`)
 
@@ -439,18 +440,18 @@ class Pyrite {
             return
         }
 
-        this.connection.request(this.state.request.id)
+        this.connection.request(this.$s.request.id)
 
         if(this.connection.permissions.present && !this.findUpMedia('local')) {
-            if (!this.state.present) {
+            if (!this.$s.present) {
                 this.notify({level: 'info', message: 'Press Ready to enable your camera or microphone'})
                 return
             }
 
-            if(this.state.present === 'mike') {
-                this.state.video.id = null
+            if(this.$s.present === 'mike') {
+                this.$s.video.id = null
                 this.store.save()
-            } else if(this.state.present === 'both') {
+            } else if(this.$s.present === 'both') {
                 // TODO: Needs action?
 
             }
@@ -463,10 +464,10 @@ class Pyrite {
     onUser(id, kind, name) {
         switch(kind) {
         case 'add':
-            this.state.users.push({id, name})
+            this.$s.users.push({id, name})
             break
         case 'delete':
-            this.state.users.splice(this.state.users.findIndex((u) => u.id === id), 1)
+            this.$s.users.splice(this.$s.users.findIndex((u) => u.id === id), 1)
             break
         default:
             break
@@ -499,40 +500,40 @@ class Pyrite {
 
         let cn = 1, mn = 1
 
-        this.state.devices.audio = []
-        this.state.devices.video = []
+        this.$s.devices.audio = []
+        this.$s.devices.video = []
 
         devices.forEach(d => {
             let label = d.label
 
             if(d.kind === 'videoinput') {
                 if(!label) label = `Camera ${cn}`
-                this.state.devices.video.push({id: d.deviceId, name: label})
+                this.$s.devices.video.push({id: d.deviceId, name: label})
                 cn++
             } else if(d.kind === 'audioinput') {
                 if(!label) label = `Microphone ${mn}`
-                this.state.devices.audio.push({id: d.deviceId, name: label})
+                this.$s.devices.audio.push({id: d.deviceId, name: label})
                 mn++
             }
         })
 
         // Set default audio/video options when none is set.
-        if (this.state.audio.id === null && this.state.devices.audio.length) {
-            this.state.audio =this.state.devices.audio[0]
+        if (this.$s.audio.id === null && this.$s.devices.audio.length) {
+            this.$s.audio =this.$s.devices.audio[0]
         }
 
-        if (this.state.video.id === null && this.state.devices.video.length) {
-            this.state.video = this.state.devices.video[0]
+        if (this.$s.video.id === null && this.$s.devices.video.length) {
+            this.$s.video = this.$s.devices.video[0]
         }
 
-        this.logger.info(`setMediaChoices: video(${this.state.devices.video.length}) audio(${this.state.devices.audio.length})`)
+        this.logger.info(`setMediaChoices: video(${this.$s.devices.video.length}) audio(${this.$s.devices.audio.length})`)
     }
 
     stopUpMedia(c) {
         this.logger.debug(`stopping up-stream ${c.id}`)
         c.stream.getTracks().forEach(t => t.stop())
 
-        this.state.upMedia[c.kind].splice(this.state.upMedia[c.kind].indexOf(c.id), 1)
+        this.$s.upMedia[c.kind].splice(this.$s.upMedia[c.kind].indexOf(c.id), 1)
     }
 }
 

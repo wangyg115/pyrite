@@ -9,10 +9,11 @@ import FieldText from './components/ui/fields/FieldText.vue'
 import Icon from './components/ui/icons/Icon.vue'
 import Pyrite from './js/app.js'
 
+// Keep a global namespace around for debugging.
 const app = globalThis.app = new Pyrite()
 
 app.vm = createApp(App)
-app.vm.config.globalProperties.$s = app.state
+app.vm.config.globalProperties.$s = app.$s
 
 app.vm.component('Icon', Icon)
 app.vm.component('FieldCheckbox', FieldCheckbox)

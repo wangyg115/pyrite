@@ -6,7 +6,7 @@
         <section>
             <form>
                 <FieldText
-                    v-model="$s.username"
+                    v-model="$s.user.name"
                     autocomplete="username"
                     :label="$t('Username')"
                     name="username"
@@ -14,8 +14,8 @@
                 />
 
                 <FieldText
-                    v-model="$s.password"
-                    autocomplete="current-password"
+                    v-model="$s.user.password"
+                    autocomplete="password"
                     :label="$t('Password')"
                     name="pasword"
                     placeholder="Alice, Bob, Carol..."
@@ -102,8 +102,8 @@ export default {
 .present-switch {
     margin: var(--space-1) 0;
 
-    & input {        
-        display: none; 
+    & input {
+        display: none;
 
         & + label {
             margin-right: var(--space-1);
@@ -127,7 +127,7 @@ export default {
 
     & .icon {
         border-bottom: 2px solid transparent;
-        
+
     }
 
     & input:checked + label {

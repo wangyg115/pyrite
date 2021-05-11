@@ -2,7 +2,7 @@
     <div class="c-chat">
         <div class="user-tabs">
             <div v-for="(tab, key) in $s.chat.tabs" :key="key" class="user-tab">
-                {{ tab.name }} 
+                {{ tab.name }}
                 <button class="btn" @click="closeUserChat(tab)">
                     <Icon class="icon icon-tiny" name="Close" />
                 </button>

@@ -13,13 +13,13 @@ export default function(app) {
         },
         {
             name: 'main',
-            path: '/', 
+            path: '/',
             redirect: () => {
-                if (app.state.connected) {
-                    return {name: 'groups', params: {groupId: app.state.group}}
+                if (app.$s.connected) {
+                    return {name: 'groups', params: {groupId: app.$s.group}}
                 } else {
                     return {name: 'splash'}
-                }                
+                }
             },
         },
         {
@@ -27,12 +27,12 @@ export default function(app) {
             name: 'splash',
             path: '/',
         },
-        
+
         {
             name: 'groups',
             path: '/groups/:groupId',
             redirect: () => {
-                if (!app.state.connected) {
+                if (!app.$s.connected) {
                     return {name: 'groupsDisconnected'}
                 }
                 return {name: 'groupsConnected'}
@@ -49,7 +49,7 @@ export default function(app) {
             path: '/groups/:groupId/login',
         },
     ]
-    
+
     return createRouter({
         history: createWebHistory(),
         linkActiveClass: 'active',

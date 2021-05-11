@@ -8,14 +8,17 @@ const persistantState = reactive({
     language: {id: 'en'},
     loading: true,
     localMute: false,
-    password: '',
     permissions: {},
     present: '', // '', mike or 'both'
     request: {id: 'everything', name: 'Everything'},
     resolution: null,
     send: {id: 'normal', name: 'Normal'},
     title: '',
-    username: '',
+    user: {
+        id: null,
+        name: '',
+        password: '',
+    },
     video: {id: null, name: ''},
 })
 
