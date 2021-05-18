@@ -8,6 +8,15 @@
     text-transform: uppercase;
     transition: all ease 0.5s;
 
+    &.btn-icon {
+        padding: 0;
+
+        &:hover {
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+    }
+
     &.btn-menu {
         border-bottom: var(--border) solid transparent;
         border-top: var(--border) solid transparent;

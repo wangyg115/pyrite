@@ -214,7 +214,7 @@ class Pyrite {
                 break
             case 'clearchat':
                 if(privileged) {
-                    this.$s.messages = []
+                    this.$s.chat.channels.main.messages = []
                 }
                 break
             default:
@@ -381,7 +381,7 @@ class Pyrite {
         this.$s.user.id = this.connection.id
         const groupName = this.router.currentRoute.value.params.groupId
         this.logger.info(`joining group: ${groupName}`)
-        this.connection.join(groupName, this.$s.user.name, this.$s.password)
+        this.connection.join(groupName, this.$s.user.name, this.$s.user.password)
         this.$s.group.connected = true
     }
 

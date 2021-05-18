@@ -69,7 +69,7 @@ commands.help = {
         let s = ''
         for(let i = 0; i < cs.length; i++)
             s = s + cs[i] + '\n'
-        app.$s.messages.push({
+        app.$s.chat.channels.main.messages.push({
             dest: null,
             kind: null,
             message: s,

@@ -27,7 +27,14 @@ const persistantState = reactive({
 const volatileState = {
     chat: {
         active: true,
-        tabs: {},
+        channel: 'main',
+        channels: {
+            main: {
+                id: 'main',
+                messages: [],
+                name: 'General',
+            },
+        },
     },
     devices: {
         audio: [],
@@ -38,7 +45,7 @@ const volatileState = {
         name: '',
     },
     mediaReady: false,
-    messages: [],
+
     muted: false,
     notifications: [],
     permissions: {

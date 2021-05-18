@@ -1,9 +1,14 @@
 <template>
     <div class="c-chat">
-        <div class="user-tabs">
-            <div v-for="(tab, key) in $s.chat.tabs" :key="key" class="user-tab">
-                {{ tab.name }}
-                <button class="btn" @click="closeUserChat(tab)">
+        <div class="chat-channels">
+            <div
+                v-for="(channel, key) in $s.chat.channels"
+                :key="key" class="chat-channel"
+                :class="{active: channel.id === $s.chat.channel}"
+                @click.self="selectChannel(channel)"
+            >
+                {{ channel.name }}
+                <button v-if="channel.id !== 'main'" class="btn btn-icon btn-close" @click="closeChannel(channel)">
                     <Icon class="icon icon-tiny" name="Close" />
                 </button>
             </div>
@@ -55,7 +60,7 @@ import {nextTick} from 'vue'
 export default {
     computed: {
         sortedMessages() {
-            const messages = this.$s.messages
+            const messages = this.$s.chat.channels[this.$s.chat.channel].messages
             return messages.sort((a, b) => a.time - b.time)
         },
     },
@@ -67,10 +72,12 @@ export default {
     methods: {
         clearChat() {
             app.logger.debug('clearing chat from remote')
-            this.$s.messages = []
+            this.$s.chat.channels.main.messages = []
         },
-        closeUserChat(tab) {
-            delete this.$s.chat.tabs[tab.id]
+        async closeChannel(channel) {
+            // Return to the main channel when closing a direct user channel.
+            this.$s.chat.channel = 'main'
+            delete this.$s.chat.channels[channel.id]
         },
         formatMessage(message) {
             return message.split('\n')
@@ -79,11 +86,37 @@ export default {
             const date = new Date(ts)
             return date.toLocaleTimeString()
         },
-        onChat(peerId, dest, nick, time, privileged, kind, message) {
-            this.$s.messages.push({dest, kind, message, nick, peerId, privileged, time})
+        onChat(sourceId, destinationId, nick, time, privileged, kind, message) {
+            // Main channel
+            if (!destinationId) {
+                // Locally replayed message; ignore.
+                if (sourceId === this.$s.user.id) return
+
+                this.$s.chat.channels.main.messages.push({kind, message, nick, privileged, time})
+                return
+            }
+            // This is a private message
+            if (destinationId && sourceId) {
+                const activeUser = this.$s.users.find((user) => user.id === sourceId)
+                if (activeUser) {
+                    if (!this.$s.chat.channels[sourceId]) {
+                        this.$s.chat.channels[sourceId] = {id: sourceId, messages: [], name: nick}
+                    }
+
+                    this.$s.chat.channels[sourceId].messages.push({kind, message, nick, privileged, time})
+                }
+            } else {
+                // This is a main channel message
+                this.$s.chat.channels.main.messages.push({kind, message, nick, privileged, time})
+                // Edge case: outdated private message doesn't have destinationId
+            }
+
             nextTick(() => {
                 this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
             })
+        },
+        selectChannel(channel) {
+            this.$s.chat.channel = channel.id
         },
         sendMessage(e) {
             this.rawMessage = this.rawMessage.trim()
@@ -151,7 +184,22 @@ export default {
                 me = false
             }
 
-            app.connection.chat(me ? 'me' : '', '', message)
+            // Sending to the main channel uses an empty string;
+            // a direct message uses the user (connection) id.
+            if (this.$s.chat.channel === 'main') {
+                app.connection.chat(me ? 'me' : '', '', message)
+            } else {
+                // A direct message is not replayed locally through
+                // onChat, so we need to add the message ourselves.
+                app.connection.chat(me ? 'me' : '', this.$s.chat.channel, message)
+            }
+
+            this.$s.chat.channels[this.$s.chat.channel].messages.push({
+                message,
+                nick: this.$s.user.name,
+                time: new Date().getTime,
+            })
+
             this.rawMessage = ''
         },
     },
@@ -171,14 +219,30 @@ export default {
     resize: horizontal;
     width: 350px;
 
-    & .user-tabs {
+    & .chat-channels {
         display: flex;
-        padding: var(--spacer);
         width: 100%;
 
-        & .user-tab {
-            background: var(--grey-300);
+        & .chat-channel {
+            border: var(--border) solid var(--grey-300);
+            color: var(--grey-200);
+            display: flex;
+            margin: var(--spacer);
             padding: var(--spacer);
+
+            &:hover {
+                cursor: pointer;
+            }
+
+            &.active {
+                background: var(--grey-400);
+
+                color: var(--primary-color);
+            }
+
+            & .btn-close {
+                margin-left: var(--spacer);
+            }
         }
     }
 

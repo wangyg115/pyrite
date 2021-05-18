@@ -24,7 +24,7 @@
             <button
                 v-if="$s.group.connected"
                 class="btn btn-menu tooltip"
-                :class="{ active: $s.chat.active }"
+                :class="{active: $s.chat.active}"
                 :data-tooltip="$s.chat.active ? $t('hide chat') : $t('show chat')"
                 @click="toggleChatActive"
             >
