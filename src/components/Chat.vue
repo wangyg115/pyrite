@@ -197,7 +197,7 @@ export default {
             this.$s.chat.channels[this.$s.chat.channel].messages.push({
                 message,
                 nick: this.$s.user.name,
-                time: new Date().getTime,
+                time: new Date().getTime(),
             })
 
             this.rawMessage = ''
