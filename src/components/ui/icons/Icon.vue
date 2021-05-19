@@ -23,6 +23,7 @@ import IconLogin from './IconLogin.vue'
 import IconLogo from './IconLogo.vue'
 import IconLogout from './IconLogout.vue'
 import IconMenu from './IconMenu.vue'
+import IconMessage from './IconMessage.vue'
 import IconMic from './IconMic.vue'
 import IconMicMute from './IconMicMute.vue'
 import IconOperator from './IconOperator.vue'
@@ -56,6 +57,7 @@ export default {
         IconLogo,
         IconLogout,
         IconMenu,
+        IconMessage,
         IconMic,
         IconMicMute,
         IconOperator,
@@ -95,8 +97,8 @@ export default {
     }
 
     &.icon-mini {
-        height: calc(var(--spacer) * 2.5);
-        width: calc(var(--spacer) * 2.5);
+        height: calc(var(--spacer) * 2.75);
+        width: calc(var(--spacer) * 2.75);
     }
 
     &.icon-small {

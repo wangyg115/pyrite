@@ -37,6 +37,7 @@ export default {
                 id: this.user.id,
                 messages: [],
                 name: this.user.name,
+                unread: 0,
             }
             app.logger.debug('switch chat channel to ', this.user.id)
             this.$s.chat.channel = this.user.id

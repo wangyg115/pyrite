@@ -69,15 +69,7 @@ commands.help = {
         let s = ''
         for(let i = 0; i < cs.length; i++)
             s = s + cs[i] + '\n'
-        app.$s.chat.channels.main.messages.push({
-            dest: null,
-            kind: null,
-            message: s,
-            nick: null,
-            peerId: null,
-            privileged: false,
-            time: Date.now(),
-        })
+        app.$s.chat.channels.main.messages.push({message: s, nick: null, time: Date.now()})
     },
 }
 

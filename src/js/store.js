@@ -33,6 +33,7 @@ const volatileState = {
                 id: 'main',
                 messages: [],
                 name: 'General',
+                unread: 0,
             },
         },
     },

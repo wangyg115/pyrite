@@ -8,6 +8,10 @@
                 @click.self="selectChannel(channel)"
             >
                 {{ channel.name }}
+                <div v-if="channel.unread > 0" class="unread-badge">
+                    <Icon class="icon icon-mini" name="Message" />
+                    <span>{{ channel.unread }}</span>
+                </div>
                 <button v-if="channel.id !== 'main'" class="btn btn-icon btn-close" @click="closeChannel(channel)">
                     <Icon class="icon icon-tiny" name="Close" />
                 </button>
@@ -86,39 +90,49 @@ export default {
             const date = new Date(ts)
             return date.toLocaleTimeString()
         },
-        onChat(sourceId, destinationId, nick, time, privileged, kind, message) {
-            // Main channel
+        async onChat(sourceId, destinationId, nick, time, privileged, kind, message) {
+            let channelId
+            // Incoming message for the main channel
             if (!destinationId) {
-                // Locally replayed message; ignore.
+                channelId = 'main'
+                // Ignore locally replayed messages.
                 if (sourceId === this.$s.user.id) return
 
-                this.$s.chat.channels.main.messages.push({kind, message, nick, privileged, time})
+                this.$s.chat.channels.main.messages.push({message, nick, time})
                 return
             }
             // This is a private message
-            if (destinationId && sourceId) {
+            else if (destinationId && sourceId) {
+                channelId = sourceId
                 const activeUser = this.$s.users.find((user) => user.id === sourceId)
                 if (activeUser) {
                     if (!this.$s.chat.channels[sourceId]) {
-                        this.$s.chat.channels[sourceId] = {id: sourceId, messages: [], name: nick}
+                        this.$s.chat.channels[sourceId] = {
+                            id: sourceId,
+                            messages: [],
+                            name: nick,
+                            unread: 0,
+                        }
                     }
 
-                    this.$s.chat.channels[sourceId].messages.push({kind, message, nick, privileged, time})
+                    this.$s.chat.channels[sourceId].messages.push({message, nick, time})
                 }
-            } else {
-                // This is a main channel message
-                this.$s.chat.channels.main.messages.push({kind, message, nick, privileged, time})
-                // Edge case: outdated private message doesn't have destinationId
             }
 
-            nextTick(() => {
-                this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
-            })
+            // User is currently watching another channel; bump unread.
+            if (channelId !== this.$s.chat.channel) {
+                this.$s.chat.channels[sourceId].unread += 1
+            }
+
+            // Adjust the chat window scroller
+            await nextTick()
+            this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
         },
         selectChannel(channel) {
             this.$s.chat.channel = channel.id
+            this.$s.chat.channels[channel.id].unread = 0
         },
-        sendMessage(e) {
+        async sendMessage(e) {
             this.rawMessage = this.rawMessage.trim()
 
             if(e instanceof KeyboardEvent) {
@@ -200,6 +214,10 @@ export default {
                 time: new Date().getTime(),
             })
 
+            // Adjust the chat window scroller
+            await nextTick()
+            this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
+
             this.rawMessage = ''
         },
     },
@@ -229,6 +247,25 @@ export default {
             display: flex;
             margin: var(--spacer);
             padding: var(--spacer);
+
+            & .unread-badge {
+                margin-left: var(--spacer);
+
+                & svg {
+                    /* position: absolute; */
+                    color: var(--primary-color);
+                }
+
+                & span {
+                    color: var(--grey-0);
+                    font-size: var(--text-tiny);
+                    font-weight: bold;
+                    margin-left: -13px;
+                    margin-top: 1px;
+                    position: absolute;
+                    z-index: 10000;
+                }
+            }
 
             &:hover {
                 cursor: pointer;
@@ -298,12 +335,12 @@ export default {
             padding: 0;
             width: var(--space-3);
 
-            &:not([disabled]):hover {
-                cursor: pointer;
+            & .icon {
+                height: var(--space-2);
             }
 
-            & svg {
-                height: var(--space-2);
+            &:not([disabled]):hover {
+                cursor: pointer;
             }
         }
 
