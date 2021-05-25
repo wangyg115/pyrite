@@ -5,7 +5,7 @@
         viewBox="0 0 24 24"
         width="40"
     >
-        <component :is="`Icon${name}`" />
+        <component :is="`Icon${name}`" :icon-props="iconProps" />
     </svg>
 </template>
 
@@ -77,6 +77,11 @@ export default {
         IconWebcam,
     },
     props: {
+        iconProps: {
+            default() {return {}},
+            required: false,
+            type: Object,
+        },
         name: {
             required: true,
             type: String,

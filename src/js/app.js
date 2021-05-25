@@ -2,15 +2,17 @@ import {createI18n} from 'vue-i18n'
 
 import env from './env.js'
 
+import EventEmitter from 'eventemitter3'
 import localeNL from '../locales/nl.js'
 import Logger from './logger.js'
 import protocol from './protocol.js'
 import router from '../js/router.js'
 import Store from './store.js'
 
-class Pyrite {
+class Pyrite extends EventEmitter {
 
     constructor() {
+        super()
         this.logger = new Logger(this)
         this.logger.setLevel('debug')
 

@@ -62,6 +62,14 @@ export default {
             return text
         },
     },
+    watch: {
+        '$s.users': {
+            deep: true,
+            handler(newUsers, oldUsers) {
+                console.log('USERS CHANGED123',newUsers, oldUsers)
+            },
+        },
+    },
 }
 </script>
 
@@ -72,5 +80,4 @@ export default {
         font-size: var(--text-small);
     }
 }
-
 </style>

@@ -7,11 +7,11 @@
                 :class="{active: channel.id === $s.chat.channel}"
                 @click.self="selectChannel(channel)"
             >
-                {{ channel.name }}
-                <div v-if="channel.unread > 0" class="unread-badge">
-                    <Icon class="icon icon-mini" name="Message" />
-                    <span>{{ channel.unread }}</span>
+                <div class="channel-name">
+                    <Icon class="icon icon-mini" :icon-props="{unread: channel.unread}" name="Chat" />
                 </div>
+                {{ channel.name }}
+
                 <button v-if="channel.id !== 'main'" class="btn btn-icon btn-close" @click="closeChannel(channel)">
                     <Icon class="icon icon-tiny" name="Close" />
                 </button>
@@ -94,12 +94,13 @@ export default {
             let channelId
             // Incoming message for the main channel
             if (!destinationId) {
-                channelId = 'main'
                 // Ignore locally replayed messages.
-                if (sourceId === this.$s.user.id) return
+                if (sourceId === this.$s.user.id) {
+                    return
+                }
 
+                channelId = 'main'
                 this.$s.chat.channels.main.messages.push({message, nick, time})
-                return
             }
             // This is a private message
             else if (destinationId && sourceId) {
@@ -121,7 +122,7 @@ export default {
 
             // User is currently watching another channel; bump unread.
             if (channelId !== this.$s.chat.channel) {
-                this.$s.chat.channels[sourceId].unread += 1
+                this.$s.chat.channels[channelId].unread += 1
             }
 
             // Adjust the chat window scroller
@@ -217,7 +218,6 @@ export default {
             // Adjust the chat window scroller
             await nextTick()
             this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
-
             this.rawMessage = ''
         },
     },
@@ -238,15 +238,26 @@ export default {
     width: 350px;
 
     & .chat-channels {
+        background: var(--grey-400);
         display: flex;
         width: 100%;
 
         & .chat-channel {
+            background: var(--grey-400);
             border: var(--border) solid var(--grey-300);
             color: var(--grey-200);
             display: flex;
             margin: var(--spacer);
             padding: var(--spacer);
+
+            & .channel-name {
+                align-items: center;
+                display: flex;
+
+                & .icon {
+                    margin-right: var(--spacer);
+                }
+            }
 
             & .unread-badge {
                 margin-left: var(--spacer);
@@ -272,7 +283,7 @@ export default {
             }
 
             &.active {
-                background: var(--grey-400);
+                background: var(--grey-300);
 
                 color: var(--primary-color);
             }
@@ -285,7 +296,6 @@ export default {
 
     & .messages {
         background: var(--grey-500);
-        border-left: var(--border) solid var(--grey-300);
         flex: 1;
         overflow-y: scroll;
         padding-top: calc(var(--spacer) * 2);
