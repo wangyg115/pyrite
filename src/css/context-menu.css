@@ -1,12 +1,12 @@
 .context-menu {
-    display: flex;    
+    display: flex;
     flex-direction: column;
-    position: relative;    
+    position: relative;
 
     &.active {
 
-        & > svg {            
-            color: var(--primary-color);            
+        & > svg {
+            color: var(--primary-color);
         }
     }
 
@@ -14,7 +14,7 @@
         align-self: center;
         margin: var(--spacer);
         transition: all 0.25s ease-in;
-        
+
         &:hover {
             color: var(--primary-color);
             cursor: pointer;
@@ -22,9 +22,9 @@
     }
 
     & .actions {
-        background: var(--grey-400);
+        background: var(--grey-500);
         border: 1px solid var(--grey-300);
-        box-shadow: var(--shadow);        
+        box-shadow: var(--shadow);
         margin-left: var(--space-2);
         position: absolute;
         z-index: 10000;
@@ -49,6 +49,19 @@
             &:hover {
                 background: var(--grey-300);
                 cursor: pointer;
+            }
+
+            &[disabled] {
+                color: var(--grey-300);
+
+                &:hover {
+                    background: none;
+                    cursor: not-allowed;
+                }
+
+                & svg {
+                    color: var(--grey-300);
+                }
             }
         }
     }

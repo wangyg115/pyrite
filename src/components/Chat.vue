@@ -5,14 +5,14 @@
                 v-for="(channel, key) in $s.chat.channels"
                 :key="key" class="chat-channel"
                 :class="{active: channel.id === $s.chat.channel}"
-                @click.self="selectChannel(channel)"
+                @click="selectChannel(channel)"
             >
                 <div class="channel-name">
                     <Icon class="icon icon-mini" :icon-props="{unread: channel.unread}" name="Chat" />
                 </div>
                 {{ channel.name }}
 
-                <button v-if="channel.id !== 'main'" class="btn btn-icon btn-close" @click="closeChannel(channel)">
+                <button v-if="channel.id !== 'main'" class="btn btn-icon btn-close" @click.stop="closeChannel(channel)">
                     <Icon class="icon icon-tiny" name="Close" />
                 </button>
             </div>
@@ -68,6 +68,29 @@ export default {
             return messages.sort((a, b) => a.time - b.time)
         },
     },
+    created() {
+        // User left; clean up the channel.
+        app.on('user', ({action, user}) => {
+            if (action === 'del' && this.$s.chat.channels[user.id]) {
+                // Change the active to-be-deleted channel to main
+                if (this.$s.chat.channel === user.id) {
+                    this.switchChannel('main')
+                }
+                delete this.$s.chat.channels[user.id]
+            }
+        })
+
+        app.on('channel', ({action, channelId, channel = null}) => {
+            app.logger.debug('switch chat channel to ', channelId)
+            if (action === 'switch') {
+                if (!this.$s.chat.channels[channelId]) {
+                    this.$s.chat.channels[channelId] = channel
+                }
+
+                this.switchChannel(channelId)
+            }
+        })
+    },
     data() {
         return {
             rawMessage: '',
@@ -80,7 +103,7 @@ export default {
         },
         async closeChannel(channel) {
             // Return to the main channel when closing a direct user channel.
-            this.$s.chat.channel = 'main'
+            this.switchChannel('main')
             delete this.$s.chat.channels[channel.id]
         },
         formatMessage(message) {
@@ -120,14 +143,16 @@ export default {
                 }
             }
 
-            // User is currently watching another channel; bump unread.
-            if (channelId !== this.$s.chat.channel) {
+            if (channelId === this.$s.chat.channel) {
+                // A message was added to the active channel; update the chat scroller.
+                await nextTick()
+                this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
+            } else {
+                // User is currently watching another channel; bump unread.
                 this.$s.chat.channels[channelId].unread += 1
+
             }
 
-            // Adjust the chat window scroller
-            await nextTick()
-            this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
         },
         selectChannel(channel) {
             this.$s.chat.channel = channel.id
@@ -220,6 +245,10 @@ export default {
             this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
             this.rawMessage = ''
         },
+        switchChannel(name) {
+            this.$s.chat.channel = name
+            this.$s.chat.channels[name].unread = 0
+        },
     },
     mounted() {
         app.connection.onchat = this.onChat.bind(this)
@@ -249,6 +278,7 @@ export default {
             display: flex;
             margin: var(--spacer);
             padding: var(--spacer);
+            user-select: none;
 
             & .channel-name {
                 align-items: center;
@@ -256,25 +286,6 @@ export default {
 
                 & .icon {
                     margin-right: var(--spacer);
-                }
-            }
-
-            & .unread-badge {
-                margin-left: var(--spacer);
-
-                & svg {
-                    /* position: absolute; */
-                    color: var(--primary-color);
-                }
-
-                & span {
-                    color: var(--grey-0);
-                    font-size: var(--text-tiny);
-                    font-weight: bold;
-                    margin-left: -13px;
-                    margin-top: 1px;
-                    position: absolute;
-                    z-index: 10000;
                 }
             }
 
