@@ -356,10 +356,6 @@ export default {
             padding: 0;
             width: var(--space-3);
 
-            & .icon {
-                height: var(--space-2);
-            }
-
             &:not([disabled]):hover {
                 cursor: pointer;
             }
