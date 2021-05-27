@@ -97,7 +97,7 @@ export default {
         }
     },
     methods: {
-        clearChat() {
+        clearChannel() {
             app.logger.debug('clearing chat from remote')
             this.$s.chat.channels.main.messages = []
         },
@@ -113,7 +113,7 @@ export default {
             const date = new Date(ts)
             return date.toLocaleTimeString()
         },
-        async onChat(sourceId, destinationId, nick, time, privileged, kind, message) {
+        async onMessage(sourceId, destinationId, nick, time, privileged, kind, message) {
             let channelId
             // Incoming message for the main channel
             if (!destinationId) {
@@ -251,8 +251,8 @@ export default {
         },
     },
     mounted() {
-        app.connection.onchat = this.onChat.bind(this)
-        app.connection.onclearchat = this.clearChat.bind(this)
+        app.connection.onchat = this.onMessage.bind(this)
+        app.connection.onclearchat = this.clearChannel.bind(this)
     },
 }
 </script>
