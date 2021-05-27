@@ -410,14 +410,15 @@ ServerConnection.prototype.request = function(what) {
  * @param {string} localId
  * @returns {Stream}
  */
-
 ServerConnection.prototype.findByLocalId = function(localId) {
     if(!localId)
         return null;
 
-    for(let id in serverConnection.up) {
-        let s = serverConnection.up[id];
-        if(s.localId == localId)
+    let sc = this;
+
+    for(let id in sc.up) {
+        let s = sc.up[id];
+        if(s.localId === localId)
             return s;
     }
     return null;
@@ -728,7 +729,7 @@ ServerConnection.prototype.gotAnswer = async function(id, sdp) {
  * @param {string} id
  * @function
  */
-ServerConnection.prototype.gotRenegotiate = async function(id) {
+ServerConnection.prototype.gotRenegotiate = function(id) {
     let c = this.up[id];
     if(!c)
         throw new Error('unknown up stream');
@@ -756,8 +757,7 @@ ServerConnection.prototype.gotAbort = function(id) {
     let c = this.up[id];
     if(!c)
         throw new Error('unknown up stream');
-    if(c.onabort)
-        c.onabort.call(c);
+    c.close();
 };
 
 /**
@@ -951,13 +951,6 @@ function Stream(sc, id, localId, pc, up) {
      * @type{(this: Stream, status: string) => void}
      */
     this.onstatus = null;
-    /**
-     * onabort is called when the server requested that an up stream be
-     * closed.  It is the resposibility of the client to close the stream.
-     *
-     * @type{(this: Stream) => void}
-     */
-    this.onabort = null;
     /**
      * onstats is called when we have new statistics about the connection
      *
