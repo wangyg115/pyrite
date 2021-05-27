@@ -158,6 +158,7 @@ export default {
         this.muted = this.$refs.media.muted
 
         if (this.modelValue.isUp) {
+            app.logger.debug(`mounting upstream ${this.modelValue.id}`)
 
             if (this.modelValue.src) {
                 // Networked stream from local file
@@ -187,6 +188,7 @@ export default {
                     throw new Error('invalid Stream source type')
                 }
             } else {
+
                 // Networked video camera stream; dealt with by addLocalMedia.
                 this.glnStream = app.connection.up[this.modelValue.id]
                 this.stream = this.glnStream.stream
@@ -224,6 +226,17 @@ export default {
                 }
             }
         } else {
+            app.logger.debug(`mounting downstream ${this.modelValue.id}`)
+
+            // Only setup the video element in case the stream is already active.
+            if (app.connection.down[this.modelValue.id].stream) {
+                this.$refs.media.srcObject = app.connection.down[this.modelValue.id].stream
+                this.$refs.media.play().catch(e => {
+                    app.notify({level: 'error', message: e})
+                })
+                return
+            }
+
             // Networked down stream
             this.glnStream = app.connection.down[this.modelValue.id]
             this.stream = this.glnStream.stream
