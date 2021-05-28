@@ -9,5 +9,5 @@
     "files.associations": {
         "*.css": "postcss"
     },
-    "stylelint.validate": ["css", "vue"]
+    "stylelint.validate": ["css", "postcss", "vue"]
 }

@@ -49,8 +49,8 @@
     --text-large: 1.75rem;
     --text-huge: 3rem;
 
-    --font-primary: 'Roboto';
-    --font-secondary: 'Oswald', sans-serif;
+    --font-primary: "Roboto";
+    --font-secondary: "Oswald", sans-serif;
 
     --border: 2px;
     --spacer: 8px;
