@@ -103,5 +103,9 @@ export default {
             }
         }
     }
+
+    & .field-label {
+        font-family: var(--font-secondary);
+    }
 }
 </style>

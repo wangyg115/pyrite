@@ -276,6 +276,7 @@ export default {
             border: var(--border) solid var(--grey-300);
             color: var(--grey-200);
             display: flex;
+            font-family: var(--font-secondary);
             margin: var(--spacer);
             padding: var(--spacer);
             user-select: none;

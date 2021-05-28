@@ -208,6 +208,10 @@ export default {
     max-width: 350px;
     width: 100%;
 
+    & label {
+        font-family: var(--font-secondary);
+    }
+
     & .input-container {
         display: flex;
         flex-direction: column;

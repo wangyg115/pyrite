@@ -3,6 +3,7 @@
     background: none;
     color: var(--grey-50);
     display: flex;
+    font-family: var(--font-secondary);
     justify-content: center;
     padding: var(--spacer);
     text-transform: uppercase;
