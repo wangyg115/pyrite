@@ -1,11 +1,24 @@
-# Pyrite
+<img height="100" src="./media/logo-text.svg">
 
 ![Pyrite build passing](https://github.com/garage44/pyrite/actions/workflows/test.yml/badge.svg)
 
-Pyrite is a video conferencing PWA for the [Galène](https://github.com/jech/galene) SFU. Pyrite's purpose is to establish an extendable 
-component-based (Vue 3) frontend for Galène, with additional features like 
-i18n, customizable theming, PWA modus, context-aware UX controls, an admin 
-interface and more. You're free to try out the public [Pyrite server](https://pyrite.video) to get an idea about Pyrite. The *develop* branch is continuously deployed on the [beta server](https://beta.pyrite.video).
+[Pyrite](https://pyrite.video) is a web-based GUI for [Galène](https://github.com/jech/galene);
+a high-performance [Golang](https://golang.org/)/[Pion](https://github.com/pion/webrtc)-based SFU.
+
+Its purpose is to provide a simple, yet powerful, well-designed, user & privacy-friendly
+(video) communication experience for organisations interested in improving their
+remote communication.
+
+Pyrite is a low-resource project. Its focus lies mainly on advancing the GUI,
+while piggybacking on advancements of the main Galène project. The frontend
+architecture is meant to stay as simple as possible. It is component-based (Vue-3)
+and uses POJO state. By keeping it simple, Pyrite can keep developing new features
+at a fast rate, while keeping the cognitive load/learning curve low for developers.
+
+The **main** Git branch is deployed to [pyrite.video](https://pyrite.video); a public
+Galène server, that uses the latest *stable* version of Pyrite. The *develop* branch
+is continuously deployed to [beta.pyrite.video](https://beta.pyrite.video) and has
+the latest (but incomplete) features, which can be previewed/tested there.
 
 ## Getting started
 
