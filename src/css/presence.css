@@ -9,7 +9,6 @@
         display: flex;
         font-weight: bold;
         height: var(--space-4);
-        padding: var(--spacer);
         position: relative;
 
         & svg {

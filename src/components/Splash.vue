@@ -6,7 +6,7 @@
         </div>
 
         <div class="propaganda">
-            {{ $t('Video Communication') }}
+            {{ $t('Better Remote Communication') }}
         </div>
     </div>
 </template>
@@ -26,16 +26,17 @@ export default {
     align-items: center;
     display: flex;
     flex-direction: column;
+    font-family: var(--font-secondary);
     justify-content: center;
 
     & .icon {
-        height: 50%;
-        width: 50%;
+        height: 300px;
+        transform: scale(1.25);
+        width: 300px;
     }
 
     & .title {
         color: var(--primary-color);
-        font-family: var(--font-mono);
         font-size: var(--text-huge);
         font-weight: 600;
     }
@@ -43,9 +44,7 @@ export default {
     & .propaganda {
         color: var(--grey-200);
         font-size: var(--text-large);
-        font-style: italic;
         font-weight: 500;
-        text-align: center;
     }
 }
 </style>

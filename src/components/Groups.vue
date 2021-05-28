@@ -1,6 +1,6 @@
 <template>
     <section class="c-groups">
-        <div class="group item">
+        <div class="group group-input item">
             <FieldText
                 v-model="$s.group.name"
                 class="custom-group"
@@ -74,6 +74,13 @@ export default {
 
 <style lang="postcss">
 .c-groups {
+
+    & .group {
+
+        & .name {
+            font-family: var(--font-secondary);
+        }
+    }
 
     & .custom-group {
         padding-left: 0;

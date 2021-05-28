@@ -1,3 +1,7 @@
+// Font config
+import "@fontsource/oswald"
+import "@fontsource/roboto"
+
 import {createI18n} from 'vue-i18n'
 
 import env from './env.js'

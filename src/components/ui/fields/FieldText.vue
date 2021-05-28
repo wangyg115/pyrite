@@ -89,6 +89,7 @@ export default {
     }
 
     & label {
+        font-family: var(--font-secondary);
         margin: var(--spacer) 0;
     }
 }

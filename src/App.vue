@@ -3,10 +3,10 @@
         <div class="presence">
             <header>
                 <RouterLink v-if="!$s.group.connected" class="logo" :to="{name: 'main'}">
-                    <Icon class="icon icon-small" name="Logo" />PYRITE
+                    <Icon class="icon" name="Logo" />PYRITE
                 </RouterLink>
                 <div v-else class="logo no-back-link">
-                    <Icon class="icon icon-small" name="Logo" />PYRITE
+                    <Icon class="icon" name="Logo" />PYRITE
                 </div>
 
                 <div class="version">
@@ -51,14 +51,24 @@ export default {
     grid-template-columns: 300px var(--space-4) 1fr;
     height: 100vh;
 
-    & .logo {
-        align-items: center;
-        color: var(--primary-color);
-        display: flex;
-        justify-content: center;
+    & header {
 
-        &.no-back-link:hover {
-            cursor: not-allowed;
+        & .logo {
+            align-items: center;
+            color: var(--primary-color);
+            display: flex;
+            font-family: var(--font-secondary);
+            justify-content: center;
+
+            &.no-back-link:hover {
+                cursor: not-allowed;
+            }
+
+            & .icon {
+                height: 50px;
+                transform: scale(1.25);
+                width: 50px;
+            }
         }
     }
 

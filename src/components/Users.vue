@@ -67,6 +67,7 @@ export default {
 
 <style lang="postcss">
 .user {
+    font-family: var(--font-secondary);
 
     & .me {
         font-size: var(--text-small);

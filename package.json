@@ -16,6 +16,8 @@
     "semantic-release": "semantic-release"
   },
   "dependencies": {
+    "@fontsource/oswald": "^4.4.0",
+    "@fontsource/roboto": "^4.4.0",
     "eventemitter3": "^4.0.7",
     "vue": "^3.0.5",
     "vue-i18n": "^9.0.0-rc.4",
