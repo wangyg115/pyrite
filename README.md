@@ -4,21 +4,18 @@
 
 [Pyrite](https://pyrite.video) is a web-based GUI for [Galène](https://github.com/jech/galene);
 a high-performance [Golang](https://golang.org/)/[Pion](https://github.com/pion/webrtc)-based SFU.
-
 Its purpose is to provide a simple, yet powerful, well-designed, user & privacy-friendly
-(video) communication experience for organisations interested in improving their
-remote communication.
+(video) communication experience.
 
-Pyrite is a low-resource project. Its focus lies mainly on advancing the GUI,
-while piggybacking on advancements of the main Galène project. The frontend
-architecture is meant to stay as simple as possible. It is component-based (Vue-3)
-and uses POJO state. By keeping it simple, Pyrite can keep developing new features
-at a fast rate, while keeping the cognitive load/learning curve low for developers.
+Pyrite is a project with scare resources. Its focus lies mainly on advancing the GUI,
+while piggybacking on advancements of the main Galène project. Its architecture is
+as straightforward as possible. Being component-based (Vue-3), using a plain reactive
+object store, Pyrite is aiming to be easy to grasp and develop.
 
 The **main** Git branch is deployed to [pyrite.video](https://pyrite.video); a public
 Galène server, that uses the latest *stable* version of Pyrite. The *develop* branch
 is continuously deployed to [beta.pyrite.video](https://beta.pyrite.video) and has
-the latest (but incomplete) features, which can be previewed/tested there.
+the latest (but incomplete) features.
 
 ## Getting started
 
