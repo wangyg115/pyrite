@@ -8,7 +8,7 @@
 @import "./tooltip";
 
 .theme-dark {
-    --primary-color: hsl(178.8, 74.2%, 77.6%);
+    --primary-color: #21d3ee;
     --info-color: #9ddc4b;
     --warning-color: #f29a87;
     --error-color: #cb6c4d;

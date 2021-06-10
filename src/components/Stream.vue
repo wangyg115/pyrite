@@ -9,8 +9,13 @@
             :playsinline="true"
         />
 
+        <StreamReports v-if="stats.visible" :reports="stats.reports" />
+
         <div v-if="controls" class="stream-bar">
             <div class="buttons">
+                <button class="btn btn-menu tooltip" :data-tooltip="$t('info')" @click="toggleStats">
+                    <Icon class="icon-mini" name="Info" />
+                </button>
                 <button
                     v-if="pip.enabled" class="btn btn-menu tooltip"
                     :data-tooltip="$t('picture-in-picture')"
@@ -40,6 +45,7 @@
 
 <script>
 import SoundMeter from './ui/SoundMeter.vue'
+import StreamReports from './StreamReports.vue'
 
 export default {
     beforeUnmount() {
@@ -51,7 +57,7 @@ export default {
 
         this.$refs.media.srcObject = null
     },
-    components: {SoundMeter},
+    components: {SoundMeter, StreamReports},
     computed: {
         fullscreenEnabled() {
             if (this.$refs.media) {
@@ -83,54 +89,66 @@ export default {
                 enabled: false,
             },
             state: app.state,
+            stats: {
+                reports: {},
+                visible: false,
+            },
             stream: null,
         }
     },
     emits: ['update:modelValue'],
     methods: {
-        gotDownStats(stats) {
-            let maxEnergy = 0
-            const activityDetectionPeriod = 700
-            const activityDetectionThreshold = 0.2
+        // gotDownStats(stats) {
+        //     let maxEnergy = 0
+        //     let text = ''
 
-            this.glnStream.pc.getReceivers().forEach(r => {
-                let tid = r.track && r.track.id
-                let s = tid && stats[tid]
-                let energy = s && s['track'] && s['track'].audioEnergy
-                if(typeof energy === 'number')
-                    maxEnergy = Math.max(maxEnergy, energy)
-            })
+        //     const activityDetectionPeriod = 700
+        //     const activityDetectionThreshold = 0.2
 
-            // totalAudioEnergy is defined as the integral of the square of the
-            // volume, so square the threshold.
-            if(maxEnergy > activityDetectionThreshold * activityDetectionThreshold) {
-                this.glnStream.userdata.lastVoiceActivity = Date.now()
-                this.activityDetected = true
-            } else {
-                let last = this.glnStream.userdata.lastVoiceActivity
-                if(!last || Date.now() - last > activityDetectionPeriod) {
-                    this.activityDetected = false
-                }
-            }
-        },
+        //     this.glnStream.pc.getReceivers().forEach(r => {
+        //         let tid = r.track && r.track.id
+        //         let s = tid && stats[tid]
 
-        gotUpStats() {
-            let text = ''
+        //         let energy = s && s['track'] && s['track'].audioEnergy
+        //         let _stats = s && s['track']
+        //         console.log('SSS123', stats)
 
-            this.glnStream.pc.getSenders().forEach(s => {
-                let tid = s.track && s.track.id
-                let stats = tid && this.glnStream.stats[tid]
-                let rate = stats && stats['outbound-rtp'] && stats['outbound-rtp'].rate
-                if(typeof rate === 'number') {
-                    if(text) {
-                        text = text + ' + '
-                    }
-                    text = text + Math.round(rate / 1000) + 'kbps'
-                }
-            })
+        //         if(typeof energy === 'number')
+        //             maxEnergy = Math.max(maxEnergy, energy)
+        //     })
 
-            this.label = text
-        },
+        //     // totalAudioEnergy is defined as the integral of the square of the
+        //     // volume, so square the threshold.
+        //     if(maxEnergy > activityDetectionThreshold * activityDetectionThreshold) {
+        //         this.glnStream.userdata.lastVoiceActivity = Date.now()
+        //         this.activityDetected = true
+        //     } else {
+        //         let last = this.glnStream.userdata.lastVoiceActivity
+        //         if(!last || Date.now() - last > activityDetectionPeriod) {
+        //             this.activityDetected = false
+        //         }
+        //     }
+        //     console.log('DOWN', text)
+        //     this.stats.bps = text
+        // },
+
+        // gotUpStats() {
+        //     let text = ''
+
+        //     this.glnStream.pc.getSenders().forEach(s => {
+        //         let tid = s.track && s.track.id
+        //         let stats = tid && this.glnStream.stats[tid]
+        //         let rate = stats && stats['outbound-rtp'] && stats['outbound-rtp'].rate
+        //         if(typeof rate === 'number') {
+        //             if(text) {
+        //                 text = text + ' + '
+        //             }
+        //             text = text + Math.round(rate / 1000) + 'kbps'
+        //         }
+        //     })
+
+        //     this.stats.bps = text
+        // },
         setFullscreen() {
             this.$refs.media.requestFullscreen()
         },
@@ -144,6 +162,9 @@ export default {
         toggleMuteVolume() {
             this.muted = !this.muted
             this.$refs.media.muted = this.muted
+        },
+        toggleStats() {
+            this.stats.visible = !this.stats.visible
         },
     },
     mounted() {
@@ -159,6 +180,7 @@ export default {
 
         if (this.modelValue.isUp) {
             app.logger.debug(`mounting upstream ${this.modelValue.id}`)
+            this.label = `${this.$s.user.name} (${this.$t('you')})`
 
             if (this.modelValue.src) {
                 // Networked stream from local file
@@ -198,9 +220,8 @@ export default {
             // Networked? add stream events to deal with the peer connection.
             if (this.glnStream) {
                 this.glnStream.stream = this.stream
-                this.glnStream.onstats = this.gotUpStats.bind(this)
-                this.glnStream.setStatsInterval(1000)
-
+                // this.glnStream.onstats = this.gotUpStats.bind(this)
+                
                 this.stream.onaddtrack = (e) => {
                     let t = e.track
                     this.glnStream.pc.addTrack(t, this.stream)
@@ -241,10 +262,16 @@ export default {
             this.glnStream = app.connection.down[this.modelValue.id]
             this.stream = this.glnStream.stream
 
-            if(this.$s.activityDetection) {
-                this.glnStream.onstats = this.gotDownStats
-                this.glnStream.setStatsInterval(1000)
-            }
+            setInterval(async() => {
+                const stats = await this.glnStream.pc.getStats(null)
+                stats.forEach(report => {
+                    if (!this.stats.reports[report.type]) this.stats.reports[report.type] = {}
+                    this.stats.reports[report.type][report.id] = report
+                })
+            }, 500)
+
+            // this.glnStream.onstats = this.gotDownStats
+            this.glnStream.setStatsInterval(500)
 
             this.label = this.glnStream.username
 
@@ -333,7 +360,7 @@ export default {
         }
 
         & .about {
-            color: var(--grey-200);
+            color: var(--grey-0);
             flex: 1;
             font-weight: 600;
             padding-right: var(--spacer);

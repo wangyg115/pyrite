@@ -24,8 +24,8 @@
             <button
                 v-if="$s.group.connected"
                 class="btn btn-menu tooltip"
-                :class="{active: $s.chat.active}"
-                :data-tooltip="$s.chat.active ? $t('hide chat') : $t('show chat')"
+                :class="{active: !$s.chat.hidden}"
+                :data-tooltip="$s.chat.hidden ? $t('show chat') : $t('hide chat')"
                 @click="toggleChatActive"
             >
                 <Icon class="icon-small" name="Chat" />
@@ -53,11 +53,13 @@ export default {
     methods: {
         disconnect() {
             this.$s.group.name = ''
+            // Reset chat window state for the next session.
+            this.$s.chat.hidden = false
             app.disconnect()
             this.$router.push({name: 'splash'})
         },
         toggleChatActive() {
-            this.$s.chat.active = !this.$s.chat.active
+            this.$s.chat.hidden = !this.$s.chat.hidden
         },
         toggleMute() {
             app.muteLocalTracks(this.$s.muted)

@@ -1,5 +1,5 @@
 <template>
-    <div class="c-chat">
+    <div ref="view" class="c-chat" :style="`width: auto;`">
         <div class="chat-channels">
             <div
                 v-for="(channel, key) in $s.chat.channels"
@@ -62,6 +62,9 @@ import commands from '../js/commands'
 import {nextTick} from 'vue'
 
 export default {
+    beforeUnmount() {
+        this.resizeObserver.disconnect()
+    },
     computed: {
         sortedMessages() {
             const messages = this.$s.chat.channels[this.$s.chat.channel].messages
@@ -253,6 +256,16 @@ export default {
     mounted() {
         app.connection.onchat = this.onMessage.bind(this)
         app.connection.onclearchat = this.clearChannel.bind(this)
+
+        // Keep track of the user-set width of the chat-window, so
+        // we can restore it after toggling the chat window.
+        this.resizeObserver = new ResizeObserver(async() => {
+            this.$s.chat.width = parseInt(this.$refs.view.style.width.replace('px', ''))
+        })
+
+        this.resizeObserver.observe(this.$refs.view)
+
+        this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
     },
 }
 </script>
@@ -262,8 +275,10 @@ export default {
     border-right: var(--border) solid var(--grey-300);
     display: flex;
     flex-direction: column;
+    height: 100vh;
     overflow: auto;
     resize: horizontal;
+
     width: 350px;
 
     & .chat-channels {
@@ -309,6 +324,8 @@ export default {
     & .messages {
         background: var(--grey-500);
         flex: 1;
+
+        overflow-x: hidden;
         overflow-y: scroll;
         padding-top: calc(var(--spacer) * 2);
 

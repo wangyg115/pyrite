@@ -1,7 +1,6 @@
 import {reactive} from 'vue'
 
 const persistantState = reactive({
-    activityDetection: true,
     audio: {id: null, name: ''},
     blackboardMode: false,
     language: {id: 'en'},
@@ -26,7 +25,6 @@ const persistantState = reactive({
  */
 const volatileState = {
     chat: {
-        active: true,
         channel: 'main',
         channels: {
             main: {
@@ -36,6 +34,8 @@ const volatileState = {
                 unread: 0,
             },
         },
+        hidden: false,
+        width: 350,
     },
     devices: {
         audio: [],

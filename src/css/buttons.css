@@ -26,6 +26,11 @@
         position: relative;
         width: var(--space-4);
 
+        &.compact {
+            height: auto;
+            width: auto;
+        }
+
         &[disabled] {
             color: var(--grey-300);
 

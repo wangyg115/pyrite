@@ -2,10 +2,9 @@
 import "@fontsource/oswald"
 import "@fontsource/roboto"
 
+import animate from './animate'
 import {createI18n} from 'vue-i18n'
-
 import env from './env.js'
-
 import EventEmitter from 'eventemitter3'
 import localeNL from '../locales/nl.js'
 import Logger from './logger.js'
@@ -20,6 +19,7 @@ class Pyrite extends EventEmitter {
         this.logger = new Logger(this)
         this.logger.setLevel('debug')
 
+        this.animate = animate
         this.env = env
         this.router = router(this)
         this.protocol = protocol

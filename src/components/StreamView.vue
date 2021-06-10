@@ -15,16 +15,17 @@ import Stream from './Stream.vue'
 
 export default {
     components: {Stream},
+    beforeUnmount() {
+        this.resizeObserver.disconnect()
+    },
     beforeUpdate() {
         this.itemRefs = []
     },
     async mounted() {
-        this.resizeObserver = new ResizeObserver(() => {
-            this.setView()
+        this.resizeObserver = new ResizeObserver(async() => {
+            requestAnimationFrame(this.setView.bind(this))
         })
 
-        await nextTick()
-        // window.onresize = this.setView.bind(this)
         this.setView()
         this.resizeObserver.observe(this.$refs.view)
     },
@@ -35,7 +36,7 @@ export default {
         area(increment, streamCount, width, height, margin = 8) {
             let i = 0
             let w = 0
-            // * 5000
+
             let h = increment * 0.75 + (margin * 2)
             while (i < (streamCount)) {
                 if ((w + increment) > width) {
@@ -57,7 +58,6 @@ export default {
 
             let max = 0
 
-            // loop (i recommend you optimize this)
             let i = 1
             while (i < 5000) {
                 let w = this.area(i, this.streamsRef.length, width, height, margin)
@@ -67,8 +67,12 @@ export default {
                 }
                 i++
             }
-            // set styles
-            max = max - (margin * 2)
+
+            if (max > width) {
+                max = width
+            } else {
+                max = max - (margin * 2)
+            }
             this.setWidth(max, margin)
         },
         setWidth(width, margin) {
@@ -117,16 +121,14 @@ export default {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    height: 100vh;
     justify-content: center;
-    vertical-align: middle;
+    overflow: hidden;
 
-    & > div {
+    & > .c-stream {
         align-self: center;
         animation: show 0.25s ease-in-out;
-        box-shadow: 0px 12px 22px rgba(0, 0, 0, 0.4);
+        box-shadow: 0px var(--spacer) var(--spacer) rgba(0, 0, 0, 0.4);
         position: relative;
-        vertical-align: middle;
     }
 
     & .logo-animated {

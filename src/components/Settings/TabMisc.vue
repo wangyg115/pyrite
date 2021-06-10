@@ -22,13 +22,6 @@
             name="request"
             :options="receiveOptions"
         />
-
-        <FieldCheckbox
-            v-model="$s.activityDetection"
-            :help="$t('Detect whether someone is speaking')"
-            :label="$t('Activity detection')"
-            name="activity"
-        />
     </section>
 </template>
 
