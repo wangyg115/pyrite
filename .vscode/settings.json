@@ -6,8 +6,5 @@
         "source.fixAll": true
     },
     "editor.formatOnSave": false,
-    "files.associations": {
-        "*.css": "postcss"
-    },
-    "stylelint.validate": ["css", "postcss", "vue"]
+    "stylelint.validate": ["css", "scss", "vue"]
 }

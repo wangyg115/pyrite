@@ -12,7 +12,7 @@
     "galene": "docker-compose -f docker/docker-compose.yml --project-directory ./docker up --remove-orphans",
     "lint": "npm run lint:js;npm run lint:css",
     "lint:js": "eslint \"src/**/*.{js,vue}\"",
-    "lint:css": "stylelint \"src/**/*.{css,vue}\"",
+    "lint:scss": "stylelint \"src/**/*.{scss,vue}\"",
     "semantic-release": "semantic-release"
   },
   "dependencies": {
