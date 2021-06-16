@@ -270,7 +270,7 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .c-chat {
     border-right: var(--border) solid var(--grey-300);
     display: flex;
@@ -281,12 +281,12 @@ export default {
 
     width: 350px;
 
-    & .chat-channels {
+    .chat-channels {
         background: var(--grey-400);
         display: flex;
         width: 100%;
 
-        & .chat-channel {
+        .chat-channel {
             background: var(--grey-400);
             border: var(--border) solid var(--grey-300);
             color: var(--grey-200);
@@ -296,11 +296,11 @@ export default {
             padding: var(--spacer);
             user-select: none;
 
-            & .channel-name {
+            .channel-name {
                 align-items: center;
                 display: flex;
 
-                & .icon {
+                .icon {
                     margin-right: var(--spacer);
                 }
             }
@@ -315,13 +315,13 @@ export default {
                 color: var(--primary-color);
             }
 
-            & .btn-close {
+            .btn-close {
                 margin-left: var(--spacer);
             }
         }
     }
 
-    & .messages {
+    .messages {
         background: var(--grey-500);
         flex: 1;
 
@@ -329,7 +329,7 @@ export default {
         overflow-y: scroll;
         padding-top: calc(var(--spacer) * 2);
 
-        & .message {
+        .message {
             background: var(--grey-300);
             color: var(--grey-50);
             margin-bottom: calc(var(--spacer) * 2);
@@ -351,21 +351,21 @@ export default {
                 justify-content: space-between;
                 margin-bottom: var(--spacer);
 
-                & .time {
+                .time {
                     font-size: var(--text-tiny);
                 }
             }
         }
     }
 
-    & .send {
+    .send {
         background: var(--grey-400);
         border-top: var(--border) solid var(--grey-300);
         display: flex;
         padding-bottom: var(--space-1);
         padding-top: var(--spacer);
 
-        & button {
+        button {
             align-items: center;
             background: var(--grey-500);
             display: flex;
@@ -379,7 +379,7 @@ export default {
             }
         }
 
-        & textarea {
+        textarea {
             background: var(--grey-500);
             border: var(--border) solid var(--grey-500);
             color: var(--primary-color);

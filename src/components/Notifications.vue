@@ -38,7 +38,7 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 
 .c-notifications {
     max-width: 400px;
@@ -48,7 +48,7 @@ export default {
     width: 100%;
     z-index: 100000;
 
-    & .notification {
+    .notification {
         align-items: center;
         background: var(--grey-400);
         box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
@@ -57,30 +57,30 @@ export default {
         flex-direction: row;
         font-style: italic;
         font-weight: 400;
-        height: $spacer * 7;
+        height: calc(var(--spacer * 7));
         justify-content: space-between;
         margin: var(--spacer) calc(var(--spacer) / 2);
         padding: var(--spacer);
         transition: all 0.25s;
 
-        & .icon {
+        .icon {
             margin: var(--spacer);
             width: var(--space-3);
         }
 
-        &.info .icon {
+        .info .icon {
             color: var(--info-color);
         }
 
-        &.warning .icon {
+        .warning .icon {
             background: var(--warning-color);
         }
 
-        &.error .icon {
+        .error .icon {
             color: var(--error-color);
         }
 
-        & .message {
+        .message {
             flex: 1;
         }
     }

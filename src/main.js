@@ -1,4 +1,4 @@
-import './css/pyrite.css'
+import './scss/app.scss'
 import App from './App.vue'
 import {createApp} from 'vue'
 import FieldCheckbox from './components/ui/fields/FieldCheckbox.vue'

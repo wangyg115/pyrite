@@ -53,16 +53,16 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .c-field-text {
     display: flex;
     flex-direction: column;
 
-    & .input-container {
+    .input-container {
         align-items: center;
         display: flex;
 
-        & input {
+        input {
             background: none;
             border: none;
             border-bottom: var(--border) solid var(--grey-200);
@@ -76,7 +76,7 @@ export default {
             }
         }
 
-        & .icon {
+        .icon {
 
             &:hover {
                 cursor: pointer;
@@ -88,7 +88,7 @@ export default {
         }
     }
 
-    & label {
+    label {
         font-family: var(--font-secondary);
         margin: var(--spacer) 0;
     }

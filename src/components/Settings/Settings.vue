@@ -54,14 +54,14 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .c-settings {
 
-    & .tabs {
+    .tabs {
         padding-left: var(--space-1);
     }
 
-    & .btn-save {
+    .btn-save {
         margin-top: var(--space-1);
     }
 }

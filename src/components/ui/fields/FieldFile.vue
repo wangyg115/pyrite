@@ -54,7 +54,7 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .c-field-file {
     align-items: center;
     display: flex;
@@ -64,7 +64,7 @@ export default {
     position: absolute;
     width: var(--space-4);
 
-    & input {
+    input {
         color: var(--grey-100);
         height: var(--space-4);
         left: 0;

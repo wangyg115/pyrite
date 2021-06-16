@@ -59,7 +59,7 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .icon.locked {
     color: var(--warning-color);
     margin-left: calc(3 * var(--spacer));

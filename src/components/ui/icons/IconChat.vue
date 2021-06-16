@@ -23,7 +23,7 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .icon-chat-unread-path {
     color: var(--grey-50);
 }
@@ -31,7 +31,6 @@ export default {
 .icon-chat-unread-text {
     color: var(--grey-50);
     font: 600 9px sans-serif;
-    /* text-shadow: 1px 1px 10px var(--grey-0), 1px 1px 10px var(--grey-0); */
 }
 </style>
 

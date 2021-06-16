@@ -84,16 +84,16 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .app-view {
     align-items: stretch;
     display: grid;
     grid-template-columns: 300px var(--space-4) 1fr;
     height: 100vh;
 
-    & header {
+    header {
 
-        & .logo {
+        .logo {
             align-items: center;
             color: var(--primary-color);
             display: flex;
@@ -104,14 +104,14 @@ export default {
                 cursor: not-allowed;
             }
 
-            & .icon {
+            .icon {
                 height: 50px;
                 transform: scale(1.25);
                 width: 50px;
             }
         }
 
-        & .version {
+        .version {
             font-family: var(--font-secondary);
         }
     }
@@ -119,7 +119,7 @@ export default {
     &.connected {
         grid-template-columns: 300px var(--space-4) min-content 1fr var(--space-4);
 
-        & .c-chat {
+        .c-chat {
             min-width: 200px;
             opacity: 1;
             transition: opacity 150ms;
@@ -138,11 +138,11 @@ export default {
         overflow: hidden;
         resize: none;
 
-        & .c-chat {
+        .c-chat {
             min-width: auto !important;
             opacity: 0.75;
 
-            & * {
+            * {
                 overflow: auto;
                 overflow-x: hidden;
                 resize: none;

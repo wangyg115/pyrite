@@ -82,19 +82,18 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .camera-field {
     align-items: "stretch";
     display: flex;
     justify-content: "space-between";
     position: relative;
 
-    & .c-stream {
+    .c-stream {
         background: var(--grey-400);
         border: var(--border) solid var(--grey-200);
         position: absolute;
         right: 0;
-        /* height: 80px; */
         width: 180px;
     }
 }

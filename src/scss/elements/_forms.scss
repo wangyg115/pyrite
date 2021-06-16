@@ -1,11 +1,11 @@
 .field {
     padding: var(--spacer);
 
-    & label {
+    label {
         color: var(--grey-100);
     }
 
-    & .help {
+    .help {
         color: var(--grey-100);
         font-size: var(--text-small);
         font-style: italic;

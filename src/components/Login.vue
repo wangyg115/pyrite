@@ -98,14 +98,14 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .present-switch {
     margin: var(--space-1) 0;
 
-    & input {
+    input {
         display: none;
 
-        & + label {
+        + label {
             margin-right: var(--space-1);
             overflow: auto;
 
@@ -125,23 +125,23 @@ export default {
         }
     }
 
-    & .icon {
+    .icon {
         border-bottom: 2px solid transparent;
 
     }
 
-    & input:checked + label {
+    input:checked + label {
 
         &::before {
             transform: scaleX(1);
         }
 
-        & .icon {
+        .icon {
             fill: var(--primary-color);
         }
     }
 
-    & input:not(:checked) + label {
+    input:not(:checked) + label {
 
         &:hover {
 
@@ -150,7 +150,7 @@ export default {
             }
         }
 
-        & .icon:hover {
+        .icon:hover {
             cursor: pointer;
         }
     }

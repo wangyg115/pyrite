@@ -5,12 +5,12 @@
 
     &.active {
 
-        & > svg {
+        > svg {
             color: var(--primary-color);
         }
     }
 
-    & > .icon {
+    > .icon {
         align-self: center;
         margin: var(--spacer);
         transition: all 0.25s ease-in;
@@ -21,7 +21,7 @@
         }
     }
 
-    & .actions {
+    .actions {
         background: var(--grey-500);
         border: 1px solid var(--grey-300);
         box-shadow: var(--shadow);
@@ -29,7 +29,7 @@
         position: absolute;
         z-index: 10000;
 
-        & button {
+        button {
             align-items: center;
             background: none;
             color: var(--grey-200);
@@ -41,7 +41,7 @@
             user-select: none;
             width: 200px;
 
-            & svg {
+            svg {
                 color: var(--primary-color);
                 margin: var(--spacer);
             }

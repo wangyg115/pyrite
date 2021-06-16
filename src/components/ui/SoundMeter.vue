@@ -124,7 +124,7 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 canvas {
     border: 1px solid var(--grey-200);
     height: var(--spacer);

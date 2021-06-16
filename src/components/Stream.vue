@@ -221,7 +221,7 @@ export default {
             if (this.glnStream) {
                 this.glnStream.stream = this.stream
                 // this.glnStream.onstats = this.gotUpStats.bind(this)
-                
+
                 this.stream.onaddtrack = (e) => {
                     let t = e.track
                     this.glnStream.pc.addTrack(t, this.stream)
@@ -321,7 +321,7 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .c-stream {
     background: var(--grey-500);
     display: flex;
@@ -329,7 +329,7 @@ export default {
     justify-items: center;
     position: relative;
 
-    & video {
+    video {
         border: 2px solid var(--grey-400);
         object-fit: cover;
 
@@ -338,7 +338,7 @@ export default {
         }
     }
 
-    & .stream-bar {
+    .stream-bar {
         align-items: center;
         background: var(--grey-500);
         border-top: 1px solid var(--grey-300);
@@ -347,7 +347,7 @@ export default {
         position: absolute;
         width: 100%;
 
-        & .soundmeter {
+        .soundmeter {
             background: var(--grey-400);
             border: 0;
             height: var(--space-4);
@@ -355,11 +355,11 @@ export default {
             width: 2px;
         }
 
-        & .buttons {
+        .buttons {
             display: flex;
         }
 
-        & .about {
+        .about {
             color: var(--grey-0);
             flex: 1;
             font-weight: 600;

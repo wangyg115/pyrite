@@ -65,11 +65,11 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .user {
     font-family: var(--font-secondary);
 
-    & .me {
+    .me {
         font-size: var(--text-small);
     }
 }

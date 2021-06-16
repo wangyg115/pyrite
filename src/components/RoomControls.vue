@@ -111,7 +111,7 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .c-controls {
     background: var(--grey-400);
     border-right: var(--border) solid var(--grey-300);

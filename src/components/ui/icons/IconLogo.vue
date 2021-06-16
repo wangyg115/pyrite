@@ -31,7 +31,7 @@
         d="M 12.129873,4.7517214 A 7.1183372,7.1183372 0 0 0 7.0378715,6.8962918 L 9.5131795,11.18435 13.181961,4.8299879 a 7.1183372,7.1183372 0 0 0 -1.052088,-0.078266 z"
     />
     <circle
-        id="circle1843"    
+        id="circle1843"
         class="pupil primary"
         cx="12.129838"
         cy="11.870106"
@@ -39,7 +39,7 @@
     />
 </template>
 
-<style lang="postcss">
+<style lang="scss">
 @keyframes anim-1 {
 
     0%,
@@ -59,7 +59,7 @@
     0%,
     55% {
         fill: transparent;
-  
+
     }
 
     100% {
@@ -70,7 +70,7 @@
 @keyframes anim-3 {
 
     0% {
-        fill: transparent;  
+        fill: transparent;
         opacity: 0.5;
     }
 
@@ -101,15 +101,15 @@
 
 .logo-animated {
 
-    & .shard.primary {
+    .shard.primary {
         animation: 1.6s ease-in-out running anim-1;
     }
 
-    & .shard.dark {
+    .shard.dark {
         animation: 1.4s ease-in-out running anim-2;
     }
 
-    & .pupil {
+    .pupil {
         animation: 1s ease-in-out running anim-3;
     }
 }

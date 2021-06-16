@@ -2,10 +2,10 @@
     <div class="c-stream-reports">
         <div class="sections">
             <button
-                v-for="(reportType, reportTypeName) of filteredReports" :key="reportTypeName" 
-                class="btn btn-menu compact no-feedback stats-type tooltip tooltip-right" 
+                v-for="(reportType, reportTypeName) of filteredReports" :key="reportTypeName"
+                class="btn btn-menu compact no-feedback stats-type tooltip tooltip-right"
                 :class="{ active: activeReport.name === reportTypeName}"
-                :data-tooltip="reportTypeName" 
+                :data-tooltip="reportTypeName"
                 @click="setActiveReport(reportType, reportTypeName)"
             >
                 <Icon class="icon-mini" name="ScreenShare" />
@@ -73,7 +73,7 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .c-stream-reports {
     background: rgba(0, 0, 0, 0.75);
     color: #fff;
@@ -83,27 +83,27 @@ export default {
     position: absolute;
     width: 100%;
 
-    & .sections {
+    .sections {
         display: flex;
         flex-wrap: wrap;
     }
 
-    & .stats-type {
+    .stats-type {
         background: none;
         color: #fff;
     }
 
-    & .title {
+    .title {
         font-weight: bold;
     }
 
-    & .stats {
+    .stats {
         display: none;
         gap: var(--spacer);
         margin-top: var(--spacer);
         overflow-y: scroll;
 
-        & .stat {
+        .stat {
 
             .title {
                 font-weight: bold;
@@ -114,7 +114,7 @@ export default {
     &:hover {
         cursor: pointer;
 
-        & .stats {
+        .stats {
             display: flex;
         }
     }

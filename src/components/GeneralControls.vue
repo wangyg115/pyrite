@@ -68,7 +68,7 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .c-general-controls {
     background: var(--grey-400);
     border-left: var(--border) solid var(--grey-300);
@@ -76,7 +76,7 @@ export default {
     flex-direction: column;
     justify-content: space-between;
 
-    & .btn-logout {
+    .btn-logout {
         margin-top: var(--space-1);
     }
 }

@@ -43,22 +43,22 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .c-field-checkbox {
 
-    & .row {
+    .row {
         align-items: center;
         display: flex;
     }
 
-    & label.switch {
+    label.switch {
         height: calc(var(--spacer) * 3);
         margin-right: var(--spacer);
         position: relative;
         user-select: none;
         width: calc(var(--spacer) * 5);
 
-        & .slider {
+        .slider {
             background-color: var(--grey-500);
             border-radius: calc(var(--spacer) * 2);
             bottom: 0;
@@ -81,12 +81,12 @@ export default {
             }
         }
 
-        & input {
+        input {
             height: 0;
             opacity: 0;
             width: 0;
 
-            & + .slider {
+            + .slider {
 
                 svg {
                     transition: all 0.5s ease-in-out;
@@ -104,7 +104,7 @@ export default {
         }
     }
 
-    & .field-label {
+    .field-label {
         font-family: var(--font-secondary);
     }
 }

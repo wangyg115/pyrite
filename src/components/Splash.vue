@@ -21,7 +21,7 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .c-splash {
     align-items: center;
     display: flex;
@@ -29,19 +29,19 @@ export default {
     font-family: var(--font-secondary);
     justify-content: center;
 
-    & .icon {
+    .icon {
         height: 300px;
         transform: scale(1.25);
         width: 300px;
     }
 
-    & .title {
+    .title {
         color: var(--primary-color);
         font-size: var(--text-huge);
         font-weight: 600;
     }
 
-    & .propaganda {
+    .propaganda {
         color: var(--grey-200);
         font-size: var(--text-large);
         font-weight: 500;

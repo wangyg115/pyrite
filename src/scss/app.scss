@@ -1,11 +1,11 @@
-@import "./buttons";
-@import "./content";
-@import "./context-menu";
-@import "./fonts";
-@import "./forms";
-@import "./presence";
-@import "./tabs";
-@import "./tooltip";
+@import "./elements/buttons";
+@import "./elements/content";
+@import "./elements/context-menu";
+@import "./elements/fonts";
+@import "./elements/forms";
+@import "./elements/presence";
+@import "./elements/tabs";
+@import "./elements/tooltip";
 
 .theme-dark {
     --primary-color: #21d3ee;

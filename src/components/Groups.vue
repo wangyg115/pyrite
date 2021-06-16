@@ -72,17 +72,17 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .c-groups {
 
-    & .group {
+    .group {
 
-        & .name {
+        .name {
             font-family: var(--font-secondary);
         }
     }
 
-    & .custom-group {
+    .custom-group {
         padding-left: 0;
     }
 }

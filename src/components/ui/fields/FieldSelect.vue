@@ -203,26 +203,26 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .c-field-select {
     max-width: 350px;
     width: 100%;
 
-    & label {
+    label {
         font-family: var(--font-secondary);
     }
 
-    & .input-container {
+    .input-container {
         display: flex;
         flex-direction: column;
         position: relative;
         width: 100%;
 
-        & .button-wrapper {
+        .button-wrapper {
             display: flex;
             z-index: 1000;
 
-            & input {
+            input {
                 background: var(--grey-400);
                 border: 0;
                 border-bottom: 1px solid var(--grey-200);
@@ -243,7 +243,7 @@ export default {
             }
         }
 
-        & .options {
+        .options {
             background: var(--grey-400);
             border: 1px solid var(--grey-300);
             box-shadow: 0 0 var(--border) rgba(var(--grey-500), 0.8);
@@ -256,7 +256,7 @@ export default {
             width: inherit;
             z-index: 100000;
 
-            & .option {
+            .option {
                 color: var(--grey-100);
                 padding: var(--spacer);
                 text-align: left;
