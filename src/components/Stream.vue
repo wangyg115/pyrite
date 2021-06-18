@@ -8,31 +8,49 @@
             :muted="modelValue.isUp"
             :playsinline="true"
         />
+        <transition name="loading-transition">
+            <div v-if="loading" class="loading">
+                <Icon class="spinner" name="Spinner" />
+            </div>
+        </transition>
 
-        <StreamReports v-if="stats.visible" :reports="stats.reports" />
+        <button
+            v-if="!loading && !stats.visible" class="btn-stream-reports btn btn-menu small tooltip no-feedback"
+            :data-tooltip="$t('stream info')"
+            @click="toggleStats"
+        >
+            <Icon class="icon-mini" name="Info" />
+        </button>
 
-        <div v-if="controls" class="stream-bar">
+        <StreamReports v-if="stats.visible" :stream="modelValue" @click="toggleStats" />
+
+        <div v-if="controls && !loading" class="stream-bar">
             <div class="buttons">
-                <button class="btn btn-menu tooltip" :data-tooltip="$t('info')" @click="toggleStats">
-                    <Icon class="icon-mini" name="Info" />
-                </button>
                 <button
-                    v-if="pip.enabled" class="btn btn-menu tooltip"
+                    v-if="pip.enabled" class="btn btn-menu small tooltip"
                     :data-tooltip="$t('picture-in-picture')"
                     @click="setPip"
                 >
                     <Icon class="icon-mini" name="Pip" />
                 </button>
-                <button class="btn btn-menu tooltip" :data-tooltip="$t('fullscreen')" @click="setFullscreen">
+                <button class="btn btn-menu small tooltip" :data-tooltip="$t('fullscreen')" @click="setFullscreen">
                     <Icon class="icon-mini" name="Fullscreen" />
                 </button>
             </div>
-            <div class="about">
-                {{ label }}
+
+            <div class="user" :class="{'has-audio': hasAudio}">
+                <div class="name">
+                    {{ label }}
+                </div>
+                <div
+                    v-if="hasAudio" key=""
+                    class="volume-slider tooltip tooltip-left"
+                    :data-tooltip="`${volume.value}% ${$t('audio volume')}`"
+                >
+                    <FieldSlider v-model="volume" />
+                </div>
             </div>
-            <button v-if="hasAudio" class="btn btn-menu no-feedback tooltip tooltip-left" :data-tooltip="`${$t('audio volume')} ${volume.value}`">
-                <FieldSlider v-model="volume" />
-            </button>
+
             <SoundMeter
                 v-if="hasAudio && stream" class="soundmeter"
                 orientation="vertical"
@@ -81,6 +99,7 @@ export default {
             activityDetected: false,
             hasAudio: false,
             label: '',
+            loading: true,
             media: null,
             mediaFailed: false,
             muted: false,
@@ -90,7 +109,6 @@ export default {
             },
             state: app.state,
             stats: {
-                reports: {},
                 visible: false,
             },
             stream: null,
@@ -98,57 +116,6 @@ export default {
     },
     emits: ['update:modelValue'],
     methods: {
-        // gotDownStats(stats) {
-        //     let maxEnergy = 0
-        //     let text = ''
-
-        //     const activityDetectionPeriod = 700
-        //     const activityDetectionThreshold = 0.2
-
-        //     this.glnStream.pc.getReceivers().forEach(r => {
-        //         let tid = r.track && r.track.id
-        //         let s = tid && stats[tid]
-
-        //         let energy = s && s['track'] && s['track'].audioEnergy
-        //         let _stats = s && s['track']
-        //         console.log('SSS123', stats)
-
-        //         if(typeof energy === 'number')
-        //             maxEnergy = Math.max(maxEnergy, energy)
-        //     })
-
-        //     // totalAudioEnergy is defined as the integral of the square of the
-        //     // volume, so square the threshold.
-        //     if(maxEnergy > activityDetectionThreshold * activityDetectionThreshold) {
-        //         this.glnStream.userdata.lastVoiceActivity = Date.now()
-        //         this.activityDetected = true
-        //     } else {
-        //         let last = this.glnStream.userdata.lastVoiceActivity
-        //         if(!last || Date.now() - last > activityDetectionPeriod) {
-        //             this.activityDetected = false
-        //         }
-        //     }
-        //     console.log('DOWN', text)
-        //     this.stats.bps = text
-        // },
-
-        // gotUpStats() {
-        //     let text = ''
-
-        //     this.glnStream.pc.getSenders().forEach(s => {
-        //         let tid = s.track && s.track.id
-        //         let stats = tid && this.glnStream.stats[tid]
-        //         let rate = stats && stats['outbound-rtp'] && stats['outbound-rtp'].rate
-        //         if(typeof rate === 'number') {
-        //             if(text) {
-        //                 text = text + ' + '
-        //             }
-        //             text = text + Math.round(rate / 1000) + 'kbps'
-        //         }
-        //     })
-
-        //     this.stats.bps = text
-        // },
         setFullscreen() {
             this.$refs.media.requestFullscreen()
         },
@@ -177,8 +144,16 @@ export default {
         }
 
         this.muted = this.$refs.media.muted
+        
+        this.$refs.media.addEventListener('playing', () => {
+            this.loading = false
+        })
 
         if (this.modelValue.isUp) {
+            // Mute local streams, so people don't hear themselves talk.
+            if (!this.muted) {
+                this.toggleMuteVolume()
+            }
             app.logger.debug(`mounting upstream ${this.modelValue.id}`)
             this.label = `${this.$s.user.name} (${this.$t('you')})`
 
@@ -220,7 +195,6 @@ export default {
             // Networked? add stream events to deal with the peer connection.
             if (this.glnStream) {
                 this.glnStream.stream = this.stream
-                // this.glnStream.onstats = this.gotUpStats.bind(this)
 
                 this.stream.onaddtrack = (e) => {
                     let t = e.track
@@ -231,7 +205,6 @@ export default {
                 this.stream.onremovetrack = (e) => {
                     delete(this.glnStream.labels[e.track.id])
 
-                    /** @type {RTCRtpSender} */
                     this.glnStream.pc.getSenders().forEach(s => {
                         if(s.track === e.track) {
                             app.logger.info('removing sender track')
@@ -261,17 +234,6 @@ export default {
             // Networked down stream
             this.glnStream = app.connection.down[this.modelValue.id]
             this.stream = this.glnStream.stream
-
-            setInterval(async() => {
-                const stats = await this.glnStream.pc.getStats(null)
-                stats.forEach(report => {
-                    if (!this.stats.reports[report.type]) this.stats.reports[report.type] = {}
-                    this.stats.reports[report.type][report.id] = report
-                })
-            }, 500)
-
-            // this.glnStream.onstats = this.gotDownStats
-            this.glnStream.setStatsInterval(500)
 
             this.label = this.glnStream.username
 
@@ -322,6 +284,21 @@ export default {
 </script>
 
 <style lang="scss">
+.loading-transition-enter-active, 
+.loading-transition-leave-active {
+    transition: opacity .5s;
+}
+
+.loading-transition-enter, 
+.loading-transition-leave-to {
+    opacity: 0;
+}
+
+@keyframes spinner {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 .c-stream {
     background: var(--grey-500);
     display: flex;
@@ -338,9 +315,35 @@ export default {
         }
     }
 
+    .loading {
+        background: var(--grey-500);
+        height: 100%;
+        padding: 25%;
+        position: absolute;
+        transform-origin: 50% 50%;
+        width: 100%;
+
+        .spinner {
+            animation-duration: 0.75s;
+            animation-iteration-count: infinite;
+            animation-name: spinner;
+            
+            color: var(--primary-color);
+            filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+            height: 100%;
+            width: 100%;
+        }
+    }
+
+    .btn-stream-reports {
+        color: var(--grey-0);
+        filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+        position: absolute;
+    }
+
     .stream-bar {
         align-items: center;
-        background: var(--grey-500);
+        background: var(--grey-400);
         border-top: 1px solid var(--grey-300);
         bottom: 0;
         display: flex;
@@ -350,21 +353,62 @@ export default {
         .soundmeter {
             background: var(--grey-400);
             border: 0;
-            height: var(--space-4);
+            height: var(--space-3);
             margin: 0;
-            width: 2px;
+            width: 1px;
         }
 
         .buttons {
             display: flex;
         }
 
-        .about {
-            color: var(--grey-0);
+        .user {
+            align-items: center;
+            color: var(--primary-color);
+            display: flex;
             flex: 1;
+            font-family: var(--font-secondary);
+            font-size: var(--text-small);
             font-weight: 600;
-            padding-right: var(--spacer);
-            text-align: right;
+            height: var(--space-3);
+            justify-content: flex-end;
+
+            .name {               
+                padding-right: calc(var(--spacer) * 2);
+                text-align: right;
+                text-transform: uppercase;
+            }
+
+            &.has-audio {
+
+                .name {
+                    margin-right: var(--spacer);
+                }
+            }
+
+            .volume-slider {
+                height: var(--space-3);
+                position: absolute;
+                width: 10px;
+
+                &.tooltip-left::after {
+                    margin-top: -100px;
+                    position: absolute;
+                }
+
+                input[type=range] {
+                    // Cut off the top/bottom borders.
+                    border-left: 0;
+                    border-right: 0;
+                    bottom: 0;
+                    position: absolute;
+                    right: 0;
+                    transform: rotate(-90deg) translate(18px, 20px);
+                    // This is actually the height (rotated).
+                    width: var(--space-3);
+                }
+            }
+
         }
     }
 

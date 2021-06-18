@@ -36,6 +36,7 @@ import IconScreenShare from './IconScreenShare.vue'
 import IconSend from './IconSend.vue'
 import IconSettings from './IconSettings.vue'
 import IconSettingsMisc from './IconSettingsMisc.vue'
+import IconSpinner from './IconSpinner.vue'
 import IconStopScreenShare from './IconStopScreenShare.vue'
 import IconUser from './IconUser.vue'
 import IconUserUnknown from './IconUserUnknown.vue'
@@ -70,6 +71,7 @@ export default {
         IconSend,
         IconSettings,
         IconSettingsMisc,
+        IconSpinner,
         IconStopScreenShare,
         IconUser,
         IconUserUnknown,

@@ -1,18 +1,21 @@
 <template>
-    <Icon
-        v-if="modelValue.locked" class="icon icon-mini locked"
-        name="Lock"
-        @click="onClick(false)"
-    />
-    <input
-        :class="{ locked: modelValue.locked }"
-        :disabled="modelValue.locked"
-        step="1"
-        type="range"
-        :value="modelValue.value"
-        @click="onClick(true)"
-        @input="updateModel($event)"
-    >
+    <div class="c-field-slider">
+        <Icon
+            v-if="modelValue.locked" class="icon icon-tiny locked"
+            name="Lock"
+            @click="onClick(false)"
+        />
+        <input
+            :class="{ locked: modelValue.locked }"
+            :disabled="modelValue.locked"
+            step="1"
+            type="range"
+            :value="modelValue.value"
+            @click="onClick(true)"
+            @input="updateModel($event)"
+        >
+        <div class="event-catcher" @click="onClick(true)" />
+    </div>
 </template>
 
 <script>
@@ -60,71 +63,83 @@ export default {
 </script>
 
 <style lang="scss">
-.icon.locked {
-    color: var(--warning-color);
-    margin-left: calc(3 * var(--spacer));
-    position: absolute;
-    z-index: 1000;
-}
+.c-field-slider {
 
-input[type="range"] {
-    appearance: none;
-    background: var(--grey-500);
-    border: 1px solid var(--grey-300);
-    height: var(--spacer);
-    overflow: hidden;
-    transform: rotate(-90deg);
-    width: 100%;
+    .icon.locked {
+        color: var(--warning-color);
+        margin-left: -3px;
+        margin-top: calc(-2 * var(--spacer));
+        position: absolute;
+        z-index: 1000;
 
-    &::-moz-range-track {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    input[type="range"] {
+        appearance: none;
+        background: var(--grey-600);
+        border: 1px solid var(--grey-200);
+        height: var(--spacer);
         overflow: hidden;
-        width: 2px !important;
+        transform: rotate(-90deg);
+        width: 100%;
 
-        &:hover {
-            cursor: ew-resize;
-        }
-    }
-
-    &::-moz-range-thumb {
-        background: var(--grey-200);
-        border: 0;
-        border-radius: 0;
-        box-shadow: -80px 0 0 80px var(--primary-color);
-        display: none;
-        height: 100%;
-        width: var(--space-1);
-    }
-
-    &::-webkit-slider-runnable-track {
-        appearance: none;
-        height: var(--spacer);
-        margin-top: -1px;
-    }
-
-    &::-webkit-slider-thumb {
-        appearance: none;
-        background: var(--grey-200);
-        box-shadow: -80px 0 0 80px var(--primary-color);
-        cursor: ew-resize;
-        height: var(--spacer);
-        width: var(--space-1);
-
-        &:hover {
-            cursor: s-resize;
-        }
-    }
-
-    &:focus {
-        outline: none;
-    }
-
-    &.locked {
-
-        &::-webkit-slider-thumb {
-            box-shadow: -80px 0 0 80px var(--warning-color);
+        &::-moz-range-track {
+            overflow: hidden;
+            width: 2px !important;
 
             &:hover {
-                cursor: disabled !important;
+                cursor: ew-resize;
+            }
+        }
+
+        &::-moz-range-thumb {
+            background: var(--primary-color);
+            border: 0;
+            border-radius: 0;
+            box-shadow: -80px 0 0 80px var(--primary-color);
+            display: none;
+            height: 100%;
+            width: var(--space-1);
+        }
+
+        &::-webkit-slider-runnable-track {
+            appearance: none;
+            height: var(--spacer);
+            margin-top: -1px;
+        }
+
+        &::-webkit-slider-thumb {
+            appearance: none;
+            background: var(--primary-color);
+            box-shadow: -80px 0 0 80px var(--grey-200);
+            height: var(--spacer);
+            width: var(--space-1);
+        }
+
+        &:hover {
+            cursor: ns-resize;
+        }
+
+        &[disabled]:hover {
+            cursor: not-allowed;
+        }
+
+        &:focus {
+            outline: none;
+        }
+
+        &.locked {
+            
+            &::-webkit-slider-thumb {
+                background: var(--warning-color);
+                // box-shadow: -80px 0 0 80px var(--warning-color);
+
+                &:hover {
+                    cursor: disabled !important;
+                }
             }
         }
     }

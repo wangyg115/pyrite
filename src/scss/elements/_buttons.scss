@@ -53,6 +53,11 @@
             will-change: transform;
         }
 
+        &.small {
+            height: var(--space-3);
+            width: var(--space-3);
+        }
+
         &.warning {
             color: var(--warning-color);
 

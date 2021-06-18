@@ -101,7 +101,7 @@ export default {
 }
 </script>
 
-<style lang='postcss'>
+<style lang='scss'>
 
 @keyframes show {
 
@@ -119,19 +119,20 @@ export default {
 .c-stream-view {
     align-content: center;
     align-items: center;
+    background: var(--grey-600);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     overflow: hidden;
 
-    & > .c-stream {
+    .c-stream {
         align-self: center;
         animation: show 0.25s ease-in-out;
         box-shadow: 0px var(--spacer) var(--spacer) rgba(0, 0, 0, 0.4);
         position: relative;
     }
 
-    & .logo-animated {
+    .logo-animated {
         height: 30%;
         width: 30%;
     }

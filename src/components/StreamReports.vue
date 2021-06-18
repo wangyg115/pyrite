@@ -1,26 +1,15 @@
 <template>
     <div class="c-stream-reports">
-        <div class="sections">
-            <button
-                v-for="(reportType, reportTypeName) of filteredReports" :key="reportTypeName"
-                class="btn btn-menu compact no-feedback stats-type tooltip tooltip-right"
-                :class="{ active: activeReport.name === reportTypeName}"
-                :data-tooltip="reportTypeName"
-                @click="setActiveReport(reportType, reportTypeName)"
-            >
-                <Icon class="icon-mini" name="ScreenShare" />
-            </button>
-        </div>
-
-        <div v-if="activeReport.data" class="stats">
-            <div v-for="(stats, reportId) of activeReport.data" :key="reportId" class="stat">
+        <div
+            v-for="(category, categoryName) of stats" :key="categoryName"
+            class="category"
+        >
+            <div v-for="(stat, statName) of category" :key="statName" class="stat">
                 <div class="title">
-                    {{ stats.kind }}
+                    {{ statName }}
                 </div>
                 <div class="value">
-                    <div v-for="stat of stats" :key="stat.id">
-                        {{ stat }}
-                    </div>
+                    {{ stat }}
                 </div>
             </div>
         </div>
@@ -29,46 +18,87 @@
 
 <script>
 export default {
-    computed: {
-        filteredReports: function() {
-            const reports = {}
-            const ignoreList = ['id', 'type']
-            for (const [reportName, report] of Object.entries(this.reports)) {
-                reports[reportName] = {}
-
-                for (const [statsName, stats] of Object.entries(report)) {
-                    const _stats = {}
-
-                    for (const [statName, stat] of Object.entries(stats)) {
-                        if (!ignoreList.includes(statName)) {
-                            _stats[statName] = stat
-                        }
-                    }
-                    reports[reportName][statsName] = _stats
-                }
-            }
-
-            return reports
-        },
-    },
     data() {
         return {
-            activeReport: {
-                data: null,
-                name: null,
-            },
+            active: null,
+            glnStream: null,
+            stats: {},
         }
     },
     methods: {
-        setActiveReport(data, name) {
-            this.activeReport = {data, name}
+        onDownStats() {
+            this.glnStream.pc.getReceivers().forEach(r => {
+                let tid = r.track && r.track.id
+
+                const stats = tid && this.glnStream.stats[tid]
+                if (stats) {
+                    const filtered = {}
+                    for (const [categoryName, category] of Object.entries(stats)) {
+                        filtered[categoryName] = {}
+                        if (categoryName === 'track') {
+                            for (const [statName, stat] of Object.entries(category)) {
+                                if (statName === 'timestamp') {
+                                    continue
+                                } else if (statName === 'totalAudioEnergy') {
+                                    filtered[categoryName]['Total Audio Energy'] = Number(stat).toFixed(2)
+                                } else if (statName === 'audioEnergy') {
+                                    filtered[categoryName]['Audio Energy'] = Number(stat).toFixed(2)
+                                }
+                            }
+                        }
+                    }
+                    this.stats = filtered
+
+                }
+            })
+        },
+        onUpStats() {
+            this.glnStream.pc.getSenders().forEach(s => {
+                let tid = s.track && s.track.id
+                const stats = this.glnStream.stats[tid]
+
+                if (stats) {
+                    const filtered = {}
+                    for (const [categoryName, category] of Object.entries(stats)) {
+                        filtered[categoryName] = {}
+                        if (categoryName === 'outbound-rtp') {
+                            for (const [statName, stat] of Object.entries(category)) {
+                                if (statName === 'timestamp') {
+                                    continue
+                                } else if (statName === 'rate') {
+                                    filtered[categoryName]['Data Rate'] = `${Math.round(stat / 1000)} Kbps`
+                                } else if (statName === 'bytesSent') {
+                                    filtered[categoryName]['Streamed'] = `${Math.round(stat / 1000 / 1024)} Mb`
+                                }
+                            }
+                        }
+                    }
+
+                    this.stats = filtered
+                }
+            })
         },
     },
+    mounted() {
+        this.glnStream = null
+        if (app.connection.up[this.stream.id]) {
+            this.glnStream = app.connection.up[this.stream.id]
+            this.glnStream.onstats = this.onUpStats
+        } else {
+            this.glnStream = app.connection.down[this.stream.id]
+            this.glnStream.onstats = this.onDownStats
+        }
+
+        this.glnStream.setStatsInterval(250)
+    },
     props: {
-        reports: {
+        stream: {
             default: () => {},
             type: Object,
         },
+    },
+    unmounted() {
+        this.glnStream.onstats = null
     },
 }
 </script>
@@ -82,6 +112,10 @@ export default {
     height: 100%;
     position: absolute;
     width: 100%;
+
+    &:hover {
+        cursor: pointer;
+    }
 
     .sections {
         display: flex;
@@ -97,11 +131,14 @@ export default {
         font-weight: bold;
     }
 
-    .stats {
-        display: none;
+    .category {
+        display: flex;
+        flex-direction: column;
+        font-size: var(--text-small);
         gap: var(--spacer);
         margin-top: var(--spacer);
         overflow-y: scroll;
+        padding: var(--spacer);
 
         .stat {
 
@@ -109,14 +146,11 @@ export default {
                 font-weight: bold;
             }
         }
-    }
 
-    &:hover {
-        cursor: pointer;
-
-        .stats {
+        &.active {
             display: flex;
         }
     }
+
 }
 </style>

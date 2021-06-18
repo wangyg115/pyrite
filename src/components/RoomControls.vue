@@ -1,6 +1,10 @@
 <template>
-    <nav class="c-controls">
+    <nav class="c-room-controls">
         <div class="group-controls">
+            <button class="btn btn-menu no-feedback tooltip tooltip-left" :data-tooltip="`${volume.value}% ${$t('audio volume')}`">
+                <FieldSlider v-model="volume" />
+            </button>
+
             <button
                 v-if="$s.permissions.present"
                 class="btn btn-menu tooltip tooltip-left"
@@ -38,10 +42,6 @@
                 :data-tooltip="playFiles"
             >
                 <FieldFile v-model="playFiles" @file="togglePlayFile" />
-            </button>
-
-            <button class="btn btn-menu no-feedback tooltip tooltip-left" :data-tooltip="`${$t('master audio volume')} ${volume.value}`">
-                <FieldSlider v-model="volume" />
             </button>
         </div>
     </nav>
@@ -112,9 +112,9 @@ export default {
 </script>
 
 <style lang="scss">
-.c-controls {
+.c-room-controls {
     background: var(--grey-400);
-    border-right: var(--border) solid var(--grey-300);
+    border-left: var(--border) solid var(--grey-300);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
