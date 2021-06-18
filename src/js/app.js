@@ -349,7 +349,9 @@ class Pyrite extends EventEmitter {
             this.delUpMedia(glnStream)
         }
         glnStream.onnegotiationcompleted = () => {
-            this.setMaxVideoThroughput(glnStream, this.getMaxVideoThroughput())
+            const maxThroughput = this.getMaxVideoThroughput()
+            this.logger.info(`setting upstream max throughput: ${maxThroughput}`)
+            this.setMaxVideoThroughput(glnStream, maxThroughput)
         }
 
         return glnStream
@@ -446,6 +448,7 @@ class Pyrite extends EventEmitter {
             return
         }
 
+        this.logger.info(`requesting media types: ${this.$s.request.id}`)
         this.connection.request(this.$s.request.id)
 
         if(this.connection.permissions.present && !this.findUpMedia('local')) {

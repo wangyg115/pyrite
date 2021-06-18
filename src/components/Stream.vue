@@ -15,7 +15,7 @@
         </transition>
 
         <button
-            v-if="!loading && !stats.visible" class="btn-stream-reports btn btn-menu small tooltip no-feedback"
+            v-if="!loading && !stats.visible && controls" class="btn-stream-reports btn btn-menu small tooltip no-feedback"
             :data-tooltip="$t('stream info')"
             @click="toggleStats"
         >
