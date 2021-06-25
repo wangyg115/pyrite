@@ -5,7 +5,8 @@
         viewBox="0 0 24 24"
         width="40"
     >
-        <component :is="`Icon${name}`" :icon-props="iconProps" />
+        <component :is="`Icon${name}`" v-if="iconProps" :icon-props="iconProps" />
+        <component :is="`Icon${name}`" v-else />
     </svg>
 </template>
 
@@ -80,9 +81,9 @@ export default {
     },
     props: {
         iconProps: {
-            default() {return {}},
+            default() {return false},
             required: false,
-            type: Object,
+            type: [Object, Boolean],
         },
         name: {
             required: true,
