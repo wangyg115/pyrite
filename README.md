@@ -2,20 +2,19 @@
 
 ![Pyrite build passing](https://github.com/garage44/pyrite/actions/workflows/test.yml/badge.svg)
 
-[Pyrite](https://pyrite.video) is a web-based GUI for [Galène](https://github.com/jech/galene);
-a high-performance [Golang](https://golang.org/)/[Pion](https://github.com/pion/webrtc)-based SFU.
-Its purpose is to provide a simple, yet powerful, well-designed, user & privacy-friendly
-(video) communication experience.
+[Pyrite](https://pyrite.video) is a [Vue 3](https://v3.vuejs.org/) GUI for [Galène](https://github.com/jech/galene);
+an efficient [Golang](https://golang.org/)/[Pion](https://github.com/pion/webrtc)-based SFU.
+Its goal is to provide simple, yet powerful, user & privacy-friendly video communication to
+everyone.
 
-Pyrite is a project with scare resources. Its focus lies mainly on advancing the GUI,
-while piggybacking on advancements of the main Galène project. Its architecture is
-as straightforward as possible. Being component-based (Vue-3), using a plain reactive
-object store, Pyrite is aiming to be easy to grasp and develop.
+Pyrite is a project with scarce resources. Its focus lies mainly on advancing the GUI,
+while piggybacking on advancements of the Galène project. Its architecture is as simple
+as possible, in order to keep the project light-weight and easy to grasp.
 
 The **main** Git branch is deployed to [pyrite.video](https://pyrite.video); a public
 Galène server, that uses the latest *stable* version of Pyrite. The *develop* branch
-is continuously deployed to [beta.pyrite.video](https://beta.pyrite.video) and has
-the latest (but incomplete) features.
+is deployed to [beta.pyrite.video](https://beta.pyrite.video) and has the latest
+(but incomplete) features.
 
 ## Getting started
 
@@ -44,7 +43,6 @@ the latest (but incomplete) features.
 
 * Login with the second browser using a random username and password
 
-## Deployment
+## Documentation
 
-* Setup the [Galène SFU](https://github.com/garage44/pyrite/wiki/SFU-Config)
-* Setup a [proxy](https://github.com/garage44/pyrite/wiki/Proxy-Config) for your domain
+Checkout the [docs](./docs/index.md) for more information.
