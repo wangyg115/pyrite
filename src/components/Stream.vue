@@ -4,7 +4,7 @@
             ref="media"
             :autoplay="true"
             class="media"
-            :class="{'media-failed': mediaFailed, mirror: modelValue.mirror, 'activity-detected': activityDetected}"
+            :class="{'media-failed': mediaFailed, mirror: modelValue.mirror}"
             :muted="modelValue.isUp"
             :playsinline="true"
         />
@@ -96,7 +96,6 @@ export default {
     },
     data() {
         return {
-            activityDetected: false,
             hasAudio: false,
             label: '',
             loading: true,
@@ -144,7 +143,7 @@ export default {
         }
 
         this.muted = this.$refs.media.muted
-        
+
         this.$refs.media.addEventListener('playing', () => {
             this.loading = false
         })
@@ -284,12 +283,12 @@ export default {
 </script>
 
 <style lang="scss">
-.loading-transition-enter-active, 
+.loading-transition-enter-active,
 .loading-transition-leave-active {
     transition: opacity .5s;
 }
 
-.loading-transition-enter, 
+.loading-transition-enter,
 .loading-transition-leave-to {
     opacity: 0;
 }
@@ -309,10 +308,6 @@ export default {
     video {
         border: 2px solid var(--grey-400);
         object-fit: cover;
-
-        &.activity-detected {
-            border: 2px solid var(--primary-color);
-        }
     }
 
     .loading {
@@ -327,7 +322,7 @@ export default {
             animation-duration: 0.75s;
             animation-iteration-count: infinite;
             animation-name: spinner;
-            
+
             color: var(--primary-color);
             filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
             height: 100%;
@@ -373,7 +368,7 @@ export default {
             height: var(--space-3);
             justify-content: flex-end;
 
-            .name {               
+            .name {
                 padding-right: calc(var(--spacer) * 2);
                 text-align: right;
                 text-transform: uppercase;

@@ -92,11 +92,6 @@ class Pyrite extends EventEmitter {
         // Verify whether the local mediastream is using the proper device setup.
         this.logger.debug(`addLocalMedia ${this.$s.audio.name} / ${this.$s.video.name}`)
 
-        const constraints = {
-            audio: selectedAudioDevice,
-            video: selectedVideoDevice,
-        }
-
         if(selectedVideoDevice) {
             if (this.$s.resolution.id === '720p') {
                 this.logger.info('using full-hd resolution')
@@ -109,6 +104,11 @@ class Pyrite extends EventEmitter {
             }
         }
 
+        const constraints = {
+            audio: selectedAudioDevice,
+            video: selectedVideoDevice,
+        }
+
         try {
             this.localStream = await navigator.mediaDevices.getUserMedia(constraints)
             this.$s.mediaReady = true
@@ -117,7 +117,7 @@ class Pyrite extends EventEmitter {
             return
         }
 
-        // Connected to Galene; handle peer connection logic.
+        // Connected to Galène; handle peer connection logic.
         if (this.$s.group.connected) {
             let localStreamId = this.findUpMedia('local')
             let oldStream = localStreamId && this.connection.up[localStreamId]
@@ -496,21 +496,18 @@ class Pyrite extends EventEmitter {
     }
 
     async setMaxVideoThroughput(c, bps) {
-        this.logger.info(`maximum video throughput: ${bps}`)
         let senders = c.pc.getSenders()
         for(let i = 0; i < senders.length; i++) {
             let s = senders[i]
             if(!s.track || s.track.kind !== 'video')
                 continue
             let p = s.getParameters()
-            if(!p.encodings)
-                p.encodings = [{}]
+            if(!p.encodings) p.encodings = [{}]
             p.encodings.forEach(e => {
-                if(bps > 0)
-                    e.maxBitrate = bps
-                else
-                    delete e.maxBitrate
+                if(bps > 0) e.maxBitrate = bps
+                else delete e.maxBitrate
             })
+            this.logger.info(`maximum video throughput: ${bps}`)
 
             await s.setParameters(p)
         }
