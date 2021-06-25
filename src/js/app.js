@@ -78,23 +78,32 @@ class Pyrite extends EventEmitter {
 
         await this.setMediaChoices()
 
-        const selecteAudioDevice = this.$s.audio.id !== null && ['both', 'mike'].includes(this.$s.present) ? {deviceId: this.$s.audio.id} : false
-        const selectedVideoDevice = this.$s.video.id !== null && this.$s.present === 'both' ? {deviceId: this.$s.video.id} : false
+        let selectedAudioDevice = false
+        let selectedVideoDevice = false
 
-        // Verify whether the local mediastream is using the right devices.
+        if (this.$s.audio.id !== null) selectedAudioDevice = {deviceId: this.$s.audio.id}
+        if (this.$s.video.id !== null) selectedVideoDevice = {deviceId: this.$s.video.id}
+
+        if (this.$s.group.connected) {
+            if (!['both', 'mike'].includes(this.$s.present)) selectedAudioDevice = false
+            if (this.$s.present !== 'both') selectedVideoDevice = false
+        }
+
+        // Verify whether the local mediastream is using the proper device setup.
         this.logger.debug(`addLocalMedia ${this.$s.audio.name} / ${this.$s.video.name}`)
 
         const constraints = {
-            audio: selecteAudioDevice,
+            audio: selectedAudioDevice,
             video: selectedVideoDevice,
         }
 
         if(selectedVideoDevice) {
-            let resolution = this.$s.resolution
-            if(resolution) {
-                selectedVideoDevice.width = {ideal: resolution[0]}
-                selectedVideoDevice.height = {ideal: resolution[1]}
-            } else if(this.$s.blackboardMode) {
+            if (this.$s.resolution.id === '720p') {
+                this.logger.info('using full-hd resolution')
+                selectedVideoDevice.width = {ideal: 1280, min: 640}
+                selectedVideoDevice.height = {ideal: 720, min: 400}
+            } else if(this.$s.resolution.id === '1080p') {
+                this.logger.info('using full-hd resolution')
                 selectedVideoDevice.width = {ideal: 1920, min: 640}
                 selectedVideoDevice.height = {ideal: 1080, min: 400}
             }
@@ -113,7 +122,7 @@ class Pyrite extends EventEmitter {
             let localStreamId = this.findUpMedia('local')
             let oldStream = localStreamId && this.connection.up[localStreamId]
 
-            if(!selecteAudioDevice && !selectedVideoDevice) {
+            if(!selectedAudioDevice && !selectedVideoDevice) {
                 this.logger.warn('addLocalMedia - no media; aborting')
                 if(oldStream) {
                     this.delUpMedia(oldStream)
@@ -133,20 +142,21 @@ class Pyrite extends EventEmitter {
 
             this.localStream.getTracks().forEach(t => {
                 glnStream.labels[t.id] = t.kind
-                if(t.kind == 'audio') {
+                if(t.kind === 'audio') {
                     if(this.$s.localMute) {
                         this.logger.info('muting local stream')
                         t.enabled = false
                     }
-                } else if(t.kind == 'video') {
-                    if(this.$s.blackboardMode) {
-                        /** @ts-ignore */
+                } else if(t.kind === 'video') {
+                    if(this.$s.resolution === 'high-res') {
                         t.contentHint = 'detail'
                     }
                 }
                 glnStream.pc.addTrack(t, this.localStream)
             })
         }
+
+        return this.localStream
     }
 
     async addShareMedia() {
@@ -350,7 +360,6 @@ class Pyrite extends EventEmitter {
         }
         glnStream.onnegotiationcompleted = () => {
             const maxThroughput = this.getMaxVideoThroughput()
-            this.logger.info(`setting upstream max throughput: ${maxThroughput}`)
             this.setMaxVideoThroughput(glnStream, maxThroughput)
         }
 
@@ -448,7 +457,7 @@ class Pyrite extends EventEmitter {
             return
         }
 
-        this.logger.info(`requesting media types: ${this.$s.request.id}`)
+        this.logger.info(`acceptable media types: ${this.$s.request.id}`)
         this.connection.request(this.$s.request.id)
 
         if(this.connection.permissions.present && !this.findUpMedia('local')) {
@@ -487,7 +496,7 @@ class Pyrite extends EventEmitter {
     }
 
     async setMaxVideoThroughput(c, bps) {
-        this.logger.debug(`set maxiumum video throughput: ${bps}`)
+        this.logger.info(`maximum video throughput: ${bps}`)
         let senders = c.pc.getSenders()
         for(let i = 0; i < senders.length; i++) {
             let s = senders[i]

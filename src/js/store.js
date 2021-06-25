@@ -2,14 +2,13 @@ import {reactive} from 'vue'
 
 const persistantState = reactive({
     audio: {id: null, name: ''},
-    blackboardMode: false,
     language: {id: 'en'},
     loading: true,
     localMute: false,
     permissions: {},
     present: '', // '', mike or 'both'
     request: {id: 'everything', name: 'Everything'},
-    resolution: null,
+    resolution: {id: 'default', name: 'Default'},
     send: {id: 'normal', name: 'Normal'},
     title: '',
     user: {

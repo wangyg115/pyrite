@@ -4,7 +4,7 @@
             <div class="camera-field">
                 <FieldSelect
                     v-model="$s.video"
-                    :help="$t('select the video camera to use')"
+                    :help="$t('Select the camera device to use for conferencing')"
                     :label="$t('Camera')"
                     name="video"
                     :options="$s.devices.video"
@@ -13,8 +13,16 @@
             </div>
 
             <FieldSelect
+                v-model="$s.resolution"
+                :help="$t('This setting only has effect if your camera actually supports the preferred resolution.')"
+                :label="$t('Preferred Resolution')"
+                name="resolution"
+                :options="resolutionOptions"
+            />
+
+            <FieldSelect
                 v-model="$s.audio"
-                :help="$t('select the microphone to use')"
+                :help="$t('Select the microphone device to use')"
                 :label="$t('Microphone')"
                 name="audio"
                 :options="$s.devices.audio"
@@ -23,13 +31,6 @@
             <div class="soundmeter">
                 <SoundMeter v-if="streamId && stream" :stream="stream" :stream-id="streamId" />
             </div>
-
-            <FieldCheckbox
-                v-model="$s.blackboardMode"
-                :help="$t('Increases resolution and lowers framerate')"
-                :label="$t('Blackboard mode')"
-                name="blackboard"
-            />
         </div>
     </section>
 </template>
@@ -48,6 +49,21 @@ export default {
     data() {
         return {
             description: null,
+            resolutionOptions: [
+                {
+                    id: 'default',
+                    name: this.$t('Default'),
+                },
+                {
+                    id: '720p',
+                    name: this.$t('HD - 720p (1280x720)'),
+                },
+                {
+                    help: this.$t('Full HD video may result in framerate decay'),
+                    id: '1080p',
+                    name: this.$t('Full HD - 1080p (1920x1080)'),
+                },
+            ],
             stream: null,
             streamId: null,
         }
@@ -56,7 +72,11 @@ export default {
     async mounted() {
         // Not a media stream yet? Create one for the audio settings
         if (!app.localStream) {
-            await app.addLocalMedia()
+            const res = await app.addLocalMedia()
+            if (!res) {
+                app.notify({level: 'error', message: 'Unable to find a valid device'})
+                return
+            }
         }
         this.stream = app.localStream
         this.streamId = app.localStream.id

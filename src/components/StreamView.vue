@@ -13,6 +13,10 @@
 import {nextTick} from 'vue'
 import Stream from './Stream.vue'
 
+/**
+ * Grid-layout made possible by https://github.com/salbatore
+ * See: https://alicunde.github.io/Videoconference-Dish-CSS-JS/
+ */
 export default {
     components: {Stream},
     beforeUnmount() {
@@ -30,9 +34,6 @@ export default {
         this.resizeObserver.observe(this.$refs.view)
     },
     methods: {
-        /**
-         * Thanks to https://alicunde.github.io/Videoconference-Dish-CSS-JS/
-         */
         area(increment, streamCount, width, height, margin = 8) {
             let i = 0
             let w = 0
@@ -77,10 +78,11 @@ export default {
         },
         setWidth(width, margin) {
             for (const streamRef of this.streamsRef) {
-                if (!streamRef.$refs.root) continue
                 streamRef.$refs.root.style.width = width + 'px'
                 streamRef.$refs.root.style.margin = margin + 'px'
-                streamRef.$refs.root.style.height = (width * 0.75) + 'px'
+                // Apply stream aspect-ratio
+                const aspectRatio = streamRef.$refs.media.videoHeight / streamRef.$refs.media.videoWidth
+                streamRef.$refs.root.style.height = (width * aspectRatio) + 'px'
             }
         },
     },

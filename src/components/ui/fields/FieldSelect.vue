@@ -39,7 +39,10 @@
                 </div>
             </div>
         </div>
-        <div v-if="help" class="help">
+        <div v-if="searchSelected.help" class="help">
+            {{ searchSelected.help }}
+        </div>
+        <div v-else-if="help" class="help">
             {{ help }}
         </div>
     </div>
