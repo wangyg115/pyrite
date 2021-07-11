@@ -9,15 +9,15 @@
         />
 
         <FieldSelect
-            v-model="$s.request"
+            v-model="$s.media.accept"
             :help="$t('Stream types that you want to receive')"
             :label="$t('Acceptable Media')"
             name="request"
-            :options="receiveOptions"
+            :options="acceptOptions"
         />
 
         <FieldSelect
-            v-model="$s.send"
+            v-model="$s.media.upstream"
             :help="$t('Network bandwidth to use for sending media')"
             :label="$t('Bandwidth')"
             name="send"
@@ -30,15 +30,15 @@
 export default {
     data() {
         return {
-            languages: [
-                {id: 'en', name: this.$t('English')},
-                {id: 'nl', name: this.$t('Nederlands')},
-            ],
-            receiveOptions: [
+            acceptOptions: [
                 {id: 'nothing', name: this.$t('Nothing')},
                 {id: 'audio', name: this.$t('Audio')},
                 {id: 'screenshare', name: `${this.$t('Audio')} & ${this.$t('Screenshare')}`},
                 {id: 'everything', name: `${this.$t('Audio')}, ${this.$t('Video')} & ${this.$t('Screenshare')}`},
+            ],
+            languages: [
+                {id: 'en', name: this.$t('English')},
+                {id: 'nl', name: this.$t('Nederlands')},
             ],
             sendOptions: [
                 {id: 'lowest', name: `${this.$t('Lowest')} - 150 Kbps`},

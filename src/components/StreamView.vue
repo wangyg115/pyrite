@@ -80,8 +80,14 @@ export default {
             for (const streamRef of this.streamsRef) {
                 streamRef.$refs.root.style.width = width + 'px'
                 streamRef.$refs.root.style.margin = margin + 'px'
+                let aspectRatio
                 // Apply stream aspect-ratio
-                const aspectRatio = streamRef.$refs.media.videoHeight / streamRef.$refs.media.videoWidth
+                if (streamRef.$refs.media.videoHeight) {
+                    aspectRatio = streamRef.$refs.media.videoHeight / streamRef.$refs.media.videoWidth
+                } else {
+                    aspectRatio = 0.75
+                }
+
                 streamRef.$refs.root.style.height = (width * aspectRatio) + 'px'
             }
         },

@@ -166,6 +166,10 @@ export default {
         },
     },
     props: {
+        disabled: {
+            default: () => false,
+            type: Boolean,
+        },
         empty: {
             default: 'no options available',
             type: String,
@@ -226,7 +230,7 @@ export default {
             z-index: 1000;
 
             input {
-                background: var(--grey-400);
+                background: none;
                 border: 0;
                 border-bottom: 1px solid var(--grey-200);
                 font-size: 1rem;
@@ -242,6 +246,17 @@ export default {
 
                 &:hover {
                     cursor: pointer;
+                }
+
+                &[disabled] {
+
+                    &::placeholder {
+                        color: var(--grey-200);
+                    }
+
+                    &:hover {
+                        cursor: not-allowed;
+                    }
                 }
             }
         }

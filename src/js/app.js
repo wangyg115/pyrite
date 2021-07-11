@@ -52,26 +52,20 @@ class Pyrite extends EventEmitter {
 
     async addFileMedia(file) {
         this.logger.info('add file media')
-        const glnStream = this.connection.newUpStream()
-        glnStream.kind = 'video'
 
-        this.$s.streams.push({
-            id: glnStream.id,
-            isUp: true,
-            kind: glnStream.kind,
+        const {glnStream} = this.newUpStream(null, {
+            direction: 'up',
             mirror: false,
             src: file,
-            volume: {
-                locked: false,
-                value: 100,
-            },
         })
+        glnStream.kind = 'video'
+
         this.$s.upMedia[glnStream.kind].push(glnStream.id)
         glnStream.userdata.play = true
         return glnStream
     }
 
-    async addLocalMedia() {
+    async addLocalMedia(presence) {
         if (!this.$s.group.connected && this.localStream) {
             this.delLocalMedia()
         }
@@ -81,24 +75,27 @@ class Pyrite extends EventEmitter {
         let selectedAudioDevice = false
         let selectedVideoDevice = false
 
-        if (this.$s.audio.id !== null) selectedAudioDevice = {deviceId: this.$s.audio.id}
-        if (this.$s.video.id !== null) selectedVideoDevice = {deviceId: this.$s.video.id}
+        if (this.$s.devices.mic.selected.id !== null) selectedAudioDevice = {deviceId: this.$s.devices.mic.selected.id}
+        if (this.$s.devices.cam.selected.id !== null) selectedVideoDevice = {deviceId: this.$s.devices.cam.selected.id}
 
-        if (this.$s.group.connected) {
-            if (!['both', 'mike'].includes(this.$s.present)) selectedAudioDevice = false
-            if (this.$s.present !== 'both') selectedVideoDevice = false
+        if (presence) {
+            if (!presence.cam.enabled) selectedVideoDevice = false
+            if (!presence.mic.enabled) selectedAudioDevice = false
+            // A local stream cannot be initialized with neither audio and video; return early.
+            if (!presence.cam.enabled && !presence.mic.enabled) {
+                return
+            }
         }
 
         // Verify whether the local mediastream is using the proper device setup.
-        this.logger.debug(`addLocalMedia ${this.$s.audio.name} / ${this.$s.video.name}`)
+        this.logger.debug(`using cam ${this.$s.devices.cam.selected.name}`)
+        this.logger.debug(`using mic ${this.$s.devices.mic.selected.name}`)
 
         if(selectedVideoDevice) {
-            if (this.$s.resolution.id === '720p') {
-                this.logger.info('using full-hd resolution')
+            if (this.$s.devices.cam.resolution.id === '720p') {
                 selectedVideoDevice.width = {ideal: 1280, min: 640}
                 selectedVideoDevice.height = {ideal: 720, min: 400}
-            } else if(this.$s.resolution.id === '1080p') {
-                this.logger.info('using full-hd resolution')
+            } else if(this.$s.devices.cam.resolution.id === '1080p') {
                 selectedVideoDevice.width = {ideal: 1920, min: 640}
                 selectedVideoDevice.height = {ideal: 1080, min: 400}
             }
@@ -117,13 +114,13 @@ class Pyrite extends EventEmitter {
             return
         }
 
-        // Connected to Galène; handle peer connection logic.
+        // Add local stream to Galène; handle peer connection logic.
         if (this.$s.group.connected) {
             let localStreamId = this.findUpMedia('local')
             let oldStream = localStreamId && this.connection.up[localStreamId]
 
             if(!selectedAudioDevice && !selectedVideoDevice) {
-                this.logger.warn('addLocalMedia - no media; aborting')
+                this.logger.warn('no media; aborting')
                 if(oldStream) {
                     this.delUpMedia(oldStream)
                 }
@@ -131,24 +128,28 @@ class Pyrite extends EventEmitter {
             }
 
             if(oldStream) {
-                this.logger.debug(`addLocalMedia - removing old stream first`)
+                this.logger.debug(`removing old stream`)
                 this.stopUpMedia(oldStream)
             }
 
-            const glnStream = this.newUpStream(localStreamId)
+            const {glnStream, streamState} = this.newUpStream(localStreamId)
             glnStream.kind = 'local'
             glnStream.stream = this.localStream
+            this.localGlnStream = glnStream
+
             this.$s.upMedia[glnStream.kind].push(glnStream.id)
 
             this.localStream.getTracks().forEach(t => {
                 glnStream.labels[t.id] = t.kind
                 if(t.kind === 'audio') {
-                    if(this.$s.localMute) {
+                    streamState.hasAudio = true
+                    if(!this.$s.devices.mic.enabled) {
                         this.logger.info('muting local stream')
                         t.enabled = false
                     }
                 } else if(t.kind === 'video') {
-                    if(this.$s.resolution === 'high-res') {
+                    streamState.hasVideo = true
+                    if(this.$s.devices.cam.resolution.id === '1080p') {
                         t.contentHint = 'detail'
                     }
                 }
@@ -172,13 +173,20 @@ class Pyrite extends EventEmitter {
             return
         }
 
-        const glnStream = this.newUpStream()
+        const {glnStream, streamState} = this.newUpStream()
         glnStream.kind = 'screenshare'
         this.$s.upMedia[glnStream.kind].push(glnStream.id)
 
         glnStream.stream = stream
+
         stream.getTracks().forEach(t => {
+            if (t.kind === 'audio') {
+                streamState.hasAudio = true
+            } else if (t.kind === 'video') {
+                streamState.hasVideo = true
+            }
             glnStream.pc.addTrack(t, stream)
+            // Screensharing was stopped; e.g. through browser ui.
             t.onended = () => {
                 this.delUpMedia(glnStream)
             }
@@ -186,14 +194,6 @@ class Pyrite extends EventEmitter {
         })
 
         return glnStream
-    }
-
-    changePresentation() {
-        let id = this.findUpMedia('local')
-        if(id) {
-            this.logger.info('resettings local stream')
-            this.addLocalMedia()
-        }
     }
 
     async connect() {
@@ -296,6 +296,7 @@ class Pyrite extends EventEmitter {
         this.$s.streams = []
         this.connection.close()
         this.delLocalMedia()
+        this.$s.group.connected = false
     }
 
     findUpMedia(kind) {
@@ -307,7 +308,7 @@ class Pyrite extends EventEmitter {
     }
 
     getMaxVideoThroughput() {
-        switch(this.$s.send.id) {
+        switch(this.$s.media.upstream.id) {
         case 'lowest':
             return 150000
         case 'low':
@@ -321,35 +322,39 @@ class Pyrite extends EventEmitter {
         }
     }
 
-    muteLocalTracks(mute) {
-        this.logger.info(`mute local tracks: ${mute}`)
-        this.$s.muted = mute
+    muteLocalTracks(enabled) {
         for(let id in this.connection.up) {
             const glnStream = this.connection.up[id]
             if(glnStream.kind === 'local') {
-                let stream = glnStream.stream
-                stream.getTracks().forEach(t => {
+                glnStream.stream.getTracks().forEach(t => {
                     if(t.kind === 'audio') {
-                        t.enabled = !mute
+                        t.enabled = enabled
                     }
                 })
             }
         }
     }
 
-    newUpStream(_id) {
+    newUpStream(_id, state) {
         const glnStream = this.connection.newUpStream(_id)
 
-        this.$s.streams.push({
+        let streamState = {
+            direction: 'up',
+            hasAudio: false,
+            hasVideo: false,
             id: glnStream.id,
-            isUp: true,
-            kind: glnStream.kind,
             mirror: true,
             volume: {
                 locked: false,
                 value: 100,
             },
-        })
+        }
+
+        if (state) {
+            Object.assign(streamState, state)
+        }
+
+        this.$s.streams.push(streamState)
 
         glnStream.onerror = (e) => {
             this.notify({level: 'error', message: e})
@@ -363,7 +368,7 @@ class Pyrite extends EventEmitter {
             this.setMaxVideoThroughput(glnStream, maxThroughput)
         }
 
-        return glnStream
+        return {glnStream, streamState}
     }
 
     notify(notification) {
@@ -409,24 +414,27 @@ class Pyrite extends EventEmitter {
                 this.logger.debug(`[onclose] downstream ${c.id}`)
                 this.delMedia(c.id)
             }
-
         }
+
         c.onerror = () => {
             const message = `[onerror] downstream ${c.id}`
             this.logger.info(message)
             this.notify({level: 'error', message})
         }
 
-        this.$s.streams.push({
+        const streamState = {
+            direction: 'down',
+            hasAudio: false,
+            hasVideo: false,
             id: c.id,
-            isUp: false,
-            kind: c.kind,
             mirror: true,
             volume: {
                 locked: false,
                 value: 100,
             },
-        })
+        }
+
+        this.$s.streams.push(streamState)
     }
 
     async onJoined(kind, group, perms, message) {
@@ -457,25 +465,11 @@ class Pyrite extends EventEmitter {
             return
         }
 
-        this.logger.info(`acceptable media types: ${this.$s.request.id}`)
-        this.connection.request(this.$s.request.id)
+        this.logger.info(`acceptable media types: ${this.$s.media.accept.id}`)
+        this.connection.request(this.$s.media.accept.id)
 
         if(this.connection.permissions.present && !this.findUpMedia('local')) {
-            if (!this.$s.present) {
-                this.notify({level: 'info', message: 'Press Ready to enable your camera or microphone'})
-                return
-            }
-
-            if(this.$s.present === 'mike') {
-                this.$s.video.id = null
-                this.store.save()
-            } else if(this.$s.present === 'both') {
-                // TODO: Needs action?
-
-            }
-
-            await this.addLocalMedia()
-
+            await this.addLocalMedia(this.$s.devices)
         }
     }
 
@@ -495,6 +489,20 @@ class Pyrite extends EventEmitter {
         }
     }
 
+    removeTrack(glnStream, kind) {
+        const tracks = glnStream.stream.getTracks()
+        tracks.forEach(track => {
+            if (track.kind === kind) {
+                this.logger.debug(`stopping track ${track.id}`)
+                track.stop()
+
+                const streamState = this.$s.streams.find((s) => s.id === glnStream.id)
+                streamState.hasVideo = false
+            }
+
+        })
+    }
+
     async setMaxVideoThroughput(c, bps) {
         let senders = c.pc.getSenders()
         for(let i = 0; i < senders.length; i++) {
@@ -507,7 +515,7 @@ class Pyrite extends EventEmitter {
                 if(bps > 0) e.maxBitrate = bps
                 else delete e.maxBitrate
             })
-            this.logger.info(`maximum video throughput: ${bps}`)
+            this.logger.info(`cap video bandwidth: ${bps}`)
 
             await s.setParameters(p)
         }
@@ -518,33 +526,33 @@ class Pyrite extends EventEmitter {
 
         let cn = 1, mn = 1
 
-        this.$s.devices.audio = []
-        this.$s.devices.video = []
+        this.$s.devices.mic.options = []
+        this.$s.devices.cam.options = []
 
         devices.forEach(d => {
             let label = d.label
 
             if(d.kind === 'videoinput') {
                 if(!label) label = `Camera ${cn}`
-                this.$s.devices.video.push({id: d.deviceId, name: label})
+                this.$s.devices.cam.options.push({id: d.deviceId, name: label})
                 cn++
             } else if(d.kind === 'audioinput') {
                 if(!label) label = `Microphone ${mn}`
-                this.$s.devices.audio.push({id: d.deviceId, name: label})
+                this.$s.devices.mic.options.push({id: d.deviceId, name: label})
                 mn++
             }
         })
 
         // Set default audio/video options when none is set.
-        if (this.$s.audio.id === null && this.$s.devices.audio.length) {
-            this.$s.audio =this.$s.devices.audio[0]
+        if (this.$s.devices.mic.selected.id === null && this.$s.devices.mic.options.length) {
+            this.$s.devices.mic.selected = this.$s.devices.mic.options[0]
         }
 
-        if (this.$s.video.id === null && this.$s.devices.video.length) {
-            this.$s.video = this.$s.devices.video[0]
+        if (this.$s.devices.cam.selected.id === null && this.$s.devices.cam.options.length) {
+            this.$s.devices.cam.selected = this.$s.devices.cam.options[0]
         }
 
-        this.logger.info(`setMediaChoices: video(${this.$s.devices.video.length}) audio(${this.$s.devices.audio.length})`)
+        this.logger.info(`setMediaChoices: video(${this.$s.devices.cam.options.length}) audio(${this.$s.devices.mic.options.length})`)
     }
 
     stopUpMedia(c) {

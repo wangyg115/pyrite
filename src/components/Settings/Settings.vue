@@ -36,14 +36,6 @@ import TabMisc from './TabMisc.vue'
 export default {
     components: {TabDevices, TabMisc},
     methods: {
-        changeAudioSelect() {
-            app.changePresentation()
-        },
-        changeVideoSelect() {
-            if (this.$s.group.connected) {
-                app.changePresentation()
-            }
-        },
         saveSettings() {
             app.i18n.global.locale = this.$s.language.id
             app.logger.debug(`settings language to ${this.$s.language.id}`)

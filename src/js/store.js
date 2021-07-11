@@ -1,22 +1,32 @@
 import {reactive} from 'vue'
 
 const persistantState = reactive({
-    audio: {id: null, name: ''},
+    devices: {
+        cam: {
+            enabled: true,
+            options: [],
+            resolution: {id: 'default', name: 'Default'},
+            selected: {id: null, name: ''},
+        },
+        mic: {
+            enabled: true,
+            options: [],
+            selected: {id: null, name: ''},
+        },
+    },
     language: {id: 'en'},
     loading: true,
-    localMute: false,
+    media: {
+        accept: {id: 'everything', name: 'Everything'},
+        upstream: {id: 'normal', name: 'Normal'},
+    },
     permissions: {},
-    present: '', // '', mike or 'both'
-    request: {id: 'everything', name: 'Everything'},
-    resolution: {id: 'default', name: 'Default'},
-    send: {id: 'normal', name: 'Normal'},
-    title: '',
+
     user: {
         id: null,
         name: '',
         password: '',
     },
-    video: {id: null, name: ''},
 })
 
 /**
@@ -36,17 +46,11 @@ const volatileState = {
         hidden: false,
         width: 350,
     },
-    devices: {
-        audio: [],
-        video: [],
-    },
     group: {
         connected: false,
         name: '',
     },
     mediaReady: false,
-
-    muted: false,
     notifications: [],
     permissions: {
         op: false,

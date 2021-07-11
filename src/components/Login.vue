@@ -21,45 +21,39 @@
                     placeholder="Alice, Bob, Carol..."
                     type="password"
                 />
-                <div class="field">
-                    <label>{{ $t('Media') }}</label>
 
-                    <div class="present-switch">
-                        <input
-                            id="presentoff"
-                            v-model="$s.present"
-                            checked
-                            name="presentradio"
-                            type="radio"
-                            value=""
-                        >
-                        <label class="tooltip" :data-tooltip="$t('Disabled')" for="presentoff">
-                            <Icon class="icon" name="MicMute" />
-                        </label>
+                <div class="field presence-setup">
+                    <label>{{ $t('Presence') }}</label>
+                    <div class="cam">
+                        <FieldCheckbox v-model="$s.devices.cam.enabled" />
+                        <FieldSelect
+                            v-model="$s.devices.cam.selected"
+                            :disabled="!$s.devices.cam.enabled"
+                            :help="$t('Select the camera device')"
+                            :label="$t('Camera')"
+                            name="video"
+                            :options="$s.devices.cam.options"
+                        />
+                    </div>
 
-                        <input
-                            id="presentmike"
-                            v-model="$s.present"
-                            name="presentradio"
-                            type="radio"
-                            value="mike"
+                    <div class="mic">
+                        <FieldCheckbox v-model="$s.devices.mic.enabled" />
+                        <FieldSelect
+                            v-model="$s.devices.mic.selected"
+                            :disabled="!$s.devices.mic.enabled"
+                            :help="$t('Select the microphone device')"
+                            :label="$t('Microphone')"
+                            name="audio"
+                            :options="$s.devices.mic.options"
+                        />
+                    </div>
+                    <div class="verify">
+                        <RouterLink
+                            :to="{name: 'settings', params: {tabId: 'devices'}}"
                         >
-                        <label class="tooltip" :data-tooltip="$t('Microphone')" for="presentmike">
-                            <Icon class="icon" name="Mic" />
-                        </label>
-                        <input
-                            id="presentboth"
-                            v-model="$s.present"
-                            name="presentradio"
-                            type="radio"
-                            value="both"
-                        >
-                        <label
-                            class="tooltip" :data-tooltip="$t('Camera and microphone')"
-                            for="presentboth"
-                        >
-                            <Icon class="icon" name="Webcam" />
-                        </label>
+                            Verify
+                        </RouterLink>
+                        {{ $t('microphone & camera settings') }}
                     </div>
                 </div>
             </form>
@@ -95,65 +89,45 @@ export default {
             }
         },
     },
+    async mounted() {
+        await app.setMediaChoices()
+    },
 }
 </script>
 
 <style lang="scss">
-.present-switch {
-    margin: var(--space-1) 0;
+.presence-setup {
 
-    input {
-        display: none;
+    label {
+        font-family: var(--font-secondary);
+    }
 
-        + label {
-            margin-right: var(--space-1);
-            overflow: auto;
+    .mic,
+    .cam {
+        align-items: center;
+        background: var(--grey-500);
+        border: 2px solid var(--grey-300);
+        display: flex;
+        margin: var(--space-1) 0;
+        padding: var(--spacer);
+    }
 
-            &::before {
-                background: var(--primary-color);
-                bottom: calc(-1 * var(--border));
-                content: "";
-                height: var(--border);
-                left: 0;
-                position: absolute;
-                right: 0;
-                transform: scaleX(0);
-                transform-origin: 0 0;
-                transition: transform 150ms;
-                will-change: transform;
-            }
+    .c-field-select {
+        padding: 0;
+    }
+
+    .c-field-checkbox {
+        padding-left: 0;
+
+        label {
+            margin-right: 0;
         }
     }
 
-    .icon {
-        border-bottom: 2px solid transparent;
-
+    .verify {
+        font-style: italic;
+        font-weight: 600;
+        margin-bottom: var(--space-2);
     }
-
-    input:checked + label {
-
-        &::before {
-            transform: scaleX(1);
-        }
-
-        .icon {
-            fill: var(--primary-color);
-        }
-    }
-
-    input:not(:checked) + label {
-
-        &:hover {
-
-            &::before {
-                transform: scaleX(1);
-            }
-        }
-
-        .icon:hover {
-            cursor: pointer;
-        }
-    }
-
 }
 </style>

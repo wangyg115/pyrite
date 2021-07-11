@@ -52,17 +52,13 @@ export default {
     components: {GeneralContext},
     methods: {
         disconnect() {
-            this.$s.group.name = ''
             // Reset chat window state for the next session.
             this.$s.chat.hidden = false
             app.disconnect()
-            this.$router.push({name: 'splash'})
+            this.$router.push({name: 'groups'}, {params: {groupId: app.$s.group.name}})
         },
         toggleChatActive() {
             this.$s.chat.hidden = !this.$s.chat.hidden
-        },
-        toggleMute() {
-            app.muteLocalTracks(this.$s.muted)
         },
     },
 }

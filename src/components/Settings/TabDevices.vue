@@ -3,29 +3,29 @@
         <div>
             <div class="camera-field">
                 <FieldSelect
-                    v-model="$s.video"
-                    :help="$t('Select the camera device to use for conferencing')"
+                    v-model="$s.devices.cam.selected"
+                    :help="$t('Select the camera device for presence')"
                     :label="$t('Camera')"
                     name="video"
-                    :options="$s.devices.video"
+                    :options="$s.devices.cam.options"
                 />
                 <Stream v-if="description" v-model="description" :controls="false" />
             </div>
 
             <FieldSelect
-                v-model="$s.resolution"
-                :help="$t('This setting only has effect if your camera actually supports the preferred resolution.')"
+                v-model="$s.devices.cam.resolution"
+                :help="$t('Depends on the camera\'s capabilities')"
                 :label="$t('Preferred Resolution')"
                 name="resolution"
                 :options="resolutionOptions"
             />
 
             <FieldSelect
-                v-model="$s.audio"
-                :help="$t('Select the microphone device to use')"
+                v-model="$s.devices.mic.selected"
+                :help="$t('Select the microphone device')"
                 :label="$t('Microphone')"
                 name="audio"
-                :options="$s.devices.audio"
+                :options="$s.devices.mic.options"
             />
 
             <div class="soundmeter">
@@ -59,7 +59,7 @@ export default {
                     name: this.$t('HD - 720p (1280x720)'),
                 },
                 {
-                    help: this.$t('Full HD video may result in framerate decay'),
+                    help: this.$t('Full HD video requires extensive bandwidth!'),
                     id: '1080p',
                     name: this.$t('Full HD - 1080p (1920x1080)'),
                 },
@@ -81,8 +81,8 @@ export default {
         this.stream = app.localStream
         this.streamId = app.localStream.id
         this.description = {
+            direction: 'up',
             id: this.stream.id,
-            isUp: true,
             kind: 'video',
             mirror: false,
             src: app.localStream,
@@ -93,7 +93,7 @@ export default {
         }
     },
     watch: {
-        async '$s.audio'() {
+        async '$s.devices.mic.selected'() {
             await app.addLocalMedia()
             this.stream = app.localStream
             this.streamId = app.localStream.id

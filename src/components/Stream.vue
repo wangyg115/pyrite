@@ -1,16 +1,20 @@
 <template>
-    <div ref="root" class="c-stream">
+    <div ref="root" class="c-stream" :class="{'audio': !modelValue.hasVideo}">
         <video
             ref="media"
             :autoplay="true"
             class="media"
             :class="{'media-failed': mediaFailed, mirror: modelValue.mirror}"
-            :muted="modelValue.isUp"
+            :muted="modelValue.direction === 'up'"
             :playsinline="true"
         />
+
         <transition name="loading-transition">
-            <div v-if="loading" class="loading">
+            <div v-if="loading" class="loading-container">
                 <Icon class="spinner" name="Spinner" />
+            </div>
+            <div v-else-if="!modelValue.hasVideo" class="audio-container">
+                <Icon name="Mic" />
             </div>
         </transition>
 
@@ -38,12 +42,12 @@
                 </button>
             </div>
 
-            <div class="user" :class="{'has-audio': hasAudio}">
+            <div class="user" :class="{'has-audio': audioEnabled}">
                 <div class="name">
                     {{ label }}
                 </div>
                 <div
-                    v-if="hasAudio" key=""
+                    v-if="audioEnabled" key=""
                     class="volume-slider tooltip tooltip-left"
                     :data-tooltip="`${volume.value}% ${$t('audio volume')}`"
                 >
@@ -52,7 +56,7 @@
             </div>
 
             <SoundMeter
-                v-if="hasAudio && stream" class="soundmeter"
+                v-if="audioEnabled" class="soundmeter"
                 orientation="vertical"
                 :stream="stream"
                 :stream-id="stream.id"
@@ -77,6 +81,12 @@ export default {
     },
     components: {SoundMeter, StreamReports},
     computed: {
+        /**
+         * Audio toggle for down streams that have audio.
+         */
+        audioEnabled() {
+            return (this.modelValue.direction === 'down' && this.modelValue.hasAudio && this.stream)
+        },
         fullscreenEnabled() {
             if (this.$refs.media) {
                 return this.$refs.media.requestFullscreen
@@ -96,7 +106,6 @@ export default {
     },
     data() {
         return {
-            hasAudio: false,
             label: '',
             loading: true,
             media: null,
@@ -106,15 +115,124 @@ export default {
                 active: false,
                 enabled: false,
             },
-            state: app.state,
             stats: {
                 visible: false,
             },
             stream: null,
+            type: 'video',
         }
     },
     emits: ['update:modelValue'],
     methods: {
+        /**
+         * Handle mounting a remote 'down' stream.
+         */
+        mountDownstream() {
+            app.logger.debug(`mounting downstream ${this.modelValue.id}`)
+
+            // Only setup the video element in case the stream is already active.
+            if (app.connection.down[this.modelValue.id].stream) {
+                this.$refs.media.srcObject = app.connection.down[this.modelValue.id].stream
+                this.$refs.media.play().catch(e => {
+                    app.notify({level: 'error', message: e})
+                })
+                return
+            }
+
+            this.glnStream = app.connection.down[this.modelValue.id]
+            this.stream = this.glnStream.stream
+            this.label = this.glnStream.username
+
+            this.glnStream.ondowntrack = (track, transceiver, label, stream) => {
+                app.logger.debug(`down stream ondowntrack - [${this.glnStream.id}]`)
+                // An incoming audio-track; enable volume controls.
+                if (track.kind === 'audio') {
+                    app.logger.debug(`stream ondowntrack - enable audio controls`)
+                    this.$emit('update:modelValue', {...this.modelValue, hasAudio: true})
+                } else if(track.kind === 'video') {
+                    this.$emit('update:modelValue', {...this.modelValue, hasVideo: true})
+                }
+
+                if (!this.stream) {
+                    this.stream = stream
+                    this.$refs.media.srcObject = this.stream
+                    this.$refs.media.play()
+                }
+            }
+
+            this.glnStream.onlabel = (label) => {
+                this.label = label
+            }
+
+            this.glnStream.onstatus = (status) => {
+                if(['connected', 'completed'].includes(status)) {
+                    this.$refs.media.play().catch(e => {
+                        app.notify({level: 'error', message: e})
+                    })
+                }
+            }
+        },
+        mountUpstream() {
+            // Mute local streams, so people don't hear themselves talk.
+            if (!this.muted) {
+                this.toggleMuteVolume()
+            }
+            app.logger.debug(`mounting upstream ${this.modelValue.id}`)
+            this.label = `${this.$s.user.name} (${this.$t('you')})`
+
+            if (!this.modelValue.src) {
+                // Local media stream from a device.
+                this.glnStream = app.connection.up[this.modelValue.id]
+                this.stream = this.glnStream.stream
+                this.$refs.media.srcObject = this.stream
+            } else {
+                // Local media stream playing from a file...
+                if (this.modelValue.src instanceof File) {
+                    const url = URL.createObjectURL(this.modelValue.src)
+
+                    if (this.$refs.media.captureStream) {
+                        this.stream = this.$refs.media.captureStream()
+                    } else if (this.$refs.media.mozCaptureStream) {
+                        this.stream = this.$refs.media.mozCaptureStream()
+                    }
+
+                    this.glnStream = app.connection.up[this.modelValue.id]
+                    this.glnStream.userdata.play = true
+
+                    this.stream.onaddtrack = (e) => {
+                        const track = e.track
+
+                        if (track.kind === 'audio') {
+                            this.$emit('update:modelValue', {...this.modelValue, hasAudio: true})
+                        } else if (track.kind === 'video') {
+                            this.$emit('update:modelValue', {...this.modelValue, hasVideo: true})
+                        }
+
+                        this.glnStream.pc.addTrack(track, this.stream)
+                        this.glnStream.labels[track.id] = track.kind
+                    }
+
+                    this.glnStream.onclose = () =>{
+                        app.logger.info('revoking file-stream url')
+                        URL.revokeObjectURL(this.$refs.media.src)
+                        this.$refs.media.src = null
+                    }
+
+                    this.$refs.media.src = url
+                } else if (this.modelValue.src instanceof MediaStream) {
+                    // Local MediaStream (not part of Galene); e.g. Webcam test
+                    this.stream = this.modelValue.src
+                    this.$refs.media.srcObject = this.stream
+                } else {
+                    throw new Error('invalid Stream source type')
+                }
+            }
+
+            // A local stream that's not networked (e.g. cam preview in ettings)
+            if (!this.glnStream) return
+
+            this.glnStream.stream = this.stream
+        },
         setFullscreen() {
             this.$refs.media.requestFullscreen()
         },
@@ -148,121 +266,8 @@ export default {
             this.loading = false
         })
 
-        if (this.modelValue.isUp) {
-            // Mute local streams, so people don't hear themselves talk.
-            if (!this.muted) {
-                this.toggleMuteVolume()
-            }
-            app.logger.debug(`mounting upstream ${this.modelValue.id}`)
-            this.label = `${this.$s.user.name} (${this.$t('you')})`
-
-            if (this.modelValue.src) {
-                // Networked stream from local file
-                if (this.modelValue.src instanceof File) {
-                    const url = URL.createObjectURL(this.modelValue.src)
-
-                    if (this.$refs.media.captureStream) {
-                        this.stream = this.$refs.media.captureStream()
-                    } else if (this.$refs.media.mozCaptureStream) {
-                        this.stream = this.$refs.media.mozCaptureStream()
-                    }
-                    this.glnStream = app.connection.up[this.modelValue.id]
-                    this.glnStream.userdata.play = true
-
-                    this.glnStream.onclose = () =>{
-                        app.logger.info('revoking file-stream url')
-                        URL.revokeObjectURL(this.$refs.media.src)
-                        this.$refs.media.src = null
-                    }
-
-                    this.$refs.media.src = url
-                } else if (this.modelValue.src instanceof MediaStream) {
-                    // Local MediaStream (not part of Galene); e.g. Webcam test
-                    this.stream = this.modelValue.src
-                    this.$refs.media.srcObject = this.stream
-                } else {
-                    throw new Error('invalid Stream source type')
-                }
-            } else {
-
-                // Networked video camera stream; dealt with by addLocalMedia.
-                this.glnStream = app.connection.up[this.modelValue.id]
-                this.stream = this.glnStream.stream
-                this.$refs.media.srcObject = this.stream
-            }
-
-            // Networked? add stream events to deal with the peer connection.
-            if (this.glnStream) {
-                this.glnStream.stream = this.stream
-
-                this.stream.onaddtrack = (e) => {
-                    let t = e.track
-                    this.glnStream.pc.addTrack(t, this.stream)
-                    this.glnStream.labels[t.id] = t.kind
-                }
-
-                this.stream.onremovetrack = (e) => {
-                    delete(this.glnStream.labels[e.track.id])
-
-                    this.glnStream.pc.getSenders().forEach(s => {
-                        if(s.track === e.track) {
-                            app.logger.info('removing sender track')
-                            this.glnStream.pc.removeTrack(s)
-                        }
-                    })
-
-                    if(Object.keys(this.glnStream.labels).length === 0) {
-                        this.stream.onaddtrack = null
-                        this.stream.onremovetrack == null
-                        app.stopUpMedia(this.glnStream)
-                    }
-                }
-            }
-        } else {
-            app.logger.debug(`mounting downstream ${this.modelValue.id}`)
-
-            // Only setup the video element in case the stream is already active.
-            if (app.connection.down[this.modelValue.id].stream) {
-                this.$refs.media.srcObject = app.connection.down[this.modelValue.id].stream
-                this.$refs.media.play().catch(e => {
-                    app.notify({level: 'error', message: e})
-                })
-                return
-            }
-
-            // Networked down stream
-            this.glnStream = app.connection.down[this.modelValue.id]
-            this.stream = this.glnStream.stream
-
-            this.label = this.glnStream.username
-
-            this.glnStream.ondowntrack = (track, transceiver, label, stream) => {
-                app.logger.debug(`stream ondowntrack - [${this.glnStream.id}]`)
-                // An incoming audio-track; enable volume controls.
-                if (track.kind === 'audio') {
-                    app.logger.debug(`stream ondowntrack - enable audio controls`)
-                    this.hasAudio = true
-                }
-
-                if (!this.stream) {
-                    this.stream = stream
-                    this.$refs.media.srcObject = this.stream
-                    this.$refs.media.play()
-                }
-            }
-
-            this.glnStream.onlabel = (label) => {
-                this.label = label
-            }
-
-            this.glnStream.onstatus = (status) => {
-                if(['connected', 'completed'].includes(status)) {
-                    this.$refs.media.play().catch(e => {
-                        app.notify({level: 'error', message: e})
-                    })
-                }
-            }
-        }
+        if (this.modelValue.direction === 'up') this.mountUpstream()
+        else this.mountDownstream()
     },
     props: {
         controls: {
@@ -310,7 +315,21 @@ export default {
         object-fit: cover;
     }
 
-    .loading {
+    // No video-track; just use it to play audio, but show a
+    // mic icon to indicate this is audio-only.
+
+    &.audio {
+        video: {
+            display: none;
+        }
+    }
+
+    .stream-audio {
+        background: #f00;
+    }
+
+    .audio-container,
+    .loading-container {
         background: var(--grey-500);
         height: 100%;
         padding: 25%;
@@ -318,15 +337,30 @@ export default {
         transform-origin: 50% 50%;
         width: 100%;
 
+        .icon {
+            filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+            height: 100%;
+            width: 100%;
+        }
+
         .spinner {
             animation-duration: 0.75s;
             animation-iteration-count: infinite;
             animation-name: spinner;
+        }
+    }
 
+    .audio-container {
+
+        .icon {
+            color: var(--grey-100);
+        }
+    }
+
+    .loading-container {
+
+        .icon {
             color: var(--primary-color);
-            filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
-            height: 100%;
-            width: 100%;
         }
     }
 

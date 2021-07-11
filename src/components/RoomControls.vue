@@ -8,8 +8,8 @@
             <button
                 v-if="$s.permissions.present"
                 class="btn btn-menu tooltip tooltip-left"
-                :class="{active: !$s.muted, warning: $s.muted}"
-                :data-tooltip="$s.muted ? $t('unmute microphone'): $t('mute microphone')"
+                :class="{active: $s.devices.mic.enabled, warning: !$s.devices.mic.enabled}"
+                :data-tooltip="`${$t('switch microphone')} ${$s.devices.mic.enabled ? $t('off') : $t('on')}`"
                 @click="toggleMic"
             >
                 <Icon class="icon-small" name="Mic" />
@@ -18,8 +18,8 @@
             <button
                 v-if="$s.permissions.present"
                 class="btn btn-menu tooltip tooltip-left"
-                :class="{active: $s.present === 'both' && $s.upMedia.local.length, warning: !$s.upMedia.local.length || $s.present !== 'both'}"
-                :data-tooltip="`${$t('switch camera')} ${$s.upMedia.local.length ? $t('off') : $t('on')}`"
+                :class="{active: $s.devices.cam.enabled, warning: !$s.devices.cam.enabled}"
+                :data-tooltip="`${$t('switch camera')} ${$s.devices.cam.enabled ? $t('off') : $t('on')}`"
                 @click="toggleCam"
             >
                 <Icon class="icon-small" name="Webcam" />
@@ -63,22 +63,16 @@ export default {
             app.disconnect()
         },
         toggleCam() {
-            // A user could have logged in, using media setting 'mike' or ''
-            this.$s.present = 'both'
-
-            if (this.$s.upMedia.local.length) {
-                app.logger.debug('switching cam stream off')
-                app.delUpMediaKind('local')
-            } else {
-                app.logger.debug('switching cam stream on')
-                let id = app.findUpMedia('local')
-                if(!id) {
-                    app.addLocalMedia()
-                }
-            }
+            this.$s.devices.cam.enabled = !this.$s.devices.cam.enabled
+            app.logger.debug(`switching cam stream: ${this.$s.devices.cam.enabled}`)
+            app.delUpMediaKind('local')
+            app.addLocalMedia(this.$s.devices)
         },
         toggleMic() {
-            app.muteLocalTracks(!this.$s.muted)
+            this.$s.devices.mic.enabled = !this.$s.devices.mic.enabled
+            app.logger.debug(`mic track enabled: ${this.$s.devices.mic.enabled}`)
+            app.muteLocalTracks(this.$s.devices.mic.enabled)
+
         },
         togglePlayFile(file) {
             if (file) {
@@ -102,7 +96,7 @@ export default {
         volume(volume) {
             for (const description of this.$s.streams) {
                 // Only downstreams have volume control:
-                if (!description.isUp && !description.volume.locked) {
+                if (description.direction === 'down' && !description.volume.locked) {
                     description.volume = volume
                 }
             }
