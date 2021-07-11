@@ -2,7 +2,7 @@
     "plugins": ["stylelint-order"],
     "extends": "stylelint-config-recommended",
     "rules": {
-        "max-nesting-depth": 4,
+        "max-nesting-depth": 6,
         "property-no-vendor-prefix": true,
         "max-empty-lines": 2,
         "indentation": [4, {baseIndentLevel: 0}],
