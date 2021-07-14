@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import {nextTick} from 'vue'
 import SoundMeter from '../ui/SoundMeter.vue'
 import Stream from '../Stream.vue'
 
@@ -67,7 +68,27 @@ export default {
             stream: null,
             streamId: null,
         }
-
+    },
+    methods: {
+        async remountStream() {
+            this.stream = await app.addLocalMedia()
+            this.streamId = this.stream.id
+            this.description = null
+            await nextTick()
+            this.description = {
+                direction: 'up',
+                hasAudio: app.$s.devices.mic.enabled,
+                hasVideo: app.$s.devices.cam.enabled,
+                id: this.stream.id,
+                kind: 'video',
+                mirror: false,
+                src: this.stream,
+                volume: {
+                    locked: false,
+                    value: 100,
+                },
+            }
+        },
     },
     async mounted() {
         // Not a media stream yet? Create one for the audio settings
@@ -87,7 +108,7 @@ export default {
             id: this.stream.id,
             kind: 'video',
             mirror: false,
-            src: app.localStream,
+            src: this.stream,
             volume: {
                 locked: false,
                 value: 100,
@@ -95,10 +116,14 @@ export default {
         }
     },
     watch: {
-        async '$s.devices.mic.selected'() {
-            await app.addLocalMedia()
-            this.stream = app.localStream
-            this.streamId = app.localStream.id
+        '$s.devices.cam.resolution'() {
+            this.remountStream()
+        },
+        '$s.devices.cam.selected'() {
+            this.remountStream()
+        },
+        '$s.devices.mic.selected'() {
+            this.remountStream()
         },
     },
 }

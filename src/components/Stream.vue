@@ -4,7 +4,7 @@
             ref="media"
             :autoplay="true"
             class="media"
-            :class="{'media-failed': mediaFailed, mirror: modelValue.mirror}"
+            :class="{'loading': loading, 'media-failed': mediaFailed, mirror: modelValue.mirror}"
             :muted="modelValue.direction === 'up'"
             :playsinline="true"
         />
@@ -313,6 +313,12 @@ export default {
     video {
         border: 2px solid var(--grey-400);
         object-fit: cover;
+        opacity: 1;
+        transition: opacity 0.3s;
+
+        &.loading {
+            opacity: 0;
+        }
     }
 
     // No video-track; just use it to play audio, but show a
@@ -324,13 +330,9 @@ export default {
         }
     }
 
-    .stream-audio {
-        background: #f00;
-    }
-
     .audio-container,
     .loading-container {
-        background: var(--grey-500);
+        background: var(--grey-600);
         height: 100%;
         padding: 25%;
         position: absolute;
