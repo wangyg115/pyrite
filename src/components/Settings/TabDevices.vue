@@ -82,6 +82,8 @@ export default {
         this.streamId = app.localStream.id
         this.description = {
             direction: 'up',
+            hasAudio: app.$s.devices.mic.enabled,
+            hasVideo: app.$s.devices.cam.enabled,
             id: this.stream.id,
             kind: 'video',
             mirror: false,
