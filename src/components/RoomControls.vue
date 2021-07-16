@@ -10,7 +10,7 @@
                 class="btn btn-menu tooltip tooltip-left"
                 :class="{active: $s.devices.mic.enabled, warning: !$s.devices.mic.enabled}"
                 :data-tooltip="`${$t('switch microphone')} ${$s.devices.mic.enabled ? $t('off') : $t('on')}`"
-                @click="toggleMic"
+                @click="toggleMicrophone"
             >
                 <Icon class="icon-small" name="Mic" />
             </button>
@@ -59,20 +59,14 @@ export default {
         }
     },
     methods: {
-        disconnect() {
-            app.disconnect()
-        },
         toggleCam() {
             this.$s.devices.cam.enabled = !this.$s.devices.cam.enabled
             app.logger.debug(`switching cam stream: ${this.$s.devices.cam.enabled}`)
             app.delUpMediaKind('local')
             app.getUserMedia(this.$s.devices)
         },
-        toggleMic() {
-            this.$s.devices.mic.enabled = !this.$s.devices.mic.enabled
-            app.logger.debug(`mic track enabled: ${this.$s.devices.mic.enabled}`)
-            app.muteLocalTracks(this.$s.devices.mic.enabled)
-
+        toggleMicrophone() {
+            app.muteMicrophone(this.$s.devices.mic.enabled)
         },
         togglePlayFile(file) {
             if (file) {

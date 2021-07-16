@@ -12,11 +12,16 @@
                 <span v-else>{{ $t('Start Recording') }}</span>
             </button>
 
-            <button v-if="$s.permissions.op" class="action" disabled>
+            <button v-if="$s.permissions.op" class="action" @click="muteAllUsers">
                 <Icon class="icon icon-mini" name="MicMute" />{{ $t('Mute all Users') }}
             </button>
-            <button v-if="$s.permissions.op" class="action" disabled>
-                <Icon class="icon icon-mini" name="Lock" />{{ $t('Lock Group') }}
+            <button
+                v-if="$s.permissions.op" class="action"
+                @click="toggleLockGroup"
+            >
+                <Icon class="icon icon-mini" name="Lock" />
+                <span v-if="this.$s.group.locked">{{ $t('Unlock Group') }}</span>
+                <span v-else>{{ $t('Lock Group') }}</span>
             </button>
         </div>
     </div>
@@ -30,6 +35,26 @@ export default {
         }
     },
     methods: {
+        muteAllUsers() {
+            app.connection.userMessage('mute', null, null, true)
+            app.notify({
+                level: 'info',
+                message: `${this.$t('You muted all participants')}`,
+            })
+            this.active = false
+        },
+        toggleLockGroup() {
+            if (this.$s.group.locked) {
+                app.connection.groupAction('unlock')
+                app.notify({level: 'info', message: `${this.$t('Group unlocked')}`})
+            } else {
+                app.connection.groupAction('lock', 'group is locked')
+                app.notify({level: 'info', message: `${this.$t('Group locked')}`})
+            }
+
+            this.$s.group.locked = !this.$s.group.locked
+
+        },
         toggleMenu(e, forceState) {
             // The v-click-outside
             if (typeof forceState === 'object') {
@@ -41,6 +66,7 @@ export default {
         },
         toggleRecording(isRecording) {
             app.connection.groupAction(isRecording ? 'unrecord' : 'record')
+            this.active = false
         },
     },
 }

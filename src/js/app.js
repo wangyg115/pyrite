@@ -37,6 +37,8 @@ class Pyrite extends EventEmitter {
             silentTranslationWarn: true,
         })
 
+        this.$t = this.i18n.global.t
+
         this.router.beforeResolve((to, from, next) => {
 
             if (!this.$s.group.connected) {
@@ -160,16 +162,20 @@ class Pyrite extends EventEmitter {
                 break
             case 'mute':
                 if(privileged) {
-                    this.muteLocalTracks(true)
+                    this.muteMicrophone(true)
                     this.notify({
-                        level: 'warning',
-                        message: `You have been muted${username ? ' by ' + username : ''}`,
+                        level: 'info',
+                        message: `${this.$t('All users have been muted by user')} ${username}`,
                     })
                 }
                 break
             case 'clearchat':
                 if(privileged) {
                     this.$s.chat.channels.main.messages = []
+                    this.notify({
+                        level: 'info',
+                        message: `${this.$t('Chat history of main channel cleared remotely')}`,
+                    })
                 }
                 break
             default:
@@ -234,9 +240,12 @@ class Pyrite extends EventEmitter {
         this.logger.info(`disconnecting from group ${this.$s.group.name}`)
         this.$s.users = []
         this.$s.streams = []
+        this.$s.chat.channels.main.messages = []
+        this.$s.chat.channels.main.unread = 0
         this.connection.close()
         this.delLocalMedia()
         this.$s.group.connected = false
+        this.router.push({name: 'groups'}, {params: {groupId: app.$s.group.name}})
     }
 
     findUpMedia(kind) {
@@ -326,13 +335,15 @@ class Pyrite extends EventEmitter {
         return this.localStream
     }
 
-    muteLocalTracks(enabled) {
+    muteMicrophone(muted) {
+        this.$s.devices.mic.enabled = !muted
+        app.logger.debug(`microphone enabled: ${this.$s.devices.mic.enabled}`)
         for(let id in this.connection.up) {
             const glnStream = this.connection.up[id]
             if(glnStream.kind === 'local') {
                 glnStream.stream.getTracks().forEach(t => {
                     if(t.kind === 'audio') {
-                        t.enabled = enabled
+                        t.enabled = !muted
                     }
                 })
             }
@@ -405,11 +416,11 @@ class Pyrite extends EventEmitter {
     }
 
     onConnected() {
+        this.logger.info('connected to server')
         this.$s.user.id = this.connection.id
         const groupName = this.router.currentRoute.value.params.groupId
-        this.logger.info(`joining group: ${groupName}`)
+
         this.connection.join(groupName, this.$s.user.name, this.$s.user.password)
-        this.$s.group.connected = true
     }
 
     onDownStream(c) {
@@ -444,13 +455,11 @@ class Pyrite extends EventEmitter {
     }
 
     async onJoined(kind, group, perms, message) {
-        this.$s.permissions = perms
-        this.logger.info(`joined group ${group}`)
-        this.logger.debug(`permissions: ${JSON.stringify(perms)}`)
-
         switch(kind) {
         case 'fail':
-            this.notify({level: 'error', message: `The server said: ${message}`})
+            this.notify({level: 'error', message: `Server: ${message}`})
+            // Closing the connection will trigger a 'leave' message,
+            // which deals with the proper UI actions.
             this.connection.close()
             return
         case 'redirect':
@@ -458,10 +467,14 @@ class Pyrite extends EventEmitter {
             document.location = message
             return
         case 'leave':
-            this.connection.close()
+            this.disconnect()
             return
         case 'join':
         case 'change':
+            this.$s.group.connected = true
+            this.$s.permissions = perms
+            this.logger.info(`joined group ${group}`)
+            this.logger.debug(`permissions: ${JSON.stringify(perms)}`)
             if(kind === 'change')
                 return
             break

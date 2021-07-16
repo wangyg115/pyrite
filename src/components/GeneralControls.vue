@@ -51,12 +51,7 @@ import GeneralContext from './GeneralContext.vue'
 export default {
     components: {GeneralContext},
     methods: {
-        disconnect() {
-            // Reset chat window state for the next session.
-            this.$s.chat.hidden = false
-            app.disconnect()
-            this.$router.push({name: 'groups'}, {params: {groupId: app.$s.group.name}})
-        },
+        disconnect: () => app.disconnect(),
         toggleChatActive() {
             this.$s.chat.hidden = !this.$s.chat.hidden
         },
