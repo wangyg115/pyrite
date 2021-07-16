@@ -240,8 +240,6 @@ class Pyrite extends EventEmitter {
         this.$s.streams = []
         this.connection.close()
         this.delLocalMedia()
-
-        this.router.push({name: 'groups'}, {params: {groupId: app.$s.group.name}})
     }
 
     findUpMedia(label) {
@@ -436,6 +434,8 @@ class Pyrite extends EventEmitter {
         if(code != 1000) {
             this.notify({level: 'error', message: `Socket close ${code}: ${reason}`})
         }
+
+        this.router.push({name: 'groups'}, {params: {groupId: app.$s.group.name}})
     }
 
     onConnected() {
