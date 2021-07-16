@@ -60,9 +60,9 @@ class Pyrite extends EventEmitter {
             mirror: false,
             src: file,
         })
-        glnStream.kind = 'video'
+        glnStream.label = 'video'
 
-        this.$s.upMedia[glnStream.kind].push(glnStream.id)
+        this.$s.upMedia[glnStream.label].push(glnStream.id)
         glnStream.userdata.play = true
         return glnStream
     }
@@ -81,8 +81,8 @@ class Pyrite extends EventEmitter {
         }
 
         const {glnStream, streamState} = this.newUpStream()
-        glnStream.kind = 'screenshare'
-        this.$s.upMedia[glnStream.kind].push(glnStream.id)
+        glnStream.label = 'screenshare'
+        this.$s.upMedia[glnStream.label].push(glnStream.id)
 
         glnStream.stream = stream
 
@@ -97,14 +97,13 @@ class Pyrite extends EventEmitter {
             t.onended = () => {
                 this.delUpMedia(glnStream)
             }
-            glnStream.labels[t.id] = 'screenshare'
         })
 
         return glnStream
     }
 
     async addUserMedia() {
-        let localStreamId = this.findUpMedia('local')
+        let localStreamId = this.findUpMedia('camera')
         let oldStream = localStreamId && this.connection.up[localStreamId]
 
         if(oldStream) {
@@ -113,14 +112,13 @@ class Pyrite extends EventEmitter {
         }
 
         const {glnStream, streamState} = this.newUpStream(localStreamId)
-        glnStream.kind = 'local'
+        glnStream.label = 'camera'
         glnStream.stream = this.localStream
         this.localGlnStream = glnStream
 
-        this.$s.upMedia[glnStream.kind].push(glnStream.id)
+        this.$s.upMedia[glnStream.label].push(glnStream.id)
 
         this.localStream.getTracks().forEach(t => {
-            glnStream.labels[t.id] = t.kind
             if(t.kind === 'audio') {
                 streamState.hasAudio = true
                 if(!this.$s.devices.mic.enabled) {
@@ -221,36 +219,34 @@ class Pyrite extends EventEmitter {
         delete(this.connection.up[c.id])
     }
 
-    delUpMediaKind(kind) {
-        this.logger.debug(`remove all up media from kind: ${kind}`)
+    delUpMediaKind(label) {
+        this.logger.debug(`remove all up media with label: ${label}`)
         for(let id in this.connection.up) {
             const c = this.connection.up[id]
-            if(kind && c.kind != kind) {
+            if(label && c.label !== label) {
                 continue
             }
             c.close()
             this.delMedia(id)
             delete(this.connection.up[id])
             this.logger.debug(`remove up media stream: ${id}`)
-            this.$s.upMedia[kind].splice(this.$s.upMedia[kind].indexOf(id), 1)
+            this.$s.upMedia[label].splice(this.$s.upMedia[label].indexOf(id), 1)
         }
     }
 
     disconnect() {
         this.logger.info(`disconnecting from group ${this.$s.group.name}`)
-        this.$s.users = []
+
         this.$s.streams = []
-        this.$s.chat.channels.main.messages = []
-        this.$s.chat.channels.main.unread = 0
         this.connection.close()
         this.delLocalMedia()
-        this.$s.group.connected = false
+
         this.router.push({name: 'groups'}, {params: {groupId: app.$s.group.name}})
     }
 
-    findUpMedia(kind) {
+    findUpMedia(label) {
         for(let id in this.connection.up) {
-            if(this.connection.up[id].kind === kind)
+            if(this.connection.up[id].label === label)
                 return id
         }
         return null
@@ -274,7 +270,7 @@ class Pyrite extends EventEmitter {
     async getUserMedia(presence) {
         // Cleanup the old networked stream first:
         if (this.localStream && this.$s.group.connected) {
-            app.delUpMediaKind('local')
+            app.delUpMediaKind('camera')
         }
 
         if (this.localStream) {
@@ -335,12 +331,31 @@ class Pyrite extends EventEmitter {
         return this.localStream
     }
 
+    mapRequest(what) {
+        switch(what) {
+        case '':
+            return {}
+        case 'audio':
+            return {'': ['audio']}
+        case 'screenshare-low':
+            return {'': ['audio'], screenshare: ['audio','video-low']}
+        case 'screenshare':
+            return {'': ['audio'], screenshare: ['audio','video']}
+        case 'everything-low':
+            return {'': ['audio','video-low']}
+        case 'everything':
+            return {'': ['audio','video']}
+        default:
+            throw new Error(`Unknown value ${what} in request`)
+        }
+    }
+
     muteMicrophone(muted) {
         this.$s.devices.mic.enabled = !muted
         app.logger.debug(`microphone enabled: ${this.$s.devices.mic.enabled}`)
         for(let id in this.connection.up) {
             const glnStream = this.connection.up[id]
-            if(glnStream.kind === 'local') {
+            if(glnStream.label === 'camera') {
                 glnStream.stream.getTracks().forEach(t => {
                     if(t.kind === 'audio') {
                         t.enabled = !muted
@@ -407,6 +422,14 @@ class Pyrite extends EventEmitter {
 
     onClose(code, reason) {
         this.$s.group.connected = false
+        this.logger.debug('connection closed')
+
+        // Reset some state.
+        this.$s.users = []
+        this.$s.chat.channels.main.messages = []
+        this.$s.chat.channels.main.unread = 0
+        this.$s.group.connected = false
+
         this.delUpMediaKind(null)
         this.notify({level: 'error', message: 'Disconnected'})
 
@@ -485,24 +508,25 @@ class Pyrite extends EventEmitter {
         }
 
         this.logger.info(`acceptable media types: ${this.$s.media.accept.id}`)
-        this.connection.request(this.$s.media.accept.id)
+        this.connection.request(this.mapRequest(this.$s.media.accept.id))
 
         if(this.connection.permissions.present && !this.findUpMedia('local')) {
             await this.getUserMedia(this.$s.devices)
         }
     }
 
-    onUser(id, kind, name) {
-
-        const user = {id, name}
+    onUser(id, kind) {
+        let user
         switch(kind) {
         case 'add':
-            if (name === 'RECORDING') this.$s.group.recording = true
+            user = {id, name: this.connection.users[id].username}
+            if (user.name === 'RECORDING') this.$s.group.recording = true
             this.$s.users.push(user)
             this.emit('user', {action: 'add', user})
             break
         case 'delete':
-            if (name === 'RECORDING') this.$s.group.recording = false
+            user = this.$s.users.find((u) => u.id === id)
+            if (user.name === 'RECORDING') this.$s.group.recording = false
             this.$s.users.splice(this.$s.users.findIndex((u) => u.id === id), 1)
             this.emit('user', {action: 'del', user})
             break
@@ -552,15 +576,15 @@ class Pyrite extends EventEmitter {
         this.$s.devices.cam.options = []
 
         devices.forEach(d => {
-            let label = d.label
+            let name = d.label
 
             if(d.kind === 'videoinput') {
-                if(!label) label = `Camera ${cn}`
-                this.$s.devices.cam.options.push({id: d.deviceId, name: label})
+                if(!name) name = `Camera ${cn}`
+                this.$s.devices.cam.options.push({id: d.deviceId, name})
                 cn++
             } else if(d.kind === 'audioinput') {
-                if(!label) label = `Microphone ${mn}`
-                this.$s.devices.mic.options.push({id: d.deviceId, name: label})
+                if(!name) name = `Microphone ${mn}`
+                this.$s.devices.mic.options.push({id: d.deviceId, name})
                 mn++
             }
         })
@@ -581,7 +605,7 @@ class Pyrite extends EventEmitter {
         this.logger.debug(`stopping up-stream ${c.id}`)
         c.stream.getTracks().forEach(t => t.stop())
 
-        this.$s.upMedia[c.kind].splice(this.$s.upMedia[c.kind].indexOf(c.id), 1)
+        this.$s.upMedia[c.label].splice(this.$s.upMedia[c.label].indexOf(c.id), 1)
     }
 }
 

@@ -65,7 +65,7 @@ const volatileState = {
     streams: [],
     upMedia: {
         audio: [],
-        local: [],
+        camera: [],
         screenshare: [],
         video: [],
     },

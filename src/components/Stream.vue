@@ -185,7 +185,7 @@ export default {
                     this.$refs.media.play().catch(e => {
                         app.notify({level: 'error', message: e})
                     })
-                    this.loadSettings()
+                    // this.loadSettings()
                 }
             }
         },
