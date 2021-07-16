@@ -48,7 +48,10 @@ const volatileState = {
     },
     group: {
         connected: false,
+        locked: false,
+        muted: false,
         name: '',
+        recording: false,
     },
     mediaReady: false,
     notifications: [],

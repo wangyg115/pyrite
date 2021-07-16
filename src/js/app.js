@@ -480,13 +480,16 @@ class Pyrite extends EventEmitter {
     }
 
     onUser(id, kind, name) {
+
         const user = {id, name}
         switch(kind) {
         case 'add':
+            if (name === 'RECORDING') this.$s.group.recording = true
             this.$s.users.push(user)
             this.emit('user', {action: 'add', user})
             break
         case 'delete':
+            if (name === 'RECORDING') this.$s.group.recording = false
             this.$s.users.splice(this.$s.users.findIndex((u) => u.id === id), 1)
             this.emit('user', {action: 'del', user})
             break
