@@ -1,36 +1,39 @@
 <template>
-    <section v-if="$route.params.tabId === 'devices'" class="tab-content active">
-        <div>
-            <div class="camera-field">
-                <FieldSelect
-                    v-model="$s.devices.cam.selected"
-                    :help="$t('Select the camera device for presence')"
-                    :label="$t('Camera')"
-                    name="video"
-                    :options="$s.devices.cam.options"
-                />
-                <Stream v-if="description" v-model="description" :controls="false" />
-            </div>
-
+    <section v-if="$route.params.tabId === 'devices'" class="c-tab-devices tab-content active">
+        <div class="camera-field">
             <FieldSelect
-                v-model="$s.devices.cam.resolution"
-                :help="$t('Depends on the camera\'s capabilities')"
-                :label="$t('Preferred Resolution')"
-                name="resolution"
-                :options="resolutionOptions"
+                v-model="$s.devices.cam.selected"
+                :help="$t('Select the camera device for presence')"
+                :label="$t('Camera')"
+                name="video"
+                :options="$s.devices.cam.options"
             />
 
-            <FieldSelect
-                v-model="$s.devices.mic.selected"
-                :help="$t('Select the microphone device')"
-                :label="$t('Microphone')"
-                name="audio"
-                :options="$s.devices.mic.options"
-            />
-
-            <div class="soundmeter">
-                <SoundMeter v-if="streamId && stream" :stream="stream" :stream-id="streamId" />
+            <div v-if="$s.group.connected" class="field connected-warning">
+                <Icon class="icon icon-small" name="Warning" />
+                {{ $t('You are currently streaming to other people') }}
             </div>
+            <Stream v-if="description" v-model="description" :controls="false" />
+        </div>
+
+        <FieldSelect
+            v-model="$s.devices.cam.resolution"
+            :help="$t('Depends on the camera\'s capabilities')"
+            :label="$t('Preferred Resolution')"
+            name="resolution"
+            :options="resolutionOptions"
+        />
+
+        <FieldSelect
+            v-model="$s.devices.mic.selected"
+            :help="$t('Select the microphone device')"
+            :label="$t('Microphone')"
+            name="audio"
+            :options="$s.devices.mic.options"
+        />
+
+        <div class="soundmeter">
+            <SoundMeter v-if="streamId && stream" :stream="stream" :stream-id="streamId" />
         </div>
     </section>
 </template>
@@ -71,10 +74,12 @@ export default {
     },
     methods: {
         async remountStream() {
-            this.stream = await app.addLocalMedia()
+            this.stream = await app.getUserMedia()
             this.streamId = this.stream.id
             this.description = null
+            // Give the stream time to unmount first...
             await nextTick()
+
             this.description = {
                 direction: 'up',
                 hasAudio: app.$s.devices.mic.enabled,
@@ -93,7 +98,7 @@ export default {
     async mounted() {
         // Not a media stream yet? Create one for the audio settings
         if (!app.localStream) {
-            const res = await app.addLocalMedia()
+            const res = await app.getUserMedia()
             if (!res) {
                 app.notify({level: 'error', message: 'Unable to find a valid device'})
                 return
@@ -130,19 +135,31 @@ export default {
 </script>
 
 <style lang="scss">
-.camera-field {
-    align-items: "stretch";
-    display: flex;
-    justify-content: "space-between";
-    position: relative;
+.c-tab-devices {
 
-    .c-stream {
-        background: var(--grey-400);
-        border: var(--border) solid var(--grey-200);
-        position: absolute;
-        right: 0;
-        width: 180px;
+    .connected-warning {
+        align-items: center;
+        display: flex;
+        font-family: var(--font-secondary);
+
+        .icon {
+            color: var(--warning-color);
+            margin-right: var(--spacer);
+        }
     }
+
+    .camera-field {
+        display: flex;
+        flex-direction: column;
+
+        .c-stream {
+            border: var(--border) solid var(--grey-200);
+            margin: var(--spacer);
+            right: 0;
+            width: 180px;
+        }
+    }
+
 }
 
 </style>

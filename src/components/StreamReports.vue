@@ -1,11 +1,42 @@
 <template>
     <div class="c-stream-reports">
+        <div v-if="Object.keys(description.settings.video).length" class="category">
+            <div class="title">
+                Video
+            </div>
+            <div v-for="(stat, statName) of description.settings.video" :key="statName" class="stat">
+                <div class="key">
+                    {{ statName }}
+                </div>
+                <div class="value">
+                    {{ stat }}
+                </div>
+            </div>
+        </div>
+
+        <div v-if="Object.keys(description.settings.audio).length" class="category">
+            <div class="title">
+                Audio
+            </div>
+            <div v-for="(stat, statName) of description.settings.audio" :key="statName" class="stat">
+                <div class="key">
+                    {{ statName }}
+                </div>
+                <div class="value">
+                    {{ stat }}
+                </div>
+            </div>
+        </div>
+
         <div
             v-for="(category, categoryName) of stats" :key="categoryName"
             class="category"
         >
+            <div class="title">
+                {{ categoryName }}
+            </div>
             <div v-for="(stat, statName) of category" :key="statName" class="stat">
-                <div class="title">
+                <div class="key">
                     {{ statName }}
                 </div>
                 <div class="value">
@@ -81,18 +112,18 @@ export default {
     },
     mounted() {
         this.glnStream = null
-        if (app.connection.up[this.stream.id]) {
-            this.glnStream = app.connection.up[this.stream.id]
+        if (app.connection.up[this.description.id]) {
+            this.glnStream = app.connection.up[this.description.id]
             this.glnStream.onstats = this.onUpStats
         } else {
-            this.glnStream = app.connection.down[this.stream.id]
+            this.glnStream = app.connection.down[this.description.id]
             this.glnStream.onstats = this.onDownStats
         }
 
         this.glnStream.setStatsInterval(250)
     },
     props: {
-        stream: {
+        description: {
             default: () => {},
             type: Object,
         },
@@ -117,33 +148,31 @@ export default {
         cursor: pointer;
     }
 
-    .sections {
-        display: flex;
-        flex-wrap: wrap;
-    }
-
-    .stats-type {
-        background: none;
-        color: #fff;
-    }
-
     .title {
-        font-weight: bold;
+        color: var(--primary-color);
+        font-weight: 600;
     }
 
     .category {
         display: flex;
         flex-direction: column;
-        font-size: var(--text-small);
+        font-size: var(--text-tiny);
         gap: var(--spacer);
         margin-top: var(--spacer);
         overflow-y: scroll;
         padding: var(--spacer);
 
         .stat {
+            display: flex;
 
-            .title {
+            .key {
                 font-weight: bold;
+
+            }
+
+            .value {
+                left: 200px;
+                position: absolute;
             }
         }
 

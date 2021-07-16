@@ -78,16 +78,17 @@ export default {
         },
         setWidth(width, margin) {
             for (const streamRef of this.streamsRef) {
-                streamRef.$refs.root.style.width = width + 'px'
-                streamRef.$refs.root.style.margin = margin + 'px'
                 let aspectRatio
-                // Apply stream aspect-ratio
-                if (streamRef.$refs.media.videoHeight) {
+                if (streamRef.modelValue.settings.video) {
+                    aspectRatio = 1 / streamRef.modelValue.settings.video.aspectRatio
+                } else if (streamRef.$refs.media.videoHeight) {
                     aspectRatio = streamRef.$refs.media.videoHeight / streamRef.$refs.media.videoWidth
                 } else {
                     aspectRatio = 0.75
                 }
 
+                streamRef.$refs.root.style.width = width + 'px'
+                streamRef.$refs.root.style.margin = margin + 'px'
                 streamRef.$refs.root.style.height = (width * aspectRatio) + 'px'
             }
         },
@@ -115,7 +116,7 @@ export default {
 
     0%{
         opacity: 0;
-        transform: scale(0.4) translateY(20px);
+        transform: scale(0) translateY(20px);
     }
 
     100% {

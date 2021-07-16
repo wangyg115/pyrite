@@ -26,7 +26,7 @@
             <Icon class="icon-mini" name="Info" />
         </button>
 
-        <StreamReports v-if="stats.visible" :stream="modelValue" @click="toggleStats" />
+        <StreamReports v-if="stats.visible" :description="modelValue" @click="toggleStats" />
 
         <div v-if="controls && !loading" class="stream-bar">
             <div class="buttons">
@@ -71,7 +71,7 @@ import StreamReports from './StreamReports.vue'
 
 export default {
     beforeUnmount() {
-        app.logger.info(`unmounting stream component ${this.modelValue.id}`)
+        app.logger.info(`unmounting stream ${this.modelValue.id}`)
         if (this.$refs.media.src) {
             URL.revokeObjectURL(this.$refs.media.src)
             this.$refs.media.src = null
@@ -124,6 +124,21 @@ export default {
     },
     emits: ['update:modelValue'],
     methods: {
+        loadSettings() {
+            app.logger.debug('retrieving stream audio/video settings')
+            const settings = {}
+            const audioTracks = this.stream.getAudioTracks()
+            if (audioTracks.length) settings.audio = audioTracks[0].getSettings()
+
+            const videoTracks = this.stream.getVideoTracks()
+            if (videoTracks.length) settings.video = videoTracks[0].getSettings()
+
+            if (!audioTracks.length && !videoTracks.length) {
+                app.logger.warn('no audio & video settings found; stream not ready yet?')
+            }
+
+            this.$emit('update:modelValue', {...this.modelValue, settings})
+        },
         /**
          * Handle mounting a remote 'down' stream.
          */
@@ -141,6 +156,7 @@ export default {
 
             this.glnStream = app.connection.down[this.modelValue.id]
             this.stream = this.glnStream.stream
+
             this.label = this.glnStream.username
 
             this.glnStream.ondowntrack = (track, transceiver, label, stream) => {
@@ -169,6 +185,7 @@ export default {
                     this.$refs.media.play().catch(e => {
                         app.notify({level: 'error', message: e})
                     })
+                    this.loadSettings()
                 }
             }
         },
@@ -227,6 +244,8 @@ export default {
                     throw new Error('invalid Stream source type')
                 }
             }
+
+            this.loadSettings()
 
             // A local stream that's not networked (e.g. cam preview in ettings)
             if (!this.glnStream) return
@@ -332,17 +351,18 @@ export default {
 
     .audio-container,
     .loading-container {
+        align-items: center;
         background: var(--grey-600);
+        display: flex;
         height: 100%;
-        padding: 25%;
+        justify-content: center;
         position: absolute;
-        transform-origin: 50% 50%;
         width: 100%;
 
         .icon {
             filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
-            height: 100%;
-            width: 100%;
+            height: 50%;
+            width: 50%;
         }
 
         .spinner {

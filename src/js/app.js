@@ -65,101 +65,6 @@ class Pyrite extends EventEmitter {
         return glnStream
     }
 
-    async addLocalMedia(presence) {
-        if (!this.$s.group.connected && this.localStream) {
-            this.delLocalMedia()
-        }
-
-        await this.setMediaChoices()
-
-        let selectedAudioDevice = false
-        let selectedVideoDevice = false
-
-        if (this.$s.devices.mic.selected.id !== null) selectedAudioDevice = {deviceId: this.$s.devices.mic.selected.id}
-        if (this.$s.devices.cam.selected.id !== null) selectedVideoDevice = {deviceId: this.$s.devices.cam.selected.id}
-
-        if (presence) {
-            if (!presence.cam.enabled) selectedVideoDevice = false
-            if (!presence.mic.enabled) selectedAudioDevice = false
-            // A local stream cannot be initialized with neither audio and video; return early.
-            if (!presence.cam.enabled && !presence.mic.enabled) {
-                return
-            }
-        }
-
-        // Verify whether the local mediastream is using the proper device setup.
-        this.logger.debug(`using cam ${this.$s.devices.cam.selected.name}`)
-        this.logger.debug(`using mic ${this.$s.devices.mic.selected.name}`)
-
-        if(selectedVideoDevice) {
-            if (this.$s.devices.cam.resolution.id === '720p') {
-                selectedVideoDevice.width = {ideal: 1280, min: 640}
-                selectedVideoDevice.height = {ideal: 720, min: 400}
-            } else if(this.$s.devices.cam.resolution.id === '1080p') {
-                selectedVideoDevice.width = {ideal: 1920, min: 640}
-                selectedVideoDevice.height = {ideal: 1080, min: 400}
-            }
-        }
-
-        const constraints = {
-            audio: selectedAudioDevice,
-            video: selectedVideoDevice,
-        }
-
-        try {
-            this.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-            this.$s.mediaReady = true
-        } catch(e) {
-            this.notify({level: 'error', message: e})
-            return
-        }
-
-        // Add local stream to Galène; handle peer connection logic.
-        if (this.$s.group.connected) {
-            let localStreamId = this.findUpMedia('local')
-            let oldStream = localStreamId && this.connection.up[localStreamId]
-
-            if(!selectedAudioDevice && !selectedVideoDevice) {
-                this.logger.warn('no media; aborting')
-                if(oldStream) {
-                    this.delUpMedia(oldStream)
-                }
-                return
-            }
-
-            if(oldStream) {
-                this.logger.debug(`removing old stream`)
-                this.stopUpMedia(oldStream)
-            }
-
-            const {glnStream, streamState} = this.newUpStream(localStreamId)
-            glnStream.kind = 'local'
-            glnStream.stream = this.localStream
-            this.localGlnStream = glnStream
-
-            this.$s.upMedia[glnStream.kind].push(glnStream.id)
-
-            this.localStream.getTracks().forEach(t => {
-                glnStream.labels[t.id] = t.kind
-                if(t.kind === 'audio') {
-                    streamState.hasAudio = true
-                    if(!this.$s.devices.mic.enabled) {
-                        this.logger.info('muting local stream')
-                        t.enabled = false
-                    }
-                } else if(t.kind === 'video') {
-                    streamState.hasVideo = true
-                    if(this.$s.devices.cam.resolution.id === '1080p') {
-                        t.contentHint = 'detail'
-                    }
-                }
-                glnStream.pc.addTrack(t, this.localStream)
-            })
-        }
-
-        return this.localStream
-    }
-
     async addShareMedia() {
         this.logger.info('add share media')
         let stream = null
@@ -194,6 +99,40 @@ class Pyrite extends EventEmitter {
         })
 
         return glnStream
+    }
+
+    async addUserMedia() {
+        let localStreamId = this.findUpMedia('local')
+        let oldStream = localStreamId && this.connection.up[localStreamId]
+
+        if(oldStream) {
+            this.logger.debug(`removing old stream`)
+            this.stopUpMedia(oldStream)
+        }
+
+        const {glnStream, streamState} = this.newUpStream(localStreamId)
+        glnStream.kind = 'local'
+        glnStream.stream = this.localStream
+        this.localGlnStream = glnStream
+
+        this.$s.upMedia[glnStream.kind].push(glnStream.id)
+
+        this.localStream.getTracks().forEach(t => {
+            glnStream.labels[t.id] = t.kind
+            if(t.kind === 'audio') {
+                streamState.hasAudio = true
+                if(!this.$s.devices.mic.enabled) {
+                    this.logger.info('muting local stream')
+                    t.enabled = false
+                }
+            } else if(t.kind === 'video') {
+                streamState.hasVideo = true
+                if(this.$s.devices.cam.resolution.id === '1080p') {
+                    t.contentHint = 'detail'
+                }
+            }
+            glnStream.pc.addTrack(t, this.localStream)
+        })
     }
 
     async connect() {
@@ -292,6 +231,7 @@ class Pyrite extends EventEmitter {
     }
 
     disconnect() {
+        this.logger.info(`disconnecting from group ${this.$s.group.name}`)
         this.$s.users = []
         this.$s.streams = []
         this.connection.close()
@@ -322,6 +262,70 @@ class Pyrite extends EventEmitter {
         }
     }
 
+    async getUserMedia(presence) {
+        // Cleanup the old networked stream first:
+        if (this.localStream && this.$s.group.connected) {
+            app.delUpMediaKind('local')
+        }
+
+        if (this.localStream) {
+            this.delLocalMedia()
+        }
+
+        await this.setMediaChoices()
+
+        let selectedAudioDevice = false
+        let selectedVideoDevice = false
+
+        if (this.$s.devices.mic.selected.id !== null) selectedAudioDevice = {deviceId: this.$s.devices.mic.selected.id}
+        if (this.$s.devices.cam.selected.id !== null) selectedVideoDevice = {deviceId: this.$s.devices.cam.selected.id}
+
+        if (presence) {
+            if (!presence.cam.enabled) selectedVideoDevice = false
+            if (!presence.mic.enabled) selectedAudioDevice = false
+            // A local stream cannot be initialized with neither audio and video; return early.
+            if (!presence.cam.enabled && !presence.mic.enabled) {
+                return
+            }
+        }
+
+        // Verify whether the local mediastream is using the proper device setup.
+        this.logger.debug(`using cam ${this.$s.devices.cam.selected.name}`)
+        this.logger.debug(`using mic ${this.$s.devices.mic.selected.name}`)
+
+        if(selectedVideoDevice) {
+            if (this.$s.devices.cam.resolution.id === '720p') {
+                this.logger.debug(`using 720p resolution`)
+                selectedVideoDevice.width = {ideal: 1280, min: 640}
+                selectedVideoDevice.height = {ideal: 720, min: 400}
+            } else if(this.$s.devices.cam.resolution.id === '1080p') {
+                this.logger.debug(`using 1080p resolution`)
+                selectedVideoDevice.width = {ideal: 1920, min: 640}
+                selectedVideoDevice.height = {ideal: 1080, min: 400}
+            }
+        }
+
+        const constraints = {
+            audio: selectedAudioDevice,
+            video: selectedVideoDevice,
+        }
+
+        try {
+            this.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+            this.$s.mediaReady = true
+        } catch(e) {
+            this.notify({level: 'error', message: e})
+            return
+        }
+
+        // Add local stream to Galène; handle peer connection logic.
+        if (this.$s.group.connected) {
+            this.addUserMedia()
+        }
+
+        return this.localStream
+    }
+
     muteLocalTracks(enabled) {
         for(let id in this.connection.up) {
             const glnStream = this.connection.up[id]
@@ -344,6 +348,7 @@ class Pyrite extends EventEmitter {
             hasVideo: false,
             id: glnStream.id,
             mirror: true,
+            settings: {audio: {}, video: {}},
             volume: {
                 locked: false,
                 value: 100,
@@ -428,6 +433,7 @@ class Pyrite extends EventEmitter {
             hasVideo: false,
             id: c.id,
             mirror: true,
+            settings: {audio: {}, video: {}},
             volume: {
                 locked: false,
                 value: 100,
@@ -469,7 +475,7 @@ class Pyrite extends EventEmitter {
         this.connection.request(this.$s.media.accept.id)
 
         if(this.connection.permissions.present && !this.findUpMedia('local')) {
-            await this.addLocalMedia(this.$s.devices)
+            await this.getUserMedia(this.$s.devices)
         }
     }
 
