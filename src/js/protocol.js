@@ -333,10 +333,10 @@ ServerConnection.prototype.connect = async function(url) {
                             sc.onuser.call(sc, id, 'delete');
                     }
                 }
-                if(sc.onjoined)
-                    sc.onjoined.call(sc, m.kind, m.group,
-                                     m.permissions || {},
-                                     m.value || null);
+                if(sc.onjoined) {
+                    sc.onjoined.call(sc, m.kind, m.group, m.permissions || {}, m.value || null, m.status || {});
+                }
+
                 break;
             case 'user':
                 switch(m.kind) {
