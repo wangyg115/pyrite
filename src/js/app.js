@@ -510,7 +510,7 @@ class Pyrite extends EventEmitter {
         this.logger.info(`acceptable media types: ${this.$s.media.accept.id}`)
         this.connection.request(this.mapRequest(this.$s.media.accept.id))
 
-        if(this.connection.permissions.present && !this.findUpMedia('local')) {
+        if(this.connection.permissions.present && !this.findUpMedia('camera')) {
             await this.getUserMedia(this.$s.devices)
         }
     }
@@ -550,6 +550,8 @@ class Pyrite extends EventEmitter {
     }
 
     async setMaxVideoThroughput(c, bps) {
+        const unlimitedRate = 1000000000
+
         let senders = c.pc.getSenders()
         for(let i = 0; i < senders.length; i++) {
             let s = senders[i]
@@ -558,8 +560,8 @@ class Pyrite extends EventEmitter {
             let p = s.getParameters()
             if(!p.encodings) p.encodings = [{}]
             p.encodings.forEach(e => {
-                if(bps > 0) e.maxBitrate = bps
-                else delete e.maxBitrate
+                if(!e.rid || e.rid === 'h') e.maxBitrate = bps || unlimitedRate
+
             })
             this.logger.info(`cap video bandwidth: ${bps}`)
 

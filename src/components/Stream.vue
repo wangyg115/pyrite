@@ -159,7 +159,11 @@ export default {
 
             this.label = this.glnStream.username
 
-            this.glnStream.ondowntrack = (track, transceiver, label, stream) => {
+            this.glnStream.ondowntrack = (track) => {
+                if (!this.stream) {
+                    this.stream = this.glnStream.stream
+                }
+
                 app.logger.debug(`down stream ondowntrack - [${this.glnStream.id}]`)
                 // An incoming audio-track; enable volume controls.
                 if (track.kind === 'audio') {
@@ -168,24 +172,23 @@ export default {
                 } else if(track.kind === 'video') {
                     this.$emit('update:modelValue', {...this.modelValue, hasVideo: true})
                 }
-
-                if (!this.stream) {
-                    this.stream = stream
-                    this.$refs.media.srcObject = this.stream
-                    this.$refs.media.play()
-                }
             }
 
             this.glnStream.onlabel = (label) => {
                 this.label = label
             }
 
-            this.glnStream.onstatus = (status) => {
+            this.glnStream.onstatus = async(status) => {
                 if(['connected', 'completed'].includes(status)) {
-                    this.$refs.media.play().catch(e => {
-                        app.notify({level: 'error', message: e})
-                    })
-                    // this.loadSettings()
+
+                    this.$refs.media.srcObject = this.stream
+                    try {
+                        await this.$refs.media.play()
+                    } catch (message) {
+                        app.notify({level: 'error', message})
+                    }
+
+                    this.loadSettings()
                 }
             }
         },
@@ -226,7 +229,6 @@ export default {
                         }
 
                         this.glnStream.pc.addTrack(track, this.stream)
-                        this.glnStream.labels[track.id] = track.kind
                     }
 
                     this.glnStream.onclose = () =>{

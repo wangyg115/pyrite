@@ -62,7 +62,7 @@ export default {
         toggleCam() {
             this.$s.devices.cam.enabled = !this.$s.devices.cam.enabled
             app.logger.debug(`switching cam stream: ${this.$s.devices.cam.enabled}`)
-            app.delUpMediaKind('local')
+            app.delUpMediaKind('camera')
             app.getUserMedia(this.$s.devices)
         },
         toggleMicrophone() {
