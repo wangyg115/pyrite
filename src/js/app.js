@@ -477,7 +477,10 @@ class Pyrite extends EventEmitter {
         this.$s.streams.push(streamState)
     }
 
-    async onJoined(kind, group, perms, message) {
+    async onJoined(kind, group, perms, message, status) {
+        if (status && (status.locked || status.locked === false)) {
+            this.$s.group.locked = status.locked
+        }
         switch(kind) {
         case 'fail':
             this.notify({level: 'error', message: `Server: ${message}`})

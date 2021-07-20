@@ -11,11 +11,12 @@
 
             <RouterLink
                 v-if="$s.group.name" class="btn btn-menu tooltip"
-                :class="{active: ['groupsConnected', 'groupsDisconnected'].includes($route.name)}"
-                :data-tooltip="$t('current group')"
+                :class="{warning: $s.group.locked, active: ['groupsConnected', 'groupsDisconnected'].includes($route.name)}"
+                :data-tooltip="$s.group.locked ? $t('current group (locked)') : $t('current group')"
                 :to="{name: 'groups', params: {groupId: $s.group.name}}"
             >
-                <Icon class="icon-small" name="Groups" />
+                <Icon v-if="!$s.group.locked" class="icon-small" name="Groups" />
+                <Icon v-else class="icon-small" name="Lock" />
             </RouterLink>
             <button v-else class="btn btn-menu" disabled>
                 <Icon class="icon-small" name="Groups" />

@@ -64,7 +64,12 @@
                 :disabled="connecting"
                 @click="login"
             >
-                {{ $t('join group') }}
+                <template v-if="$s.group.locked">
+                    {{ $t('join group as maintainer') }}
+                </template>
+                <template v-else>
+                    {{ $t('join group') }}
+                </template>
             </button>
         </section>
     </div>

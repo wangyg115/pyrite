@@ -12,13 +12,16 @@
         </div>
 
         <div v-for="group of groups" :key="group.name" class="group item">
-            <Icon class="item-icon icon-small" name="Groups" />
+            <Icon v-if="!group.locked" class="item-icon icon-small" name="Groups" />
+            <Icon v-else class="item-icon icon-small" name="Lock" />
             <RouterLink class="name" :class="{active: $s.group.name === group.name}" :to="{name: 'groups', params: {groupId: group.name}}">
                 {{ group.name }}
             </RouterLink>
+
             <div class="count">
                 {{ group.clientCount }}
             </div>
+
             <Icon class="icon-small" name="User" />
         </div>
     </section>
@@ -34,6 +37,11 @@ export default {
     methods: {
         async pollGroups() {
             this.groups = await (await fetch('/public-groups.json')).json()
+            for (const group of this.groups) {
+                if ((group.name === this.$s.group.name) && group.locked) {
+                    this.$s.group.locked = true
+                }
+            }
         },
         updateRoute() {
             if (this.$s.group.name) {
