@@ -38,13 +38,16 @@ export default {
         async pollGroups() {
             this.groups = await (await fetch('/public-groups.json')).json()
             for (const group of this.groups) {
-                if ((group.name === this.$s.group.name) && group.locked) {
-                    this.$s.group.locked = true
+                if (group.name === this.$s.group.name) {
+                    if (group.locked) this.$s.group.locked = true
+                    else this.$s.group.locked = false
                 }
             }
         },
         updateRoute() {
             if (this.$s.group.name) {
+                this.$s.group.locked = this.groups.find((i) => i.name === this.$s.group.name).locked
+
                 // Update the group route when the user sets the group name.
                 this.$router.replace({name: 'groups', params: {groupId: this.$s.group.name}})
             } else {
@@ -62,10 +65,10 @@ export default {
     },
     watch: {
         /**
-         * Note that the behaviour is that filling the custom group
-         * input does NOT trigger the 'groupsDisconnected' view automatically,
-         * while using the listed groups selection does. This is intended
-         * behaviour, in order to keep the history clean.
+         * Note that the behaviour is that using the custom group
+         * input does NOT trigger the 'groupsDisconnected' view,
+         * while using the listed groups selection does. This is
+         * intended behaviour to keep the history clean.
          */
         '$s.group.name': {
             immediate: false,

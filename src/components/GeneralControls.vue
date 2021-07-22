@@ -11,7 +11,7 @@
 
             <RouterLink
                 v-if="$s.group.name" class="btn btn-menu tooltip"
-                :class="{warning: $s.group.locked, active: ['groupsConnected', 'groupsDisconnected'].includes($route.name)}"
+                :class="{ active: ['groupsConnected', 'groupsDisconnected'].includes($route.name)}"
                 :data-tooltip="$s.group.locked ? $t('current group (locked)') : $t('current group')"
                 :to="{name: 'groups', params: {groupId: $s.group.name}}"
             >

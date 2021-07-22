@@ -58,18 +58,6 @@
             width: var(--space-3);
         }
 
-        &.warning {
-            color: var(--warning-color);
-
-            &.active {
-                color: var(--warning-color);
-            }
-
-            &::before {
-                background: var(--warning-color);
-            }
-        }
-
         &:not([disabled]):hover {
             color: var(--primary-color);
 
@@ -132,6 +120,23 @@
             border-bottom: 2px solid var(--primary-color);
             color: var(--grey-50);
             cursor: pointer;
+        }
+    }
+
+    &.warning {
+
+        .icon {
+            color: var(--warning-color);
+        }
+
+        &:hover,
+        &.active {
+            border-bottom: 2px solid var(--warning-color) !important;
+            color: var(--warning-color);
+        }
+
+        &::before {
+            background: var(--warning-color);
         }
     }
 

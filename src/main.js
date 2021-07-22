@@ -6,6 +6,7 @@ import FieldFile from './components/ui/fields/FieldFile.vue'
 import FieldSelect from './components/ui/fields/FieldSelect.vue'
 import FieldSlider from './components/ui/fields/FieldSlider.vue'
 import FieldText from './components/ui/fields/FieldText.vue'
+import Hint from './components/ui/Hint.vue'
 import Icon from './components/ui/icons/Icon.vue'
 import Pyrite from './js/app.js'
 
@@ -21,6 +22,7 @@ app.vm.component('FieldFile', FieldFile)
 app.vm.component('FieldSelect', FieldSelect)
 app.vm.component('FieldSlider', FieldSlider)
 app.vm.component('FieldText', FieldText)
+app.vm.component('Hint', Hint)
 
 app.vm.directive('click-outside', {
     beforeMount(el, binding) {

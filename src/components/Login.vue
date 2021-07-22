@@ -4,6 +4,7 @@
             <Icon class="item-icon icon-small" name="Login" /><em>{{ $route.params.groupId }}</em>
         </header>
         <section>
+            <Hint v-if="$s.group.locked" class="field" :text="$t('The current group is locked. Only maintainers are allowed to login while it is locked.')" />
             <form>
                 <FieldText
                     v-model="$s.user.name"
@@ -60,12 +61,12 @@
 
             <button
                 id="connectbutton"
-                class="btn btn-widget"
+                class="btn btn-widget warning"
                 :disabled="connecting"
                 @click="login"
             >
                 <template v-if="$s.group.locked">
-                    {{ $t('join group as maintainer') }}
+                    {{ $t('join locked group') }}
                 </template>
                 <template v-else>
                     {{ $t('join group') }}

@@ -429,7 +429,6 @@ class Pyrite extends EventEmitter {
         this.$s.group.connected = false
 
         this.delUpMediaKind(null)
-        this.notify({level: 'error', message: 'Disconnected'})
 
         if(code != 1000) {
             this.notify({level: 'error', message: `Socket close ${code}: ${reason}`})
@@ -483,7 +482,10 @@ class Pyrite extends EventEmitter {
         }
         switch(kind) {
         case 'fail':
-            this.notify({level: 'error', message: `Server: ${message}`})
+            if (message === 'group is locked') {
+                this.notify({level: 'error', message: this.$t('This group is locked and only accessible to maintainers.')})
+            }
+
             // Closing the connection will trigger a 'leave' message,
             // which deals with the proper UI actions.
             this.connection.close()
