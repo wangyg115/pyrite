@@ -29,6 +29,7 @@ class Pyrite extends EventEmitter {
         this.$s = this.store.load()
 
         this.i18n = createI18n({
+            formatFallbackMessages: true,
             locale: this.$s.language.id,
             messages: {
                 nl: localeNL,
@@ -155,7 +156,18 @@ class Pyrite extends EventEmitter {
                 // eslint-disable-next-line no-case-declarations
                 let from = id ? (username || 'Anonymous') : 'The Server'
                 if(privileged) {
-                    this.notify({level: 'error', message: `${from} said: ${message}`})
+                    // Add i18n to server messages.
+                    if (message === 'you have been kicked out') {
+                        this.notify({
+                            level: 'error',
+                            message: this.$t('You were logged out of group {group} by privileged user {user}', {
+                                group: this.$s.group.name,
+                                user: username,
+                            }),
+                        })
+                    } else {
+                        this.notify({level: 'error', message: `${from} said: ${message}`})
+                    }
                 }
                 break
             case 'mute':
@@ -192,6 +204,7 @@ class Pyrite extends EventEmitter {
         this.logger.info(`connecting websocket ${url}`)
         try {
             await this.connection.connect(url)
+            this.$s.group.connected = true
         } catch(e) {
             this.notify({
                 level: 'error',
@@ -427,7 +440,6 @@ class Pyrite extends EventEmitter {
     }
 
     onClose(code, reason) {
-        this.$s.group.connected = false
         this.logger.debug('connection closed')
 
         // Reset some state.
@@ -491,7 +503,7 @@ class Pyrite extends EventEmitter {
         switch(kind) {
         case 'fail':
             if (message === 'group is locked') {
-                this.notify({level: 'error', message: this.$t('This group is locked and only accessible to maintainers.')})
+                this.notify({level: 'error', message: this.$t('Group {group} is locked; only maintainers may login.', {group: this.$s.group.name})})
             }
 
             // Closing the connection will trigger a 'leave' message,
@@ -507,7 +519,6 @@ class Pyrite extends EventEmitter {
             return
         case 'join':
         case 'change':
-            this.$s.group.connected = true
             this.$s.permissions = perms
             this.logger.info(`joined group ${group}`)
             this.logger.debug(`permissions: ${JSON.stringify(perms)}`)
