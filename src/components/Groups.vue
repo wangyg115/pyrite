@@ -18,11 +18,10 @@
                 {{ group.name }}
             </RouterLink>
 
-            <div class="count">
+            <div class="count" :class="{active: group.clientCount > 0}">
                 {{ group.clientCount }}
+                <Icon class="icon-small" name="User" />
             </div>
-
-            <Icon class="icon-small" name="User" />
         </div>
     </section>
 </template>
@@ -88,8 +87,14 @@ export default {
 
     .group {
 
-        .name {
-            font-family: var(--font-secondary);
+        .count {
+            align-items: center;
+            display: flex;
+            transition: all 0.25s ease-in;
+
+            &.active {
+                color: var(--grey-0);
+            }
         }
     }
 

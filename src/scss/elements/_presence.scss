@@ -42,7 +42,9 @@
             color: var(--grey-50);
             display: flex;
             flex: 1;
+            font-family: var(--font-secondary);
             font-weight: 600;
+            line-height: 100%;
 
             &.active {
                 color: var(--primary-color);
