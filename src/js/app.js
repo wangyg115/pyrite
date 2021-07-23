@@ -196,7 +196,7 @@ class Pyrite extends EventEmitter {
                     this.$s.chat.channels.main.messages = []
                     this.notify({
                         level: 'info',
-                        message: `${this.$t('Chat history of main channel cleared remotely')}`,
+                        message: `${this.$t('Chat history of main channel is cleared')}`,
                     })
                 }
                 break

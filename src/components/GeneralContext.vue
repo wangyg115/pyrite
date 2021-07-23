@@ -23,6 +23,9 @@
                 <span v-if="this.$s.group.locked">{{ $t('Unlock Group') }}</span>
                 <span v-else>{{ $t('Lock Group') }}</span>
             </button>
+            <button v-if="$s.permissions.op" class="action" @click="clearChat">
+                <Icon class="icon icon-mini" name="ChatRemove" />{{ $t('Clear Chat') }}
+            </button>
         </div>
     </div>
 </template>
@@ -35,6 +38,10 @@ export default {
         }
     },
     methods: {
+        clearChat() {
+            app.connection.groupAction('clearchat')
+            this.toggleMenu()
+        },
         muteAllUsers() {
             app.connection.userMessage('mute', null, null, true)
             app.notify({

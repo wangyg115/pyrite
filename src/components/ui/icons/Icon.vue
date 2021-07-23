@@ -12,6 +12,7 @@
 
 <script>
 import IconChat from './IconChat.vue'
+import IconChatRemove from './IconChatRemove.vue'
 import IconClose from './IconClose.vue'
 import IconError from './IconError.vue'
 import IconEye from './IconEye.vue'
@@ -47,6 +48,7 @@ import IconWebcam from './IconWebcam.vue'
 export default {
     components: {
         IconChat,
+        IconChatRemove,
         IconClose,
         IconError,
         IconEye,
