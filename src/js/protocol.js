@@ -293,6 +293,7 @@ ServerConnection.prototype.connect = async function(url) {
         };
         this.socket.onmessage = function(e) {
             let m = JSON.parse(e.data);
+
             switch(m.type) {
             case 'handshake':
                 break;
@@ -375,7 +376,7 @@ ServerConnection.prototype.connect = async function(url) {
                     return;
                 }
                 if(sc.onuser)
-                    sc.onuser.call(sc, m.id, m.kind);
+                    sc.onuser.call(sc, m.id, m.kind, m.permissions);
                 break;
             case 'chat':
                 if(sc.onchat)
