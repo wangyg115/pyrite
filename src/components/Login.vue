@@ -61,7 +61,8 @@
 
             <button
                 id="connectbutton"
-                class="btn btn-widget warning"
+                class="btn btn-widget"
+                :class="{warning: $s.group.locked}"
                 :disabled="connecting"
                 @click="login"
             >
