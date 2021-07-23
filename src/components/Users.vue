@@ -12,20 +12,18 @@
                 <span v-if="$s.users[0].id === user.id">
                     (you)
                 </span>
+
+                <div class="permissions">
+                    <span v-if="user.permissions.present" class="tooltip" :data-tooltip="$t('presenter role')">
+                        <Icon class="icon icon-mini" name="Present" />
+                    </span>
+                    <span v-if="user.permissions.op" class="tooltip" :data-tooltip="$t('operator role')">
+                        <Icon class="icon icon-mini" name="Operator" />
+                    </span>
+                </div>
             </div>
-            <div v-if="$s.users[0].id === user.id" class="me">
-                <span class="tooltip" :data-tooltip="$t('presenter role')">
-                    <Icon
-                        v-if="$s.permissions.present"
-                        class="icon icon-mini"
-                        name="Present"
-                    />
-                </span>
-                <span class="tooltip" :data-tooltip="$t('operator role')">
-                    <Icon v-if="$s.permissions.op" class="icon icon-mini" name="Operator" />
-                </span>
-            </div>
-            <UserContext v-if="user.name !== 'RECORDING'" :user="user" />
+
+            <UserContext v-if="user.name !== 'RECORDING' && user.id !== $s.user.id" :user="user" />
         </div>
     </section>
 </template>
@@ -49,18 +47,6 @@ export default {
             })
             return users
         },
-        userRights() {
-            let text = ''
-
-            if(app.$s.permissions.op && app.$s.permissions.present)
-                text = '(op, presenter)'
-            else if(app.$s.permissions.op)
-                text = 'operator'
-            else if(app.$s.permissions.present)
-                text = 'presenter'
-
-            return text
-        },
     },
 }
 </script>
@@ -69,8 +55,21 @@ export default {
 .user {
     font-family: var(--font-secondary);
 
-    .me {
-        font-size: var(--text-small);
+    .name {
+        align-items: center;
+        display: flex;
+
+        .permissions {
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            margin-left: var(--spacer);
+
+            span {
+                display: flex;
+            }
+        }
     }
+
 }
 </style>

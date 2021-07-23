@@ -258,6 +258,7 @@ class Pyrite extends EventEmitter {
     disconnect() {
         this.logger.info(`disconnecting from group ${this.$s.group.name}`)
 
+        this.$s.group.connected = false
         this.$s.streams = []
         this.connection.close()
         this.delLocalMedia()
@@ -539,24 +540,32 @@ class Pyrite extends EventEmitter {
         }
     }
 
-    onUser(id, kind) {
+    onUser(id, kind, permissions) {
         let user
-        switch(kind) {
-        case 'add':
-            user = {id, name: this.connection.users[id].username}
+
+        if (kind ==='add') {
+            user = {
+                id,
+                name: this.connection.users[id].username,
+                permissions: this.connection.users[id].permissions,
+            }
             if (user.name === 'RECORDING') this.$s.group.recording = true
             this.$s.users.push(user)
             this.emit('user', {action: 'add', user})
-            break
-        case 'delete':
+        } else if (kind === 'change') {
+            user = {
+                id,
+                name: this.connection.users[id].username,
+                permissions: this.connection.users[id].permissions,
+            }
+            this.$s.users.splice(this.$s.users.findIndex((i) => i.id === user.id), 1, user)
+        } else if (kind === 'delete') {
             user = this.$s.users.find((u) => u.id === id)
             if (user.name === 'RECORDING') this.$s.group.recording = false
             this.$s.users.splice(this.$s.users.findIndex((u) => u.id === id), 1)
             this.emit('user', {action: 'del', user})
-            break
-        default:
-            break
         }
+
     }
 
     removeTrack(glnStream, kind) {

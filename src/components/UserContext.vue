@@ -14,11 +14,21 @@
             <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="kickUser(user)">
                 <Icon class="icon icon-mini" name="Logout" />{{ `${$t('Kick')} ${user.name}` }}
             </button>
-            <button v-if="user.id !== $s.user.id" class="action" disabled>
-                <Icon class="icon icon-mini" name="Operator" />{{ $t('Make Operator') }}
+            <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="toggleOperator(user)">
+                <template v-if="user.permissions.op">
+                    <Icon class="icon icon-mini" name="Operator" />{{ $t('Remove Operator role') }}
+                </template>
+                <template v-else>
+                    <Icon class="icon icon-mini" name="Operator" />{{ $t('Add Operator role') }}
+                </template>
             </button>
-            <button v-if="user.id !== $s.user.id" class="action" disabled>
-                <Icon class="icon icon-mini" name="Present" />{{ $t('Make presenter') }}
+            <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="togglePresenter(user)">
+                <template v-if="user.permissions.present">
+                    <Icon class="icon icon-mini" name="Present" />{{ $t('Remove Present role') }}
+                </template>
+                <template v-else>
+                    <Icon class="icon icon-mini" name="Present" />{{ $t('Add Present role') }}
+                </template>
             </button>
         </div>
     </div>
@@ -62,6 +72,16 @@ export default {
             }
 
             this.active = !this.active
+        },
+        toggleOperator(user) {
+            if (user.permissions.op) app.connection.userAction('unop', user.id)
+            else app.connection.userAction('op', user.id)
+            this.toggleMenu()
+        },
+        togglePresenter(user) {
+            if (user.permissions.present) app.connection.userAction('unpresent', user.id)
+            else app.connection.userAction('present', user.id)
+            this.toggleMenu()
         },
     },
     props: {

@@ -9,6 +9,7 @@
         display: flex;
         font-weight: bold;
         height: var(--space-4);
+        margin-bottom: var(--spacer);
         position: relative;
 
         svg {
@@ -27,17 +28,21 @@
     .item {
         align-items: center;
         display: flex;
-        padding: var(--spacer);
+        padding: calc(var(--spacer) / 2) var(--spacer);
 
         .item-icon {
+            align-items: center;
+            color: var(--primary-color);
+            display: flex;
             margin-right: var(--spacer);
-
         }
 
         .name {
+            align-items: stretch;
             color: var(--grey-50);
+            display: flex;
             flex: 1;
-            font-weight: bold;
+            font-weight: 600;
 
             &.active {
                 color: var(--primary-color);

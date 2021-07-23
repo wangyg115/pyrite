@@ -105,8 +105,8 @@ export default {
     }
 
     &.icon-mini {
-        height: calc(var(--spacer) * 2.75);
-        width: calc(var(--spacer) * 2.75);
+        height: calc(var(--spacer) * 2.5);
+        width: calc(var(--spacer) * 2.5);
     }
 
     &.icon-small {
