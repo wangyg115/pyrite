@@ -165,6 +165,10 @@ class Pyrite extends EventEmitter {
                                 user: username,
                             }),
                         })
+                    } else if (message === 'permission denied') {
+                        // This hapeens when a stream can no longer be played.
+                        return
+
                     } else {
                         this.notify({level: 'error', message: `${from} said: ${message}`})
                     }
@@ -540,7 +544,7 @@ class Pyrite extends EventEmitter {
         }
     }
 
-    onUser(id, kind, permissions) {
+    onUser(id, kind) {
         let user
 
         if (kind ==='add') {
@@ -553,10 +557,28 @@ class Pyrite extends EventEmitter {
             this.$s.users.push(user)
             this.emit('user', {action: 'add', user})
         } else if (kind === 'change') {
+
             user = {
                 id,
                 name: this.connection.users[id].username,
                 permissions: this.connection.users[id].permissions,
+            }
+            // Compare permissions
+            const _user = this.$s.users.find((i) => i.id === user.id)
+
+            if (this.$s.user.id === _user.id) {
+                // Present permission is taken away; shutdown the local stream.
+                if(_user.permissions.present && !user.permissions.present) {
+                    this.logger.debug(`present permission is removed`)
+                    this.delUpMedia(this.localGlnStream)
+                    this.$s.devices.cam.enabled = false
+                    this.$s.devices.mic.enabled = false
+
+                    this.notify({
+                        level: 'info',
+                        message: this.$t('Your presenter permissions was removed'),
+                    })
+                }
             }
             this.$s.users.splice(this.$s.users.findIndex((i) => i.id === user.id), 1, user)
         } else if (kind === 'delete') {
