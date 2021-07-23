@@ -161,10 +161,18 @@ class Pyrite extends EventEmitter {
             case 'mute':
                 if(privileged) {
                     this.muteMicrophone(true)
-                    this.notify({
-                        level: 'info',
-                        message: `${this.$t('All users have been muted by user')} ${username}`,
-                    })
+                    if (dest) {
+                        this.notify({
+                            level: 'info',
+                            message: `${this.$t('Your microphone was muted by ')} ${username}`,
+                        })
+                    } else {
+                        this.notify({
+                            level: 'info',
+                            message: `${this.$t('All microphones have been muted by ')} ${username}`,
+                        })
+                    }
+
                 }
                 break
             case 'clearchat':

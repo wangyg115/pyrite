@@ -13,7 +13,7 @@
             </button>
 
             <button v-if="$s.permissions.op" class="action" @click="muteAllUsers">
-                <Icon class="icon icon-mini" name="MicMute" />{{ $t('Mute all Users') }}
+                <Icon class="icon icon-mini" name="MicMute" />{{ $t('Mute Participants') }}
             </button>
             <button
                 v-if="$s.permissions.op" class="action"
@@ -39,7 +39,7 @@ export default {
             app.connection.userMessage('mute', null, null, true)
             app.notify({
                 level: 'info',
-                message: `${this.$t('You muted all participants')}`,
+                message: `${this.$t('All participants are muted')}`,
             })
             this.active = false
         },
