@@ -78,6 +78,9 @@ export default {
         },
         setWidth(width, margin) {
             for (const streamRef of this.streamsRef) {
+                // While disconnecting, the DOM node may be gone.
+                if (!streamRef.$refs.root) continue
+
                 let aspectRatio
                 if (streamRef.modelValue.settings.video) {
                     aspectRatio = 1 / streamRef.modelValue.settings.video.aspectRatio
