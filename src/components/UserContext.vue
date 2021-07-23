@@ -8,10 +8,10 @@
             >
                 <Icon class="icon icon-mini" name="Chat" />{{ `${$t('Chat with')} ${user.name}` }}
             </button>
-            <button v-if="user.id !== $s.user.id" class="action" @click="muteUser(user)">
+            <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="muteUser(user)">
                 <Icon class="icon icon-mini" name="Mic" />{{ `${$t('Mute')} ${user.name}` }}
             </button>
-            <button v-if="user.id !== $s.user.id" class="action" disabled>
+            <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="kickUser(user)">
                 <Icon class="icon icon-mini" name="Logout" />{{ `${$t('Kick')} ${user.name}` }}
             </button>
             <button v-if="user.id !== $s.user.id" class="action" disabled>
@@ -46,8 +46,13 @@ export default {
 
             this.toggleMenu()
         },
+        kickUser(user) {
+            app.connection.userAction('kick', user.id)
+            this.toggleMenu()
+        },
         muteUser(user) {
-            app.connection.userMessage('mute', user.id, null, true)
+            app.connection.userMessage('mute', user.id)
+            this.toggleMenu()
         },
         toggleMenu(e, forceState) {
             // The v-click-outside
