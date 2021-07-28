@@ -3,6 +3,7 @@
         <label v-if="label" :for="name">{{ label }}</label>
         <div class="input-container">
             <input
+                ref="field"
                 :autocomplete="autocomplete"
                 :autofocus="autofocus"
                 :class="elementclass"
@@ -32,6 +33,7 @@
 
 <script>
 import Field from './field'
+import {nextTick} from 'vue'
 
 export default {
     data() {
@@ -48,6 +50,14 @@ export default {
             validator: function(value) {
                 return ['password', 'text'].includes(value)
             },
+        },
+    },
+    watch: {
+        async 'autofocus'(value) {
+            if (value) {
+                await nextTick()
+                this.$refs.field.focus()
+            }
         },
     },
 }

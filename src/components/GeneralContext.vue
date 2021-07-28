@@ -1,7 +1,9 @@
 <template>
-    <div v-click-outside="toggleMenu.bind(this)" class="c-user-context context-menu" :class="{active}">
-        <Icon class="icon icon-small" name="Menu" @click="toggleMenu" />
-        <div v-if="active" class="actions">
+    <div v-click-outside="toggleMenu" class="c-user-context context-menu" :class="{active}">
+        <button class="btn btn-menu no-feedback">
+            <Icon class="icon icon-small" name="Menu" @click="toggleMenu" />
+        </button>
+        <div v-show="active" class="actions">
             <button
                 v-if="$s.permissions.record"
                 class="action"
@@ -26,6 +28,21 @@
             <button v-if="$s.permissions.op" class="action" @click="clearChat">
                 <Icon class="icon icon-mini" name="ChatRemove" />{{ $t('Clear Chat') }}
             </button>
+            <template v-if="$s.permissions.op">
+                <div v-show="warning.input" class="action-input">
+                    <FieldText v-model="warning.message" :autofocus="warning.input" @keyup.enter="sendWarning" />
+                    <button v-if="warning.message === ''" class="btn" @click="toggleInput(warning)">
+                        <Icon class="icon icon-mini" name="Close" />
+                    </button>
+                    <button v-else class="btn" @click="sendWarning()">
+                        <Icon class="icon icon-mini" name="Send" />
+                    </button>
+                </div>
+
+                <button v-show="!warning.input" class="action" @click="toggleInput(warning)">
+                    <Icon class="icon icon-mini" name="Megafone" />{{ $t('Send Warning') }}
+                </button>
+            </template>
         </div>
     </div>
 </template>
@@ -35,6 +52,10 @@ export default {
     data() {
         return {
             active: false,
+            warning: {
+                input: false,
+                message: '',
+            },
         }
     },
     methods: {
@@ -50,6 +71,18 @@ export default {
             })
             this.active = false
         },
+        sendWarning() {
+            app.connection.userMessage('warning', null, this.warning.message, true)
+            this.warning.message = ''
+            this.warning.input = false
+            app.notify({
+                level: 'info',
+                message: `${this.$t('Warning message was send to all users')}`,
+            })
+        },
+        toggleInput(inputSwitch) {
+            inputSwitch.input = !inputSwitch.input
+        },
         toggleLockGroup() {
             if (this.$s.group.locked) {
                 app.connection.groupAction('unlock')
@@ -60,21 +93,24 @@ export default {
             }
 
             this.$s.group.locked = !this.$s.group.locked
-
         },
         toggleMenu(e, forceState) {
             // The v-click-outside
             if (typeof forceState === 'object') {
                 this.active = false
-                return
+            } else {
+                this.active = !this.active
             }
 
-            this.active = !this.active
+            // Undo input action context state when there is no text yet...
+            if (!this.active && this.warning.message === '') {
+                this.warning.input = false
+            }
         },
         toggleRecording(isRecording) {
             app.connection.groupAction(isRecording ? 'unrecord' : 'record')
-            this.active = false
         },
+
     },
 }
 </script>

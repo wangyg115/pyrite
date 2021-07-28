@@ -27,7 +27,7 @@ app.vm.component('Hint', Hint)
 app.vm.directive('click-outside', {
     beforeMount(el, binding) {
         el.clickOutsideEvent = function(event) {
-            if (!(el === event.target || el.contains(event.target))) {
+            if ((el === event.target) || !el.contains(event.target)) {
                 binding.value(event, el)
             }
         }
@@ -39,6 +39,5 @@ app.vm.directive('click-outside', {
 })
 
 app.vm.use(app.router).use(app.i18n)
-
 app.vm.mount('#app')
 

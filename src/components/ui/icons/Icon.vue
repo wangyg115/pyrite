@@ -24,6 +24,7 @@ import IconLock from  './IconLock.vue'
 import IconLogin from './IconLogin.vue'
 import IconLogo from './IconLogo.vue'
 import IconLogout from './IconLogout.vue'
+import IconMegafone from './IconMegafone.vue'
 import IconMenu from './IconMenu.vue'
 import IconMessage from './IconMessage.vue'
 import IconMic from './IconMic.vue'
@@ -60,6 +61,7 @@ export default {
         IconLogin,
         IconLogo,
         IconLogout,
+        IconMegafone,
         IconMenu,
         IconMessage,
         IconMic,

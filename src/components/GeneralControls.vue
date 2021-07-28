@@ -31,9 +31,9 @@
             >
                 <Icon class="icon-small" name="Chat" />
             </button>
-            <button v-if="$s.group.connected" class="btn btn-menu no-feedback">
-                <GeneralContext />
-            </button>
+
+            <GeneralContext v-if="$s.group.connected" />
+
             <button
                 v-if="$s.group.connected"
                 class="btn btn-menu btn-logout warning tooltip"
