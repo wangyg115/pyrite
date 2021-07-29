@@ -64,26 +64,5 @@
                 }
             }
         }
-
-        .action-input {
-            display: flex;
-            flex: 1;
-
-
-            .field {
-                padding: 0;
-
-                input {
-                    padding: var(--spacer) 0;
-                }
-            }
-
-            .btn {
-                bottom: var(--spacer);
-                padding: 0;
-                position: absolute;
-                right: var(--spacer);
-            }
-        }
     }
 }

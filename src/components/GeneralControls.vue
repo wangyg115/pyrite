@@ -32,7 +32,7 @@
                 <Icon class="icon-small" name="Chat" />
             </button>
 
-            <GeneralContext v-if="$s.group.connected" />
+            <GeneralContext v-if="$s.group.connected && $s.permissions.op" />
 
             <button
                 v-if="$s.group.connected"

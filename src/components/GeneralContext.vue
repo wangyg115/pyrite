@@ -28,21 +28,8 @@
             <button v-if="$s.permissions.op" class="action" @click="clearChat">
                 <Icon class="icon icon-mini" name="ChatRemove" />{{ $t('Clear Chat') }}
             </button>
-            <template v-if="$s.permissions.op">
-                <div v-show="warning.input" class="action-input">
-                    <FieldText v-model="warning.message" :autofocus="warning.input" @keyup.enter="sendWarning" />
-                    <button v-if="warning.message === ''" class="btn" @click="toggleInput(warning)">
-                        <Icon class="icon icon-mini" name="Close" />
-                    </button>
-                    <button v-else class="btn" @click="sendWarning()">
-                        <Icon class="icon icon-mini" name="Send" />
-                    </button>
-                </div>
 
-                <button v-show="!warning.input" class="action" @click="toggleInput(warning)">
-                    <Icon class="icon icon-mini" name="Megafone" />{{ $t('Send Warning') }}
-                </button>
-            </template>
+            <ContextInput v-if="$s.permissions.op" v-model="warning" :submit="sendWarning" />
         </div>
     </div>
 </template>
@@ -52,10 +39,7 @@ export default {
     data() {
         return {
             active: false,
-            warning: {
-                input: false,
-                message: '',
-            },
+            warning: {icon: 'Megafone', title: this.$t('Send Notification')},
         }
     },
     methods: {
@@ -71,17 +55,12 @@ export default {
             })
             this.active = false
         },
-        sendWarning() {
-            app.connection.userMessage('warning', null, this.warning.message, true)
-            this.warning.message = ''
-            this.warning.input = false
+        sendWarning(text) {
+            app.connection.userMessage('warning', null, text, true)
             app.notify({
                 level: 'info',
-                message: `${this.$t('Warning message was send to all users')}`,
+                message: `${this.$t('Notification has been sent to all participants')}`,
             })
-        },
-        toggleInput(inputSwitch) {
-            inputSwitch.input = !inputSwitch.input
         },
         toggleLockGroup() {
             if (this.$s.group.locked) {

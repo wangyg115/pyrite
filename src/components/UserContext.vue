@@ -8,13 +8,17 @@
             >
                 <Icon class="icon icon-mini" name="Chat" />{{ `${$t('Chat with')} ${user.name}` }}
             </button>
-            <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="muteUser(user)">
+            <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="muteUser">
                 <Icon class="icon icon-mini" name="Mic" />{{ `${$t('Mute')} ${user.name}` }}
             </button>
-            <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="kickUser(user)">
-                <Icon class="icon icon-mini" name="Logout" />{{ `${$t('Kick')} ${user.name}` }}
-            </button>
-            <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="toggleOperator(user)">
+
+            <ContextInput
+                v-if="user.id !== $s.user.id && $s.permissions.op" v-model="kick"
+                :required="false"
+                :submit="kickUser"
+            />
+
+            <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="toggleOperator">
                 <template v-if="user.permissions.op">
                     <Icon class="icon icon-mini" name="Operator" />{{ $t('Remove Operator role') }}
                 </template>
@@ -22,7 +26,7 @@
                     <Icon class="icon icon-mini" name="Operator" />{{ $t('Add Operator role') }}
                 </template>
             </button>
-            <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="togglePresenter(user)">
+            <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="togglePresenter">
                 <template v-if="user.permissions.present">
                     <Icon class="icon icon-mini" name="Present" />{{ $t('Remove Present role') }}
                 </template>
@@ -30,6 +34,7 @@
                     <Icon class="icon icon-mini" name="Present" />{{ $t('Add Present role') }}
                 </template>
             </button>
+            <ContextInput v-if="$s.permissions.op" v-model="warning" :submit="sendWarning" />
         </div>
     </div>
 </template>
@@ -39,6 +44,8 @@ export default {
     data(){
         return {
             active: false,
+            kick: {icon: 'Logout', title: `${this.$t('Kick')} ${this.user.name}`},
+            warning: {icon: 'Megafone', title: this.$t('Send Notification')},
         }
     },
     methods: {
@@ -56,13 +63,20 @@ export default {
 
             this.toggleMenu()
         },
-        kickUser(user) {
-            app.connection.userAction('kick', user.id)
+        kickUser(text) {
+            app.connection.userAction('kick', this.user.id, text)
             this.toggleMenu()
         },
-        muteUser(user) {
-            app.connection.userMessage('mute', user.id)
+        muteUser() {
+            app.connection.userMessage('mute', this.user.id)
             this.toggleMenu()
+        },
+        sendWarning(text) {
+            app.connection.userMessage('warning', this.user.id, text, true)
+            app.notify({
+                level: 'info',
+                message: `${this.$t('Notification has been sent to user {user}', {user: this.user.name})}`,
+            })
         },
         toggleMenu(e, forceState) {
             // The v-click-outside
@@ -73,14 +87,14 @@ export default {
 
             this.active = !this.active
         },
-        toggleOperator(user) {
-            if (user.permissions.op) app.connection.userAction('unop', user.id)
-            else app.connection.userAction('op', user.id)
+        toggleOperator() {
+            if (this.user.permissions.op) app.connection.userAction('unop', this.user.id)
+            else app.connection.userAction('op', this.user.id)
             this.toggleMenu()
         },
-        togglePresenter(user) {
-            if (user.permissions.present) app.connection.userAction('unpresent', user.id)
-            else app.connection.userAction('present', user.id)
+        togglePresenter() {
+            if (this.user.permissions.present) app.connection.userAction('unpresent', this.user.id)
+            else app.connection.userAction('present', this.user.id)
             this.toggleMenu()
         },
     },

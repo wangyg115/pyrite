@@ -149,18 +149,22 @@ class Pyrite extends EventEmitter {
         this.connection.onjoined = this.onJoined.bind(this)
 
         this.connection.onusermessage = (id, dest, username, time, privileged, kind, message) => {
+            let from = username
+            if (!from) {
+                if (id) from = 'Anonymous'
+                else from = 'System Message'
+            }
+
             switch(kind) {
             case 'error':
             case 'warning':
             case 'info':
-                // eslint-disable-next-line no-case-declarations
-                let from = id ? (username || 'Anonymous') : 'The Server'
                 if(privileged) {
                     // Add i18n to server messages.
                     if (message === 'you have been kicked out') {
                         this.notify({
                             level: 'error',
-                            message: this.$t('You were logged out of group {group} by privileged user {user}', {
+                            message: this.$t('You were removed from group {group} by operator {user}', {
                                 group: this.$s.group.name,
                                 user: username,
                             }),
@@ -170,7 +174,8 @@ class Pyrite extends EventEmitter {
                         return
 
                     } else {
-                        this.notify({level: 'error', message: `${from} said: ${message}`})
+
+                        this.notify({level: 'error', message: `${from}: ${message}`})
                     }
                 }
                 break
@@ -180,12 +185,12 @@ class Pyrite extends EventEmitter {
                     if (dest) {
                         this.notify({
                             level: 'info',
-                            message: `${this.$t('Your microphone was muted by ')} ${username}`,
+                            message: this.$t('Your microphone was muted by operator {user}', {user: username}),
                         })
                     } else {
                         this.notify({
                             level: 'info',
-                            message: `${this.$t('All microphones have been muted by ')} ${username}`,
+                            message: this.$t('All microphones have been muted by operator {user}', {user: username}),
                         })
                     }
 
@@ -196,7 +201,7 @@ class Pyrite extends EventEmitter {
                     this.$s.chat.channels.main.messages = []
                     this.notify({
                         level: 'info',
-                        message: `${this.$t('Chat history of main channel is cleared')}`,
+                        message: `${this.$t('Main chat channel history has been cleared')}`,
                     })
                 }
                 break
