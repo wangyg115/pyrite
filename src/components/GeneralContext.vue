@@ -17,14 +17,13 @@
             <button v-if="$s.permissions.op" class="action" @click="muteAllUsers">
                 <Icon class="icon icon-mini" name="MicMute" />{{ $t('Mute Participants') }}
             </button>
-            <button
-                v-if="$s.permissions.op" class="action"
-                @click="toggleLockGroup"
-            >
-                <Icon class="icon icon-mini" name="Lock" />
-                <span v-if="this.$s.group.locked">{{ $t('Unlock Group') }}</span>
-                <span v-else>{{ $t('Lock Group') }}</span>
-            </button>
+
+            <ContextInput
+                v-if="$s.permissions.op" v-model="lock"
+                :revert="this.$s.group.locked"
+                :submit="toggleLockGroup"
+            />
+
             <button v-if="$s.permissions.op" class="action" @click="clearChat">
                 <Icon class="icon icon-mini" name="ChatRemove" />{{ $t('Clear Chat') }}
             </button>
@@ -39,6 +38,10 @@ export default {
     data() {
         return {
             active: false,
+            lock: {
+                icon: () => this.$s.group.locked ? 'Unlock' : 'Lock',
+                title: () => this.$s.group.locked ? this.$t('Unlock Group') : this.$t('Lock Group'),
+            },
             warning: {icon: 'Megafone', title: this.$t('Send Notification')},
         }
     },

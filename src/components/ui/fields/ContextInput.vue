@@ -1,7 +1,7 @@
 <template>
     <div class="c-context-input">
         <transition mode="out-in" name="c-context-input-fade" @after-leave="inputTransitioned">
-            <div v-if="input" class="action-input">
+            <div v-if="input && !revert" class="action-input">
                 <FieldText v-model="text" :autofocus="inputTransition" @keyup.enter="submitMethod" />
 
                 <button
@@ -18,8 +18,8 @@
                     <Icon class="icon icon-mini" name="Send" />
                 </button>
             </div>
-            <button v-else class="action" @click="input = !input">
-                <Icon class="icon icon-mini" :name="modelValue.icon" />{{ modelValue.title }}
+            <button v-else class="action" @click="buttonAction">
+                <Icon class="icon icon-mini" :name="icon" />{{ title }}
             </button>
         </transition>
     </div>
@@ -27,6 +27,16 @@
 
 <script>
 export default {
+    computed: {
+        icon() {
+            if (typeof this.modelValue.icon === 'string') return this.modelValue.icon
+            return this.modelValue.icon()
+        },
+        title() {
+            if (typeof this.modelValue.title === 'string') return this.modelValue.title
+            return this.modelValue.title()
+        },
+    },
     data() {
         return {
             input: false,
@@ -36,6 +46,13 @@ export default {
     },
     emits: ['submit', 'update:modelValue'],
     methods: {
+        buttonAction() {
+            if (this.revert) {
+                this.submitMethod()
+            } else {
+                this.input = !this.input
+            }
+        },
         inputTransitioned() {
             this.inputTransition = this.input
         },
@@ -53,6 +70,16 @@ export default {
         },
         required: {
             default: () => true,
+            required: false,
+            type: Boolean,
+        },
+        /**
+         * Revert is a way to toggle the previous
+         * state of an action, without having to go
+         * through the input state.
+         */
+        revert: {
+            default: () => false,
             required: false,
             type: Boolean,
         },
