@@ -65,12 +65,14 @@ export default {
                 message: `${this.$t('Notification has been sent to all participants')}`,
             })
         },
-        toggleLockGroup() {
+        toggleLockGroup(text) {
             if (this.$s.group.locked) {
                 app.connection.groupAction('unlock')
                 app.notify({level: 'info', message: `${this.$t('Group unlocked')}`})
             } else {
-                app.connection.groupAction('lock', 'group is locked')
+                // The groupAction message is currently not used.
+                let lockText = text ? text : this.$t('Group locked')
+                app.connection.groupAction('lock', lockText)
                 app.notify({level: 'info', message: `${this.$t('Group locked')}`})
             }
 

@@ -17,7 +17,8 @@ import IconClose from './IconClose.vue'
 import IconError from './IconError.vue'
 import IconEye from './IconEye.vue'
 import IconFullscreen from './IconFullscreen.vue'
-import IconGroups from './IconGroups.vue'
+import IconGroup from './IconGroup.vue'
+import IconGroupLocked from './IconGroupLocked.vue'
 import IconHeadset from './IconHeadset.vue'
 import IconInfo from './IconInfo.vue'
 import IconLock from  './IconLock.vue'
@@ -55,7 +56,8 @@ export default {
         IconError,
         IconEye,
         IconFullscreen,
-        IconGroups,
+        IconGroup,
+        IconGroupLocked,
         IconHeadset,
         IconInfo,
         IconLock,

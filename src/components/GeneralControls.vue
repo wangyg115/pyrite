@@ -12,14 +12,14 @@
             <RouterLink
                 v-if="$s.group.name" class="btn btn-menu tooltip"
                 :class="{ active: ['groupsConnected', 'groupsDisconnected'].includes($route.name)}"
-                :data-tooltip="$s.group.locked ? $t('current group (locked)') : $t('current group')"
+                :data-tooltip="$s.group.locked ? `${$t('current group')} (${$t('locked')})` : $t('current group')"
                 :to="{name: 'groups', params: {groupId: $s.group.name}}"
             >
-                <Icon v-if="!$s.group.locked" class="icon-small" name="Groups" />
-                <Icon v-else class="icon-small" name="Lock" />
+                <Icon v-if="!$s.group.locked" class="icon-small" name="Group" />
+                <Icon v-else class="icon-small" name="GroupLocked" />
             </RouterLink>
             <button v-else class="btn btn-menu" disabled>
-                <Icon class="icon-small" name="Groups" />
+                <Icon class="icon-small" name="Group" />
             </button>
 
             <button

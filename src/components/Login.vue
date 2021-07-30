@@ -4,7 +4,7 @@
             <Icon class="item-icon icon-small" name="Login" /><em>{{ $route.params.groupId }}</em>
         </header>
         <section>
-            <Hint v-if="$s.group.locked" class="field" :text="$t('The current group is locked. Only maintainers are allowed to login while it is locked.')" />
+            <Hint v-if="$s.group.locked" class="field" :text="$t('This group is currently locked. Only maintainers may login.')" />
             <form>
                 <FieldText
                     v-model="$s.user.name"

@@ -507,9 +507,18 @@ class Pyrite extends EventEmitter {
     }
 
     async onJoined(kind, group, perms, message, status) {
-        if (status && (status.locked || status.locked === false)) {
-            this.$s.group.locked = status.locked
+        this.logger.debug(`group ${kind} event`)
+        // Unlocked status is not passed all the time; assume
+        // unlocked if it's not included.
+        if (status && status.locked) {
+            this.$s.group.locked = true
+            this.notify({level: 'warning', message: this.$t('Group locked')})
         }
+        else if (this.$s.group.locked) {
+            this.$s.group.locked = false
+            this.notify({level: 'warning', message: this.$t('Group unlocked')})
+        }
+
         switch(kind) {
         case 'fail':
             if (message === 'group is locked') {
@@ -517,12 +526,8 @@ class Pyrite extends EventEmitter {
             }
 
             // Closing the connection will trigger a 'leave' message,
-            // which deals with the proper UI actions.
+            // which handles the accompanying UI flow.
             this.connection.close()
-            return
-        case 'redirect':
-            this.connection.close()
-            document.location = message
             return
         case 'leave':
             this.disconnect()
@@ -530,7 +535,6 @@ class Pyrite extends EventEmitter {
         case 'join':
         case 'change':
             this.$s.permissions = perms
-            this.logger.info(`joined group ${group}`)
             this.logger.debug(`permissions: ${JSON.stringify(perms)}`)
             if(kind === 'change')
                 return
