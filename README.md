@@ -2,14 +2,12 @@
 
 ![Pyrite build passing](https://github.com/garage44/pyrite/actions/workflows/test.yml/badge.svg)
 
-[Pyrite](https://pyrite.video) is a JavaScript ([Vue 3](https://v3.vuejs.org/)) web client for [Galène](https://github.com/jech/galene);
-a [Golang](https://golang.org/)/[Pion](https://github.com/pion/webrtc) SFU.
+[Pyrite](https://pyrite.video) is a [Vue3](https://v3.vuejs.org/) web client for [Galène](https://github.com/jech/galene);
+a video conferencing server based on [Pion](https://github.com/pion/webrtc).
 
 ## Getting started
 
 **requirements:** Docker, Docker-compose & Node.js
-
-* Install Pyrite locally
 
   ```bash
   git clone git@github.com:garage44/pyrite.git
@@ -21,17 +19,18 @@ a [Golang](https://golang.org/)/[Pion](https://github.com/pion/webrtc) SFU.
   npm run dev
   ```
 
-* [Open Pyrite](http://localhost:3000) in a browser and login to the pyrite channel
-  using `pyrite` as user and `1234` as password
+[Open a browser](http://localhost:3000) and login to the pyrite channel
+as Operator (`pyrite`/`1234`). Open another browser on the same machine
+using a fake webcam device:
 
-* Open an extra browser with a fake webcam device
+```bash
+chromium --use-fake-device-for-media-stream --enable-experimental-web-platform-features --user-data-dir=/tmp/.chromium-tmp http://localhost:3000
+```
 
-  ```bash
-  chromium --use-fake-device-for-media-stream --enable-experimental-web-platform-features --user-data-dir=/tmp/.chromium-tmp
-  ```
+> Login using the second browser using a random username and password, e.g. `tester`/`tester`.
 
-* Login with the second browser using a random username and password
+## Deployment
 
-## Documentation
-
-Checkout the [docs](./docs/index.md) for more information about deployment.
+If you want to organise multi-machine video conferences, you need to setup
+Pyrite and Galène on a HTTPS hosted machine. Learn more about deployment
+from the [documentation](./docs/index.md).
