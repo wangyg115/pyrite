@@ -13,7 +13,7 @@
 
 function findUserId(username) {
     for(const user of app.$s.users) {
-        if(user.name === username) {
+        if(user.username === username) {
             return user.id
         }
     }

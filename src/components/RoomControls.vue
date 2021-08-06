@@ -43,6 +43,16 @@
             >
                 <FieldFile v-model="playFiles" @file="togglePlayFile" />
             </button>
+
+            <button
+                v-if="$s.permissions.present"
+                class="btn btn-menu tooltip tooltip-left"
+                :class="{active: $s.upMedia.screenshare.length}"
+                data-tooltip="Raise your hand"
+                @click="toggleRaiseHand"
+            >
+                <Icon class="icon-small" name="Hand" />
+            </button>
         </div>
     </nav>
 </template>
@@ -75,6 +85,11 @@ export default {
                 this.playFiles = []
                 app.delUpMediaKind('video')
             }
+        },
+        toggleRaiseHand() {
+            app.connection.userAction('setstatus', app.connection.id, {
+                raisehand: !this.$s.user.status.raisehand,
+            })
         },
         async toggleScreenshare() {
             if (this.$s.upMedia.screenshare.length) {

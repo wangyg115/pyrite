@@ -6,10 +6,10 @@
                 v-if="user.id !== $s.user.id" class="action"
                 @click="activateUserChat"
             >
-                <Icon class="icon icon-mini" name="Chat" />{{ `${$t('Chat with')} ${user.name}` }}
+                <Icon class="icon icon-mini" name="Chat" />{{ `${$t('Chat with')} ${user.username}` }}
             </button>
             <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="muteUser">
-                <Icon class="icon icon-mini" name="Mic" />{{ `${$t('Mute')} ${user.name}` }}
+                <Icon class="icon icon-mini" name="Mic" />{{ `${$t('Mute')} ${user.username}` }}
             </button>
 
             <ContextInput
@@ -44,7 +44,7 @@ export default {
     data(){
         return {
             active: false,
-            kick: {icon: 'Logout', title: `${this.$t('Kick')} ${this.user.name}`},
+            kick: {icon: 'Logout', title: `${this.$t('Kick')} ${this.user.username}`},
             warning: {icon: 'Megafone', title: this.$t('Send Notification')},
         }
     },
@@ -55,7 +55,7 @@ export default {
                 channel: {
                     id: this.user.id,
                     messages: [],
-                    name: this.user.name,
+                    name: this.user.username,
                     unread: 0,
                 },
                 channelId: this.user.id,
@@ -64,17 +64,17 @@ export default {
             this.toggleMenu()
         },
         kickUser(text) {
-            app.notifier.message('kicked', {dir: 'source', target: this.user.name})
+            app.notifier.message('kicked', {dir: 'source', target: this.user.username})
             app.connection.userAction('kick', this.user.id, text)
             this.toggleMenu()
         },
         muteUser() {
-            app.notifier.message('mute', {dir: 'source', target: this.user.name})
+            app.notifier.message('mute', {dir: 'source', target: this.user.username})
             app.connection.userMessage('mute', this.user.id, null)
             this.toggleMenu()
         },
         sendNotification(message) {
-            app.notifier.message('notify', {dir: 'source', message, target: this.user.name})
+            app.notifier.message('notify', {dir: 'source', message, target: this.user.username})
             app.connection.userMessage('notify', this.user.id, message)
             this.toggleMenu()
         },
@@ -89,19 +89,19 @@ export default {
         },
         toggleOperator() {
             let action
-            if (this.user.permissions.op) action = 'unop' 
+            if (this.user.permissions.op) action = 'unop'
             else action = 'op'
-            
-            app.notifier.message(action, {dir: 'source', target: this.user.name})
+
+            app.notifier.message(action, {dir: 'source', target: this.user.username})
             app.connection.userAction(action, this.user.id)
             this.toggleMenu()
         },
         togglePresenter() {
             let action
             if (this.user.permissions.present) action = 'unpresent'
-            else action = 'present' 
-            
-            app.notifier.message(action, {dir: 'source', target: this.user.name})
+            else action = 'present'
+
+            app.notifier.message(action, {dir: 'source', target: this.user.username})
             app.connection.userAction(action, this.user.id)
             this.toggleMenu()
         },

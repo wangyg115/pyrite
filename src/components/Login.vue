@@ -7,7 +7,7 @@
             <Hint v-if="$s.group.locked" class="field" :text="$t('This group is currently locked. Only maintainers may login.')" />
             <form>
                 <FieldText
-                    v-model="$s.user.name"
+                    v-model="$s.user.username"
                     autocomplete="username"
                     :label="$t('Username')"
                     name="username"

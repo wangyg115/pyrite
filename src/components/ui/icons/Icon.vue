@@ -19,6 +19,7 @@ import IconEye from './IconEye.vue'
 import IconFullscreen from './IconFullscreen.vue'
 import IconGroup from './IconGroup.vue'
 import IconGroupLocked from './IconGroupLocked.vue'
+import IconHand from './IconHand.vue'
 import IconHeadset from './IconHeadset.vue'
 import IconInfo from './IconInfo.vue'
 import IconLock from  './IconLock.vue'
@@ -58,6 +59,7 @@ export default {
         IconFullscreen,
         IconGroup,
         IconGroupLocked,
+        IconHand,
         IconHeadset,
         IconInfo,
         IconLock,

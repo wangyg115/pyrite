@@ -375,8 +375,10 @@ ServerConnection.prototype.connect = async function(url) {
                     console.warn(`Unknown user action ${m.kind}`);
                     return;
                 }
-                if(sc.onuser)
-                    sc.onuser.call(sc, m.id, m.kind, m.permissions);
+                if(sc.onuser) {
+                    sc.onuser.call(sc, m.id, m.kind, m.permission, m.status);
+                }
+
                 break;
             case 'chat':
                 if(sc.onchat)

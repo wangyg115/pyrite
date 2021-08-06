@@ -148,7 +148,7 @@ class Pyrite extends EventEmitter {
         this.connection.onclose = this.onClose.bind(this)
         this.connection.ondownstream = this.onDownStream.bind(this)
         this.connection.onuser = this.onUser.bind(this)
-        this.connection.onjoined = this.onSign.bind(this)
+        this.connection.onjoined = this.onJoined.bind(this)
         this.connection.onusermessage = this.onUserMessage.bind(this)
 
         let url = `ws${location.protocol === 'https:' ? 's' : ''}://${location.host}/ws`
@@ -396,7 +396,7 @@ class Pyrite extends EventEmitter {
         this.$s.user.id = this.connection.id
         const groupName = this.router.currentRoute.value.params.groupId
 
-        this.connection.join(groupName, this.$s.user.name, this.$s.user.password)
+        this.connection.join(groupName, this.$s.user.username, this.$s.user.password)
     }
 
     onDownStream(c) {
@@ -430,8 +430,8 @@ class Pyrite extends EventEmitter {
         this.$s.streams.push(streamState)
     }
 
-    async onSign(kind, group, perms, message, status) {
-        this.logger.debug(`[onPart] ${kind}/${group}`)
+    async onJoined(kind, group, perms, message, status) {
+        this.logger.debug(`[onJoined] ${kind}/${group}`)
 
         switch(kind) {
         case 'fail':
@@ -479,35 +479,22 @@ class Pyrite extends EventEmitter {
         }
     }
 
-    onUser(id, kind) {
+    onUser(id, kind, permission, status) {
         this.logger.debug(`[onUser] ${kind}/${id}`)
-        let user
+        let user = {...this.connection.users[id]}
 
         if (kind ==='add') {
-            user = {
-                id,
-                name: this.connection.users[id].username,
-                permissions: this.connection.users[id].permissions,
-            }
-
             // There might be a user with name 'RECORDING' that is an ordinary user;
             // only trigger the recording flag when it is a system user.
-            if (user.name === 'RECORDING' && user.permissions.system) {
+            if (user.username === 'RECORDING' && user.permissions.system) {
                 this.$s.group.recording = true
                 this.notifier.message('record', {group: this.$s.group.name})
             }
             this.$s.users.push(user)
             this.emit('user', {action: 'add', user})
         } else if (kind === 'change') {
-            user = {
-                id,
-                name: this.connection.users[id].username,
-                permissions: this.connection.users[id].permissions,
-            }
-            // Compare permissions with the user in the current state:
-            const $user = this.$s.users.find((i) => i.id === user.id)
-
-            if (this.$s.user.id === $user.id) {
+            if (id === this.$s.user.id) {
+                const $user = this.$s.users.find((i) => i.id === user.id)
                 // Shutdown the local stream when the Present permission is taken away.
                 if($user.permissions.present && !user.permissions.present) {
                     this.delUpMedia(this.localGlnStream)
@@ -522,11 +509,18 @@ class Pyrite extends EventEmitter {
                 } else if (!$user.permissions.op && user.permissions.op) {
                     this.notifier.message('op')
                 }
+                // Keep the active user in sync with the user list changes, so
+                // we don't have to do array lookups everywhere.
+
+                if (status) {
+                    Object.assign(this.$s.user.status, status)
+                }
             }
+
             this.$s.users.splice(this.$s.users.findIndex((i) => i.id === user.id), 1, user)
         } else if (kind === 'delete') {
             user = this.$s.users.find((u) => u.id === id)
-            if (user.name === 'RECORDING' && user.permissions.system) {
+            if (user.username === 'RECORDING' && user.permissions.system) {
                 this.$s.group.recording = false
                 this.notifier.message('unrecord', {group: this.$s.group.name})
             }

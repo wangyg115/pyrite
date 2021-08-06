@@ -81,7 +81,8 @@ export default {
         appearance: none;
         background: var(--grey-600);
         border: 1px solid var(--grey-200);
-        height: var(--spacer);
+        height: 100%;
+        margin: 0;
         overflow: hidden;
         transform: rotate(-90deg);
         width: 100%;
@@ -132,7 +133,7 @@ export default {
         }
 
         &.locked {
-            
+
             &::-webkit-slider-thumb {
                 background: var(--warning-color);
                 // box-shadow: -80px 0 0 80px var(--warning-color);

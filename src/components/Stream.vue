@@ -198,7 +198,7 @@ export default {
                 this.toggleMuteVolume()
             }
             app.logger.debug(`mount upstream ${this.modelValue.id}`)
-            this.label = `${this.$s.user.name} (${this.$t('you')})`
+            this.label = `${this.$s.user.username} (${this.$t('you')})`
 
             if (!this.modelValue.src) {
                 // Local media stream from a device.

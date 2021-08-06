@@ -3,8 +3,8 @@
         <div v-for="user of sortedUsers" :key="user.id" class="user item">
             <Icon class="item-icon icon-small" name="User" />
             <div class="name">
-                <template v-if="user.name">
-                    {{ user.name }}
+                <template v-if="user.username">
+                    {{ user.username }}
                 </template>
                 <template v-else>
                     '(anon)'
@@ -21,9 +21,13 @@
                         <Icon class="icon icon-mini" name="Operator" />
                     </span>
                 </div>
+
+                <div class="status">
+                    <Icon v-if="user.status.raisehand" class="icon icon-mini" name="Hand" />
+                </div>
             </div>
 
-            <UserContext v-if="user.name !== 'RECORDING' && user.id !== $s.user.id" :user="user" />
+            <UserContext v-if="user.username !== 'RECORDING' && user.id !== $s.user.id" :user="user" />
         </div>
     </section>
 </template>
@@ -68,6 +72,10 @@ export default {
             span {
                 display: flex;
             }
+        }
+
+        .status {
+            color: var(--error-color);
         }
     }
 

@@ -51,7 +51,7 @@ export default {
             this.toggleMenu()
         },
         muteAllUsers() {
-            app.connection.userMessage('mute', null, null, false)
+            app.connection.userMessage('mute', null, null)
             this.active = false
         },
         sendNotification(text) {
