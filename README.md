@@ -2,19 +2,8 @@
 
 ![Pyrite build passing](https://github.com/garage44/pyrite/actions/workflows/test.yml/badge.svg)
 
-[Pyrite](https://pyrite.video) is a [Vue 3](https://v3.vuejs.org/) GUI for [Galène](https://github.com/jech/galene);
-an efficient [Golang](https://golang.org/)/[Pion](https://github.com/pion/webrtc)-based SFU.
-Its goal is to provide simple, yet powerful, user & privacy-friendly video communication to
-everyone.
-
-Pyrite is a project with scarce resources. Its focus lies mainly on advancing the GUI,
-while piggybacking on advancements of the Galène project. Its architecture is as simple
-as possible, in order to keep the project light-weight and easy to grasp.
-
-The **main** Git branch is deployed to [pyrite.video](https://pyrite.video); a public
-Galène server, that uses the latest *stable* version of Pyrite. The *develop* branch
-is deployed to [beta.pyrite.video](https://beta.pyrite.video) and has the latest
-(but incomplete) features.
+[Pyrite](https://pyrite.video) is a JavaScript ([Vue 3](https://v3.vuejs.org/)) web client for [Galène](https://github.com/jech/galene);
+a [Golang](https://golang.org/)/[Pion](https://github.com/pion/webrtc) SFU.
 
 ## Getting started
 
@@ -28,7 +17,7 @@ is deployed to [beta.pyrite.video](https://beta.pyrite.video) and has the latest
   npm i
   # Start Galène
   npm run galene
-  # Start frontend development tool
+  # Start the Pyrite frontend
   npm run dev
   ```
 
@@ -45,4 +34,4 @@ is deployed to [beta.pyrite.video](https://beta.pyrite.video) and has the latest
 
 ## Documentation
 
-Checkout the [docs](./docs/index.md) for more information.
+Checkout the [docs](./docs/index.md) for more information about deployment.
