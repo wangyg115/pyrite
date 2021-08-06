@@ -90,6 +90,7 @@ export default {
     display: grid;
     grid-template-columns: 300px var(--space-4) 1fr;
     height: 100vh;
+    overflow: hidden;
 
     header {
 

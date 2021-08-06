@@ -100,7 +100,7 @@ export default {
         if (!app.localStream) {
             const res = await app.getUserMedia()
             if (!res) {
-                app.notify({level: 'error', message: 'Unable to find a valid device'})
+                app.notifier.notify({level: 'error', message: 'Unable to find a valid device'})
                 return
             }
         }

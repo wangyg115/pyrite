@@ -71,7 +71,7 @@ import StreamReports from './StreamReports.vue'
 
 export default {
     beforeUnmount() {
-        app.logger.info(`unmounting stream ${this.modelValue.id}`)
+        app.logger.debug(`unmounting stream ${this.modelValue.id}`)
         if (this.$refs.media.src) {
             URL.revokeObjectURL(this.$refs.media.src)
             this.$refs.media.src = null
@@ -125,7 +125,7 @@ export default {
     emits: ['update:modelValue'],
     methods: {
         loadSettings() {
-            app.logger.debug('retrieving stream audio/video settings')
+            app.logger.debug('retrieving stream settings')
             const settings = {}
             const audioTracks = this.stream.getAudioTracks()
             if (audioTracks.length) settings.audio = audioTracks[0].getSettings()
@@ -143,13 +143,13 @@ export default {
          * Handle mounting a remote 'down' stream.
          */
         mountDownstream() {
-            app.logger.debug(`mounting downstream ${this.modelValue.id}`)
+            app.logger.debug(`mount downstream ${this.modelValue.id}`)
 
             // Only setup the video element in case the stream is already active.
             if (app.connection.down[this.modelValue.id].stream) {
                 this.$refs.media.srcObject = app.connection.down[this.modelValue.id].stream
                 this.$refs.media.play().catch(e => {
-                    app.notify({level: 'error', message: e})
+                    app.notifier.notify({level: 'error', message: e})
                 })
                 return
             }
@@ -164,7 +164,7 @@ export default {
                     this.stream = this.glnStream.stream
                 }
 
-                app.logger.debug(`down stream ondowntrack - [${this.glnStream.id}]`)
+                app.logger.debug(`downstream ondowntrack/${this.glnStream.id}`)
                 // An incoming audio-track; enable volume controls.
                 if (track.kind === 'audio') {
                     app.logger.debug(`stream ondowntrack - enable audio controls`)
@@ -185,7 +185,7 @@ export default {
                     try {
                         await this.$refs.media.play()
                     } catch (message) {
-                        app.notify({level: 'error', message})
+                        app.notifier.notify({level: 'error', message})
                     }
 
                     this.loadSettings()
@@ -197,7 +197,7 @@ export default {
             if (!this.muted) {
                 this.toggleMuteVolume()
             }
-            app.logger.debug(`mounting upstream ${this.modelValue.id}`)
+            app.logger.debug(`mount upstream ${this.modelValue.id}`)
             this.label = `${this.$s.user.name} (${this.$t('you')})`
 
             if (!this.modelValue.src) {

@@ -8,6 +8,7 @@ import env from './env.js'
 import EventEmitter from 'eventemitter3'
 import localeNL from '../locales/nl.js'
 import Logger from './logger.js'
+import Notifier from './notifier.js'
 import protocol from './protocol.js'
 import router from '../js/router.js'
 import Store from './store.js'
@@ -39,6 +40,7 @@ class Pyrite extends EventEmitter {
         })
 
         this.$t = this.i18n.global.t
+        this.notifier = Notifier(this)
 
         this.router.beforeResolve((to, from, next) => {
 
@@ -77,7 +79,7 @@ class Pyrite extends EventEmitter {
             /** @ts-ignore */
             stream = await navigator.mediaDevices.getDisplayMedia({video: true})
         } catch(e) {
-            this.notify({level: 'error', message: e})
+            this.notifier.notify({level: 'error', message: e})
             return
         }
 
@@ -146,76 +148,16 @@ class Pyrite extends EventEmitter {
         this.connection.onclose = this.onClose.bind(this)
         this.connection.ondownstream = this.onDownStream.bind(this)
         this.connection.onuser = this.onUser.bind(this)
-        this.connection.onjoined = this.onJoined.bind(this)
+        this.connection.onjoined = this.onSign.bind(this)
+        this.connection.onusermessage = this.onUserMessage.bind(this)
 
-        this.connection.onusermessage = (id, dest, username, time, privileged, kind, message) => {
-            let from = username
-            if (!from) {
-                if (id) from = 'Anonymous'
-                else from = 'System Message'
-            }
-
-            switch(kind) {
-            case 'error':
-            case 'warning':
-            case 'info':
-                if(privileged) {
-                    // Add i18n to server messages.
-                    if (message === 'you have been kicked out') {
-                        this.notify({
-                            level: 'error',
-                            message: this.$t('You were removed from group {group} by operator {user}', {
-                                group: this.$s.group.name,
-                                user: username,
-                            }),
-                        })
-                    } else if (message === 'permission denied') {
-                        // This hapeens when a stream can no longer be played.
-                        return
-
-                    } else {
-
-                        this.notify({level: 'error', message: `${from}: ${message}`})
-                    }
-                }
-                break
-            case 'mute':
-                if(privileged) {
-                    this.muteMicrophone(true)
-                    if (dest) {
-                        this.notify({
-                            level: 'info',
-                            message: this.$t('Your microphone was muted by operator {user}', {user: username}),
-                        })
-                    } else {
-                        this.notify({
-                            level: 'info',
-                            message: this.$t('All microphones have been muted by operator {user}', {user: username}),
-                        })
-                    }
-
-                }
-                break
-            case 'clearchat':
-                if(privileged) {
-                    this.$s.chat.channels.main.messages = []
-                    this.notify({
-                        level: 'info',
-                        message: `${this.$t('Main chat channel history has been cleared')}`,
-                    })
-                }
-                break
-            default:
-                break
-            }
-        }
         let url = `ws${location.protocol === 'https:' ? 's' : ''}://${location.host}/ws`
         this.logger.info(`connecting websocket ${url}`)
         try {
             await this.connection.connect(url)
             this.$s.group.connected = true
         } catch(e) {
-            this.notify({
+            this.notifier.notify({
                 level: 'error',
                 message: e.message ? e.message : "Couldn't connect to " + url,
             })
@@ -347,8 +289,8 @@ class Pyrite extends EventEmitter {
         try {
             this.localStream = await navigator.mediaDevices.getUserMedia(constraints)
             this.$s.mediaReady = true
-        } catch(e) {
-            this.notify({level: 'error', message: e})
+        } catch(message) {
+            this.notifier.notify({level: 'error', message})
             return
         }
 
@@ -417,7 +359,7 @@ class Pyrite extends EventEmitter {
         this.$s.streams.push(streamState)
 
         glnStream.onerror = (e) => {
-            this.notify({level: 'error', message: e})
+            this.notifier.notify({level: 'error', message: e})
             this.delUpMedia(glnStream)
         }
         glnStream.onabort = () => {
@@ -429,24 +371,6 @@ class Pyrite extends EventEmitter {
         }
 
         return {glnStream, streamState}
-    }
-
-    notify(notification) {
-        if (!this.notificationId) {
-            this.notificationId = 1
-            notification.id = this.notificationId
-        }
-
-        if (typeof notification.timeout === 'undefined') {
-            notification.timeout = 3000
-        }
-
-        this.$s.notifications.push(notification)
-        setTimeout(() => {
-            this.$s.notifications.splice(this.$s.notifications.findIndex(i => i.id === notification.id), 1)
-        }, notification.timeout)
-
-        this.notificationId += 1
     }
 
     onClose(code, reason) {
@@ -461,14 +385,14 @@ class Pyrite extends EventEmitter {
         this.delUpMediaKind(null)
 
         if(code != 1000) {
-            this.notify({level: 'error', message: `Socket close ${code}: ${reason}`})
+            this.notifier.notify({level: 'error', message: `Socket close ${code}: ${reason}`})
         }
 
         this.router.push({name: 'groups'}, {params: {groupId: app.$s.group.name}})
     }
 
     onConnected() {
-        this.logger.info('connected to server')
+        this.logger.info('[connected] connected to Galène websocket')
         this.$s.user.id = this.connection.id
         const groupName = this.router.currentRoute.value.params.groupId
 
@@ -476,7 +400,7 @@ class Pyrite extends EventEmitter {
     }
 
     onDownStream(c) {
-        this.logger.info(`new downstream ${c.id}`)
+        this.logger.debug(`[onDownStream] ${c.id}`)
         c.onclose = (replace) => {
             if(!replace) {
                 this.logger.debug(`[onclose] downstream ${c.id}`)
@@ -486,8 +410,8 @@ class Pyrite extends EventEmitter {
 
         c.onerror = () => {
             const message = `[onerror] downstream ${c.id}`
-            this.logger.info(message)
-            this.notify({level: 'error', message})
+            this.logger.error(message)
+            this.notifier.notify({level: 'error', message})
         }
 
         const streamState = {
@@ -506,23 +430,13 @@ class Pyrite extends EventEmitter {
         this.$s.streams.push(streamState)
     }
 
-    async onJoined(kind, group, perms, message, status) {
-        this.logger.debug(`group ${kind} event`)
-        // Unlocked status is not passed all the time; assume
-        // unlocked if it's not included.
-        if (status && status.locked) {
-            this.$s.group.locked = true
-            this.notify({level: 'warning', message: this.$t('Group locked')})
-        }
-        else if (this.$s.group.locked) {
-            this.$s.group.locked = false
-            this.notify({level: 'warning', message: this.$t('Group unlocked')})
-        }
+    async onSign(kind, group, perms, message, status) {
+        this.logger.debug(`[onPart] ${kind}/${group}`)
 
         switch(kind) {
         case 'fail':
             if (message === 'group is locked') {
-                this.notify({level: 'error', message: this.$t('Group {group} is locked; only maintainers may login.', {group: this.$s.group.name})})
+                this.notifier.notify({level: 'error', message: this.$t('Group {group} is locked; only maintainers may login.', {group: this.$s.group.name})})
             }
 
             // Closing the connection will trigger a 'leave' message,
@@ -534,18 +448,30 @@ class Pyrite extends EventEmitter {
             return
         case 'join':
         case 'change':
+            if (status && status.locked) {
+                this.$s.group.locked = true
+                // A custom message is sent along:
+                let personal = null
+                if (status.locked !== true) personal = {group, message:status.locked}
+                this.notifier.message('lock', {group}, personal)
+            }
+            else if (this.$s.group.locked) {
+                this.$s.group.locked = false
+                this.notifier.message('unlock', {group})
+            }
+
             this.$s.permissions = perms
             this.logger.debug(`permissions: ${JSON.stringify(perms)}`)
             if(kind === 'change')
                 return
             break
         default:
-            this.notify({level: 'error', message: 'Unknown join message'})
+            this.notifier.notify({level: 'error', message: 'Unknown join message'})
             this.connection.close()
             return
         }
 
-        this.logger.info(`acceptable media types: ${this.$s.media.accept.id}`)
+        this.logger.debug(`request Galène media types: ${this.$s.media.accept.id}`)
         this.connection.request(this.mapRequest(this.$s.media.accept.id))
 
         if(this.connection.permissions.present && !this.findUpMedia('camera')) {
@@ -554,6 +480,7 @@ class Pyrite extends EventEmitter {
     }
 
     onUser(id, kind) {
+        this.logger.debug(`[onUser] ${kind}/${id}`)
         let user
 
         if (kind ==='add') {
@@ -562,41 +489,70 @@ class Pyrite extends EventEmitter {
                 name: this.connection.users[id].username,
                 permissions: this.connection.users[id].permissions,
             }
-            if (user.name === 'RECORDING') this.$s.group.recording = true
+
+            // There might be a user with name 'RECORDING' that is an ordinary user;
+            // only trigger the recording flag when it is a system user.
+            if (user.name === 'RECORDING' && user.permissions.system) {
+                this.$s.group.recording = true
+                this.notifier.message('record', {group: this.$s.group.name})
+            }
             this.$s.users.push(user)
             this.emit('user', {action: 'add', user})
         } else if (kind === 'change') {
-
             user = {
                 id,
                 name: this.connection.users[id].username,
                 permissions: this.connection.users[id].permissions,
             }
-            // Compare permissions
-            const _user = this.$s.users.find((i) => i.id === user.id)
+            // Compare permissions with the user in the current state:
+            const $user = this.$s.users.find((i) => i.id === user.id)
 
-            if (this.$s.user.id === _user.id) {
-                // Present permission is taken away; shutdown the local stream.
-                if(_user.permissions.present && !user.permissions.present) {
-                    this.logger.debug(`present permission is removed`)
+            if (this.$s.user.id === $user.id) {
+                // Shutdown the local stream when the Present permission is taken away.
+                if($user.permissions.present && !user.permissions.present) {
                     this.delUpMedia(this.localGlnStream)
                     this.$s.devices.cam.enabled = false
                     this.$s.devices.mic.enabled = false
 
-                    this.notify({
-                        level: 'info',
-                        message: this.$t('Your presenter permissions was removed'),
-                    })
+                    this.notifier.message('unpresent', {group: this.$s.group.name})
+                } else if (!$user.permissions.present && user.permissions.present) {
+                    this.notifier.message('present')
+                } else if ($user.permissions.op && !user.permissions.op) {
+                    this.notifier.message('unop')
+                } else if (!$user.permissions.op && user.permissions.op) {
+                    this.notifier.message('op')
                 }
             }
             this.$s.users.splice(this.$s.users.findIndex((i) => i.id === user.id), 1, user)
         } else if (kind === 'delete') {
             user = this.$s.users.find((u) => u.id === id)
-            if (user.name === 'RECORDING') this.$s.group.recording = false
+            if (user.name === 'RECORDING' && user.permissions.system) {
+                this.$s.group.recording = false
+                this.notifier.message('unrecord', {group: this.$s.group.name})
+            }
             this.$s.users.splice(this.$s.users.findIndex((u) => u.id === id), 1)
             this.emit('user', {action: 'del', user})
         }
+    }
 
+    onUserMessage(id, dest, username, time, privileged, kind, message) {
+        let source = username
+        if (!source) {
+            if (id) source = 'Anonymous'
+            else source = 'System Message'
+        }
+
+        // Handle incoming notifications here...
+        this.notifier.onUserMessage({id, kind, message, privileged, source})
+        // Remote actions are only allowed for operators.
+        if(!privileged) return
+
+        // Handle related actions here...
+        if (kind === 'mute') {
+            this.muteMicrophone(true)
+        } else if (kind === 'clearchat') {
+            this.$s.chat.channels.main.messages = []
+        }
     }
 
     removeTrack(glnStream, kind) {
@@ -627,7 +583,7 @@ class Pyrite extends EventEmitter {
                 if(!e.rid || e.rid === 'h') e.maxBitrate = bps || unlimitedRate
 
             })
-            this.logger.info(`cap video bandwidth: ${bps}`)
+            this.logger.debug(`set video throughput at max ${bps} bps`)
 
             await s.setParameters(p)
         }
@@ -664,7 +620,7 @@ class Pyrite extends EventEmitter {
             this.$s.devices.cam.selected = this.$s.devices.cam.options[0]
         }
 
-        this.logger.info(`setMediaChoices: video(${this.$s.devices.cam.options.length}) audio(${this.$s.devices.mic.options.length})`)
+        this.logger.debug(`setMediaChoices: video(${this.$s.devices.cam.options.length}) audio(${this.$s.devices.mic.options.length})`)
     }
 
     stopUpMedia(c) {

@@ -20,7 +20,7 @@
 
             <ContextInput
                 v-if="$s.permissions.op" v-model="lock"
-                :revert="this.$s.group.locked"
+                :revert="$s.group.locked"
                 :submit="toggleLockGroup"
             />
 
@@ -28,7 +28,7 @@
                 <Icon class="icon icon-mini" name="ChatRemove" />{{ $t('Clear Chat') }}
             </button>
 
-            <ContextInput v-if="$s.permissions.op" v-model="warning" :submit="sendWarning" />
+            <ContextInput v-if="$s.permissions.op" v-model="warning" :submit="sendNotification" />
         </div>
     </div>
 </template>
@@ -51,32 +51,18 @@ export default {
             this.toggleMenu()
         },
         muteAllUsers() {
-            app.connection.userMessage('mute', null, null, true)
-            app.notify({
-                level: 'info',
-                message: `${this.$t('All participants are muted')}`,
-            })
+            app.connection.userMessage('mute', null, null, false)
             this.active = false
         },
-        sendWarning(text) {
-            app.connection.userMessage('warning', null, text, true)
-            app.notify({
-                level: 'info',
-                message: `${this.$t('Notification has been sent to all participants')}`,
-            })
+        sendNotification(text) {
+            app.connection.userMessage('notification', null, text)
         },
         toggleLockGroup(text) {
             if (this.$s.group.locked) {
                 app.connection.groupAction('unlock')
-                app.notify({level: 'info', message: `${this.$t('Group unlocked')}`})
             } else {
-                // The groupAction message is currently not used.
-                let lockText = text ? text : this.$t('Group locked')
-                app.connection.groupAction('lock', lockText)
-                app.notify({level: 'info', message: `${this.$t('Group locked')}`})
+                app.connection.groupAction('lock', text)
             }
-
-            this.$s.group.locked = !this.$s.group.locked
         },
         toggleMenu(e, forceState) {
             // The v-click-outside

@@ -40,7 +40,7 @@ export default {
             app.i18n.global.locale = this.$s.language.id
             app.logger.debug(`settings language to ${this.$s.language.id}`)
             app.store.save()
-            app.notify({level: 'info', message: 'Settings stored'})
+            app.notifier.notify({level: 'info', message: this.$t('Settings stored')})
         },
     },
 }

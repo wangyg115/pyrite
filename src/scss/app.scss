@@ -8,10 +8,21 @@
 @import "./elements/tooltip";
 
 .theme-dark {
+    --sat: 50%;
+    --sat-u: 75%;
+    --sat-d: 30%;
+
     --primary-color: #21d3ee;
-    --info-color: #9ddc4b;
-    --warning-color: #f29a87;
-    --error-color: #cb6c4d;
+
+    --warning-value: 53.8;
+    --warning-color: hsla(var(--warning-value), 20%, var(--sat), 100%);
+    --warning-color-u: hsla(var(--warning-value), 20%, var(--sat-u), 100%);
+    --warning-color-d: hsla(var(--warning-value), 20%, var(--sat-d), 100%);
+
+    --error-value: 0;
+    --error-color: hsla(var(--error-value), 20%, var(--sat), 100%);
+    --error-color-u: hsla(var(--error-value), 20%, var(--sat-u), 100%);
+    --error-color-d: hsla(var(--error-value), 20%, var(--sat-d), 100%);
 
     --grey-600: #0f1521;
     --grey-500: #1a202c;

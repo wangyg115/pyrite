@@ -28,13 +28,13 @@
             </button>
             <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="togglePresenter">
                 <template v-if="user.permissions.present">
-                    <Icon class="icon icon-mini" name="Present" />{{ $t('Remove Present role') }}
+                    <Icon class="icon icon-mini" name="Present" />{{ $t('Remove Presenter role') }}
                 </template>
                 <template v-else>
-                    <Icon class="icon icon-mini" name="Present" />{{ $t('Add Present role') }}
+                    <Icon class="icon icon-mini" name="Present" />{{ $t('Add Presenter role') }}
                 </template>
             </button>
-            <ContextInput v-if="$s.permissions.op" v-model="warning" :submit="sendWarning" />
+            <ContextInput v-if="$s.permissions.op" v-model="warning" :submit="sendNotification" />
         </div>
     </div>
 </template>
@@ -64,19 +64,19 @@ export default {
             this.toggleMenu()
         },
         kickUser(text) {
+            app.notifier.message('kicked', {dir: 'source', target: this.user.name})
             app.connection.userAction('kick', this.user.id, text)
             this.toggleMenu()
         },
         muteUser() {
-            app.connection.userMessage('mute', this.user.id)
+            app.notifier.message('mute', {dir: 'source', target: this.user.name})
+            app.connection.userMessage('mute', this.user.id, null)
             this.toggleMenu()
         },
-        sendWarning(text) {
-            app.connection.userMessage('warning', this.user.id, text, true)
-            app.notify({
-                level: 'info',
-                message: `${this.$t('Notification has been sent to user {user}', {user: this.user.name})}`,
-            })
+        sendNotification(message) {
+            app.notifier.message('notify', {dir: 'source', message, target: this.user.name})
+            app.connection.userMessage('notify', this.user.id, message)
+            this.toggleMenu()
         },
         toggleMenu(e, forceState) {
             // The v-click-outside
@@ -88,13 +88,21 @@ export default {
             this.active = !this.active
         },
         toggleOperator() {
-            if (this.user.permissions.op) app.connection.userAction('unop', this.user.id)
-            else app.connection.userAction('op', this.user.id)
+            let action
+            if (this.user.permissions.op) action = 'unop' 
+            else action = 'op'
+            
+            app.notifier.message(action, {dir: 'source', target: this.user.name})
+            app.connection.userAction(action, this.user.id)
             this.toggleMenu()
         },
         togglePresenter() {
-            if (this.user.permissions.present) app.connection.userAction('unpresent', this.user.id)
-            else app.connection.userAction('present', this.user.id)
+            let action
+            if (this.user.permissions.present) action = 'unpresent'
+            else action = 'present' 
+            
+            app.notifier.message(action, {dir: 'source', target: this.user.name})
+            app.connection.userAction(action, this.user.id)
             this.toggleMenu()
         },
     },

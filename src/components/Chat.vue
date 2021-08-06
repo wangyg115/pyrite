@@ -201,7 +201,7 @@ export default {
                     } else {
                         let c = commands[cmd]
                         if(!c) {
-                            app.notify({
+                            app.notifier.notify({
                                 level: 'error',
                                 message: `Uknown command /${cmd}, type /help for help`,
                             })
@@ -210,14 +210,14 @@ export default {
                         if(c.predicate) {
                             const message = c.predicate()
                             if(message) {
-                                app.notify({level: 'error', message})
+                                app.notifier.notify({level: 'error', message})
                                 return
                             }
                         }
                         try {
                             c.f(cmd, rest)
                         } catch(e) {
-                            app.notify({level: 'error', message: e})
+                            app.notifier.notify({level: 'error', message: e})
                         }
                         return
                     }
