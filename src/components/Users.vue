@@ -41,12 +41,12 @@ export default {
         sortedUsers() {
             const users = [...this.$s.users]
             users.sort(function(a, b) {
-                const aLowerName = a.name.toLowerCase()
-                const bLowerName = b.name.toLowerCase()
+                const aLowerName = a.username.toLowerCase()
+                const bLowerName = b.username.toLowerCase()
                 if(aLowerName < bLowerName) return -1
                 else if(aLowerName > bLowerName) return +1
-                else if(a.name < b.name) return -1
-                else if(a.name > b.name) return +1
+                else if(a.username < b.username) return -1
+                else if(a.username > b.username) return +1
                 return 0
             })
             return users

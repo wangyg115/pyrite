@@ -480,8 +480,8 @@ class Pyrite extends EventEmitter {
     }
 
     onUser(id, kind, permission, status) {
-        this.logger.debug(`[onUser] ${kind}/${id}`)
-        let user = {...this.connection.users[id]}
+        let user = {...this.connection.users[id], id}
+        this.logger.debug(`[onUser] ${kind}/${id}/${user.username}`)
 
         if (kind ==='add') {
             // There might be a user with name 'RECORDING' that is an ordinary user;
@@ -490,6 +490,7 @@ class Pyrite extends EventEmitter {
                 this.$s.group.recording = true
                 this.notifier.message('record', {group: this.$s.group.name})
             }
+
             this.$s.users.push(user)
             this.emit('user', {action: 'add', user})
         } else if (kind === 'change') {
@@ -519,11 +520,11 @@ class Pyrite extends EventEmitter {
 
             this.$s.users.splice(this.$s.users.findIndex((i) => i.id === user.id), 1, user)
         } else if (kind === 'delete') {
-            user = this.$s.users.find((u) => u.id === id)
             if (user.username === 'RECORDING' && user.permissions.system) {
                 this.$s.group.recording = false
                 this.notifier.message('unrecord', {group: this.$s.group.name})
             }
+
             this.$s.users.splice(this.$s.users.findIndex((u) => u.id === id), 1)
             this.emit('user', {action: 'del', user})
         }
