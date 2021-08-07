@@ -48,10 +48,10 @@
                 v-if="$s.permissions.present"
                 class="btn btn-menu tooltip tooltip-left"
                 :class="{active: $s.user.status.raisehand}"
-                data-tooltip="Raise your hand"
+                :data-tooltip="$s.user.status.raisehand ? $t('Hinting for speaking time') : $t('Request speaking time')"
                 @click="toggleRaiseHand"
             >
-                <Icon class="icon-small" name="Hand" />
+                <Icon class="hand icon-small" :class="{wave: $s.user.status.raisehand}" name="Hand" />
             </button>
         </div>
     </nav>
@@ -121,5 +121,15 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    .hand {
+
+        &.wave {
+            animation-duration: 2.5s;
+            animation-iteration-count: infinite;
+            animation-name: wave-animation;
+            transform-origin: center bottom;
+        }
+    }
 }
 </style>
