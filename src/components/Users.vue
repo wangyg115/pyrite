@@ -64,6 +64,7 @@ export default {
         animation-duration: 2.5s;
         animation-iteration-count: infinite;
         animation-name: wave-animation;
+        transform-origin: center bottom;
     }
 
     .name {
