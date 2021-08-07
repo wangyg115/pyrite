@@ -47,7 +47,7 @@
             <button
                 v-if="$s.permissions.present"
                 class="btn btn-menu tooltip tooltip-left"
-                :class="{active: $s.upMedia.screenshare.length}"
+                :class="{active: $s.user.status.raisehand}"
                 data-tooltip="Raise your hand"
                 @click="toggleRaiseHand"
             >
