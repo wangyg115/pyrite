@@ -19,6 +19,11 @@
                 </span>
 
                 <div class="permissions">
+                    <div class="status">
+                        <Icon v-if="user.status.mic" class="icon icon-mini" name="Mic" />
+                        <Icon v-else class="icon icon-mini error" name="MicMute" />
+                    </div>
+
                     <span v-if="user.permissions.present" class="tooltip" :data-tooltip="$t('presenter role')">
                         <Icon class="icon icon-mini" name="Present" />
                     </span>
@@ -75,14 +80,17 @@ export default {
             align-items: center;
             display: flex;
             justify-content: center;
-            margin-left: var(--spacer);
+            margin-left: calc(var(--spacer) / 2);
+
+            .status {
+                margin-right: var(--spacer);
+            }
 
             span {
                 display: flex;
             }
         }
     }
-
 }
 
 </style>

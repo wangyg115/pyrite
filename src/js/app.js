@@ -156,6 +156,7 @@ class Pyrite extends EventEmitter {
         try {
             await this.connection.connect(url)
             this.$s.group.connected = true
+            app.connection.userAction('setstatus', app.connection.id, {mic: this.$s.devices.mic.enabled})
         } catch(e) {
             this.notifier.notify({
                 level: 'error',

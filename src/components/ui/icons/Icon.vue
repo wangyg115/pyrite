@@ -109,6 +109,14 @@ export default {
     height: 40px;
     width: 40px;
 
+    &.warning {
+        color: var(--warning-color);
+    }
+
+    &.error {
+        color: var(--error-color);
+    }
+
     &.icon-tiny {
         height: calc(var(--spacer) * 1.75);
         width: calc(var(--spacer) * 1.75);

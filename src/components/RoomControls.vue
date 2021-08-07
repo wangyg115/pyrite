@@ -8,7 +8,7 @@
             <button
                 v-if="$s.permissions.present"
                 class="btn btn-menu tooltip tooltip-left"
-                :class="{active: $s.devices.mic.enabled, warning: !$s.devices.mic.enabled}"
+                :class="{active: $s.devices.mic.enabled, error: !$s.devices.mic.enabled}"
                 :data-tooltip="`${$t('switch microphone')} ${$s.devices.mic.enabled ? $t('off') : $t('on')}`"
                 @click="toggleMicrophone"
             >
@@ -77,6 +77,7 @@ export default {
         },
         toggleMicrophone() {
             app.muteMicrophone(this.$s.devices.mic.enabled)
+            app.connection.userAction('setstatus', app.connection.id, {mic: this.$s.devices.mic.enabled})
         },
         togglePlayFile(file) {
             if (file) {
@@ -87,9 +88,7 @@ export default {
             }
         },
         toggleRaiseHand() {
-            app.connection.userAction('setstatus', app.connection.id, {
-                raisehand: !this.$s.user.status.raisehand,
-            })
+            app.connection.userAction('setstatus', app.connection.id, {raisehand: !this.$s.user.status.raisehand})
         },
         async toggleScreenshare() {
             if (this.$s.upMedia.screenshare.length) {

@@ -145,5 +145,22 @@
         }
     }
 
+    &.error {
+
+        .icon {
+            color: var(--error-color);
+        }
+
+        &:hover,
+        &.active {
+            border-bottom: 2px solid var(--error-color) !important;
+            color: var(--error-color);
+        }
+
+        &::before {
+            background: var(--error-color);
+        }
+    }
+
 
 }
