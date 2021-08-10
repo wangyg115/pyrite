@@ -77,7 +77,7 @@ export default {
         },
         toggleMicrophone() {
             app.muteMicrophone(this.$s.devices.mic.enabled)
-            app.connection.userAction('setstatus', app.connection.id, {mic: this.$s.devices.mic.enabled})
+
         },
         togglePlayFile(file) {
             if (file) {
@@ -101,6 +101,9 @@ export default {
         },
     },
     watch: {
+        '$s.devices.mic.enabled'(enabled) {
+            app.connection.userAction('setstatus', app.connection.id, {mic: enabled})
+        },
         volume(volume) {
             for (const description of this.$s.streams) {
                 // Only downstreams have volume control:
