@@ -150,7 +150,8 @@ export default {
             }
         },
         searchToggle(event, el, visible) {
-            this.visible = visible
+            if (!visible && visible !== false) visible = false
+            else this.visible = visible
         },
         updateModel: function(event) {
             let value = event.target.value

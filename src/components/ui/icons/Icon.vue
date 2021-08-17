@@ -45,6 +45,8 @@ import IconSpinner from './IconSpinner.vue'
 import IconStopScreenShare from './IconStopScreenShare.vue'
 import IconUnlock from './IconUnlock.vue'
 import IconUser from './IconUser.vue'
+import IconUserAway from './IconUserAway.vue'
+import IconUserBusy from './IconUserBusy.vue'
 import IconUserUnknown from './IconUserUnknown.vue'
 import IconWarning from './IconWarning.vue'
 import IconWebcam from './IconWebcam.vue'
@@ -85,6 +87,8 @@ export default {
         IconStopScreenShare,
         IconUnlock,
         IconUser,
+        IconUserAway,
+        IconUserBusy,
         IconUserUnknown,
         IconWarning,
         IconWebcam,

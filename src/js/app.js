@@ -156,7 +156,8 @@ class Pyrite extends EventEmitter {
         try {
             await this.connection.connect(url)
             this.$s.group.connected = true
-            app.connection.userAction('setstatus', app.connection.id, {mic: this.$s.devices.mic.enabled})
+            // Share initial status with other users.
+            this.connection.userAction('setstatus', app.connection.id, this.$s.user.status)
         } catch(e) {
             this.notifier.notify({
                 level: 'error',
@@ -515,7 +516,7 @@ class Pyrite extends EventEmitter {
                 // we don't have to do array lookups everywhere.
 
                 if (status) {
-                    Object.assign(this.$s.user.status, status)
+                    this.$s.user.status = {...this.$s.user.status, ...status}
                 }
             }
 

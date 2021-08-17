@@ -34,7 +34,14 @@
                     <Icon class="icon icon-mini" name="Present" />{{ $t('Add Presenter role') }}
                 </template>
             </button>
-            <ContextInput v-if="$s.permissions.op" v-model="warning" :submit="sendNotification" />
+            <ContextInput v-if="$s.permissions.op && user.id !== $s.user.id" v-model="warning" :submit="sendNotification" />
+            <ContextSelect
+                v-if="user.id === $s.user.id" v-model="$s.user.status.availability"
+                icon="Present"
+                :options="statusOptions"
+                :submit="setAvailability"
+                :title="$t('Change status')"
+            />
         </div>
     </div>
 </template>
@@ -45,6 +52,11 @@ export default {
         return {
             active: false,
             kick: {icon: 'Logout', title: `${this.$t('Kick')} ${this.user.username}`},
+            statusOptions: [
+                {id: 'available', name: this.$t('Available')},
+                {id: 'away', name: this.$t('Away')},
+                {id: 'busy', name: this.$t('Busy')},
+            ],
             warning: {icon: 'Megafone', title: this.$t('Send Notification')},
         }
     },
@@ -77,6 +89,9 @@ export default {
             app.notifier.message('notify', {dir: 'source', message, target: this.user.username})
             app.connection.userMessage('notify', this.user.id, message)
             this.toggleMenu()
+        },
+        setAvailability(availability) {
+            app.connection.userAction('setstatus', app.connection.id, {availability})
         },
         toggleMenu(e, forceState) {
             // The v-click-outside

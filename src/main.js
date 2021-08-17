@@ -1,6 +1,7 @@
 import './scss/app.scss'
 import App from './App.vue'
 import ContextInput from './components/ui/fields/ContextInput.vue'
+import ContextSelect from './components/ui/fields/ContextSelect.vue'
 import {createApp} from 'vue'
 import FieldCheckbox from './components/ui/fields/FieldCheckbox.vue'
 import FieldFile from './components/ui/fields/FieldFile.vue'
@@ -19,6 +20,7 @@ app.vm.config.globalProperties.$s = app.$s
 
 app.vm.component('Icon', Icon)
 app.vm.component('ContextInput', ContextInput)
+app.vm.component('ContextSelect', ContextSelect)
 app.vm.component('FieldCheckbox', FieldCheckbox)
 app.vm.component('FieldFile', FieldFile)
 app.vm.component('FieldSelect', FieldSelect)

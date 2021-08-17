@@ -6,7 +6,7 @@
                 class="hand icon item-icon icon-small"
                 name="Hand"
             />
-            <Icon v-else class="item-icon icon-small" name="User" />
+            <Icon v-else class="item-icon icon-small" :name="statusIcon(user)" />
             <div class="name">
                 <template v-if="user.username">
                     {{ user.username }}
@@ -33,7 +33,7 @@
                 </div>
             </div>
 
-            <UserContext v-if="user.username !== 'RECORDING' && user.id !== $s.user.id" :user="user" />
+            <UserContext v-if="user.username !== 'RECORDING'" :user="user" />
         </div>
     </section>
 </template>
@@ -56,6 +56,17 @@ export default {
                 return 0
             })
             return users
+        },
+    },
+    methods: {
+        statusIcon(user) {
+            if (!user.status.availability) return 'User'
+            if (user.status.availability.id === 'away') {
+                return 'UserAway'
+            } else if (user.status.availability.id === 'busy') {
+                return 'UserBusy'
+            }
+            return 'User'
         },
     },
 }

@@ -25,7 +25,11 @@ const persistantState = reactive({
         id: null,
         name: '',
         password: '',
-        status: {},
+        status: {
+            availability: {id: 'available'},
+            mic: true,
+            raisehand: false,
+        },
     },
 })
 
