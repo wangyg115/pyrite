@@ -493,6 +493,12 @@ class Pyrite extends EventEmitter {
                 this.notifier.message('record', {group: this.$s.group.name})
             }
 
+            if (id === this.$s.user.id) {
+                // Restore user status back from state and notify others about it.
+                user.status = this.$s.user.status
+                this.connection.userAction('setstatus', app.connection.id, this.$s.user.status)
+            }
+
             this.$s.users.push(user)
             this.emit('user', {action: 'add', user})
         } else if (kind === 'change') {
@@ -512,11 +518,11 @@ class Pyrite extends EventEmitter {
                 } else if (!$user.permissions.op && user.permissions.op) {
                     this.notifier.message('op')
                 }
-                // Keep the active user in sync with the user list changes, so
-                // we don't have to do array lookups everywhere.
 
                 if (status) {
                     this.$s.user.status = {...this.$s.user.status, ...status}
+
+                    this.store.save()
                 }
             }
 

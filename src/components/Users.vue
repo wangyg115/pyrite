@@ -6,7 +6,11 @@
                 class="hand icon item-icon icon-small"
                 name="Hand"
             />
-            <Icon v-else class="item-icon icon-small" :name="statusIcon(user)" />
+            <Icon
+                v-else class="item-icon icon-small"
+                :class="classes(user)"
+                name="User"
+            />
             <div class="name">
                 <template v-if="user.username">
                     {{ user.username }}
@@ -59,14 +63,15 @@ export default {
         },
     },
     methods: {
-        statusIcon(user) {
-            if (!user.status.availability) return 'User'
+        classes(user) {
+            const classes = {}
+            if (!user.status.availability) return classes
             if (user.status.availability.id === 'away') {
-                return 'UserAway'
+                classes.away = true
             } else if (user.status.availability.id === 'busy') {
-                return 'UserBusy'
+                classes.busy = true
             }
-            return 'User'
+            return classes
         },
     },
 }
@@ -76,11 +81,23 @@ export default {
 .user {
     font-family: var(--font-secondary);
 
-    .hand {
-        animation-duration: 2.5s;
-        animation-iteration-count: infinite;
-        animation-name: wave-animation;
-        transform-origin: center bottom;
+    .item-icon {
+
+        &.away {
+            color: var(--grey-100);
+        }
+
+        &.busy {
+            color: var(--error-color);
+        }
+
+        &.hand {
+            animation-duration: 2.5s;
+            animation-iteration-count: infinite;
+            animation-name: wave-animation;
+            transform-origin: center bottom;
+        }
+
     }
 
     .name {
