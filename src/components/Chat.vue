@@ -21,7 +21,7 @@
             <div
                 v-for="message of sortedMessages" :key="message.message"
                 class="message"
-                :class="{command: !message.nick}"
+                :class="{command: !message.nick, [message.kind]: true}"
             >
                 <header v-if="message.nick">
                     <div class="author">
@@ -117,16 +117,12 @@ export default {
             return date.toLocaleTimeString()
         },
         async onMessage(sourceId, destinationId, nick, time, privileged, kind, message) {
+            if (!kind) kind = 'default'
             let channelId
             // Incoming message for the main channel
             if (!destinationId) {
-                // Ignore locally replayed messages.
-                if (sourceId === this.$s.user.id) {
-                    return
-                }
-
                 channelId = 'main'
-                this.$s.chat.channels.main.messages.push({message, nick, time})
+                this.$s.chat.channels.main.messages.push({kind, message, nick, time})
             }
             // This is a private message
             else if (destinationId && sourceId) {
@@ -142,7 +138,7 @@ export default {
                         }
                     }
 
-                    this.$s.chat.channels[sourceId].messages.push({message, nick, time})
+                    this.$s.chat.channels[sourceId].messages.push({kind, message, nick, time})
                 }
             }
 
@@ -237,12 +233,6 @@ export default {
                 app.connection.chat(me ? 'me' : '', this.$s.chat.channel, message)
             }
 
-            this.$s.chat.channels[this.$s.chat.channel].messages.push({
-                message,
-                nick: this.$s.user.username,
-                time: new Date().getTime(),
-            })
-
             // Adjust the chat window scroller
             await nextTick()
             this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
@@ -330,18 +320,10 @@ export default {
         padding-top: calc(var(--spacer) * 2);
 
         .message {
-            background: var(--grey-300);
-            color: var(--grey-50);
             margin-bottom: calc(var(--spacer) * 2);
             margin-left: calc(var(--spacer) * 2);
             margin-right: var(--spacer);
-            padding: var(--spacer);
-
-            &.command {
-                background: var(--grey-400);
-                color: var(--grey-100);
-                font-size: var(--text-small);
-            }
+            padding: calc(var(--spacer) * 2);
 
             & header {
                 color: var(--primary-color);
@@ -349,10 +331,29 @@ export default {
                 font-size: var(--text-small);
                 font-weight: 600;
                 justify-content: space-between;
-                margin-bottom: var(--spacer);
 
                 .time {
                     font-size: var(--text-tiny);
+                }
+            }
+
+            &.command {
+                background: var(--grey-400);
+                color: var(--grey-100);
+                font-size: var(--text-small);
+            }
+
+            &.default {
+                background: var(--grey-300);
+                border-radius: var(--spacer);
+                color: var(--grey-50);
+            }
+
+            &.me {
+                margin-left: 0;
+
+                header {
+                    color: var(--grey-50);
                 }
             }
         }
