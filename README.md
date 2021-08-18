@@ -2,8 +2,8 @@
 
 ![Pyrite build passing](https://github.com/garage44/pyrite/actions/workflows/test.yml/badge.svg)
 
-[Pyrite](https://pyrite.video) is a [Vue3](https://v3.vuejs.org/) web client for [Galène](https://github.com/jech/galene);
-a video conferencing server based on [Pion](https://github.com/pion/webrtc).
+[Pyrite](https://pyrite.video) with [Galène](https://github.com/jech/galene) is a self-hosted
+video conferencing solution (SFU) based on [Vue](https://v3.vuejs.org/) & [Pion](https://github.com/pion/webrtc).
 
 ## Getting started
 
