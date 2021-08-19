@@ -351,6 +351,7 @@ export default {
 
             &.me {
                 margin-left: 0;
+                margin-right: 0;
                 padding: 0 calc(var(--spacer) * 2);
 
                 header {

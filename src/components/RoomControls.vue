@@ -89,6 +89,9 @@ export default {
         },
         toggleRaiseHand() {
             app.connection.userAction('setstatus', app.connection.id, {raisehand: !this.$s.user.status.raisehand})
+            if (!this.$s.user.status.raisehand) {
+                app.notifier.message('raisehand', {source: this.$s.user.name}, null, {chat: true, notification: false})
+            }
         },
         async toggleScreenshare() {
             if (this.$s.upMedia.screenshare.length) {

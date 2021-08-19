@@ -42,6 +42,9 @@ export default function() {
                     source: 'You assigned the Presenter role to {target}',
                     target: 'You aqcuired the Presenter role', // The source is unknown in the onUser event
                 },
+                raisehand: {
+                    chat: '{source} raised a hand',
+                },
                 record: {
                     level: 'warning',
                     target: 'Group {group} is being recorded!',
@@ -54,7 +57,7 @@ export default function() {
                 unop: {
                     level: 'info',
                     source: 'You revoked the Operator role from Participant {target}',
-                    target: 'Your Operator role was revoked', // The source is unknown in the onUser event 
+                    target: 'Your Operator role was revoked', // The source is unknown in the onUser event
                 },
                 unpresent: {
                     level: 'info',
@@ -69,22 +72,30 @@ export default function() {
         }
 
         /**
-         * A shared entrypoint for messages that have a 
-         * source and a target message. Use `context.dir` 
+         * A shared entrypoint for messages that have a
+         * source and a target message. Use `context.dir`
          * to assign the message direction.
-         * @param {*} messageId 
-         * @param {*} context 
-         * @param {*} personal 
+         * @param {*} messageId
+         * @param {*} context
+         * @param {*} personal
+         * @param {*} channels
          */
-        message(messageId, context = {dir: 'target'}, personal = null) {
-            if (!context.dir) context.dir = 'target'
+        message(messageId, context = {dir: 'target'}, personal = null, {chat =  false, notification = true} = {}) {
             const message = this.messages[messageId]
-            this.notify({
-                level: message.level,
-                message: app.$t(message[context.dir], context), 
-                personal,
-            })
-            app.logger.debug(`message: ${app.$t(message[context.dir], context)}`)
+            if (notification) {
+                if (!context.dir) context.dir = 'target'
+                this.notify({
+                    level: message.level,
+                    message: app.$t(message[context.dir], context),
+                    personal,
+                })
+            }
+
+            if (chat) {
+                let chatMessage = app.$t(message.chat)
+                if (personal) chatMessage = `${chatMessage} (${personal.message})`
+                app.connection.chat('me', '', chatMessage)
+            }
         }
 
         notify(notification) {
