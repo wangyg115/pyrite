@@ -25,7 +25,7 @@
             >
                 <header v-if="message.nick">
                     <div class="author">
-                        {{ message.nick }}
+                        {{ message.nick }}<span v-if="message.kind === 'me'">...</span>
                     </div><div class="time">
                         {{ formatTime(message.time) }}
                     </div>
@@ -351,9 +351,15 @@ export default {
 
             &.me {
                 margin-left: 0;
+                padding: 0 calc(var(--spacer) * 2);
 
                 header {
-                    color: var(--grey-50);
+                    color: var(--grey-100);
+
+                    .time {
+                        align-self: flex-end;
+                        color: var(--grey-200);
+                    }
                 }
             }
         }
