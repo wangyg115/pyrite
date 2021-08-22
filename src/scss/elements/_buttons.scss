@@ -8,6 +8,10 @@
     text-transform: uppercase;
     transition: all ease 0.5s;
 
+    &[disabled] {
+        color: var(--grey-200);
+    }
+
     &:focus {
         outline: none;
     }
@@ -161,6 +165,4 @@
             background: var(--error-color);
         }
     }
-
-
 }

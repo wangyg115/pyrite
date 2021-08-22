@@ -97,7 +97,7 @@ export default {
         },
     },
     async mounted() {
-        await app.setMediaChoices()
+        await app.queryDevices()
     },
 }
 </script>

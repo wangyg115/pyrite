@@ -1,5 +1,5 @@
 <template>
-    <div v-click-outside="searchToggle" class="c-field-select field">
+    <div v-click-outside="toggleSelect.bind(this)" class="c-field-select field">
         <label :for="name">{{ label }}</label>
 
         <div class="input-container">
@@ -20,13 +20,13 @@
                     @keydown.page-up="searchSelect($event, null, 'page-up', false)"
                     @keydown.up="searchSelect($event, null, 'up', false)"
                     @keyup.enter="searchSelect($event, null, 'enter', true)"
-                    @keyup.escape="visible = false"
+                    @keyup.escape="active = false"
                 >
 
                 <slot class="button" name="button" />
             </div>
 
-            <div v-show="visible" ref="options" class="options">
+            <div v-show="active" ref="options" class="options">
                 <div
                     v-for="option in filteredOptions"
                     :id="`option-${option.id}`"
@@ -75,10 +75,10 @@ export default {
     },
     data: function() {
         return {
+            active: false,
             searchQuery: '',
             searchSelected: this.modelValue,
             selectedOption: null,
-            visible: false,
         }
     },
     emits: ['update:modelValue'],
@@ -124,7 +124,7 @@ export default {
             }
         },
         searchSelect(event, option, keyModifier, updateModel) {
-            this.visible = true
+            this.active = true
 
             if (option) {
                 // Option click select.
@@ -141,17 +141,22 @@ export default {
                 this.searchSelected = this.selectedOption
                 if (updateModel) {
                     this.searchQuery = ''
-                    this.visible = false
+                    this.active = false
                     this.searchPlaceholder = this.selectedOption.name
                     this.$emit('update:modelValue', {...this.selectedOption})
                 } else {
-                    this.visible = true
+                    this.active = true
                 }
             }
         },
-        searchToggle(event, el, visible) {
-            if (!visible && visible !== false) visible = false
-            else this.visible = visible
+        toggleSelect(e, vClickOutside, active) {
+            if (typeof vClickOutside === 'object' && !active) {
+                this.active = false
+                return
+            }
+
+            if (active !== undefined) this.active = active
+            else this.active = !this.active
         },
         updateModel: function(event) {
             let value = event.target.value

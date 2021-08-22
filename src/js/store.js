@@ -2,6 +2,11 @@ import {reactive} from 'vue'
 
 const persistantState = reactive({
     devices: {
+        audio: {
+            enabled: true,
+            options: [],
+            selected: {id: null, name: ''},
+        },
         cam: {
             enabled: true,
             options: [],

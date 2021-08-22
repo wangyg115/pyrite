@@ -182,6 +182,11 @@ export default {
                 if(['connected', 'completed'].includes(status)) {
 
                     this.$refs.media.srcObject = this.stream
+                    if (this.audioEnabled) {
+                        app.logger.debug(`set stream sink: ${app.$s.devices.audio.selected.id}`)
+                        this.$refs.media.setSinkId(app.$s.devices.audio.selected.id)
+                    }
+
                     try {
                         await this.$refs.media.play()
                     } catch (message) {
@@ -289,6 +294,7 @@ export default {
 
         if (this.modelValue.direction === 'up') this.mountUpstream()
         else this.mountDownstream()
+
     },
     props: {
         controls: {

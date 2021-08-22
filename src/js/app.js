@@ -250,7 +250,7 @@ class Pyrite extends EventEmitter {
             this.delLocalMedia()
         }
 
-        await this.setMediaChoices()
+        await this.queryDevices()
 
         let selectedAudioDevice = false
         let selectedVideoDevice = false
@@ -558,6 +558,48 @@ class Pyrite extends EventEmitter {
         }
     }
 
+    async queryDevices() {
+        let devices = await navigator.mediaDevices.enumerateDevices()
+        const labelnr = {audio: 1, cam: 1, mic: 1}
+
+        this.$s.devices.mic.options = []
+        this.$s.devices.cam.options = []
+        this.$s.devices.audio.options = []
+
+        devices.forEach(d => {
+            let name = d.label
+
+            if(d.kind === 'videoinput') {
+                if(!name) name = `Camera ${labelnr.cam}`
+                this.$s.devices.cam.options.push({id: d.deviceId, name})
+                labelnr.cam++
+            } else if(d.kind === 'audioinput') {
+                if(!name) name = `Microphone ${labelnr.mic}`
+                this.$s.devices.mic.options.push({id: d.deviceId, name})
+                labelnr.mic++
+            } else if (d.kind === 'audiooutput') {
+                if(!name) name = `Output ${labelnr.audio}`
+                this.$s.devices.audio.options.push({id: d.deviceId, name})
+                labelnr.audio++
+            }
+        })
+
+        // Set default audio/video options when none is set.
+        if (this.$s.devices.mic.selected.id === null && this.$s.devices.mic.options.length) {
+            this.$s.devices.mic.selected = this.$s.devices.mic.options[0]
+        }
+
+        if (this.$s.devices.cam.selected.id === null && this.$s.devices.cam.options.length) {
+            this.$s.devices.cam.selected = this.$s.devices.cam.options[0]
+        }
+
+        if (this.$s.devices.audio.selected.id === null && this.$s.devices.audio.options.length) {
+            this.$s.devices.audio.selected = this.$s.devices.audio.options[0]
+        }
+
+        this.logger.debug(`queryDevices: device list updated`)
+    }
+
     removeTrack(glnStream, kind) {
         const tracks = glnStream.stream.getTracks()
         tracks.forEach(track => {
@@ -590,40 +632,6 @@ class Pyrite extends EventEmitter {
 
             await s.setParameters(p)
         }
-    }
-
-    async setMediaChoices() {
-        let devices = await navigator.mediaDevices.enumerateDevices()
-
-        let cn = 1, mn = 1
-
-        this.$s.devices.mic.options = []
-        this.$s.devices.cam.options = []
-
-        devices.forEach(d => {
-            let name = d.label
-
-            if(d.kind === 'videoinput') {
-                if(!name) name = `Camera ${cn}`
-                this.$s.devices.cam.options.push({id: d.deviceId, name})
-                cn++
-            } else if(d.kind === 'audioinput') {
-                if(!name) name = `Microphone ${mn}`
-                this.$s.devices.mic.options.push({id: d.deviceId, name})
-                mn++
-            }
-        })
-
-        // Set default audio/video options when none is set.
-        if (this.$s.devices.mic.selected.id === null && this.$s.devices.mic.options.length) {
-            this.$s.devices.mic.selected = this.$s.devices.mic.options[0]
-        }
-
-        if (this.$s.devices.cam.selected.id === null && this.$s.devices.cam.options.length) {
-            this.$s.devices.cam.selected = this.$s.devices.cam.options[0]
-        }
-
-        this.logger.debug(`setMediaChoices: video(${this.$s.devices.cam.options.length}) audio(${this.$s.devices.mic.options.length})`)
     }
 
     stopUpMedia(c) {

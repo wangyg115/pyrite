@@ -33,7 +33,7 @@ import IconMic from './IconMic.vue'
 import IconMicMute from './IconMicMute.vue'
 import IconOperator from './IconOperator.vue'
 import IconPip from './IconPip.vue'
-import IconPlayFile from './IconPlayFile.vue'
+import IconPlay from './IconPlay.vue'
 import IconPresent from './IconPresent.vue'
 import IconRecord from './IconRecord.vue'
 import IconRefresh from './IconRefresh.vue'
@@ -73,7 +73,7 @@ export default {
         IconMicMute,
         IconOperator,
         IconPip,
-        IconPlayFile,
+        IconPlay,
         IconPresent,
         IconRecord,
         IconRefresh,

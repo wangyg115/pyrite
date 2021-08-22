@@ -1,6 +1,6 @@
 <template>
     <div class="c-context-select">
-        <button class="action" @click="buttonAction">
+        <button class="action" @click.stop="buttonAction">
             <Icon class="icon icon-mini" :name="icon" />{{ title }} ({{ model.name }})
         </button>
         <FieldSelect
@@ -31,7 +31,7 @@ export default {
     methods: {
         async buttonAction() {
             this.input = !this.input
-            this.$refs.select.searchToggle(null, null, true)
+            this.$refs.select.toggleSelect(null, null, true)
         },
         inputTransitioned() {
             this.inputTransition = this.input

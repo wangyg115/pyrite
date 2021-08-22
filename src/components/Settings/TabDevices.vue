@@ -24,9 +24,22 @@
             :options="resolutionOptions"
         />
 
+        <div class="flex">
+            <FieldSelect
+                v-model="$s.devices.audio.selected"
+                :help="$t('Test your audio device by playing the test sound')"
+                :label="$t('Audio Output')"
+                name="audio"
+                :options="$s.devices.audio.options"
+            />
+            <button class="btn" :disabled="sound.audio.playing" @click="soundAudio.play()">
+                <Icon class="icon-small" name="Play" />
+            </button>
+        </div>
+
         <FieldSelect
             v-model="$s.devices.mic.selected"
-            :help="$t('Select the microphone device')"
+            :help="$t('Verify the microphone is working with the soundmeter')"
             :label="$t('Microphone')"
             name="audio"
             :options="$s.devices.mic.options"
@@ -40,6 +53,7 @@
 
 <script>
 import {nextTick} from 'vue'
+import Sound from '../../js/lib/sound'
 import SoundMeter from '../ui/SoundMeter.vue'
 import Stream from '../Stream.vue'
 
@@ -53,6 +67,10 @@ export default {
     data() {
         return {
             description: null,
+            // Keep track of test sounds that are playing.
+            playing: {
+                audio: false,
+            },
             resolutionOptions: [
                 {
                     id: 'default',
@@ -68,6 +86,12 @@ export default {
                     name: this.$t('Full HD - 1080p (1920x1080)'),
                 },
             ],
+            sound: {
+                audio: {
+                    file: '/audio/power-on.ogg',
+                    playing: false,
+                },
+            },
             stream: null,
             streamId: null,
         }
@@ -94,8 +118,13 @@ export default {
                 },
             }
         },
+        testSoundAudio() {
+            this.soundAudio.play()
+        },
     },
     async mounted() {
+        this.soundAudio = new Sound(this.sound.audio)
+
         // Not a media stream yet? Create one for the audio settings
         if (!app.localStream) {
             const res = await app.getUserMedia()
