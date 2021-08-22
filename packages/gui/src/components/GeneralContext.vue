@@ -10,7 +10,7 @@
                 @click="toggleRecording($s.group.recording)"
             >
                 <Icon class="icon icon-mini" name="Record" />
-                <span v-if="this.$s.group.recording">{{ $t('Stop Recording') }}</span>
+                <span v-if="$s.group.recording">{{ $t('Stop Recording') }}</span>
                 <span v-else>{{ $t('Start Recording') }}</span>
             </button>
 
