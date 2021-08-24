@@ -6,7 +6,7 @@
         </div>
 
         <div class="propaganda">
-            {{ $t('Better Remote Communication') }}
+            {{ $t('Video Communication') }}
         </div>
     </div>
 </template>

@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "galene": "docker-compose -f docker/docker-compose.yml --project-directory ./docker up --remove-orphans",
+    "galene": "docker-compose -f galene/docker/docker-compose.yml --project-directory ./galene up --remove-orphans",
     "lint": "npm run lint:js;npm run lint:scss",
     "lint:js": "eslint \"packages/gui/src/**/*.{js,vue}\"",
     "semantic-release": "semantic-release"
@@ -27,7 +27,6 @@
     "packages/gui"
   ],
   "devDependencies": {
-    "semantic-release": "^17.3.2",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/exec": "^5.0.0",
     "@semantic-release/git": "^9.0.0",
@@ -35,6 +34,8 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-sort-class-members": "^1.9.0",
     "eslint-plugin-vue": "^7.3.0",
+    "sass": "^1.38.0",
+    "semantic-release": "^17.3.2",
     "stylelint": "^13.7.0",
     "stylelint-config-recommended": "^3.0.0",
     "stylelint-order": "^4.1.0"

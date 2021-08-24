@@ -41,9 +41,7 @@ class Pyrite extends EventEmitter {
 
         this.$t = this.i18n.global.t
         this.notifier = Notifier(this)
-
         this.router.beforeResolve((to, from, next) => {
-
             if (!this.$s.group.connected) {
                 // Navigating groups will change the internally used groupId;
                 // but only when not connected to a group already.
@@ -53,6 +51,8 @@ class Pyrite extends EventEmitter {
             }
             next()
         })
+
+        this.managerContext()
     }
 
     async addFileMedia(file) {
@@ -302,6 +302,16 @@ class Pyrite extends EventEmitter {
         }
 
         return this.localStream
+    }
+
+    async managerContext() {
+        const res = await fetch('/api/context', {
+            credentials: 'same-origin',
+            headers: {'Content-Type': 'application/json'},
+        })
+
+        const context = await res.json()
+        Object.assign(this.$s.manager, context)
     }
 
     mapRequest(what) {

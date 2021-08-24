@@ -14,6 +14,7 @@
 import IconChat from './IconChat.vue'
 import IconChatRemove from './IconChatRemove.vue'
 import IconClose from './IconClose.vue'
+import IconDashboard from './IconDashboard.vue'
 import IconError from './IconError.vue'
 import IconEye from './IconEye.vue'
 import IconFullscreen from './IconFullscreen.vue'
@@ -54,6 +55,7 @@ export default {
         IconChat,
         IconChatRemove,
         IconClose,
+        IconDashboard,
         IconError,
         IconEye,
         IconFullscreen,

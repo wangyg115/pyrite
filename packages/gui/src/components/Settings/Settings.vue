@@ -21,7 +21,7 @@
         <TabDevices v-else-if="$route.params.tabId === 'devices'" />
 
         <button
-            class="btn btn-widget btn-save"
+            class="btn btn-widget btn-login"
             @click="saveSettings"
         >
             {{ $t('Save Settings') }}
@@ -48,10 +48,6 @@ export default {
 
 <style lang="scss">
 .c-settings {
-
-    .tabs {
-        padding-left: var(--space-1);
-    }
 
     .btn-save {
         margin-top: var(--space-1);

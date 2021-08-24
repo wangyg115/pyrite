@@ -16,6 +16,7 @@ export default defineConfig({
         proxy: {
             '/ice-servers.json': 'http://localhost:8443',
             '/public-groups.json': 'http://localhost:8443',
+            '/api': 'http://localhost:3030',
             '/recordings/pyrite': 'http://localhost:8443',
             '/ws': {
                 changeOrigin: false,

@@ -21,6 +21,10 @@ const persistantState = reactive({
     },
     language: {id: 'en'},
     loading: true,
+    manager: {
+        authenticated: null,
+        groups: {},
+    },
     media: {
         accept: {id: 'everything', name: 'Everything'},
         upstream: {id: 'normal', name: 'Normal'},

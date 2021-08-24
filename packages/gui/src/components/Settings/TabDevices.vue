@@ -1,5 +1,5 @@
 <template>
-    <section v-if="$route.params.tabId === 'devices'" class="c-tab-devices tab-content active">
+    <section class="c-tab-devices tab-content active">
         <div class="camera-field">
             <FieldSelect
                 v-model="$s.devices.cam.selected"

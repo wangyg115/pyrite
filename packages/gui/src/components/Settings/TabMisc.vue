@@ -1,5 +1,5 @@
 <template>
-    <section v-if="$route.params.tabId === 'misc'" class="tab-content active">
+    <section class="tab-content active">
         <FieldSelect
             v-model="$s.language"
             :help="$t('The user interface language')"

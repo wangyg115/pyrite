@@ -2,6 +2,14 @@
     <nav class="c-general-controls">
         <div class="navigational-controls">
             <RouterLink
+                class="btn btn-menu tooltip" :class="{active: $route.name === 'manager'}"
+                :data-tooltip="$t('manager')"
+                :to="{name: 'manager', params: {tabId: 'groups'}}"
+            >
+                <Icon class="icon-small" name="Dashboard" />
+            </RouterLink>
+
+            <RouterLink
                 class="btn btn-menu tooltip" :class="{active: $route.name === 'settings'}"
                 :data-tooltip="$t('settings')"
                 :to="{name: 'settings', params: {tabId: 'misc'}}"

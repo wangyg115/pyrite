@@ -1,4 +1,5 @@
 import Login from '../components/Login.vue'
+import Manager from '../components/Manager/Manager.vue'
 import Settings from '../components/Settings/Settings.vue'
 import Splash from '../components/Splash.vue'
 import StreamView from '../components/StreamView.vue'
@@ -6,6 +7,11 @@ import {createRouter, createWebHistory} from 'vue-router'
 
 export default function(app) {
     const routes = [
+        {
+            component: Manager,
+            name: 'manager',
+            path: '/manager/:tabId',
+        },
         {
             component: Settings,
             name: 'settings',
