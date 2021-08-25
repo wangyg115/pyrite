@@ -75,8 +75,8 @@ export default {
         input {
             background: none;
             border: none;
-            border-bottom: var(--border) solid var(--grey-200);
-            color: var(--grey-50);
+            border-bottom: var(--border) solid var(--grey-5);
+            color: var(--grey-7);
             font-size: 1rem;
             height: var(--space-2);
             outline: none;

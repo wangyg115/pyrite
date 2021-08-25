@@ -93,8 +93,8 @@ export default {
         padding: var(--spacer);
 
         &.info {
-            background: var(--grey-50);
-            color: var(--grey-500);
+            background: var(--grey-7);
+            color: var(--grey-2);
         }
 
         &.warning {

@@ -182,7 +182,7 @@ export default {
         flex-direction: column;
 
         .c-stream {
-            border: var(--border) solid var(--grey-200);
+            border: var(--border) solid var(--grey-5);
             margin: var(--spacer);
             right: 0;
             width: 180px;

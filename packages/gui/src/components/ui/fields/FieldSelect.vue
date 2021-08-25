@@ -238,7 +238,7 @@ export default {
             input {
                 background: none;
                 border: 0;
-                border-bottom: 1px solid var(--grey-200);
+                border-bottom: 1px solid var(--grey-5);
                 font-size: 1rem;
                 height: var(--space-2);
                 outline: none;
@@ -246,7 +246,7 @@ export default {
                 width: 100%;
 
                 &::placeholder {
-                    color: var(--grey-50);
+                    color: var(--grey-7);
                     font-style: italic;
                 }
 
@@ -257,7 +257,7 @@ export default {
                 &[disabled] {
 
                     &::placeholder {
-                        color: var(--grey-200);
+                        color: var(--grey-5);
                     }
 
                     &:hover {
@@ -268,9 +268,9 @@ export default {
         }
 
         .options {
-            background: var(--grey-400);
-            border: 1px solid var(--grey-300);
-            box-shadow: 0 0 var(--border) rgba(var(--grey-500), 0.8);
+            background: var(--grey-3);
+            border: 1px solid var(--grey-4);
+            box-shadow: 0 0 var(--border) rgba(var(--grey-2), 0.8);
             margin-top: calc(var(--space-2) + 1px);
             max-height: 162px;
 
@@ -281,19 +281,19 @@ export default {
             z-index: 100000;
 
             .option {
-                color: var(--grey-100);
+                color: var(--grey-6);
                 padding: var(--spacer);
                 text-align: left;
                 user-select: none;
                 width: inherit;
 
                 &.selected {
-                    background: var(--grey-300);
+                    background: var(--grey-4);
                     color: var(--primary-color);
                 }
 
                 &:hover {
-                    background: var(--grey-300);
+                    background: var(--grey-4);
                     color: var(--primary-color);
                     cursor: pointer;
                 }

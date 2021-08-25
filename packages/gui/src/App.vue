@@ -1,6 +1,6 @@
 <template>
     <div
-        class="app-view theme theme-dark"
+        class="c-app theme theme-dark"
         :class="{connected: $s.group.connected, 'chat-hidden': $s.chat.hidden, 'chat-toggle': chatToggle}"
     >
         <div class="presence">
@@ -85,8 +85,9 @@ export default {
 </script>
 
 <style lang="scss">
-.app-view {
+.c-app {
     align-items: stretch;
+    background: var(--grey-1);
     display: grid;
     grid-template-columns: 300px var(--space-4) 1fr;
     height: 100vh;

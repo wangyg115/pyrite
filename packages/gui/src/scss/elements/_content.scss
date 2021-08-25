@@ -1,19 +1,21 @@
 .content {
-    background: var(--grey-400);
-    border-right: var(--border) solid var(--grey-400);
+    background: var(--grey-3);
+    border-right: var(--border) solid var(--grey-3);
     display: flex;
     flex-direction: column;
     max-width: 600px;
 
     header {
         align-items: center;
-        background: var(--grey-500);
-        border-bottom: var(--border) solid var(--grey-300);
+        background: var(--grey-1);
+        border-bottom: var(--border) solid var(--grey-4);
         color: var(--primary-color);
         display: flex;
-        font-weight: bold;
+        font-family: var(--font-secondary);
+        font-weight: 600;
         height: var(--space-4);
-        padding: var(--spacer);
+        padding: var(--space-1);
+        text-transform: uppercase;
 
         svg {
             color: var(--primary-color);
@@ -22,6 +24,7 @@
     }
 
     section {
-        padding: var(--spacer);
+        padding: var(--space-1);
     }
+
 }

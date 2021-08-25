@@ -131,7 +131,7 @@ export default {
 .c-stream-view {
     align-content: center;
     align-items: center;
-    background: var(--grey-600);
+    background: var(--grey-1);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;

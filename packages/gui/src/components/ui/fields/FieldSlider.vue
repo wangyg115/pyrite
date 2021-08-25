@@ -79,8 +79,8 @@ export default {
 
     input[type="range"] {
         appearance: none;
-        background: var(--grey-600);
-        border: 1px solid var(--grey-200);
+        background: var(--grey-1);
+        border: 1px solid var(--grey-5);
         height: 100%;
         margin: 0;
         overflow: hidden;
@@ -115,7 +115,7 @@ export default {
         &::-webkit-slider-thumb {
             appearance: none;
             background: var(--primary-color);
-            box-shadow: -80px 0 0 80px var(--grey-200);
+            box-shadow: -80px 0 0 80px var(--grey-5);
             height: var(--spacer);
             width: var(--space-1);
         }

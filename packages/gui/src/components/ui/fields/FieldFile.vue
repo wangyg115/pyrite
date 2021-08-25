@@ -65,7 +65,7 @@ export default {
     width: var(--space-4);
 
     input {
-        color: var(--grey-100);
+        color: var(--grey-6);
         height: var(--space-4);
         left: 0;
         outline: none;

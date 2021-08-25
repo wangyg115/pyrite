@@ -6,9 +6,9 @@
 
 [data-tooltip]::after,
 .tooltip::after {
-    background: var(--grey-500);
+    background: var(--grey-2);
     border-radius: calc(var(--spacer) / 4);
-    box-shadow: 0 0 8px var(--grey-400);
+    box-shadow: 0 0 8px var(--grey-3);
     color: var(--primary-color);
     content: attr(data-tooltip);
     font-size: var(--text-small);

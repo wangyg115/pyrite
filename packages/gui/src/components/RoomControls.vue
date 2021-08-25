@@ -121,8 +121,8 @@ export default {
 
 <style lang="scss">
 .c-room-controls {
-    background: var(--grey-400);
-    border-left: var(--border) solid var(--grey-300);
+    background: var(--grey-4);
+    border-left: var(--border) solid var(--grey-4);
     display: flex;
     flex-direction: column;
     justify-content: space-between;

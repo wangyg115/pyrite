@@ -1,7 +1,7 @@
 <template>
     <div class="c-login content">
         <header>
-            <Icon class="item-icon icon-small" name="Login" /><em>{{ $route.params.groupId }}</em>
+            <Icon class="item-icon icon-small" name="Login" />{{ $t('Join Group') }}: {{ $route.params.groupId }}
         </header>
         <section>
             <Hint v-if="$s.group.locked" class="field" :text="$t('This group is currently locked. Only maintainers may login.')" />
@@ -103,38 +103,47 @@ export default {
 </script>
 
 <style lang="scss">
-.presence-setup {
+.c-login {
 
-    label {
+    header {
         font-family: var(--font-secondary);
+        text-transform: uppercase;
     }
 
-    .mic,
-    .cam {
-        align-items: center;
-        background: var(--grey-500);
-        border: 2px solid var(--grey-300);
-        display: flex;
-        margin: var(--space-1) 0;
-        padding: var(--spacer);
-    }
-
-    .c-field-select {
-        padding: 0;
-    }
-
-    .c-field-checkbox {
-        padding-left: 0;
+    .presence-setup {
 
         label {
-            margin-right: 0;
+            font-family: var(--font-secondary);
+        }
+
+        .mic,
+        .cam {
+            align-items: center;
+            background: var(--grey-2);
+            border: 2px solid var(--grey-4);
+            display: flex;
+            margin: var(--space-1) 0;
+            padding: var(--spacer);
+        }
+
+        .c-field-select {
+            padding: 0;
+        }
+
+        .c-field-checkbox {
+            padding-left: 0;
+
+            label {
+                margin-right: 0;
+            }
+        }
+
+        .verify {
+            font-style: italic;
+            font-weight: 600;
+            margin-bottom: var(--space-2);
         }
     }
-
-    .verify {
-        font-style: italic;
-        font-weight: 600;
-        margin-bottom: var(--space-2);
-    }
 }
+
 </style>

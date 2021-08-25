@@ -44,7 +44,7 @@
 
     0%,
     55% {
-        fill: var(--grey-300);
+        fill: var(--grey-4);
         opacity: 0;
     }
 
@@ -63,7 +63,7 @@
     }
 
     100% {
-        fill: var(--grey-400);
+        fill: var(--grey-3);
     }
 }
 
@@ -74,15 +74,15 @@
         opacity: 0.5;
     }
 
-    50% {fill: var(--grey-400);}
+    50% {fill: var(--grey-3);}
     52% {fill: var(--primary-color);}
-    60% {fill: var(--grey-400);}
+    60% {fill: var(--grey-3);}
     65% {fill: var(--primary-color);}
-    70% {fill: var(--grey-400);}
+    70% {fill: var(--grey-3);}
     75% {fill: var(--primary-color);}
-    80% {fill: var(--grey-400);}
+    80% {fill: var(--grey-3);}
     83% {fill: var(--primary-color);}
-    85% {fill: var(--grey-400);}
+    85% {fill: var(--grey-3);}
     87% {fill: var(--primary-color);}
 
     100% {
@@ -92,7 +92,7 @@
 }
 
 .dark {
-    fill: var(--grey-400);
+    fill: var(--grey-3);
 }
 
 .primary {

@@ -59,7 +59,7 @@ export default {
         width: calc(var(--spacer) * 5);
 
         .slider {
-            background-color: var(--grey-400);
+            background-color: var(--grey-3);
             border-radius: calc(var(--spacer) * 2);
             bottom: 0;
             cursor: pointer;
@@ -69,7 +69,7 @@ export default {
             top: 0;
 
             &::before {
-                background: var(--grey-100);
+                background: var(--grey-6);
                 border-radius: 50%;
                 bottom: calc(var(--spacer) / 2);
                 content: "";
@@ -97,7 +97,7 @@ export default {
                 background: var(--primary-color);
 
                 &::before {
-                    background: var(--grey-300);
+                    background: var(--grey-4);
                     transform: translateX(calc(var(--spacer) * 2));
                 }
             }

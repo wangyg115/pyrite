@@ -29,7 +29,7 @@ export default {
     }
 
     .explanation {
-        color: var(--grey-50);
+        color: var(--grey-7);
         font-size: var(--text-small);
         font-style: italic;
     }

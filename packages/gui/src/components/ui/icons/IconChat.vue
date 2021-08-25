@@ -25,11 +25,11 @@ export default {
 
 <style lang="scss">
 .icon-chat-unread-path {
-    color: var(--grey-50);
+    color: var(--grey-7);
 }
 
 .icon-chat-unread-text {
-    color: var(--grey-50);
+    color: var(--grey-7);
     font: 600 9px sans-serif;
 }
 </style>

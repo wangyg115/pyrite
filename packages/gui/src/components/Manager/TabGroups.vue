@@ -1,13 +1,22 @@
 <template>
     <section class="tab-content active">
-        <div v-for="(group, name) in $s.manager.groups" :key="name">
-            {{ name }}
-            {{ group.contact }}
-            {{ group.description }}
-            {{ group.public }}
-            {{ group.op }}
-            {{ group.presenter }}
-            {{ group['max-clients'] }}
+        <div class="table">
+            <div class="header">
+                <div>GROUP NAME</div>
+                <div>DESCRIPTION</div>
+                <div>PUBLIC</div>
+            </div>
+
+            <div v-for="(group, name) in $s.manager.groups" :key="name" class="row">
+                <div>{{ name }}</div>
+                <div>{{ group.description }}</div>
+                <div>{{ group.public }}</div>
+                <!-- <div>{{ group.contact }}</div> -->
+            <!-- <div>{{ group.public }}</div>
+            <div>{{ group.op }}</div>
+            <div>{{ group.presenter }}</div>
+            <div>{{ group['max-clients'] }}</div> -->
+            </div>
         </div>
     </section>
 </template>

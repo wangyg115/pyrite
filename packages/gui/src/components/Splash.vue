@@ -42,7 +42,7 @@ export default {
     }
 
     .propaganda {
-        color: var(--grey-200);
+        color: var(--grey-5);
         font-size: var(--text-large);
         font-weight: 500;
     }

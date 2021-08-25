@@ -262,7 +262,7 @@ export default {
 
 <style lang="scss">
 .c-chat {
-    border-right: var(--border) solid var(--grey-300);
+    border-right: var(--border) solid var(--grey-4);
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -272,14 +272,14 @@ export default {
     width: 350px;
 
     .chat-channels {
-        background: var(--grey-400);
+        background: var(--grey-3);
         display: flex;
         width: 100%;
 
         .chat-channel {
-            background: var(--grey-400);
-            border: var(--border) solid var(--grey-300);
-            color: var(--grey-200);
+            background: var(--grey-3);
+            border: var(--border) solid var(--grey-4);
+            color: var(--grey-5);
             display: flex;
             font-family: var(--font-secondary);
             margin: var(--spacer);
@@ -300,7 +300,7 @@ export default {
             }
 
             &.active {
-                background: var(--grey-300);
+                background: var(--grey-4);
 
                 color: var(--primary-color);
             }
@@ -312,7 +312,7 @@ export default {
     }
 
     .messages {
-        background: var(--grey-500);
+        background: var(--grey-2);
         flex: 1;
 
         overflow-x: hidden;
@@ -338,15 +338,15 @@ export default {
             }
 
             &.command {
-                background: var(--grey-400);
-                color: var(--grey-100);
+                background: var(--grey-3);
+                color: var(--grey-6);
                 font-size: var(--text-small);
             }
 
             &.default {
-                background: var(--grey-300);
+                background: var(--grey-4);
                 border-radius: var(--spacer);
-                color: var(--grey-50);
+                color: var(--grey-7);
             }
 
             &.me {
@@ -355,11 +355,11 @@ export default {
                 padding: 0 calc(var(--spacer) * 2);
 
                 header {
-                    color: var(--grey-100);
+                    color: var(--grey-6);
 
                     .time {
                         align-self: flex-end;
-                        color: var(--grey-200);
+                        color: var(--grey-5);
                     }
                 }
             }
@@ -367,15 +367,15 @@ export default {
     }
 
     .send {
-        background: var(--grey-400);
-        border-top: var(--border) solid var(--grey-300);
+        background: var(--grey-3);
+        border-top: var(--border) solid var(--grey-4);
         display: flex;
         padding-bottom: var(--space-1);
         padding-top: var(--spacer);
 
         button {
             align-items: center;
-            background: var(--grey-500);
+            background: var(--grey-2);
             display: flex;
             height: var(--unit);
             justify-content: center;
@@ -388,8 +388,8 @@ export default {
         }
 
         textarea {
-            background: var(--grey-500);
-            border: var(--border) solid var(--grey-500);
+            background: var(--grey-2);
+            border: var(--border) solid var(--grey-2);
             color: var(--primary-color);
             flex: 1;
             outline: none;
@@ -397,7 +397,7 @@ export default {
             padding: var(--spacer);
 
             &::placeholder {
-                color: var(--grey-200);
+                color: var(--grey-5);
             }
         }
     }

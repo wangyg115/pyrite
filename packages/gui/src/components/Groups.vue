@@ -93,7 +93,7 @@ export default {
             transition: all 0.25s ease-in;
 
             &.active {
-                color: var(--grey-0);
+                color: var(--grey-8);
             }
         }
     }

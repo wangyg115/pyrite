@@ -331,14 +331,14 @@ export default {
 }
 
 .c-stream {
-    background: var(--grey-500);
+    background: var(--grey-2);
     display: flex;
     flex-direction: column;
     justify-items: center;
     position: relative;
 
     video {
-        border: 2px solid var(--grey-400);
+        border: 2px solid var(--grey-3);
         object-fit: cover;
         opacity: 1;
         transition: opacity 0.3s;
@@ -360,7 +360,7 @@ export default {
     .audio-container,
     .loading-container {
         align-items: center;
-        background: var(--grey-600);
+        background: var(--grey-1);
         display: flex;
         height: 100%;
         justify-content: center;
@@ -383,7 +383,7 @@ export default {
     .audio-container {
 
         .icon {
-            color: var(--grey-100);
+            color: var(--grey-6);
         }
     }
 
@@ -395,22 +395,22 @@ export default {
     }
 
     .btn-stream-reports {
-        color: var(--grey-0);
+        color: var(--grey-8);
         filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
         position: absolute;
     }
 
     .stream-bar {
         align-items: center;
-        background: var(--grey-400);
-        border-top: 1px solid var(--grey-300);
+        background: var(--grey-3);
+        border-top: 1px solid var(--grey-4);
         bottom: 0;
         display: flex;
         position: absolute;
         width: 100%;
 
         .soundmeter {
-            background: var(--grey-400);
+            background: var(--grey-3);
             border: 0;
             height: var(--space-3);
             margin: 0;

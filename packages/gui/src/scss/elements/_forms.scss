@@ -1,12 +1,12 @@
 .field {
-    padding: var(--spacer);
+    padding: var(--spacer) 0;
 
     label {
-        color: var(--grey-100);
+        color: var(--grey-9);
     }
 
     .help {
-        color: var(--grey-100);
+        color: var(--grey-6);
         font-size: var(--text-small);
         font-style: italic;
     }

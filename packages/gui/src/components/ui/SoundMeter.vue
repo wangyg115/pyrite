@@ -126,7 +126,7 @@ export default {
 
 <style lang="scss">
 canvas {
-    border: 1px solid var(--grey-200);
+    border: 1px solid var(--grey-5);
     height: var(--spacer);
     margin: var(--spacer);
     width: 100%;

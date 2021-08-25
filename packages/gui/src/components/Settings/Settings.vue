@@ -1,5 +1,8 @@
 <template>
     <div class="c-settings content">
+        <header>
+            <Icon class="item-icon icon-small" name="Settings" />Settings
+        </header>
         <ul class="tabs">
             <RouterLink
                 class="btn btn-menu tab tooltip"
@@ -48,6 +51,10 @@ export default {
 
 <style lang="scss">
 .c-settings {
+
+    header {
+
+    }
 
     .btn-save {
         margin-top: var(--space-1);

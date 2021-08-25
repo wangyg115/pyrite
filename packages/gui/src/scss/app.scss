@@ -5,6 +5,7 @@
 @import "./elements/fonts";
 @import "./elements/forms";
 @import "./elements/presence";
+@import "./elements/table";
 @import "./elements/tabs";
 @import "./elements/tooltip";
 @import "./elements/misc";
@@ -14,7 +15,9 @@
     --sat-u: 75%;
     --sat-d: 30%;
 
-    --primary-color: #21d3ee;
+    --primary-color-h: 200;
+    --primary-color-s: 80%;
+    --primary-color: hsl(var(--primary-color-h), var(--primary-color-s), 65%);
 
     --warning-value: 53.8;
     --warning-color: hsla(var(--warning-value), 20%, var(--sat), 100%);
@@ -26,18 +29,22 @@
     --error-color-u: hsla(var(--error-value), 20%, var(--sat-u), 100%);
     --error-color-d: hsla(var(--error-value), 20%, var(--sat-d), 100%);
 
-    --grey-600: #0f1521;
-    --grey-500: #1a202c;
-    --grey-400: #222835;
-    --grey-300: #292f3b;
-    --grey-200: #667184;
-    --grey-100: #828da1;
-    --grey-50: #cad6eb;
-    --grey-0: #fff;
+    --grey-h: 210;
+    --grey-s: 15%;
+    --grey-1: hsl(var(--grey-h), var(--grey-s), 7%);
+    --grey-2: hsl(var(--grey-h), var(--grey-s), 10%);
+    --grey-3: hsl(var(--grey-h), var(--grey-s), 13%);
+    --grey-4: hsl(var(--grey-h), var(--grey-s), 16%);
+    --grey-5: hsl(var(--grey-h), var(--grey-s), 20%);
+
+    --grey-6: hsl(var(--grey-h), var(--grey-s), 50%);
+    --grey-7: hsl(var(--grey-h), var(--grey-s), 60%);
+    --grey-8: hsl(var(--grey-h), var(--grey-s), 65%);
+    --grey-9: hsl(var(--grey-h), var(--grey-s), 80%);
+    --grey-10: hsl(var(--grey-h), var(--grey-s), 89%);
 
     --shadow: 0 0 6px rgba(0, 0, 0, 0.5);
-    background: var(--grey-500);
-    color: var(--grey-100);
+    color: var(--grey-6);
 }
 
 ::-webkit-scrollbar {
@@ -110,5 +117,5 @@ button {
 
 ::selection {
     background: var(--primary-color);
-    color: var(--grey-0);
+    color: var(--grey-5);
 }
