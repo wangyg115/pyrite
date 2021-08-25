@@ -1,17 +1,20 @@
 <template>
-    <div v-if="$s.manager.authenticated" class="c-manager content">
+    <div v-if="$s.manager.authenticated" class="c-dashboard content">
+        <header>
+            <Icon class="item-icon icon-small" name="Dashboard" />Dashboard
+        </header>
         <ul class="tabs">
             <RouterLink
                 class="btn btn-menu tab tooltip"
                 :data-tooltip="$t('miscellaneous')"
-                :to="{name: 'manager', params: {tabId: 'groups'}}"
+                :to="{name: 'dashboard', params: {tabId: 'groups'}}"
             >
                 <Icon class="icon-small" name="Group" />
             </RouterLink>
             <RouterLink
                 class="btn btn-menu tab tooltip"
                 :data-tooltip="$t('devices')"
-                :to="{name: 'manager', params: {tabId: 'recordings'}}"
+                :to="{name: 'dashboard', params: {tabId: 'recordings'}}"
             >
                 <Icon class="icon-small" name="Record" />
             </RouterLink>
@@ -20,16 +23,16 @@
         <TabGroups v-if="$route.params.tabId === 'groups'" />
         <TabRecordings v-else-if="$route.params.tabId === 'recordings'" />
     </div>
-    <ManagerLogin v-else />
+    <DashboardLogin v-else />
 </template>
 
 <script>
-import ManagerLogin from './ManagerLogin.vue'
+import DashboardLogin from './Login.vue'
 import TabGroups from './TabGroups.vue'
 import TabRecordings from './TabRecordings.vue'
 
 export default {
-    components: {ManagerLogin, TabGroups, TabRecordings},
+    components: {DashboardLogin, TabGroups, TabRecordings},
     methods: {
 
     },

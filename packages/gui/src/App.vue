@@ -1,6 +1,6 @@
 <template>
     <div
-        class="c-app theme theme-dark"
+        class="c-app theme-dark"
         :class="{connected: $s.group.connected, 'chat-hidden': $s.chat.hidden, 'chat-toggle': chatToggle}"
     >
         <div class="presence">
@@ -11,6 +11,14 @@
                 <div v-else class="logo no-back-link">
                     <Icon class="icon" name="Logo" />PYRITE
                 </div>
+
+                <RouterLink
+                    class="btn tooltip btn-dashboard" :class="{active: $route.name === 'dashboard'}"
+                    :data-tooltip="$t('dashboard')"
+                    :to="{name: 'dashboard', params: {tabId: 'groups'}}"
+                >
+                    <Icon class="icon-small" name="Dashboard" />
+                </RouterLink>
 
                 <div class="version">
                     {{ version }}
@@ -93,28 +101,35 @@ export default {
     height: 100vh;
     overflow: hidden;
 
-    header {
+    .presence {
 
-        .logo {
+        header {
             align-items: center;
-            color: var(--primary-color);
             display: flex;
-            font-family: var(--font-secondary);
-            justify-content: center;
+            justify-content: space-between;
 
-            &.no-back-link:hover {
-                cursor: not-allowed;
+            .logo {
+                align-items: center;
+                color: var(--primary-color);
+                display: flex;
+                font-family: var(--font-secondary);
+                justify-content: center;
+
+                &.no-back-link:hover {
+                    cursor: not-allowed;
+                }
+
+                .icon {
+                    height: 50px;
+                    transform: scale(1.25);
+                    width: 50px;
+                }
             }
 
-            .icon {
-                height: 50px;
-                transform: scale(1.25);
-                width: 50px;
+            .version {
+                font-family: var(--font-secondary);
+                font-style: italic;
             }
-        }
-
-        .version {
-            font-family: var(--font-secondary);
         }
     }
 

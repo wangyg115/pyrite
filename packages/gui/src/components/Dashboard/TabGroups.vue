@@ -2,9 +2,9 @@
     <section class="tab-content active">
         <div class="table">
             <div class="header">
-                <div>GROUP NAME</div>
-                <div>DESCRIPTION</div>
-                <div>PUBLIC</div>
+                <div>{{ $t('group name') }}</div>
+                <div>{{ $t('description') }}</div>
+                <div>{{ $t('public') }}</div>
             </div>
 
             <div v-for="(group, name) in $s.manager.groups" :key="name" class="row">

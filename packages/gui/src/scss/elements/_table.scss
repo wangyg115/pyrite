@@ -24,12 +24,19 @@
             background: var(--grey-3);
 
             &:hover {
-                background: var(--grey-3);
+                background: var(--primary-color);
+                color: var(--grey-1);
+                cursor: pointer;
             }
         }
 
         &:nth-child(odd) {
             background: var(--grey-4);
+
+            &:hover {
+                background: var(--primary-color);
+                color: var(--grey-1);
+            }
         }
     }
 }

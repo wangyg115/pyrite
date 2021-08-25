@@ -1,6 +1,5 @@
 .content {
     background: var(--grey-3);
-    border-right: var(--border) solid var(--grey-3);
     display: flex;
     flex-direction: column;
     max-width: 600px;
@@ -8,7 +7,6 @@
     header {
         align-items: center;
         background: var(--grey-1);
-        border-bottom: var(--border) solid var(--grey-4);
         color: var(--primary-color);
         display: flex;
         font-family: var(--font-secondary);
