@@ -1,6 +1,9 @@
 <template>
     <div class="c-field-checkbox field">
-        <div class="row">
+        <div class="checkbox-row">
+            <div class="field-label">
+                {{ label }}
+            </div>   
             <label class="switch" :class="elementclass" :for="name">
                 <input
                     :id="name"
@@ -13,9 +16,6 @@
                 >
                 <span class="slider" />
             </label>
-            <div class="field-label">
-                {{ label }}
-            </div>
         </div>
         <div v-if="help && !invalidFieldValue" class="help">
             {{ help }}
@@ -46,7 +46,7 @@ export default {
 <style lang="scss">
 .c-field-checkbox {
 
-    .row {
+    .checkbox-row {
         align-items: center;
         display: flex;
     }

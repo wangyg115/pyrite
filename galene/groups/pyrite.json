@@ -1,10 +1,14 @@
 {
   "description": "Pyrite FAQ & Support",
   "contact": "someone@pyrite.video",
+  "comment": "Only for Pyrite developers",
   "public": true,
   "op": [{"username": "pyrite", "password": "1234"}],
   "presenter": [{}],
   "max-clients": 10,
+  "max-history-age": 14400,
   "allow-recording": true,
-  "allow-subgroups": true
+  "allow-subgroups": true,
+  "autolock": true,
+  "autokick": false
 }

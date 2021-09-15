@@ -12,8 +12,19 @@
         font-family: var(--font-secondary);
         font-weight: 600;
         height: var(--space-4);
+        justify-content: space-between;
         padding: var(--space-1);
         text-transform: uppercase;
+
+        .title {
+            align-items: center;
+            display: flex;
+        }
+
+        .actions {
+            align-self: flex-end;
+            background: #f00;
+        }
 
         svg {
             color: var(--primary-color);

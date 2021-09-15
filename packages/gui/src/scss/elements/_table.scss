@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
 
-    > div {
+    .header,.row .default-fields {
         padding: var(--spacer);
         div:first-child {flex: 0.5;}
         div:nth-child(2) {flex: 1;}
@@ -16,26 +16,79 @@
         width: 100%;
     }
 
-    .row {
+    > .row {
         display: flex;
+        flex-direction: column;
         width: 100%;
 
-        &:nth-child(even) {
-            background: var(--grey-3);
+        .row-form {
+            display: none;
+            padding: 0 var(--spacer);
 
-            &:hover {
-                background: var(--primary-color);
-                color: var(--grey-1);
-                cursor: pointer;
+            .field {
+                display: flex;
+                flex-direction: row;
+
+                .field-label {
+                    width: 150px;
+                }
             }
         }
 
+        &:hover {            
+            cursor: pointer;
+        }
+
+        .default-fields {
+            display: flex;
+            padding: var(--spacer);
+        }
+
         &:nth-child(odd) {
-            background: var(--grey-4);
+
+            .default-fields {
+                background: var(--grey-4);    
+                           
+                &:hover {
+                    background: var(--primary-color);
+                    color: var(--grey-1);
+                }
+            }
+
+        }   
+
+        &:nth-child(even) {
+
+            .default-fields {
+                background: var(--grey-3);
+
+                &:hover {
+                    background: var(--primary-color);
+                    color: var(--grey-1);                
+                }
+            }
+        }
+
+
+        &.active {
+            color: var(--grey-6) !important;
+
+            .default-fields {
+                background: var(--primary-color);
+                color: var(--grey-3);
+            }
+
+            .row-form {
+                background: var(--grey-3);
+                border: 1px solid var(--primary-color);
+                display: block;
+                // height: 90vh;
+                position: absolute;
+                top: 50%;
+            }
 
             &:hover {
-                background: var(--primary-color);
-                color: var(--grey-1);
+                background: var(--grey-3);
             }
         }
     }

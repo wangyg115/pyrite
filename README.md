@@ -13,13 +13,15 @@ video conferencing solution (SFU) based on [Vue](https://v3.vuejs.org/) & [Pion]
   git clone git@github.com:garage44/pyrite.git
   cd pyrite
   npm i
-  # Start Galène
+  # Start Galène SFU
   npm run galene
-  # Start the Pyrite frontend
-  npm run dev
+  # Start Pyrite frontend
+  npm run dev --workspace=packages/gui
+  # Start Pyrite backend
+  npm run dev --workspace=packages/manager
   ```
 
-[Open a browser](http://localhost:3000) and login to the pyrite channel
+[Open a browser](http://localhost:3000) & login to the pyrite channel
 as Operator (`pyrite`/`1234`). Open another browser on the same machine
 using a fake webcam device:
 

@@ -9,6 +9,7 @@
         "function-calc-no-unspaced-operator": true,
         "string-quotes": "double",
         "no-duplicate-selectors": true,
+        "no-descending-specificity": null,
         "color-hex-case": "lower",
         "color-named": "never",
         "selector-max-id": 0,

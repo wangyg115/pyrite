@@ -53,8 +53,8 @@
 
 <script>
 import {nextTick} from 'vue'
-import Sound from '../../js/lib/sound'
-import SoundMeter from '../ui/SoundMeter.vue'
+import Sound from '@/js/lib/sound'
+import SoundMeter from '../SoundMeter.vue'
 import Stream from '../Stream.vue'
 
 export default {

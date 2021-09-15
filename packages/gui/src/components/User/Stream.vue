@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import SoundMeter from './ui/SoundMeter.vue'
+import SoundMeter from './SoundMeter.vue'
 import StreamReports from './StreamReports.vue'
 
 export default {

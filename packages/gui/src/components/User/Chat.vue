@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import commands from '../js/commands'
+import commands from '@/js/commands'
 import {nextTick} from 'vue'
 
 export default {

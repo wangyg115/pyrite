@@ -1,5 +1,5 @@
 <template>
-    <section class="tab-content active">
+    <section class="c-dashboard-recordings active">
         RECORDINGS
     </section>
 </template>

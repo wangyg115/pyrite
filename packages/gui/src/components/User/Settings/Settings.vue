@@ -2,6 +2,14 @@
     <div class="c-settings content">
         <header>
             <Icon class="item-icon icon-small" name="Settings" />Settings
+            <div class="actions">
+                <button
+                    class="btn btn-login"
+                    @click="saveSettings"
+                >
+                    {{ $t('Save Settings') }}
+                </button>
+            </div>
         </header>
         <ul class="tabs">
             <RouterLink
@@ -22,13 +30,6 @@
 
         <TabMisc v-if="$route.params.tabId === 'misc'" />
         <TabDevices v-else-if="$route.params.tabId === 'devices'" />
-
-        <button
-            class="btn btn-widget btn-login"
-            @click="saveSettings"
-        >
-            {{ $t('Save Settings') }}
-        </button>
     </div>
 </template>
 

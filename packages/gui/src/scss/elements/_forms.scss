@@ -1,7 +1,7 @@
 .field {
     padding: var(--spacer) 0;
 
-    label {
+    label,.field-label {
         color: var(--grey-9);
     }
 

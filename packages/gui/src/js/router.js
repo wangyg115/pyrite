@@ -1,19 +1,33 @@
-import Dashboard from '../components/Dashboard/Dashboard.vue'
-import Login from '../components/Login.vue'
-import Settings from '../components/Settings/Settings.vue'
-import Splash from '../components/Splash.vue'
-import StreamView from '../components/StreamView.vue'
+import ManagerApp from '../components/Manager/App.vue'
+import ManagerGroup from '../components/Manager/Group.vue'
+import ManagerGroups from '../components/Manager/Groups.vue'
+import ManagerRecordings from '../components/Manager/Recordings.vue'
+
+import UserLogin from '../components/User/Login.vue'
+import UserSettings from '../components/User/Settings/Settings.vue'
+import UserSplash from '../components/User/Splash.vue'
+import UserStreamView from '../components/User/StreamView.vue'
 import {createRouter, createWebHistory} from 'vue-router'
 
 export default function(app) {
     const routes = [
         {
-            component: Dashboard,
-            name: 'dashboard',
-            path: '/dashboard/:tabId',
+            component: ManagerGroups,
+            name: 'dashboard-groups',
+            path: '/manager/groups',
         },
         {
-            component: Settings,
+            component: ManagerGroup,
+            name: 'dashboard-groups-group',
+            path: '/manager/groups/:groupid',
+        },
+        {
+            component: ManagerRecordings,
+            name: 'dashboard-recordings',
+            path: '/manager/recordings',
+        },
+        {
+            component: UserSettings,
             name: 'settings',
             path: '/settings/:tabId',
         },
@@ -29,7 +43,7 @@ export default function(app) {
             },
         },
         {
-            component: Splash,
+            component: UserSplash,
             name: 'splash',
             path: '/',
         },
@@ -45,12 +59,12 @@ export default function(app) {
             },
         },
         {
-            component: StreamView,
+            component: UserStreamView,
             name: 'groupsConnected',
             path: '/groups/:groupId',
         },
         {
-            component: Login,
+            component: UserLogin,
             name: 'groupsDisconnected',
             path: '/groups/:groupId/login',
         },

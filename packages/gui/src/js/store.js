@@ -23,7 +23,7 @@ const persistantState = reactive({
     loading: true,
     manager: {
         authenticated: null,
-        groups: {},
+        groups: [],
     },
     media: {
         accept: {id: 'everything', name: 'Everything'},

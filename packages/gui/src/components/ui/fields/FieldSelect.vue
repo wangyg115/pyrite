@@ -1,6 +1,6 @@
 <template>
     <div v-click-outside="toggleSelect.bind(this)" class="c-field-select field">
-        <label :for="name">{{ label }}</label>
+        <label class="field-label" :for="name">{{ label }}</label>
 
         <div class="input-container">
             <div class="button-wrapper">

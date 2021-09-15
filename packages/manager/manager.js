@@ -70,9 +70,11 @@ app.get('/api/groups', async function(req, res) {
 
     const fileData = await Promise.all(files.map((i) => fs.promises.readFile(i, 'utf8')))
     const groupNames = files.map((i) => i.replace(groupsDir, '').replace('.json', ''))
-    const groupData = {}
+    const groupData = []
     for (const [index, groupName] of groupNames.entries()) {
-        groupData[groupName] = JSON.parse(fileData[index])
+        const data = JSON.parse(fileData[index])
+        data.name = groupName
+        groupData.push(data)
     }
     // Keep Galene in sync with the group data.
     await Promise.all(groupNames.map((i) => fetch(`${galeneEndpoint}/group/${i}`)))
@@ -95,3 +97,4 @@ app.get('/manager/groups/:groupname/delete', async function(req, res) {
     await fetch(`${galeneEndpoint}/group/${groupName}`)
     res.end(JSON.stringify({status: 'ok'}))
 })
+
