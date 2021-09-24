@@ -35,6 +35,8 @@
     }
 
     section {
+        height: calc(100vh - var(--space-4));
+        overflow-y: scroll;
         padding: var(--space-1);
     }
 

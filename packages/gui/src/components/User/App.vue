@@ -7,9 +7,7 @@
         }"
     >
         <Header>
-            <template #default>
-                <Users v-if="$s.group.connected" /><Groups v-else />
-            </template>
+            <Users v-if="$s.group.connected" /><Groups v-else />
         </Header>
 
         <GeneralControls />

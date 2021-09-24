@@ -126,18 +126,19 @@ export default {
             display: flex;
             margin: var(--space-1) 0;
             padding: var(--spacer);
+
+            .c-field-checkbox {
+                padding-left: 0;
+                padding-right: var(--spacer);
+
+                label {
+                    margin-right: 0;
+                }
+            }
         }
 
         .c-field-select {
             padding: 0;
-        }
-
-        .c-field-checkbox {
-            padding-left: 0;
-
-            label {
-                margin-right: 0;
-            }
         }
 
         .verify {

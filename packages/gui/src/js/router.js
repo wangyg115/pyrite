@@ -1,6 +1,5 @@
 import ManagerApp from '../components/Manager/App.vue'
 import ManagerGroup from '../components/Manager/Group.vue'
-import ManagerGroups from '../components/Manager/Groups.vue'
 import ManagerRecordings from '../components/Manager/Recordings.vue'
 
 import UserApp from '../components/User/App.vue'
@@ -21,8 +20,8 @@ export default function(app) {
                 },
                 {
                     component: ManagerGroup,
-                    name: 'manager-groups-group',
-                    path: '/manager/groups/:groupid',
+                    name: 'manager-group',
+                    path: '/manager/groups/:groupId',
                 },
                 {
                     component: ManagerRecordings,

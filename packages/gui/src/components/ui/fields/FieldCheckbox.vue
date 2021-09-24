@@ -3,7 +3,7 @@
         <div class="checkbox-row">
             <div class="field-label">
                 {{ label }}
-            </div>   
+            </div>
             <label class="switch" :class="elementclass" :for="name">
                 <input
                     :id="name"
@@ -47,61 +47,71 @@ export default {
 .c-field-checkbox {
 
     .checkbox-row {
-        align-items: center;
+        align-items: flex-start;
         display: flex;
-    }
+        flex-direction: column;
 
-    label.switch {
-        height: calc(var(--spacer) * 3);
-        margin-right: var(--spacer);
-        position: relative;
-        user-select: none;
-        width: calc(var(--spacer) * 5);
-
-        .slider {
-            background-color: var(--grey-3);
-            border-radius: calc(var(--spacer) * 2);
-            bottom: 0;
-            cursor: pointer;
-            left: 0;
-            position: absolute;
-            right: 0;
-            top: 0;
-
-            &::before {
-                background: var(--grey-6);
-                border-radius: 50%;
-                bottom: calc(var(--spacer) / 2);
-                content: "";
-                height: calc(var(--spacer) * 2);
-                left: calc(var(--spacer) / 2);
-                position: absolute;
-                transition: 0.4s;
-                width: calc(var(--spacer) * 2);
-            }
+        .field-label {
+            margin: var(--spacer) 0;
         }
 
-        input {
-            height: 0;
-            opacity: 0;
-            width: 0;
+        label.switch {
+            height: calc(var(--spacer) * 3);
+            margin-right: var(--spacer);
+            position: relative;
+            user-select: none;
+            width: calc(var(--spacer) * 5);
 
-            + .slider {
-
-                svg {
-                    transition: all 0.5s ease-in-out;
-                }
-            }
-
-            &:checked + .slider {
-                background: var(--primary-color);
+            .slider {
+                background-color: var(--grey-3);
+                border-radius: calc(var(--spacer) * 2);
+                bottom: 0;
+                cursor: pointer;
+                left: 0;
+                position: absolute;
+                right: 0;
+                top: 0;
 
                 &::before {
-                    background: var(--grey-4);
-                    transform: translateX(calc(var(--spacer) * 2));
+                    background: var(--grey-6);
+                    border-radius: 50%;
+                    bottom: calc(var(--spacer) / 2);
+                    content: "";
+                    height: calc(var(--spacer) * 2);
+                    left: calc(var(--spacer) / 2);
+                    position: absolute;
+                    transition: 0.4s;
+                    width: calc(var(--spacer) * 2);
+                }
+            }
+
+            input {
+                height: 0;
+                opacity: 0;
+                width: 0;
+
+                + .slider {
+
+                    svg {
+                        transition: all 0.5s ease-in-out;
+                    }
+                }
+
+                &:checked + .slider {
+                    background: var(--primary-color);
+
+                    &::before {
+                        background: var(--grey-4);
+                        transform: translateX(calc(var(--spacer) * 2));
+                    }
                 }
             }
         }
+
+    }
+
+    .help {
+        margin-top: var(--spacer);
     }
 
     .field-label {

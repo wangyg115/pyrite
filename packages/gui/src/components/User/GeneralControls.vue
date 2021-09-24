@@ -69,6 +69,8 @@ export default {
     justify-content: space-between;
 
     .btn-logout {
+        // Keep some addition space between the other buttons
+        // to avoid accidental logouts.
         margin-top: var(--space-1);
     }
 }

@@ -6,7 +6,7 @@
             <RouterLink
                 class="name"
                 :class="{active: $s.group.name === group.name}"
-                :to="{name: 'manager-groups-group', params: {groupid: group.name}}"
+                :to="{name: 'manager-group', params: {groupId: group.name}}"
             >
                 {{ group.name }}
             </Routerlink>
