@@ -32,8 +32,17 @@
     }
 }
 
+.tabs-content {
+    display: flex;
+
+    .actions {
+        background: var(--grey-2);
+    }
+}
+
 .tab-content {
     display: none;
+    flex: 1;
     height: calc(100vh - var(--space-4) * 2);
     overflow-y: scroll;
 

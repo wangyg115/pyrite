@@ -1,23 +1,15 @@
 <template>
-    <section class="c-dashboard-groups tab-content active">
-        <div class="table">
-            <div class="header">
-                <div>{{ $t('group name') }}</div>
-                <div>{{ $t('description') }}</div>
-                <div>{{ $t('public') }}</div>
-            </div>
-
+    <section class="c-groups-dashboard">
+        <div v-for="group of $s.manager.groups" :key="group.name" class="group item">
+            <Icon v-if="!group.locked" class="item-icon icon-small" name="Group" />
+            <Icon v-else class="item-icon icon-small" name="GroupLocked" />
             <RouterLink
-                v-for="(group, name) in $s.manager.groups" :key="name"
-                class="row"
-                :to="{name: 'dashboard-groups-group', params: {groupid: group.name}}"
+                class="name"
+                :class="{active: $s.group.name === group.name}"
+                :to="{name: 'manager-groups-group', params: {groupid: group.name}}"
             >
-                <div class="default-fields">
-                    <div>{{ group.name }}</div>
-                    <div>{{ group.description }}</div>
-                    <div>{{ group.public }}</div>
-                </div>
-            </RouterLink>
+                {{ group.name }}
+            </Routerlink>
         </div>
     </section>
 </template>
@@ -41,7 +33,7 @@ export default {
     },
     methods: {
         selectGroup(group) {
-           
+
             if (!group || this.selected === group.name) {
                 this.selected = null
             } else {

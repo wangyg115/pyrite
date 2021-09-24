@@ -1,6 +1,7 @@
 <template>
-    <ManagerApp v-if="$route.name && $route.name.startsWith('dashboard')" />
-    <UserApp v-else />
+    <RouterView />
+    <!-- <ManagerApp v-if="$route.name && $route.name.startsWith('manager')" />
+    <UserApp v-else /> -->
     <Notifications />
 </template>
 
@@ -14,3 +15,14 @@ export default {
 
 }
 </script>
+
+<style lang="scss">
+.app {
+    align-items: stretch;
+    background: var(--grey-1);
+    display: grid;
+    grid-template-columns: 300px var(--space-4) 1fr;
+    height: 100vh;
+    overflow: hidden;
+}
+</style>

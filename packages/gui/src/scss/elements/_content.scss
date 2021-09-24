@@ -14,26 +14,41 @@
         height: var(--space-4);
         justify-content: space-between;
         padding: var(--space-1);
+        padding-right: calc(var(--spacer) * 1.5);
         text-transform: uppercase;
 
         .title {
             align-items: center;
             display: flex;
+
+
+            span {
+                padding-right: calc(var(--spacer) * 2.5);
+            }
+
+            svg {
+                color: var(--primary-color);
+            }
         }
 
-        .actions {
-            align-self: flex-end;
-            background: #f00;
-        }
 
-        svg {
-            color: var(--primary-color);
-            margin-right: var(--spacer);
-        }
     }
 
     section {
         padding: var(--space-1);
+    }
+
+    .panels {
+        display: flex;
+        flex: 1;
+
+        section {
+            flex: 1;
+        }
+
+        .actions {
+            background: var(--grey-2);
+        }
     }
 
 }

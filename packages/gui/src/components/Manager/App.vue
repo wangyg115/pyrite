@@ -1,5 +1,9 @@
 <template>
-    <div class="c-manager-app theme-dark">
+    <div class="c-manager-app app theme-dark">
+        <Header>
+            <ManagerGroups />
+        </Header>
+
         <Controls />
         <Login v-if="$s.manager.authenticated" />
 
@@ -9,20 +13,23 @@
 
 <script>
 import Controls from './Controls.vue'
+import Header from '../Header.vue'
 import Login from './Login.vue'
+import ManagerGroups from './Groups.vue'
 
 export default {
-    components: {Controls, Login},
+    components: {Controls, Header, Login, ManagerGroups},
+    data() {
+        return {
+            version: import.meta.env.VITE_VERSION,
+        }
+    },
 }
 </script>
 
 <style lang="scss">
 .c-manager-app {
-    align-items: stretch;
-    background: var(--grey-1);
-    display: grid;
-    grid-template-columns: var(--space-4) 1fr;
-    height: 100vh;
-    overflow: hidden;
+    --primary-color-h: 0;
+    --primary-color-s: 40%;
 }
 </style>

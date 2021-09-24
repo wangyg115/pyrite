@@ -27,7 +27,7 @@ export default function() {
                     source: 'You muted the microphone of Participant {target}',
                     target: 'Your microphone was muted by Operator {source}',
                 },
-                notify: {
+                notification: {
                     level: 'info',
                     source: 'Notification sent to Participant {target}: {message}',
                     target: 'Incoming notification from Operator {source}',

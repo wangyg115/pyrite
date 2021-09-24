@@ -331,6 +331,7 @@ export default {
                 font-size: var(--text-small);
                 font-weight: 600;
                 justify-content: space-between;
+                margin-bottom: var(--spacer);
 
                 .time {
                     font-size: var(--text-tiny);

@@ -1,16 +1,5 @@
 <template>
     <section class="c-groups">
-        <div class="group group-input item">
-            <FieldText
-                v-model="$s.group.name"
-                class="custom-group"
-                :help="$t('For unlisted groups')"
-                name="group"
-                placeholder="..."
-                @focus="updateRoute"
-            />
-        </div>
-
         <div v-for="group of groups" :key="group.name" class="group item">
             <Icon v-if="!group.locked" class="item-icon icon-small" name="Group" />
             <Icon v-else class="item-icon icon-small" name="GroupLocked" />
@@ -22,6 +11,16 @@
                 {{ group.clientCount }}
                 <Icon class="icon-small" name="User" />
             </div>
+        </div>
+        <div class="group group-input item">
+            <FieldText
+                v-model="$s.group.name"
+                class="custom-group"
+                :help="$t('For unlisted groups')"
+                name="group"
+                placeholder="..."
+                @focus="updateRoute"
+            />
         </div>
     </section>
 </template>

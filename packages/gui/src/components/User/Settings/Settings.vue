@@ -1,14 +1,10 @@
 <template>
     <div class="c-settings content">
         <header>
-            <Icon class="item-icon icon-small" name="Settings" />Settings
-            <div class="actions">
-                <button
-                    class="btn btn-login"
-                    @click="saveSettings"
-                >
-                    {{ $t('Save Settings') }}
-                </button>
+            <div class="notice" />
+            <div class="title">
+                <span>{{ $t('settings') }}</span>
+                <Icon class="item-icon icon-regular" name="Settings" />
             </div>
         </header>
         <ul class="tabs">
@@ -28,8 +24,20 @@
             </RouterLink>
         </ul>
 
-        <TabMisc v-if="$route.params.tabId === 'misc'" />
-        <TabDevices v-else-if="$route.params.tabId === 'devices'" />
+        <div class="tabs-content">
+            <TabMisc v-if="$route.params.tabId === 'misc'" />
+            <TabDevices v-else-if="$route.params.tabId === 'devices'" />
+
+            <div class="actions">
+                <button
+                    class="btn btn-menu tooltip tooltip-left"
+                    :data-tooltip="$t('save settings')"
+                    @click="saveSettings"
+                >
+                    <Icon class="icon-small" name="Save" />
+                </button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -44,22 +52,8 @@ export default {
             app.i18n.global.locale = this.$s.language.id
             app.logger.debug(`settings language to ${this.$s.language.id}`)
             app.store.save()
-            app.notifier.notify({level: 'info', message: this.$t('Settings stored')})
+            app.notifier.notify({level: 'info', message: this.$t('Settings saved')})
         },
     },
 }
 </script>
-
-<style lang="scss">
-.c-settings {
-
-    header {
-
-    }
-
-    .btn-save {
-        margin-top: var(--space-1);
-    }
-}
-
-</style>

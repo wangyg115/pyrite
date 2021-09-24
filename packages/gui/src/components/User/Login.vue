@@ -1,79 +1,81 @@
 <template>
     <div class="c-login content">
         <header>
-            <Icon class="item-icon icon-small" name="Login" />{{ $t('Join Group') }}: {{ $route.params.groupId }}
+            <div class="notice">
+                <Hint v-if="$s.group.locked" class="field" :text="$t('Only maintainers may login locked groups')" />
+            </div>
+            <div class="title">
+                <span>{{ $route.params.groupId }}</span>
+                <Icon class="icon icon-regular" :name="$s.group.locked ? 'GroupLocked' : 'Group'" />
+            </div>
         </header>
-        <section>
-            <Hint v-if="$s.group.locked" class="field" :text="$t('This group is currently locked. Only maintainers may login.')" />
-            <form>
-                <FieldText
-                    v-model="$s.user.username"
-                    autocomplete="username"
-                    :label="$t('Username')"
-                    name="username"
-                    placeholder="Alice, Bob, Carol..."
-                />
+        <div class="panels">
+            <section>
+                <form>
+                    <FieldText
+                        v-model="$s.user.username"
+                        autocomplete="username"
+                        :label="$t('Username')"
+                        name="username"
+                        placeholder="Alice, Bob, Carol..."
+                    />
 
-                <FieldText
-                    v-model="$s.user.password"
-                    autocomplete="password"
-                    :label="$t('Password')"
-                    name="pasword"
-                    placeholder="Alice, Bob, Carol..."
-                    type="password"
-                />
+                    <FieldText
+                        v-model="$s.user.password"
+                        autocomplete="password"
+                        :label="$t('Password')"
+                        name="pasword"
+                        placeholder="Alice, Bob, Carol..."
+                        type="password"
+                    />
 
-                <div class="field presence-setup">
-                    <label>{{ $t('Presence') }}</label>
-                    <div class="cam">
-                        <FieldCheckbox v-model="$s.devices.cam.enabled" />
-                        <FieldSelect
-                            v-model="$s.devices.cam.selected"
-                            :disabled="!$s.devices.cam.enabled"
-                            :help="$t('Select the camera device')"
-                            :label="$t('Camera')"
-                            name="video"
-                            :options="$s.devices.cam.options"
-                        />
+                    <div class="field presence-setup">
+                        <label>{{ $t('Presence') }}</label>
+                        <div class="cam">
+                            <FieldCheckbox v-model="$s.devices.cam.enabled" />
+                            <FieldSelect
+                                v-model="$s.devices.cam.selected"
+                                :disabled="!$s.devices.cam.enabled"
+                                :help="$t('Select the camera device')"
+                                :label="$t('Camera')"
+                                name="video"
+                                :options="$s.devices.cam.options"
+                            />
+                        </div>
+
+                        <div class="mic">
+                            <FieldCheckbox v-model="$s.devices.mic.enabled" />
+                            <FieldSelect
+                                v-model="$s.devices.mic.selected"
+                                :disabled="!$s.devices.mic.enabled"
+                                :help="$t('Select the microphone device')"
+                                :label="$t('Microphone')"
+                                name="audio"
+                                :options="$s.devices.mic.options"
+                            />
+                        </div>
+                        <div class="verify">
+                            <RouterLink
+                                :to="{name: 'settings', params: {tabId: 'devices'}}"
+                            >
+                                Verify
+                            </RouterLink>
+                            {{ $t('microphone & camera settings') }}
+                        </div>
                     </div>
-
-                    <div class="mic">
-                        <FieldCheckbox v-model="$s.devices.mic.enabled" />
-                        <FieldSelect
-                            v-model="$s.devices.mic.selected"
-                            :disabled="!$s.devices.mic.enabled"
-                            :help="$t('Select the microphone device')"
-                            :label="$t('Microphone')"
-                            name="audio"
-                            :options="$s.devices.mic.options"
-                        />
-                    </div>
-                    <div class="verify">
-                        <RouterLink
-                            :to="{name: 'settings', params: {tabId: 'devices'}}"
-                        >
-                            Verify
-                        </RouterLink>
-                        {{ $t('microphone & camera settings') }}
-                    </div>
-                </div>
-            </form>
-
-            <button
-                id="connectbutton"
-                class="btn btn-widget"
-                :class="{warning: $s.group.locked}"
-                :disabled="connecting"
-                @click="login"
-            >
-                <template v-if="$s.group.locked">
-                    {{ $t('join locked group') }}
-                </template>
-                <template v-else>
-                    {{ $t('join group') }}
-                </template>
-            </button>
-        </section>
+                </form>
+            </section>
+            <div class="actions">
+                <button
+                    class="btn btn-menu tooltip tooltip-left"
+                    :data-tooltip="$s.group.locked ? $t('join locked group') : $t('join group')"
+                    :disabled="connecting"
+                    @click="login"
+                >
+                    <Icon class="icon-small" name="Login" />
+                </button>
+            </div>
+        </div>
     </div>
 </template>
 

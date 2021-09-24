@@ -37,10 +37,15 @@
     &.btn-menu {
         border-bottom: var(--border) solid transparent;
         border-top: var(--border) solid transparent;
-        color: var(--grey-6);
+        color: var(--grey-8);
         height: var(--space-4);
         position: relative;
+
         width: var(--space-4);
+
+        svg {
+            transition: 0.35s -webkit-filter ease-out;
+        }
 
         &.compact {
             height: auto;
@@ -85,8 +90,12 @@
         }
 
         &.active {
-            border-bottom: var(--border) solid var(--primary-color);
             color: var(--primary-color);
+
+            svg {
+                // Bring the active icon a bit to the front:
+                filter: drop-shadow( 4px 4px 2px hsl(var(--grey-h), var(--grey-s), 3%));
+            }
         }
     }
 

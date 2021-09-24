@@ -38,6 +38,7 @@ import IconPlay from './IconPlay.vue'
 import IconPresent from './IconPresent.vue'
 import IconRecord from './IconRecord.vue'
 import IconRefresh from './IconRefresh.vue'
+import IconSave from './IconSave.vue'
 import IconScreenShare from './IconScreenShare.vue'
 import IconSend from './IconSend.vue'
 import IconSettings from './IconSettings.vue'
@@ -79,6 +80,7 @@ export default {
         IconPresent,
         IconRecord,
         IconRefresh,
+        IconSave,
         IconScreenShare,
         IconSend,
         IconSettings,
