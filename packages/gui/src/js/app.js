@@ -22,7 +22,7 @@ class Pyrite extends EventEmitter {
 
         this.animate = animate
         this.env = env
-        this.router = router(this)
+
         this.protocol = protocol
 
         this.logger.debug('loading store')
@@ -41,18 +41,8 @@ class Pyrite extends EventEmitter {
 
         this.$t = this.i18n.global.t
         this.notifier = Notifier(this)
-        this.router.beforeResolve((to, from, next) => {
-            if (!this.$s.group.connected) {
-                // Navigating groups will change the internally used groupId;
-                // but only when not connected to a group already.
-                if (to.name === 'groupsDisconnected') {
-                    this.$s.group.name = to.params.groupId
-                }
-            }
-            next()
-        })
 
-        this.managerContext()
+        this.init()
     }
 
     async addFileMedia(file) {
@@ -302,6 +292,31 @@ class Pyrite extends EventEmitter {
         }
 
         return this.localStream
+    }
+
+    async init() {
+        await this.managerContext()
+        this.router = router(this)
+        this.router.beforeResolve((to, from, next) => {
+            // All manager routes are authenticated.
+            if ((to.name && to.name !== 'manager-login' && to.name.startsWith('manager')) && !this.$s.manager.authenticated) {
+                console.log("BLA")
+                next({name: 'manager-login'})
+                return
+            }
+
+            if (!this.$s.group.connected) {
+                // Navigating groups will change the internally used groupId;
+                // but only when not connected to a group already.
+                if (to.name === 'groupsDisconnected') {
+                    this.$s.group.name = to.params.groupId
+                }
+            } else if (to.name === 'manager-group') {
+                this.$s.manager.group.name = to.params.groupId
+            }
+            next()
+        })
+
     }
 
     async managerContext() {

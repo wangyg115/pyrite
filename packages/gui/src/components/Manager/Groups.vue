@@ -1,12 +1,11 @@
 <template>
-    <section class="c-groups-dashboard">
+    <section class="c-manager-groups">
         <div v-for="group of $s.manager.groups" :key="group.name" class="group item">
-            <Icon v-if="!group.locked" class="item-icon icon-small" name="Group" />
-            <Icon v-else class="item-icon icon-small" name="GroupLocked" />
+            <Icon class="item-icon icon-small" :name="group.public ? 'Group' : 'GroupLocked'" />
             <RouterLink
                 class="name"
-                :class="{active: $s.group.name === group.name}"
-                :to="{name: 'manager-group', params: {groupId: group.name}}"
+                :class="{active: $s.manager.group && $s.manager.group.name === group.name}"
+                :to="{name: 'manager-group', params: {groupId: group.name, tabId: 'misc'}}"
             >
                 {{ group.name }}
             </Routerlink>
@@ -16,22 +15,16 @@
 
 <script>
 export default {
-    computed: {
-        selectedGroup() {
-            for (const group of this.$s.manager.groups) {
-                if (group.name === this.selected) {
-                    return group
-                }
-            }
-            return null
-        },
-    },
     data() {
         return {
             selected: null,
         }
     },
     methods: {
+        async loadGroups() {
+            const res = await fetch('/api/groups')
+            this.$s.manager.groups = await res.json()
+        },
         selectGroup(group) {
 
             if (!group || this.selected === group.name) {
@@ -42,15 +35,21 @@ export default {
         },
     },
     async mounted() {
-        const res = await fetch('/api/groups')
-        this.$s.manager.groups = await res.json()
+        if (this.$s.manager.authenticated) {
+            this.loadGroups()
+        }
+    },
+    watch: {
+        '$s.manager.authenticated': async function(authenticated) {
+            if (authenticated) this.loadGroups()
+        },
     },
 }
 </script>
 
 <style lang="scss">
 
-.c-dashboard-groups {
+.c-manager-groups {
 
     .row {
         color: var(--grey-7);

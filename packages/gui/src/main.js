@@ -1,4 +1,5 @@
 import './scss/app.scss'
+
 import App from './App.vue'
 import ContextInput from './components/ui/fields/ContextInput.vue'
 import ContextSelect from './components/ui/fields/ContextSelect.vue'
@@ -10,6 +11,7 @@ import FieldSlider from './components/ui/fields/FieldSlider.vue'
 import FieldText from './components/ui/fields/FieldText.vue'
 import Hint from './components/ui/Hint.vue'
 import Icon from './components/ui/icons/Icon.vue'
+import Notifications from './components/Notifications.vue'
 import Pyrite from './js/app.js'
 
 // Keep a global namespace around for debugging.
@@ -18,6 +20,7 @@ const app = globalThis.app = new Pyrite()
 app.vm = createApp(App)
 app.vm.config.globalProperties.$s = app.$s
 
+app.vm.component('Notifications', Notifications)
 app.vm.component('Icon', Icon)
 app.vm.component('ContextInput', ContextInput)
 app.vm.component('ContextSelect', ContextSelect)
@@ -40,8 +43,12 @@ app.vm.directive('click-outside', {
     unmounted(el) {
         document.body.removeEventListener('click', el.clickOutsideEvent)
     },
-})
+});
 
-app.vm.use(app.router).use(app.i18n)
-app.vm.mount('#app')
+(async() => {
+    await app.init()
+    app.vm.use(app.router).use(app.i18n)
+    app.vm.mount('#app')
+
+})()
 

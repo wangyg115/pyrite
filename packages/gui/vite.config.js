@@ -14,17 +14,19 @@ if (!process.env.VITE_VERSION) {
 console.log('Build version:', process.env.VITE_VERSION)
 
 export default defineConfig({
+    plugins: [
+        vue(),
+    ],
     resolve: {
         alias: [
             {find: "@", replacement: path.resolve(__dirname, 'src')},
         ],
     },
-    plugins: [
-        vue(),
-    ],
     server: {
         proxy: {
-            '/api': 'http://localhost:3030',
+            '/api': {
+                target: 'http://localhost:3030',
+            },
             '/ice-servers.json': 'http://localhost:8443',
             '/public-groups.json': 'http://localhost:8443',
             '/recordings/pyrite': 'http://localhost:8443',

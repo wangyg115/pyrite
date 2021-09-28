@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import IconAccess from './IconAccess.vue'
 import IconChat from './IconChat.vue'
 import IconChatRemove from './IconChatRemove.vue'
 import IconClose from './IconClose.vue'
@@ -53,6 +54,7 @@ import IconWebcam from './IconWebcam.vue'
 
 export default {
     components: {
+        IconAccess,
         IconChat,
         IconChatRemove,
         IconClose,

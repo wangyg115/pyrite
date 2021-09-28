@@ -1,10 +1,11 @@
 <template>
     <nav class="c-manager-controls">
         <RouterLink
-            v-if="$s.group.name"
+            v-if="$s.manager.group"
             class="btn btn-menu tooltip"
+            :class="{active: $route.name === 'manager-group'}"
             :data-tooltip="$t('Groups')"
-            :to="{name: 'manager-group', params: {groupId: $s.group.name}}"
+            :to="{name: 'manager-group', params: {groupId: $s.manager.group.name, tabId: 'misc'}}"
         >
             <Icon class="icon-small" name="Group" />
         </RouterLink>
@@ -12,12 +13,16 @@
             <Icon class="icon-small" name="Group" />
         </button>
         <RouterLink
+            v-if="$s.manager.group"
             class="btn btn-menu tooltip" :class="{active: $route.name === 'manager-groups'}"
             :data-tooltip="$t('Groups')"
-            :to="{name: 'manager-recordings'}"
+            :to="{name: 'manager-recordings', params: {groupId: $s.manager.group.name}}"
         >
             <Icon class="icon-small" name="Record" />
         </RouterLink>
+        <button v-else class="btn btn-menu" disabled>
+            <Icon class="icon-small" name="Record" />
+        </button>
     </nav>
 </template>
 

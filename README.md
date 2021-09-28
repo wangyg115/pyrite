@@ -13,17 +13,22 @@ video conferencing solution (SFU) based on [Vue](https://v3.vuejs.org/) & [Pion]
   git clone git@github.com:garage44/pyrite.git
   cd pyrite
   npm i
-  # Start Galène SFU
+  # Start Galène SFU with non-root user
+  export UID=$(id -u)
+  export GID=$(id -g)
   npm run galene
-  # Start Pyrite frontend
+  # Start Pyrite services
   npm run dev --workspace=packages/gui
-  # Start Pyrite backend
   npm run dev --workspace=packages/manager
   ```
 
-[Open a browser](http://localhost:3000) & login to the pyrite channel
-as Operator (`pyrite`/`1234`). Open another browser on the same machine
-using a fake webcam device:
+[Open Pyrite](http://localhost:3000) in the browser and toggle
+the operator modus by clicking twice on the logo, until the screen
+turns red. The administrator password is located in data/passwd.
+
+### Multiple browsers
+
+Open another browser on the same machine using a fake webcam device:
 
 ```bash
 chromium --use-fake-device-for-media-stream --enable-experimental-web-platform-features --user-data-dir=/tmp/.chromium-tmp http://localhost:3000
@@ -31,8 +36,7 @@ chromium --use-fake-device-for-media-stream --enable-experimental-web-platform-f
 
 > Login using the second browser using a random username and password, e.g. `tester`/`tester`.
 
-## Deployment
+### Deployment
 
-If you want to organise multi-machine video conferences, you need to setup
-Pyrite and Galène on a HTTPS hosted machine. Learn more about deployment
-from the [documentation](./docs/index.md).
+Serving Pyrite & Galène on a network requires a HTTPS deployment. Checkout the [documentation](./docs/index.md)
+for a deployment example.

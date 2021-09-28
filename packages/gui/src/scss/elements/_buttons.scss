@@ -1,7 +1,7 @@
 .btn {
     align-items: center;
     background: none;
-    color: var(--grey-7);
+    color: var(--grey-9);
     display: flex;
     font-family: var(--font-secondary);
     justify-content: center;
@@ -37,7 +37,6 @@
     &.btn-menu {
         border-bottom: var(--border) solid transparent;
         border-top: var(--border) solid transparent;
-        color: var(--grey-8);
         height: var(--space-4);
         position: relative;
 
@@ -53,6 +52,7 @@
         }
 
         &[disabled] {
+            color: var(--grey-6);
 
             &:hover {
                 cursor: not-allowed;

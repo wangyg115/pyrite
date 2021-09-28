@@ -3,7 +3,11 @@
         <div v-for="group of groups" :key="group.name" class="group item">
             <Icon v-if="!group.locked" class="item-icon icon-small" name="Group" />
             <Icon v-else class="item-icon icon-small" name="GroupLocked" />
-            <RouterLink class="name" :class="{active: $s.group.name === group.name}" :to="{name: 'groups', params: {groupId: group.name}}">
+            <RouterLink
+                class="name"
+                :class="{active: $s.group.name === group.name}"
+                :to="{name: 'groups', params: {groupId: group.name}}"
+            >
                 {{ group.name }}
             </RouterLink>
 

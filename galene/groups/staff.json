@@ -1,12 +1,14 @@
 {
+  "description": "Secret group for staff members",
+  "contact": "someone@pyrite.video",
+  "comment": "Secret unlisted group",
   "public": false,
-  "description": "Secret, unlisted group",
   "op": [{"username": "pyrite", "password": "1234"}],
-  "presenter": [
-    {"username": "alice", "password": "0000"},
-    {"username": "bob", "password": "1234"}
-  ],
-  "max-clients": 4,
-  "allow-recording": false,
-  "allow-anonymous": false
+  "presenter": [{}],
+  "max-clients": 10,
+  "max-history-age": 14400,
+  "allow-recording": true,
+  "allow-subgroups": true,
+  "autolock": true,
+  "autokick": false
 }

@@ -3,22 +3,20 @@
         <Header>
             <ManagerGroups />
         </Header>
-
         <Controls />
-        <Login v-if="$s.manager.authenticated" />
-
         <RouterView />
+        <Notifications />
     </div>
 </template>
 
 <script>
 import Controls from './Controls.vue'
 import Header from '../Header.vue'
-import Login from './Login.vue'
 import ManagerGroups from './Groups.vue'
+import ManagerUsers from './Users.vue'
 
 export default {
-    components: {Controls, Header, Login, ManagerGroups},
+    components: {Controls, Header, ManagerGroups, ManagerUsers},
     data() {
         return {
             version: import.meta.env.VITE_VERSION,
@@ -28,7 +26,7 @@ export default {
 </script>
 
 <style lang="scss">
-.c-manager-app {
+.c-manager-app.theme-dark {
     --primary-color-h: 0;
     --primary-color-s: 40%;
 }

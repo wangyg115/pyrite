@@ -26,12 +26,11 @@ import Chat from './Chat.vue'
 import GeneralControls from './GeneralControls.vue'
 import Groups from './Groups.vue'
 import Header from '../Header.vue'
-import Notifications from '../Notifications.vue'
 import RoomControls from './RoomControls.vue'
 import Users from './Users.vue'
 
 export default {
-    components: {Chat, GeneralControls, Groups, Header, Notifications, RoomControls, Users},
+    components: {Chat, GeneralControls, Groups, Header, RoomControls, Users},
     data() {
         return {
             chatToggle: false,
