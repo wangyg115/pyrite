@@ -77,6 +77,13 @@ app.get('/api/users', async function(req, res) {
     res.end(JSON.stringify(userData))
 })
 
+app.post('/api/users', async function(req, res) {
+    const targetFile = path.join(dataDir, 'users.json')
+    const userData = JSON.stringify(req.body)
+    await fs.promises.writeFile(targetFile, userData)
+    res.end(JSON.stringify({status: 'ok'}))
+})
+
 /**
  * Retrieve a list of all groups.
  */

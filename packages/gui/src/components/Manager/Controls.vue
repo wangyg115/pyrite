@@ -1,6 +1,14 @@
 <template>
     <nav class="c-manager-controls">
         <RouterLink
+            class="btn btn-menu tooltip"
+            :class="{active: $route.name === 'manager-users'}"
+            :data-tooltip="$t('Users')"
+            :to="{name: 'manager-users'}"
+        >
+            <Icon class="icon-small" name="User" />
+        </RouterLink>
+        <RouterLink
             v-if="$s.manager.group"
             class="btn btn-menu tooltip"
             :class="{active: $route.name === 'manager-group'}"

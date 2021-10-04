@@ -1,0 +1,51 @@
+.table {
+    border: 1px solid var(--grey-5);
+    padding: var(--spacer);
+
+    .header {
+        background: var(--grey-1);
+        color: var(--primary-color);
+        display: flex;
+        font-family: var(--font-secondary);
+        font-weight: 600;
+    }
+
+    .cell {
+        flex: 1 100px;
+        gap: var(--spacer);
+        padding: var(--spacer);
+    }
+
+    .row {
+        display: flex;
+
+        *:hover {
+            cursor: pointer;
+        }
+
+        &:nth-child(even) {
+            background: var(--grey-2);
+
+            &:hover {
+                background: var(--grey-3);
+            }
+
+        }
+
+        &:nth-child(odd) {
+            background: var(--grey-3);
+
+            &:hover {
+                background: var(--grey-4);
+            }
+        }
+
+        &.selected {
+            background: var(--grey-4);
+
+            &:hover {
+                background: var(--grey-4);
+            }
+        }
+    }
+}

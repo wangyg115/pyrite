@@ -1,4 +1,1 @@
-[
-    {"name": "jeroen", "password": "foobar", "groups": {"pyrite": {"op": true, "presenter": true, "other": true}}},
-    {"name": "pyrite", "password": "foobar", "groups": {}}
-]
+[{"name":"jeroen","password":"foobar","groups":{"pyrite":{"op":true,"presenter":true,"other":true}}},{"name":"pyrite","password":"foobar","groups":{}},{"name":"testuser","password":"testuser"}]

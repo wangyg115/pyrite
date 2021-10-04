@@ -12,7 +12,7 @@
                 :readonly="readonly"
                 :type="type === 'password' && visible ? 'text' : type"
                 :value="modelValue"
-                @focus="$emit('focus', event)"
+                @click.stop="$emit('focus', event)"
                 @input="updateModel($event)"
             >
 
@@ -80,6 +80,11 @@ export default {
             font-size: 1rem;
             height: var(--space-2);
             outline: none;
+            transition: border 0.5s ease;
+
+            &[readonly] {
+                border-bottom: var(--border) solid transparent;
+            }
 
             &:focus {
                 border-bottom: var(--border) solid var(--primary-color);

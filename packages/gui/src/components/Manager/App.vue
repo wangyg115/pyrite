@@ -26,8 +26,10 @@ export default {
 </script>
 
 <style lang="scss">
-.c-manager-app.theme-dark {
+.c-manager-app {
     --primary-color-h: 0;
     --primary-color-s: 40%;
+
+    grid-template-columns: 300px var(--space-4) 1fr;
 }
 </style>

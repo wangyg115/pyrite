@@ -102,15 +102,15 @@
 .logo-animated {
 
     .shard.primary {
-        animation: 1.6s ease-in-out running anim-1;
+        animation: 0.75s ease-in-out running anim-1;
     }
 
     .shard.dark {
-        animation: 1.4s ease-in-out running anim-2;
+        animation: 0.5s ease running anim-2;
     }
 
     .pupil {
-        animation: 1s ease-in-out running anim-3;
+        animation: 0.3s ease-in-out running anim-3;
     }
 }
 </style>
