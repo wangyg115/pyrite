@@ -1,7 +1,8 @@
 <template>
     <div class="c-manager-app app theme-dark">
         <Header>
-            <ManagerGroups />
+            <ManagerUsers v-if="$route.name.startsWith('manager-user')" />
+            <ManagerGroups v-else />
         </Header>
         <Controls />
         <RouterView />

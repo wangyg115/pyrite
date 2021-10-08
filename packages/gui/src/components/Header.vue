@@ -5,7 +5,7 @@
                 v-if="!$s.group.connected" class="logo tooltip"
                 :class="{active: $route.name && $route.name.includes('manager')}"
                 :data-tooltip="$route.name === 'splash' ? $t('switch to manager') : $t('switch to conference')"
-                :to="$route.name === 'splash' ? {name: 'manager-splash'} : {name: 'main'}"
+                :to="$route.name === 'splash' ? {name: 'manager-users'} : {name: 'main'}"
             >
                 <Icon class="icon" name="Logo" />PYRITE
             </RouterLink>

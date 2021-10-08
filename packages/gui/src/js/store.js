@@ -66,6 +66,7 @@ const volatileState = {
         authenticated: null,
         group: null,
         groups: [],
+        users: [],
     },
     mediaReady: false,
     notifications: [],

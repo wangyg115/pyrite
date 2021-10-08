@@ -17,14 +17,21 @@
         >
             <Icon class="icon-small" name="Group" />
         </RouterLink>
-        <button v-else class="btn btn-menu" disabled>
+        <RouterLink
+            v-else
+            class="btn btn-menu tooltip"
+            :class="{active: $route.name === 'manager-groups'}"
+            :data-tooltip="$t('Groups')"
+            :to="{name: 'manager-groups'}"
+        >
             <Icon class="icon-small" name="Group" />
-        </button>
+        </RouterLink>
+
         <RouterLink
             v-if="$s.manager.group"
             class="btn btn-menu tooltip" :class="{active: $route.name === 'manager-groups'}"
             :data-tooltip="$t('Groups')"
-            :to="{name: 'manager-recordings', params: {groupId: $s.manager.group.name}}"
+            :to="{name: 'manager-group-recordings', params: {groupId: $s.manager.group.name}}"
         >
             <Icon class="icon-small" name="Record" />
         </RouterLink>
@@ -36,7 +43,11 @@
 
 <script>
 export default {
-
+    computed: {
+        groupRoute() {
+            return {name: 'manager-group', params: {groupId: this.$s.manager.group.name, tabId: 'misc'}}
+        },
+    },
 }
 </script>
 

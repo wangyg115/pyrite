@@ -67,10 +67,12 @@ export default {
 .c-field-text {
     display: flex;
     flex-direction: column;
+    overflow: auto;
 
     .input-container {
         align-items: center;
         display: flex;
+        width: 100%;
 
         input {
             background: none;
@@ -81,6 +83,7 @@ export default {
             height: var(--space-2);
             outline: none;
             transition: border 0.5s ease;
+            width: 100%;
 
             &[readonly] {
                 border-bottom: var(--border) solid transparent;

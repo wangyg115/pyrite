@@ -1,1 +1,1 @@
-[{"name":"jeroen","password":"foobar","groups":{"pyrite":{"op":true,"presenter":true,"other":true}}},{"name":"pyrite","password":"foobar","groups":{}},{"name":"testuser","password":"testuser"}]
+[{"name":"jeroen","password":"foobar","groups":{"op":["pyrite"],"presenter":[],"other":["pyrite"]}},{"name":"pyrite","password":"foobar","groups":{"op":["pyrite"],"presenter":[],"other":["pyrite"]}}]

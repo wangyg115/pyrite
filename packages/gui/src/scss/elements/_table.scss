@@ -2,6 +2,7 @@
     border: 1px solid var(--grey-5);
     padding: var(--spacer);
 
+
     .header {
         background: var(--grey-1);
         color: var(--primary-color);
@@ -11,7 +12,7 @@
     }
 
     .cell {
-        flex: 1 100px;
+        flex: 1;
         gap: var(--spacer);
         padding: var(--spacer);
     }

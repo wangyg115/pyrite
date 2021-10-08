@@ -2,7 +2,7 @@ import ManagerApp from '../components/Manager/App.vue'
 import ManagerGroup from '../components/Manager/Group/Group.vue'
 import ManagerLogin from '../components/Manager/Login.vue'
 import ManagerRecordings from '../components/Manager/Recordings.vue'
-import ManagerUsers from '../components/Manager/Users.vue'
+import ManagerUser from '../components/Manager/User.vue'
 
 import UserApp from '../components/User/App.vue'
 import UserLogin from '../components/User/Login.vue'
@@ -19,14 +19,14 @@ export default function(app) {
             },
             children: [
                 {
-                    component: UserSplash,
-                    name: 'manager-splash',
-                    path: '/manager',
-                },
-                {
                     component: ManagerLogin,
                     name: 'manager-login',
                     path: '/manager/login',
+                },
+                {
+                    component: UserSplash,
+                    name: 'manager-groups',
+                    path: '/manager/groups',
                 },
                 {
                     component: ManagerGroup,
@@ -35,13 +35,18 @@ export default function(app) {
                 },
                 {
                     component: ManagerRecordings,
-                    name: 'manager-recordings',
+                    name: 'manager-group-recordings',
                     path: '/manager/groups/:groupId/recordings',
                 },
                 {
-                    component: ManagerUsers,
+                    component: UserSplash,
                     name: 'manager-users',
                     path: '/manager/users',
+                },
+                {
+                    component: ManagerUser,
+                    name: 'manager-user',
+                    path: '/manager/users/:userId',
                 },
             ],
 
