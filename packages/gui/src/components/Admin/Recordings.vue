@@ -1,5 +1,5 @@
 <template>
-    <section class="c-admin-recordings active">
+    <section class="c-admin-recordings content">
         RECORDINGS
     </section>
 </template>

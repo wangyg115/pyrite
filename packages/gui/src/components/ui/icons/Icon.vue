@@ -20,6 +20,7 @@ import IconError from './IconError.vue'
 import IconEye from './IconEye.vue'
 import IconFullscreen from './IconFullscreen.vue'
 import IconGroup from './IconGroup.vue'
+import IconGroupHidden from './IconGroupHidden.vue'
 import IconGroupLocked from './IconGroupLocked.vue'
 import IconHand from './IconHand.vue'
 import IconHeadset from './IconHeadset.vue'
@@ -35,6 +36,7 @@ import IconMic from './IconMic.vue'
 import IconMicMute from './IconMicMute.vue'
 import IconMinus from './IconMinus.vue'
 import IconOperator from './IconOperator.vue'
+import IconOtherPermissions from './IconOtherPermissions.vue'
 import IconPip from './IconPip.vue'
 import IconPlay from './IconPlay.vue'
 import IconPlus from './IconPlus.vue'
@@ -65,6 +67,7 @@ export default {
         IconEye,
         IconFullscreen,
         IconGroup,
+        IconGroupHidden,
         IconGroupLocked,
         IconHand,
         IconHeadset,
@@ -80,6 +83,7 @@ export default {
         IconMicMute,
         IconMinus,
         IconOperator,
+        IconOtherPermissions,
         IconPip,
         IconPlay,
         IconPlus,

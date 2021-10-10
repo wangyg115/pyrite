@@ -5,7 +5,7 @@
             class="btn btn-menu tooltip"
             :class="{active: $route.name.includes('admin-users')}"
             :data-tooltip="$t('Users')"
-            :to="{name: 'admin-users-user', params: {userId: $s.admin.user.name, tabId: 'misc'}}"
+            :to="{name: 'admin-users-user', params: {userId: $s.admin.user.id, tabId: 'misc'}}"
         >
             <Icon class="icon-small" name="User" />
         </RouterLink>

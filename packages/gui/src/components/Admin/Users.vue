@@ -6,7 +6,7 @@
                 class="name"
                 :class="{active: $route.params.userId === user.id}"
                 :to="{name: 'admin-users-user', params: {userId: user.id, tabId: 'misc'}}"
-                @click="toggleSelection(user.name)"
+                @click="toggleSelection(user.id)"
             >
                 {{ user.name }}
             </Routerlink>
@@ -35,7 +35,7 @@ export default {
         },
         toggleSelection(userId) {
             // Current clicked user is selected already; deselect by navigating to admin-users
-            if (this.$route.name === 'admin-users-user' && this.$route.params.userId === userId) {
+            if (this.$route.name === 'admin-users-user' && parseInt(this.$route.params.userId) === userId) {
                 this.$router.push({name: 'admin-users'})
             }
         },

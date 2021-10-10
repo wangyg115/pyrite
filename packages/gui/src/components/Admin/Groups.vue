@@ -5,7 +5,7 @@
             :key="group.name"
             class="group item"
         >
-            <Icon class="item-icon icon-small" :name="group.public ? 'Group' : 'GroupLocked'" />
+            <Icon class="item-icon icon-small" :name="group.public ? 'Group' : 'GroupHidden'" />
             <RouterLink
                 class="name"
                 :class="{active: $route.params.groupId === group.name}"

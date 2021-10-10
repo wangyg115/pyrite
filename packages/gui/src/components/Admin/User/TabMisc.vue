@@ -1,6 +1,8 @@
 <template>
-    <section class="c-manager-group-tab-misc tab-content active">
-        ID: {{ $s.admin.user.id }}
+    <section class="c-admin-group-tab-misc tab-content active">
+        <div class="read-only">
+            <span>Id</span><br> {{ $s.admin.user.id }}
+        </div>
         <FieldText
             v-model="$s.admin.user.name"
             label="Username"
@@ -11,13 +13,6 @@
             label="User Password"
             placeholder="..."
         />
-
-        <!-- <FieldText
-            v-model.number="$s.admin.group['max-history-age']"
-            help="The time, in seconds, during which chat history is kept (default 14400, i.e. 4 hours)"
-            label="Keep Chat History"
-            placeholder="..."
-        /> -->
     </section>
 </template>
 
@@ -30,3 +25,17 @@ export default defineComponent({
     },
 })
 </script>
+
+<style lang="scss">
+.c-admin-group-tab-misc {
+
+    .read-only {
+
+        span {
+            color: var(--grey-9);
+            font-family: var(--font-secondary);
+
+        }
+    }
+}
+</style>

@@ -19,7 +19,7 @@ video conferencing solution (SFU) based on [Vue](https://v3.vuejs.org/) & [Pion]
   npm run galene
   # Start Pyrite services
   npm run dev --workspace=packages/gui
-  npm run dev --workspace=packages/manager
+  npm run dev --workspace=packages/admin
   ```
 
 [Open Pyrite](http://localhost:3000) in the browser and toggle
