@@ -1,0 +1,121 @@
+@import "./elements/animations";
+@import "./elements/buttons";
+@import "./elements/content";
+@import "./elements/context-menu";
+@import "./elements/fonts";
+@import "./elements/forms";
+@import "./elements/presence";
+@import "./elements/table";
+@import "./elements/tabs";
+@import "./elements/tooltip";
+@import "./elements/misc";
+
+.theme-dark {
+    --sat: 50%;
+    --sat-u: 75%;
+    --sat-d: 30%;
+
+    --primary-color-h: 200;
+    --primary-color-s: 80%;
+    --primary-color: hsl(var(--primary-color-h), var(--primary-color-s), 65%);
+
+    --warning-value: 53.8;
+    --warning-color: hsla(var(--warning-value), 20%, var(--sat), 100%);
+    --warning-color-u: hsla(var(--warning-value), 20%, var(--sat-u), 100%);
+    --warning-color-d: hsla(var(--warning-value), 20%, var(--sat-d), 100%);
+
+    --error-value: 0;
+    --error-color: hsla(var(--error-value), 20%, var(--sat), 100%);
+    --error-color-u: hsla(var(--error-value), 20%, var(--sat-u), 100%);
+    --error-color-d: hsla(var(--error-value), 20%, var(--sat-d), 100%);
+
+    --grey-h: 210;
+    --grey-s: 15%;
+    --grey-1: hsl(var(--grey-h), var(--grey-s), 7%);
+    --grey-2: hsl(var(--grey-h), var(--grey-s), 11%);
+    --grey-3: hsl(var(--grey-h), var(--grey-s), 13%);
+    --grey-4: hsl(var(--grey-h), var(--grey-s), 16%);
+    --grey-5: hsl(var(--grey-h), var(--grey-s), 20%);
+
+    --grey-6: hsl(var(--grey-h), var(--grey-s), 50%);
+    --grey-7: hsl(var(--grey-h), var(--grey-s), 60%);
+    --grey-8: hsl(var(--grey-h), var(--grey-s), 65%);
+    --grey-9: hsl(var(--grey-h), var(--grey-s), 80%);
+    --grey-10: hsl(var(--grey-h), var(--grey-s), 89%);
+
+    --shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+    color: var(--grey-6);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent; }
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+}
+
+.scroller {
+    scrollbar-color: var(--primary-color) transparent;
+    scrollbar-width: thin;
+}
+
+:root {
+    --text-tiny: 0.7rem;
+    --text-small: 0.85rem;
+    --text-base: 1rem;
+    --text-large: 1.15rem;
+    --text-huge: 3rem;
+
+    --font-primary: "Roboto";
+    --font-secondary: "Oswald", sans-serif;
+
+    --border: 2px;
+    --spacer: 8px;
+    --space-4: calc(var(--spacer) * 8);
+    --space-3: calc(var(--spacer) * 6);
+    --space-2: calc(var(--spacer) * 4);
+    --space-1: calc(var(--spacer) * 2);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: var(--font-primary);
+    font-size: var(--text-base);
+    font-weight: 400;
+    margin: 0;
+    outline: none;
+    /** The js  grid needs some time to catch up. */
+    overflow-x: hidden;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+textarea {
+    height: var(--unit);
+    padding: 0;
+    resize: none;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+button {
+    border: 0;
+    font-size: var(--text-base);
+}
+
+::selection {
+    background: var(--primary-color);
+    color: var(--grey-5);
+}

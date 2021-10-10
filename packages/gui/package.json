@@ -1,0 +1,39 @@
+{
+  "name": "@garage44/pyrite-gui",
+  "description": "Video Communication GUI for Galène",
+  "version": "1.8.2",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "deploy": "cd dist;zip -r pyrite.zip .;curl -X POST -F \"distChannel=$RAND_CHANNEL\" -F 'distFile=@pyrite.zip' $RAND_ENDPOINT -H \"Authorization: Basic $(echo $RAND_USER:$RAND_PW | base64)\"",
+    "dev": "vite",
+    "build": "vite build",
+    "galene": "docker-compose -f docker/docker-compose.yml --project-directory ./docker up --remove-orphans",
+    "lint:scss": "stylelint \"src/**/*.{scss,vue}\"",
+    "semantic-release": "semantic-release"
+  },
+  "dependencies": {
+    "@fontsource/oswald": "^4.4.0",
+    "@fontsource/roboto": "^4.4.0",
+    "eventemitter3": "^4.0.7",
+    "vue": "^3.0.5",
+    "vue-i18n": "^9.0.0-rc.4",
+    "vue-router": "^4.0.2"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.0.4",
+    "vite": "^2.0.0-beta.61"
+  },
+  "files": [
+    "dist"
+  ],
+  "bugs": {
+    "url": "https://github.com/garage44/pyrite/issues"
+  },
+  "homepage": "https://github.com/garage44/pyrite#readme",
+  "main": "vite.config.js",
+  "author": "Pyrite Contributors",
+  "license": "MIT"
+}

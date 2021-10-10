@@ -1,0 +1,181 @@
+.btn {
+    align-items: center;
+    background: none;
+    color: var(--grey-9);
+    display: flex;
+    font-family: var(--font-secondary);
+    justify-content: center;
+    text-transform: uppercase;
+    transition: all ease 0.5s;
+
+    &[disabled] {
+        color: var(--grey-6);
+    }
+
+    &.active {
+        color: var(--primary-color);
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &:not([disabled]):hover {
+        color: var(--primary-color);
+        cursor: pointer;
+    }
+
+    &.btn-icon {
+        padding: 0;
+
+        &:hover {
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+    }
+
+    &.btn-menu {
+        border-bottom: var(--border) solid transparent;
+        border-top: var(--border) solid transparent;
+        height: var(--space-4);
+        position: relative;
+
+        width: var(--space-4);
+
+        svg {
+            transition: 0.35s -webkit-filter ease-out;
+        }
+
+        &.compact {
+            height: auto;
+            width: auto;
+        }
+
+        &[disabled] {
+            color: var(--grey-6);
+
+            &:hover {
+                cursor: not-allowed;
+            }
+        }
+
+        &::before {
+            background: var(--primary-color);
+            bottom: calc(-1 * var(--border));
+            content: "";
+            height: var(--border);
+            left: 0;
+            position: absolute;
+            right: 0;
+            transform: scaleX(0);
+            transform-origin: 0 0;
+            transition: transform 150ms;
+            will-change: transform;
+        }
+
+        &.small {
+            height: var(--space-3);
+            width: var(--space-3);
+        }
+
+        &:not([disabled]):hover {
+
+            &.warning {
+                color: var(--warning-color);
+            }
+
+            &::before {
+                transform: scaleX(1);
+            }
+        }
+
+        &.active {
+            color: var(--primary-color);
+
+            svg {
+                // Bring the active icon a bit to the front:
+                filter: drop-shadow( 4px 4px 2px hsl(var(--grey-h), var(--grey-s), 3%));
+            }
+        }
+    }
+
+    &.no-feedback {
+
+        &.active,
+        &:not([disabled]):hover {
+            border-bottom: var(--border) solid transparent;
+
+            &::before {
+                transform: scaleX(0);
+            }
+        }
+    }
+
+    &.btn-widget {
+        align-items: center;
+        background: var(--grey-2);
+        border-bottom: 2px solid transparent;
+        color: var(--grey-6);
+        display: flex;
+        font-size: 0.9rem;
+        font-weight: 500;
+        height: var(--space-3);
+        justify-content: center;
+        padding: 0 var(--spacer);
+        position: relative;
+        text-transform: uppercase;
+        width: 100%;
+
+        &[disabled] {
+            background: var(--grey-4);
+            border-bottom: 2px solid transparent;
+            color: var(--grey-5);
+
+            &:hover {
+                border-bottom: 2px solid var(--grey-3);
+                color: var(--grey-5);
+            }
+        }
+
+        &.active,
+        &:not([disabled]):hover {
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--grey-7);
+            cursor: pointer;
+        }
+    }
+
+    &.warning {
+
+        .icon {
+            color: var(--warning-color);
+        }
+
+        &:hover,
+        &.active {
+            border-bottom: 2px solid var(--warning-color) !important;
+            color: var(--warning-color);
+        }
+
+        &::before {
+            background: var(--warning-color);
+        }
+    }
+
+    &.error {
+
+        .icon {
+            color: var(--error-color);
+        }
+
+        &:hover,
+        &.active {
+            border-bottom: 2px solid var(--error-color) !important;
+            color: var(--error-color);
+        }
+
+        &::before {
+            background: var(--error-color);
+        }
+    }
+}

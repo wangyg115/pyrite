@@ -1,0 +1,56 @@
+.content {
+    background: var(--grey-3);
+    display: flex;
+    flex-direction: column;
+    max-width: 600px;
+
+    header {
+        align-items: center;
+        background: var(--grey-1);
+        color: var(--primary-color);
+        display: flex;
+        font-family: var(--font-secondary);
+        font-weight: 600;
+        height: var(--space-4);
+        justify-content: space-between;
+        padding: var(--space-1);
+        padding-right: calc(var(--spacer) * 1.5);
+        text-transform: uppercase;
+
+        .title {
+            align-items: center;
+            display: flex;
+
+
+            span {
+                padding-right: calc(var(--spacer) * 2.5);
+            }
+
+            svg {
+                color: var(--primary-color);
+            }
+        }
+
+
+    }
+
+    section {
+        height: calc(100vh - var(--space-4));
+        overflow-y: scroll;
+        padding: var(--space-1);
+    }
+
+    .panels {
+        display: flex;
+        flex: 1;
+
+        section {
+            flex: 1;
+        }
+
+        .actions {
+            background: var(--grey-2);
+        }
+    }
+
+}
