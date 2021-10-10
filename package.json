@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/garage44/pyrite#readme",
   "workspaces": [
-    "packages/manager",
+    "packages/admin",
     "packages/gui"
   ],
   "devDependencies": {

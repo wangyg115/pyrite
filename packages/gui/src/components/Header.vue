@@ -2,16 +2,13 @@
     <div class="c-header">
         <header>
             <RouterLink
-                v-if="!$s.group.connected" class="logo tooltip"
+                class="logo tooltip"
                 :class="{active: $route.name && $route.name.includes('manager')}"
-                :data-tooltip="$route.name === 'splash' ? $t('switch to manager') : $t('switch to conference')"
-                :to="$route.name === 'splash' ? {name: 'manager-users'} : {name: 'main'}"
+                :data-tooltip="$route.name.includes('conference-') ? $t('switch to manager') : $t('switch to conference')"
+                :to="toggleAdminConference"
             >
                 <Icon class="icon" name="Logo" />PYRITE
             </RouterLink>
-            <div v-else class="logo no-back-link">
-                <Icon class="icon" name="Logo" />PYRITE
-            </div>
 
             <div class="version">
                 {{ version }}
@@ -25,6 +22,27 @@
 import {defineComponent} from 'vue'
 
 export default defineComponent({
+    computed: {
+        toggleAdminConference() {
+            if (this.$route.name === 'conference-splash') {
+                return {name: 'admin-groups'}
+            } else if (this.$route.name === 'conference-groups-connected') {
+                return {name: 'admin-users'}
+            } else if (this.$route.name === 'conference-groups-disconnected') {
+                // Mirror the selected group to the admin groups.
+                const groupId = this.$route.params.groupId
+                return {name: 'admin-groups-group', params: {groupId, tabId: 'misc'}}
+            } else if (this.$route.name === 'admin-groups-group') {
+                const groupId = this.$route.params.groupId
+                if (!this.$s.group.connected) {
+                    return {name: 'conference-groups-disconnected', params: {groupId}}
+                } else {
+                    return {name: 'conference-groups-connected', params: {groupId}}
+                }
+            }
+            return {name: 'conference-main'}
+        },
+    },
     data() {
         return {
             version: import.meta.env.VITE_VERSION,

@@ -42,6 +42,13 @@ const persistantState = reactive({
  * State is always overwritten by these properties.
  */
 const volatileState = {
+    admin: {
+        authenticated: null,
+        group: null,
+        groups: [],
+        user: null,
+        users: [],
+    },
     chat: {
         channel: 'main',
         channels: {
@@ -61,12 +68,6 @@ const volatileState = {
         muted: false,
         name: '',
         recording: false,
-    },
-    manager: {
-        authenticated: null,
-        group: null,
-        groups: [],
-        users: [],
     },
     mediaReady: false,
     notifications: [],

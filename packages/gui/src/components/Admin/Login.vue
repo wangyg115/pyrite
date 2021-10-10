@@ -1,9 +1,9 @@
 <template>
-    <div class="c-dashboard-login content">
+    <div class="c-admin-login content">
         <header>
             <div class="notice" />
             <div class="title">
-                <span>{{ $t('Manager Login') }}</span>
+                <span>{{ $t('Admin Login') }}</span>
                 <Icon class="item-icon icon-small" name="Dashboard" />
             </div>
         </header>
@@ -31,7 +31,7 @@
             <div class="actions">
                 <button
                     class="btn btn-menu tooltip tooltip-left"
-                    :data-tooltip="$t('login as manager')"
+                    :data-tooltip="$t('login as admin')"
                     @click="login"
                 >
                     <Icon class="icon-small" name="Login" />
@@ -63,12 +63,12 @@ export default defineComponent({
             })
 
             const status = await res.json()
-            this.$s.manager.authenticated = status.authenticated
+            this.$s.admin.authenticated = status.authenticated
             if (!status.authenticated) {
                 app.notifier.notify({level: 'error', message: this.$t('Invalid credentials')})
             } else {
                 app.notifier.notify({level: 'info', message: this.$t('succesfully logged in')})
-                app.router.push({name: 'manager-splash'})
+                app.router.push({name: 'admin-splash'})
             }
         },
     },

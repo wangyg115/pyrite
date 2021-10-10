@@ -1,5 +1,5 @@
 <template>
-    <div v-click-outside="toggleMenu" class="c-user-context context-menu" :class="{active}">
+    <div v-click-outside="toggleMenu" class="c-general-context context-menu" :class="{active}">
         <button class="btn btn-menu no-feedback">
             <Icon class="icon icon-small" name="Menu" @click="toggleMenu" />
         </button>

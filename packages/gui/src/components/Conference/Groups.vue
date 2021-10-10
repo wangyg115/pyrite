@@ -6,7 +6,7 @@
             <RouterLink
                 class="name"
                 :class="{active: $s.group.name === group.name}"
-                :to="{name: 'groups', params: {groupId: group.name}}"
+                :to="{name: 'conference-groups', params: {groupId: group.name}}"
             >
                 {{ group.name }}
             </RouterLink>
@@ -51,10 +51,10 @@ export default {
                 this.$s.group.locked = this.groups.find((i) => i.name === this.$s.group.name).locked
 
                 // Update the group route when the user sets the group name.
-                this.$router.replace({name: 'groups', params: {groupId: this.$s.group.name}})
+                this.$router.replace({name: 'conference-groups', params: {groupId: this.$s.group.name}})
             } else {
                 // By default show the splash page when emptying the group input.
-                this.$router.replace({name: 'splash'})
+                this.$router.replace({name: 'conference-splash'})
             }
         },
     },
@@ -68,14 +68,14 @@ export default {
     watch: {
         /**
          * Note that the behaviour is that using the custom group
-         * input does NOT trigger the 'groupsDisconnected' view,
+         * input does NOT trigger the 'user-groups-disconnected' view,
          * while using the listed groups selection does. This is
          * intended behaviour to keep the history clean.
          */
         '$s.group.name': {
             immediate: false,
             handler() {
-                if (this.$router.currentRoute.value.name === 'groupsDisconnected') {
+                if (this.$router.currentRoute.value.name === 'user-groups-disconnected') {
                     app.logger.debug(`updating group route: ${this.$s.group.name}`)
                     this.updateRoute()
                 }

@@ -1,9 +1,9 @@
 <template>
-    <div v-if="$s.manager.group" class="c-manager-group content">
+    <div v-if="$s.admin.group" class="c-admin-group content">
         <header>
             <div class="notice" />
             <div class="title">
-                <span>{{ $s.manager.group.name }}</span>
+                <span>{{ $s.admin.group.name }}</span>
                 <Icon class="icon icon-regular" name="Group" />
             </div>
         </header>
@@ -12,14 +12,14 @@
             <RouterLink
                 class="btn btn-menu tab tooltip"
                 :data-tooltip="$t('miscellaneous')"
-                :to="{name: 'manager-group', params: {groupId: $s.manager.group.name, tabId: 'misc'}}"
+                :to="{name: 'admin-groups-group', params: {groupId: $s.admin.group.name, tabId: 'misc'}}"
             >
                 <Icon class="icon-small" name="SettingsMisc" />
             </RouterLink>
             <RouterLink
                 class="btn btn-menu tab tooltip"
                 :data-tooltip="$t('access')"
-                :to="{name: 'manager-group', params: {groupId: $s.manager.group.name, tabId: 'access'}}"
+                :to="{name: 'admin-groups-group', params: {groupId: $s.admin.group.name, tabId: 'access'}}"
             >
                 <Icon class="icon-small" name="Access" />
             </RouterLink>
@@ -63,12 +63,12 @@ export default defineComponent({
     methods: {
         async loadGroup(groupId) {
             const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}`)
-            this.$s.manager.group = await res.json()
+            this.$s.admin.group = await res.json()
         },
         async saveGroup() {
-            const groupId = this.$s.manager.group.name
-            const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}`, {
-                body: JSON.stringify(this.$s.manager.group),
+            const groupId = this.$s.admin.group.name
+            await fetch(`/api/groups/${encodeURIComponent(groupId)}`, {
+                body: JSON.stringify(this.$s.admin.group),
                 credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,8 +78,8 @@ export default defineComponent({
         },
     },
     watch: {
-        groupId(newGroupId) {
-            this.loadGroup(newGroupId)
+        groupId(groupId) {
+            this.loadGroup(groupId)
         },
     },
 })

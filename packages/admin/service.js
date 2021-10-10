@@ -20,6 +20,7 @@ const settings = rc('pyrite', {
     paths: {
         data: path.join(basedir, '..', '..', 'galene', 'data'),
         groups: path.join(basedir, '..', '..', 'galene', 'groups'),
+        recordings: path.join(basedir, '..', '..', 'galene', 'recordings'),
     },
     port: 3030,
     session: {

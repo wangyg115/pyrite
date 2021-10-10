@@ -1,107 +1,109 @@
-import ManagerApp from '../components/Manager/App.vue'
-import ManagerGroup from '../components/Manager/Group/Group.vue'
-import ManagerLogin from '../components/Manager/Login.vue'
-import ManagerRecordings from '../components/Manager/Recordings.vue'
-import ManagerUser from '../components/Manager/User.vue'
+import AdminApp from '../components/Admin/App.vue'
+import AdminGroup from '../components/Admin/Group/Group.vue'
+import AdminLogin from '../components/Admin/Login.vue'
+import AdminRecordings from '../components/Admin/Recordings.vue'
+import AdminUser from '../components/Admin/User/User.vue'
 
-import UserApp from '../components/User/App.vue'
-import UserLogin from '../components/User/Login.vue'
-import UserSettings from '../components/User/Settings/Settings.vue'
-import UserSplash from '../components/User/Splash.vue'
-import UserStreamView from '../components/User/StreamView.vue'
+import ConferenceApp from '../components/Conference/App.vue'
+import ConferenceLogin from '../components/Conference/Login.vue'
+import ConferenceSettings from '../components/Conference/Settings/Settings.vue'
+import ConferenceStreamView from '../components/Conference/StreamView.vue'
+
+import Splash from '../components/Splash.vue'
+
 import {createRouter, createWebHistory} from 'vue-router'
 
 export default function(app) {
     const routes = [
         {
             beforeEnter: () => {
-                app.$s.manager.group = null
+                app.$s.admin.group = null
             },
             children: [
                 {
-                    component: ManagerLogin,
-                    name: 'manager-login',
-                    path: '/manager/login',
+                    component: AdminLogin,
+                    name: 'admin-login',
+                    path: '/admin/login',
                 },
                 {
-                    component: UserSplash,
-                    name: 'manager-groups',
-                    path: '/manager/groups',
+                    component: Splash,
+                    name: 'admin-groups',
+                    path: '/admin/groups',
                 },
                 {
-                    component: ManagerGroup,
-                    name: 'manager-group',
-                    path: '/manager/groups/:groupId/:tabId',
+                    component: AdminGroup,
+                    name: 'admin-groups-group',
+                    path: '/admin/groups/:groupId/:tabId',
                 },
                 {
-                    component: ManagerRecordings,
-                    name: 'manager-group-recordings',
-                    path: '/manager/groups/:groupId/recordings',
+                    component: AdminRecordings,
+                    name: 'admin-groups-group-recordings',
+                    path: '/admin/groups/:groupId/recordings',
                 },
                 {
-                    component: UserSplash,
-                    name: 'manager-users',
-                    path: '/manager/users',
+                    component: Splash,
+                    name: 'admin-users',
+                    path: '/admin/users',
                 },
                 {
-                    component: ManagerUser,
-                    name: 'manager-user',
-                    path: '/manager/users/:userId',
+                    component: AdminUser,
+                    name: 'admin-users-user',
+                    path: '/admin/users/:userId',
                 },
             ],
 
-            component: ManagerApp,
-            name: 'manager',
-            path: '/manager',
+            component: AdminApp,
+            name: 'admin',
+            path: '/admin',
         },
         {
             children: [
                 {
-                    component: UserSplash,
-                    name: 'splash',
+                    component: Splash,
+                    name: 'conference-splash',
                     path: '/',
                 },
                 {
-                    component: UserSettings,
-                    name: 'settings',
+                    component: ConferenceSettings,
+                    name: 'conference-settings',
                     path: '/settings/:tabId',
                 },
                 {
-                    name: 'main',
+                    name: 'conference-main',
                     path: '/',
                     redirect: () => {
                         // Don't allow to route to the splash-screen while
                         // being connected to a group.
                         if (app.$s.group.connected) {
-                            return {name: 'groups', params: {groupId: app.$s.group.name}}
+                            return {name: 'conference-groups', params: {groupId: app.$s.group.name}}
                         } else {
-                            return {name: 'splash'}
+                            return {name: 'conference-splash'}
                         }
                     },
                 },
                 {
-                    name: 'groups',
+                    name: 'conference-groups',
                     path: '/groups/:groupId',
                     redirect: () => {
                         if (!app.$s.group.connected) {
-                            return {name: 'groupsDisconnected'}
+                            return {name: 'conference-groups-disconnected'}
                         }
-                        return {name: 'groupsConnected'}
+                        return {name: 'conference-groups-connected'}
                     },
                 },
                 {
-                    component: UserStreamView,
-                    name: 'groupsConnected',
+                    component: ConferenceStreamView,
+                    name: 'conference-groups-connected',
                     path: '/groups/:groupId',
                 },
                 {
-                    component: UserLogin,
-                    name: 'groupsDisconnected',
+                    component: ConferenceLogin,
+                    name: 'conference-groups-disconnected',
                     path: '/groups/:groupId/login',
                 },
             ],
-            component: UserApp,
-            name: 'user',
+            component: ConferenceApp,
+            name: 'conference',
             path: '/',
         },
     ]

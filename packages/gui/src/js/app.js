@@ -298,21 +298,20 @@ class Pyrite extends EventEmitter {
         await this.managerContext()
         this.router = router(this)
         this.router.beforeResolve((to, from, next) => {
-            // All manager routes are authenticated.
-            if ((to.name && to.name !== 'manager-login' && to.name.startsWith('manager')) && !this.$s.manager.authenticated) {
-                console.log("BLA")
-                next({name: 'manager-login'})
+            // All admin routes are authenticated.
+            if ((to.name && to.name !== 'admin-login' && to.name.startsWith('admin')) && !this.$s.admin.authenticated) {
+                next({name: 'admin-login'})
                 return
             }
 
             if (!this.$s.group.connected) {
                 // Navigating groups will change the internally used groupId;
                 // but only when not connected to a group already.
-                if (to.name === 'groupsDisconnected') {
+                if (to.name === 'conference-groups-disconnected') {
                     this.$s.group.name = to.params.groupId
                 }
-            } else if (to.name === 'manager-group') {
-                this.$s.manager.group.name = to.params.groupId
+            } else if (to.name === 'admin-group') {
+                this.$s.admin.group.name = to.params.groupId
             }
             next()
         })
@@ -326,7 +325,7 @@ class Pyrite extends EventEmitter {
         })
 
         const context = await res.json()
-        Object.assign(this.$s.manager, context)
+        Object.assign(this.$s.admin, context)
     }
 
     mapRequest(what) {
@@ -415,7 +414,7 @@ class Pyrite extends EventEmitter {
             this.notifier.notify({level: 'error', message: `Socket close ${code}: ${reason}`})
         }
 
-        this.router.push({name: 'groups'}, {params: {groupId: app.$s.group.name}})
+        this.router.push({name: 'conference-groups'}, {params: {groupId: app.$s.group.name}})
     }
 
     onConnected() {

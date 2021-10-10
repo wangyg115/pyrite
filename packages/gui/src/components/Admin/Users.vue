@@ -1,11 +1,12 @@
 <template>
-    <section class="c-manager-users">
-        <div v-for="user of $s.manager.users" :key="user.name" class="group item">
+    <section class="c-admin-users">
+        <div v-for="user of $s.admin.users" :key="user.id" class="group item">
             <Icon class="item-icon icon-small" name="User" />
             <RouterLink
                 class="name"
-                :class="{active: $s.manager.user && $s.manager.user.name === user.name}"
-                :to="{name: 'manager-user', params: {userId: user.name, tabId: 'misc'}}"
+                :class="{active: $route.params.userId === user.id}"
+                :to="{name: 'admin-users-user', params: {userId: user.id, tabId: 'misc'}}"
+                @click="toggleSelection(user.name)"
             >
                 {{ user.name }}
             </Routerlink>
@@ -23,7 +24,7 @@ export default {
     methods: {
         async loadUsers() {
             const res = await fetch('/api/users')
-            this.$s.manager.users = await res.json()
+            this.$s.admin.users = await res.json()
         },
         selectUser(user) {
             if (!user || this.selected === user.name) {
@@ -32,14 +33,20 @@ export default {
                 this.selected = user.name
             }
         },
+        toggleSelection(userId) {
+            // Current clicked user is selected already; deselect by navigating to admin-users
+            if (this.$route.name === 'admin-users-user' && this.$route.params.userId === userId) {
+                this.$router.push({name: 'admin-users'})
+            }
+        },
     },
     async mounted() {
-        if (this.$s.manager.authenticated) {
+        if (this.$s.admin.authenticated) {
             this.loadUsers()
         }
     },
     watch: {
-        '$s.manager.authenticated': async function(authenticated) {
+        '$s.admin.authenticated': async function(authenticated) {
             if (authenticated) this.loadUsers()
         },
     },
@@ -48,7 +55,7 @@ export default {
 
 <style lang="scss">
 
-.c-manager-groups {
+.c-admin-groups {
 
     .row {
         color: var(--grey-7);

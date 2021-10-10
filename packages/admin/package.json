@@ -4,14 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon manager.js"
+    "dev": "nodemon service.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/garage44/pyrite.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Pyrite Contributors",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/garage44/pyrite/issues"
   },

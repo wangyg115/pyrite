@@ -1,6 +1,6 @@
 <template>
     <div
-        class="c-user-app app theme-dark" :class="{
+        class="c-conference-app app theme-dark" :class="{
             connected: $s.group.connected,
             'chat-hidden': $s.chat.hidden,
             'chat-toggle': chatToggle,
@@ -70,12 +70,11 @@ export default {
             })
         },
     },
-    name: 'UserApp',
 }
 </script>
 
 <style lang="scss">
-.c-user-app {
+.c-conference-app {
 
     &.dashboard {
         grid-template-columns: var(--space-4) 1fr 1fr;

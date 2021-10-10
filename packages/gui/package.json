@@ -1,6 +1,6 @@
 {
   "name": "@garage44/pyrite-gui",
-  "description": "Video conferencing client for Galène",
+  "description": "Video Communication GUI for Galène",
   "version": "1.8.2",
   "publishConfig": {
     "access": "public"
@@ -34,6 +34,6 @@
   },
   "homepage": "https://github.com/garage44/pyrite#readme",
   "main": "vite.config.js",
-  "author": "",
-  "license": "ISC"
+  "author": "Pyrite Contributors",
+  "license": "MIT"
 }

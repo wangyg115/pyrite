@@ -11,14 +11,14 @@
             <RouterLink
                 class="btn btn-menu tab tooltip"
                 :data-tooltip="$t('miscellaneous')"
-                :to="{name: 'settings', params: {tabId: 'misc'}}"
+                :to="{name: 'conference-settings', params: {tabId: 'misc'}}"
             >
                 <Icon class="icon-small" name="SettingsMisc" />
             </RouterLink>
             <RouterLink
                 class="btn btn-menu tab tooltip"
                 :data-tooltip="$t('devices')"
-                :to="{name: 'settings', params: {tabId: 'devices'}}"
+                :to="{name: 'conference-settings', params: {tabId: 'devices'}}"
             >
                 <Icon class="icon-small" name="Headset" />
             </RouterLink>

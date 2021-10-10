@@ -1,8 +1,8 @@
 <template>
-    <div class="c-manager-app app theme-dark">
+    <div class="c-admin-app app theme-dark">
         <Header>
-            <ManagerUsers v-if="$route.name.startsWith('manager-user')" />
-            <ManagerGroups v-else />
+            <AdminUsers v-if="$route.name.startsWith('admin-users')" />
+            <AdminGroups v-else />
         </Header>
         <Controls />
         <RouterView />
@@ -11,13 +11,13 @@
 </template>
 
 <script>
+import AdminGroups from './Groups.vue'
+import AdminUsers from './Users.vue'
 import Controls from './Controls.vue'
 import Header from '../Header.vue'
-import ManagerGroups from './Groups.vue'
-import ManagerUsers from './Users.vue'
 
 export default {
-    components: {Controls, Header, ManagerGroups, ManagerUsers},
+    components: {AdminGroups, AdminUsers, Controls, Header},
     data() {
         return {
             version: import.meta.env.VITE_VERSION,
@@ -27,7 +27,7 @@ export default {
 </script>
 
 <style lang="scss">
-.c-manager-app {
+.c-admin-app {
     --primary-color-h: 0;
     --primary-color-s: 40%;
 

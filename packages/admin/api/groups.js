@@ -5,7 +5,7 @@ import path from 'path'
 
 export default function(app) {
     /**
-     * List all groups.
+     * Read all groups.
      */
     app.get('/api/groups', async function(req, res) {
         const files = await globby(path.join(app.settings.paths.groups, '**'))
@@ -26,7 +26,7 @@ export default function(app) {
     })
 
     /**
-     * List an existing group.
+     * Read an existing group.
      */
     app.get('/api/groups/:groupid', async function(req, res) {
         const groupId = req.params.groupid
@@ -43,12 +43,12 @@ export default function(app) {
     })
 
     /**
-     * Edit an existing group or create a new group
-     * when it doesn't exist yet.
+     * Create a new or update an existing group.
      */
     app.post('/api/groups/:groupid', async function(req, res) {
         const groupId = req.params.groupid
         const targetFile = path.join(app.settings.paths.groups, `${groupId}.json`)
+        // TODO: Schema validation
         const groupData = req.body
         // The name property is Pyrite-only; e.g. don't store it
         // in the groups definition file.
@@ -61,12 +61,12 @@ export default function(app) {
     /**
      * Delete an existing group.
      */
-    app.get('/manager/groups/:groupname/delete', async function(req, res) {
-        const groupName = req.params.groupname
-        const groupFile = path.join(app.settings.paths.groups, `${groupName}.json`)
+    app.get('/manager/groups/:groupid/delete', async function(req, res) {
+        const groupId = req.params.groupid
+        const groupFile = path.join(app.settings.paths.groups, `${groupId}.json`)
         app.logger.info(`removing group file ${groupFile}`)
         await fs.remove(groupFile)
-        await fetch(`${app.settings.endpoints}/group/${groupName}`)
+        await fetch(`${app.settings.endpoints}/group/${groupId}`)
         res.end(JSON.stringify({status: 'ok'}))
     })
 
