@@ -48,7 +48,7 @@ export default function(app) {
                 {
                     component: AdminUser,
                     name: 'admin-users-user',
-                    path: '/admin/users/:userId',
+                    path: '/admin/users/:userId/:tabId',
                 },
             ],
 

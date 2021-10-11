@@ -31,13 +31,14 @@ export default function(app) {
      * Create a new or update an existing user.
      */
     app.post('/api/users/:userid', async function(req, res) {
-        const userId = req.params.userid
+        const userId = parseInt(req.params.userid)
         // TODO: Schema validation
         const postedData = req.body
 
         let userData = JSON.parse(await fs.promises.readFile(targetFile, 'utf8'))
+
         for (let [index, user] of userData.entries()) {
-            if (user.name === userId) {
+            if (user.id === userId) {
                 userData[index] = postedData
             }
         }

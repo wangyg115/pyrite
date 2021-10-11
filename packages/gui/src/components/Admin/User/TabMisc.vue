@@ -13,6 +13,11 @@
             label="User Password"
             placeholder="..."
         />
+        <FieldCheckbox
+            v-model="$s.admin.user.admin"
+            help="Grants Pyrite admin privileges"
+            label="Admin"
+        />
     </section>
 </template>
 

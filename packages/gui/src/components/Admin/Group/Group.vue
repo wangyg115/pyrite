@@ -75,6 +75,8 @@ export default defineComponent({
                 },
                 method: 'POST',
             })
+
+            app.notifier.notify({level: 'info', message: this.$t('Group saved')})
         },
     },
     watch: {

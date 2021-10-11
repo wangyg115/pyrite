@@ -5,7 +5,7 @@
             :key="group.name"
             class="group item"
         >
-            <input type="checkbox">
+            <input v-model="$s.admin.user.groups.other" type="checkbox" :value="group.name">
             <RouterLink
                 class="name"
                 :class="{active: $route.params.groupId === group.name}"
