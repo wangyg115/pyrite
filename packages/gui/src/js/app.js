@@ -311,7 +311,7 @@ class Pyrite extends EventEmitter {
                     this.$s.group.name = to.params.groupId
                 }
             } else if (to.name === 'admin-group') {
-                this.$s.admin.group.name = to.params.groupId
+                this.$s.admin.group._name = to.params.groupId
             }
             next()
         })

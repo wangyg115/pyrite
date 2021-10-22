@@ -49,6 +49,5 @@ app.vm.directive('click-outside', {
     await app.init()
     app.vm.use(app.router).use(app.i18n)
     app.vm.mount('#app')
-
 })()
 

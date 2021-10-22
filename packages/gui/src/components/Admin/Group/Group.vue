@@ -3,7 +3,7 @@
         <header>
             <div class="notice" />
             <div class="title">
-                <span>{{ $s.admin.group.name }}</span>
+                <span>{{ $s.admin.group._name }}</span>
                 <Icon class="icon icon-regular" name="Group" />
             </div>
         </header>
@@ -12,14 +12,14 @@
             <RouterLink
                 class="btn btn-menu tab tooltip"
                 :data-tooltip="$t('miscellaneous')"
-                :to="{name: 'admin-groups-group', params: {groupId: $s.admin.group.name, tabId: 'misc'}}"
+                :to="{name: 'admin-groups-group', params: {groupId: $s.admin.group._name, tabId: 'misc'}}"
             >
                 <Icon class="icon-small" name="SettingsMisc" />
             </RouterLink>
             <RouterLink
                 class="btn btn-menu tab tooltip"
                 :data-tooltip="$t('access')"
-                :to="{name: 'admin-groups-group', params: {groupId: $s.admin.group.name, tabId: 'access'}}"
+                :to="{name: 'admin-groups-group', params: {groupId: $s.admin.group._name, tabId: 'access'}}"
             >
                 <Icon class="icon-small" name="Access" />
             </RouterLink>
@@ -66,7 +66,7 @@ export default defineComponent({
             this.$s.admin.group = await res.json()
         },
         async saveGroup() {
-            const groupId = this.$s.admin.group.name
+            const groupId = this.$s.admin.group._name
             await fetch(`/api/groups/${encodeURIComponent(groupId)}`, {
                 body: JSON.stringify(this.$s.admin.group),
                 credentials: 'same-origin',

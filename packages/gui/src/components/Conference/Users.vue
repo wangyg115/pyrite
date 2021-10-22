@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <section class="c-users presence">
         <div v-for="user of sortedUsers" :key="user.id" class="user item">
             <Icon
                 v-if="user.status.raisehand"

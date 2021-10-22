@@ -1,18 +1,18 @@
 <template>
     <section class="c-admin-group-tab-other tab-content active">
         <div
-            v-for="group of $s.admin.groups"
-            :key="group.name"
+            v-for="groupName of Object.keys($s.admin.groups)"
+            :key="groupName"
             class="group item"
         >
-            <input v-model="$s.admin.user.groups.other" type="checkbox" :value="group.name">
+            <input v-model="$s.admin.user.groups.other" type="checkbox" :value="groupName">
             <RouterLink
                 class="name"
-                :class="{active: $route.params.groupId === group.name}"
-                :to="{name: 'admin-groups-group', params: {groupId: group.name, tabId: 'misc'}}"
-                @click="toggleSelection(group.name)"
+                :class="{active: $route.params.groupId === groupName}"
+                :to="{name: 'admin-groups-group', params: {groupId: groupName, tabId: 'misc'}}"
+                @click="toggleSelection(groupName)"
             >
-                {{ group.name }}
+                {{ groupName }}
             </Routerlink>
         </div>
     </section>

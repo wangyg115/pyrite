@@ -1,5 +1,5 @@
 <template>
-    <section class="c-groups">
+    <section class="c-groups presence">
         <div v-for="group of groups" :key="group.name" class="group item">
             <Icon v-if="!group.locked" class="item-icon icon-small" name="Group" />
             <Icon v-else class="item-icon icon-small" name="GroupLocked" />
@@ -16,11 +16,17 @@
                 <Icon class="icon-small" name="User" />
             </div>
         </div>
+        <div v-if="!groups.length" class="group item no-public-groups">
+            <Icon class="item-icon icon-small" name="Group" />
+            <div class="name">
+                {{ $t('No public groups') }}
+            </div>
+        </div>
         <div class="group group-input item">
             <FieldText
                 v-model="$s.group.name"
                 class="custom-group"
-                :help="$t('For unlisted groups')"
+                :help="$t('Join unlisted group')"
                 name="group"
                 placeholder="..."
                 @focus="updateRoute"
@@ -48,7 +54,8 @@ export default {
         },
         updateRoute() {
             if (this.$s.group.name) {
-                this.$s.group.locked = this.groups.find((i) => i.name === this.$s.group.name).locked
+                // Assume unlocked, when there are no public groups
+                this.$s.group.locked = this.groups.find((i) => i.name === this.$s.group.name)?.locked || false
 
                 // Update the group route when the user sets the group name.
                 this.$router.replace({name: 'conference-groups', params: {groupId: this.$s.group.name}})
@@ -89,6 +96,14 @@ export default {
 .c-groups {
 
     .group {
+
+        &.no-public-groups {
+
+            .icon,
+            .name {
+                color: var(--grey-5);
+            }
+        }
 
         .count {
             align-items: center;

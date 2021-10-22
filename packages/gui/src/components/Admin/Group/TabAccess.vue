@@ -8,7 +8,7 @@
         <FieldCheckbox
             v-model="$s.admin.group['allow-subgroups']"
             help="When enabled, subgroups of the form group/subgroup are automatically created when first accessed"
-            label="SubGroups"
+            label="Subgroups"
         />
         <FieldCheckbox
             v-model="$s.admin.group.autolock"

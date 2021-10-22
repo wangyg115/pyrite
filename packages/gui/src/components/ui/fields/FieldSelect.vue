@@ -56,7 +56,6 @@ export default {
         currentOption() {
             if (this.modelValue) {
                 const currentOption = this.options.find((o) => o.id === this.modelValue)
-                console.log("CURRENT OPTION", this.modelValue)
                 if (currentOption) {
                     return currentOption.name
                 }

@@ -2,33 +2,18 @@
     display: flex;
     flex-direction: column;
 
-    header {
-        align-items: center;
-        background: var(--grey-2);
-        border-bottom: var(--border) solid var(--grey-4);
-        display: flex;
-        font-weight: bold;
-        height: var(--space-4);
-        margin-bottom: var(--spacer);
-        padding-right: var(--spacer);
-        position: relative;
+    .actions {
+        padding: var(--spacer);
 
-        .logo {
+        .icon {
 
-            svg {
+            &:hover {
                 color: var(--primary-color);
-                margin-right: var(--spacer);
+                cursor: pointer;
             }
-
-        }
-
-        .version {
-            bottom: 0;
-            font-size: var(--text-small);
-            position: absolute;
-            right: calc(var(--spacer) * 1.75);
         }
     }
+
 
     .item {
         align-items: center;

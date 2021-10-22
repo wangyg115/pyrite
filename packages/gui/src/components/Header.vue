@@ -115,33 +115,5 @@ export default defineComponent({
             right: calc(var(--spacer) * 1.75);
         }
     }
-
-    .item {
-        align-items: center;
-        display: flex;
-        padding: calc(var(--spacer) / 2) var(--spacer);
-
-        .item-icon {
-            align-items: center;
-            color: var(--primary-color);
-            display: flex;
-            margin-right: var(--spacer);
-        }
-
-        .name {
-            align-items: center;
-            color: var(--grey-7);
-            display: flex;
-            flex: 1;
-            font-family: var(--font-secondary);
-            font-weight: 600;
-            line-height: 100%;
-
-            &.active {
-                color: var(--primary-color);
-            }
-        }
-
-    }
 }
 </style>

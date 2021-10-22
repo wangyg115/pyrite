@@ -9,7 +9,6 @@ export default [
         id: 1,
         name:"alice",
         password: "alice",
-
     },
     {
         admin: true,

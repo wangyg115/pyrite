@@ -24,7 +24,7 @@
             class="btn btn-menu tooltip"
             :class="{active: $route.name === 'admin-groups-group'}"
             :data-tooltip="$t('Groups')"
-            :to="{name: 'admin-groups-group', params: {groupId: $s.admin.group.name, tabId: 'misc'}}"
+            :to="{name: 'admin-groups-group', params: {groupId: $s.admin.group._name, tabId: 'misc'}}"
         >
             <Icon class="icon-small" name="Group" />
         </RouterLink>
@@ -42,7 +42,7 @@
             v-if="$s.admin.group"
             class="btn btn-menu tooltip" :class="{active: $route.name === 'admin-groups'}"
             :data-tooltip="$t('Groups')"
-            :to="{name: 'admin-groups-group-recordings', params: {groupId: $s.admin.group.name}}"
+            :to="{name: 'admin-groups-group-recordings', params: {groupId: $s.admin.group._name}}"
         >
             <Icon class="icon-small" name="Record" />
         </RouterLink>

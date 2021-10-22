@@ -1,8 +1,5 @@
 <template>
     <section class="c-admin-group-tab-misc tab-content active">
-        <div class="read-only">
-            <span>Id</span><br> {{ $s.admin.user.id }}
-        </div>
         <FieldText
             v-model="$s.admin.user.name"
             label="Username"
@@ -10,7 +7,7 @@
         />
         <FieldText
             v-model="$s.admin.user.password"
-            label="User Password"
+            label="Password"
             placeholder="..."
         />
         <FieldCheckbox

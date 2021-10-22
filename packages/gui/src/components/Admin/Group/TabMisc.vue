@@ -1,7 +1,7 @@
 <template>
     <section class="c-admin-group-tab-misc tab-content active">
         <FieldText
-            v-model="$s.admin.group.name"
+            v-model="$s.admin.group._name"
             label="Group Name"
             placeholder="..."
         />

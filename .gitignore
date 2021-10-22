@@ -1,3 +1,7 @@
 node_modules
 dist
 galene/data/users.json
+galene/groups
+packages/admin/combined.log
+packages/admin/error.log
+packages/gui/package-lock.json

@@ -1,10 +1,10 @@
 <template>
-    <section class="c-admin-users">
+    <section class="c-admin-users presence">
         <div v-for="user of $s.admin.users" :key="user.id" class="group item">
             <Icon class="item-icon icon-small" name="User" />
             <RouterLink
                 class="name"
-                :class="{active: $route.params.userId === user.id}"
+                :class="{active: parseInt($route.params.userId) === user.id}"
                 :to="{name: 'admin-users-user', params: {userId: user.id, tabId: 'misc'}}"
                 @click="toggleSelection(user.id)"
             >
