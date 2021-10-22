@@ -1,14 +1,26 @@
 <template>
     <section class="c-admin-groups presence">
         <div class="actions">
-            <Icon class="item-icon icon-small" name="Plus" @click="addGroup" />
+            <button class="btn">
+                <Icon class="item-icon icon-small" name="Plus" @click="addGroup" />
+            </button>
+            <button class="btn" :disabled="!$s.admin.group" @click="deleteGroup">
+                <Icon class="item-icon icon-small" name="Minus" />
+            </button>
+            <button
+                class="btn tooltip tooltip-left"
+                :data-tooltip="$s.group.locked ? $t('join locked group') : $t('save group')"
+                @click="saveGroup"
+            >
+                <Icon class="icon-small" name="Save" />
+            </button>
         </div>
         <div
             v-for="group of orderedGroups"
             :key="group._name"
             class="group item"
         >
-            <Icon class="item-icon icon-small" :name="group.public ? 'Group' : 'GroupHidden'" />
+            <Icon class="item-icon icon-small" :class="{unsaved: group._unsaved}" :name="group.public ? 'Group' : 'GroupHidden'" />
             <RouterLink
                 class="name"
                 :class="{active: $route.params.groupId === group._name}"
@@ -24,12 +36,19 @@
 <script>
 export default {
     computed: {
-        // List the non-public groups at the bottom, so the group list
-        // at the upper side is the same as the public group list for users.
+        /**
+         * List the non-public groups at the bottom, so the group list
+         * at the upper side is the same as the public group list
+         * for users.
+         */
         orderedGroups() {
-            return this.$s.admin.groups
-                .filter((g) => g.public)
-                // .concat(this.$s.admin.groups.filter((g) => !g.public))
+            const groups = this.$s.admin.groups
+                .filter((g) => g.public).concat(this.$s.admin.groups.filter((g) => !g.public))
+            return groups.sort((a, b) => {
+                if ( a._name < b._name) return -1
+                if ( a._name > b._name) return 1
+                return 0
+            })
         },
     },
     data() {
@@ -39,30 +58,56 @@ export default {
     },
     methods: {
         async addGroup() {
-            // Load group template
-            // $groupname is variabl
             const group = await (await fetch('/api/groups/template')).json()
             app.$s.admin.groups.push(group)
+            this.toggleSelection(group._name)
         },
-        async loadGroups() {
-            const res = await fetch('/api/groups')
-            this.$s.admin.groups = await res.json()
-        },
-        toggleSelection(groupId) {
-            // Current clicked user is selected already; deselect by navigating to admin-users
-            if (this.$route.name === 'admin-groups-group' && this.$route.params.groupId === groupId) {
-                this.$router.push({name: 'admin-groups'})
+        async deleteGroup() {
+            this.$s.admin.groups.splice(this.$s.admin.groups.findIndex((g) => g._name === this.$s.admin.group._name), 1)
+            if (!this.$s.admin.group._unsaved) {
+                fetch(`/api/groups/${app.$s.admin.group._name}/delete`)
+            }
+
+            if (this.orderedGroups.length) {
+                this.toggleSelection(this.orderedGroups[0]._name)
             }
         },
-    },
-    async mounted() {
-        if (this.$s.admin.authenticated) {
-            this.loadGroups()
-        }
-    },
-    watch: {
-        '$s.admin.authenticated': async function(authenticated) {
-            if (authenticated) this.loadGroups()
+        async loadGroups() {
+            this.$s.admin.groups = await (await fetch('/api/groups')).json()
+        },
+        async saveGroup() {
+            const groupId = this.$s.admin.group._name
+            const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}`, {
+                body: JSON.stringify(this.$s.admin.group),
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+            })
+
+            const group = await res.json()
+            // Update group data from save.
+            this.$s.admin.groups[this.$s.admin.groups.findIndex((g) => g._name === group._name)] = group
+
+            // Select the next unsaved group, when this group was unsaved
+            // to allow rapid group creation.
+            if (this.$s.admin.group._unsaved) {
+                const nextGroupIndex = this.orderedGroups.findIndex((g) => g._unsaved)
+                if (nextGroupIndex >= 0) {
+                    this.toggleSelection(this.orderedGroups[nextGroupIndex]._name)
+                }
+
+            }
+            app.notifier.notify({level: 'info', message: this.$t('Group saved')})
+        },
+        toggleSelection(groupId) {
+            if (this.$route.name === 'admin-groups-group' && this.$route.params.groupId === groupId) {
+                this.$s.admin.group = null
+                this.$router.push({name: 'admin-groups'})
+            } else {
+                this.$router.push({name: 'admin-groups-group', params: {groupId: groupId, tabId: 'misc'}})
+            }
         },
     },
 }

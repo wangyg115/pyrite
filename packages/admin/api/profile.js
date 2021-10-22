@@ -1,22 +1,19 @@
 import fs from 'fs-extra'
+import {loadGroups} from '../lib/group.js'
 import path from 'path'
 
 export default function(app) {
-    /**
-     * Retrieve the current user's manager context.
-     */
+
     app.get('/api/context', async function(req, res) {
         const session=req.session
-        if (session.userid ) {
-            res.end(JSON.stringify({authenticated: true}))
+        const [groupNames, groups] = await loadGroups()
+        if (session.userid) {
+            res.end(JSON.stringify({authenticated: true, groups}))
         } else {
-            res.end(JSON.stringify({authenticated: true}))
+            res.end(JSON.stringify({authenticated: true, groups}))
         }
     })
 
-    /**
-     * Login as manager with the credentials from data/passwd.
-     */
     app.post('/api/login', async function(req, res) {
         const targetFile = path.join(app.settings.paths.data, 'passwd')
         let [username, password] = (await fs.promises.readFile(targetFile, 'utf8')).trim().split(':')
@@ -29,11 +26,9 @@ export default function(app) {
         }
     })
 
-    /**
-     * Log the manager out.
-     */
     app.get('/api/logout',(req, res) => {
         req.session.destroy()
+        res.end(JSON.stringify({status: 'ok'}))
     })
 }
 

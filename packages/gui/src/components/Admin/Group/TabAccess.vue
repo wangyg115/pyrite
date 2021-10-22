@@ -6,6 +6,11 @@
             label="Public"
         />
         <FieldCheckbox
+            v-model="$s.admin.group['allow-anonymous']"
+            help="When enabled, the group becomes visible on the landing page"
+            label="Allow Anonymous"
+        />
+        <FieldCheckbox
             v-model="$s.admin.group['allow-subgroups']"
             help="When enabled, subgroups of the form group/subgroup are automatically created when first accessed"
             label="Subgroups"

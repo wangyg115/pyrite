@@ -41,8 +41,6 @@ class Pyrite extends EventEmitter {
 
         this.$t = this.i18n.global.t
         this.notifier = Notifier(this)
-
-        this.init()
     }
 
     async addFileMedia(file) {
