@@ -29,12 +29,16 @@ export function groupTemplate(groupId = null) {
 }
 
 export async function loadGroup(groupName) {
+    app.logger.debug(`load group ${groupName}`)
     const groupFile = path.join(app.settings.paths.groups, `${groupName}.json`)
+    const exists = await fs.pathExists(groupFile)
+    if (!exists) return null
     const groupData = JSON.parse(await fs.promises.readFile(groupFile, 'utf8'))
     return groupData
 }
 
 export async function loadGroups() {
+    app.logger.debug(`load groups`)
     const files = await globby(path.join(app.settings.paths.groups, '**', '*.json'))
     const fileData = await Promise.all(files.map((i) => fs.promises.readFile(i, 'utf8')))
     const groupNames = files.map((i) => {

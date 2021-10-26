@@ -46,6 +46,7 @@
         >
             <Icon class="icon-small" name="Record" />
         </RouterLink>
+
         <button v-else class="btn btn-menu" disabled>
             <Icon class="icon-small" name="Record" />
         </button>

@@ -12,7 +12,7 @@ import path from 'path'
 
 import rc from 'rc'
 import sessions from 'express-session'
-import userTemplate from './lib/user.js'
+import {userTemplate} from './lib/user.js'
 import winston from 'winston'
 
 const basedir =path.dirname(import.meta.url).replace('file://', '')
@@ -56,6 +56,7 @@ if (process.env.NODE_ENV !== 'production') {
             winston.format.timestamp(),
             logFormat,
         ),
+        level: 'debug',
     }))
 }
 

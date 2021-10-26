@@ -41,9 +41,9 @@
 
         <div class="tabs-content">
             <TabMisc v-if="$route.params.tabId === 'misc'" />
-            <TabOp v-if="$route.params.tabId === 'op'" />
-            <TabPresenter v-if="$route.params.tabId === 'presenter'" />
-            <TabOther v-if="$route.params.tabId === 'other'" />
+            <TabPermissions v-if="$route.params.tabId === 'op'" category="op" />
+            <TabPermissions v-if="$route.params.tabId === 'presenter'" category="presenter" />
+            <TabPermissions v-if="$route.params.tabId === 'other'" category="other" />
 
             <div class="actions">
                 <button
@@ -61,9 +61,7 @@
 <script>
 import {defineComponent} from 'vue'
 import TabMisc from './TabMisc.vue'
-import TabOp from './TabOp.vue'
-import TabOther from './TabOther.vue'
-import TabPresenter from './TabPresenter.vue'
+import TabPermissions from './TabPermissions.vue'
 
 export default defineComponent({
     async beforeMount() {
@@ -72,7 +70,7 @@ export default defineComponent({
     async beforeRouteUpdate(to) {
         this.userId = to.params.userId
     },
-    components: {TabMisc, TabOp, TabOther, TabPresenter},
+    components: {TabMisc, TabPermissions},
     data() {
         return {
             userId: null,

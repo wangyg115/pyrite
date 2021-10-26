@@ -1,19 +1,12 @@
 <template>
-    <section class="c-admin-group-tab-presenter tab-content active">
+    <section class="c-admin-group-tab-op tab-content active">
         <div
-            v-for="groupName of Object.keys($s.admin.groups)"
-            :key="groupName"
+            v-for="group of $s.admin.groups"
+            :key="group._name"
             class="group item"
         >
-            <input v-model="$s.admin.user.groups.presenter" type="checkbox" :value="groupName">
-            <RouterLink
-                class="name"
-                :class="{active: $route.params.groupId === groupName}"
-                :to="{name: 'admin-groups-group', params: {groupId: groupName, tabId: 'misc'}}"
-                @click="toggleSelection(groupName)"
-            >
-                {{ groupName }}
-            </Routerlink>
+            <input v-model="$s.admin.user.groups[category]" type="checkbox" :value="group._name">
+            {{ group._name }}
         </div>
     </section>
 </template>
@@ -33,11 +26,17 @@ export default defineComponent({
             this.loadGroups()
         }
     },
+    props: {
+        category: {
+            required: true,
+            type: String,
+        },
+    },
 })
 </script>
 
 <style lang="scss">
-.c-admin-group-tab-presenter {
+.c-admin-group-tab-op {
 
     .group {
         padding: var(--spacer) 0;
