@@ -59,7 +59,7 @@ export default {
     methods: {
         async addGroup() {
             const group = await (await fetch('/api/groups/template')).json()
-            app.$s.admin.groups.push(group)
+            this.$s.admin.groups.push(group)
             this.toggleSelection(group._name)
         },
         async deleteGroup() {
@@ -77,19 +77,7 @@ export default {
         },
         async saveGroup() {
             const groupId = this.$s.admin.group._name
-            const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}`, {
-                body: JSON.stringify(this.$s.admin.group),
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                method: 'POST',
-            })
-
-            const group = await res.json()
-            // Update group data from save.
-            this.$s.admin.groups[this.$s.admin.groups.findIndex((g) => g._name === group._name)] = group
-
+            await this.$m.groups.saveGroup(groupId, this.$s.admin.group)
             // Select the next unsaved group, when this group was unsaved
             // to allow rapid group creation.
             if (this.$s.admin.group._unsaved) {
@@ -97,9 +85,7 @@ export default {
                 if (nextGroupIndex >= 0) {
                     this.toggleSelection(this.orderedGroups[nextGroupIndex]._name)
                 }
-
             }
-            app.notifier.notify({level: 'info', message: this.$t('Group saved')})
         },
         toggleSelection(groupId) {
             if (this.$route.name === 'admin-groups-group' && this.$route.params.groupId === groupId) {

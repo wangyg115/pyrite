@@ -67,7 +67,6 @@ export async function syncUserGroups(targetUser) {
             const galeneUserEntryIndex = galeneGroup[roleName].findIndex((g) => g.username === targetUser.name)
             if (galeneUserEntryIndex >= 0) {
                 app.logger.info(`updating ${targetUser.name} in group ${groupName}`)
-                // E.g. Update password.
                 galeneGroup[roleName][galeneUserEntryIndex] = {password: targetUser.password, username: targetUser.name}
             } else {
                 app.logger.info(`adding ${targetUser.name} to group ${groupName}`)

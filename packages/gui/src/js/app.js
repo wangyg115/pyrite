@@ -13,6 +13,8 @@ import protocol from './protocol.js'
 import router from '../js/router.js'
 import Store from './store.js'
 
+import groupModel from './models/group.js'
+
 class Pyrite extends EventEmitter {
 
     constructor() {
@@ -22,6 +24,10 @@ class Pyrite extends EventEmitter {
 
         this.animate = animate
         this.env = env
+
+        this.$m = {
+            groups: groupModel,
+        }
 
         this.protocol = protocol
 

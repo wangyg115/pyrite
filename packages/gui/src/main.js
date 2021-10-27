@@ -18,7 +18,9 @@ import Pyrite from './js/app.js'
 const app = globalThis.app = new Pyrite()
 
 app.vm = createApp(App)
+
 app.vm.config.globalProperties.$s = app.$s
+app.vm.config.globalProperties.$m = app.$m
 
 app.vm.component('Notifications', Notifications)
 app.vm.component('Icon', Icon)

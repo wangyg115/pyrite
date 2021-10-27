@@ -28,6 +28,16 @@
         <div class="tabs-content">
             <TabMisc v-if="$route.params.tabId === 'misc'" />
             <TabAccess v-else-if="$route.params.tabId === 'access'" />
+
+            <div class="actions">
+                <button
+                    class="btn btn-menu tooltip tooltip-left"
+                    :data-tooltip="$t('save user')"
+                    @click="saveGroup"
+                >
+                    <Icon class="icon-small" name="Save" />
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -60,26 +70,7 @@ export default defineComponent({
         },
         async saveGroup() {
             const groupId = this.$s.admin.group._name
-            const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}`, {
-                body: JSON.stringify(this.$s.admin.group),
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                method: 'POST',
-            })
-
-            // Select the next unsaved group, when this group was unsaved to speed up group creation.
-            if (this.$s.admin.group._unsaved) {
-                this.ord
-            }
-
-            const group = await res.json()
-
-            // Update group data from save.
-            this.$s.admin.groups[this.$s.admin.groups.findIndex((g) => g._name === group._name)] = group
-
-            app.notifier.notify({level: 'info', message: this.$t('Group saved')})
+            await this.$m.groups.saveGroup(groupId, this.$s.admin.group)
         },
     },
     watch: {
