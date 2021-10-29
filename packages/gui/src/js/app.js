@@ -6,14 +6,14 @@ import animate from './animate'
 import {createI18n} from 'vue-i18n'
 import env from './env.js'
 import EventEmitter from 'eventemitter3'
+import groupModel from './models/group.js'
 import localeNL from '../locales/nl.js'
 import Logger from './logger.js'
 import Notifier from './notifier.js'
 import protocol from './protocol.js'
 import router from '../js/router.js'
 import Store from './store.js'
-
-import groupModel from './models/group.js'
+import userModel from './models/user.js'
 
 class Pyrite extends EventEmitter {
 
@@ -26,7 +26,8 @@ class Pyrite extends EventEmitter {
         this.env = env
 
         this.$m = {
-            groups: groupModel,
+            group: groupModel,
+            user: userModel,
         }
 
         this.protocol = protocol

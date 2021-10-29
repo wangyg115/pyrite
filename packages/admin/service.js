@@ -11,6 +11,7 @@ import fs from 'fs-extra'
 import path from 'path'
 
 import rc from 'rc'
+import {saveUser} from './lib/user.js'
 import sessions from 'express-session'
 import {userTemplate} from './lib/user.js'
 import winston from 'winston'
@@ -68,7 +69,9 @@ const usersFile = path.join(app.settings.paths.data, 'users.json');
 (async() => {
     const exists = await fs.pathExists(usersFile)
     if (!exists) {
-        await fs.writeJson(usersFile, userTemplate)
+        app.logger.info('writing initial users.json')
+        const user = userTemplate({admin: true, name: 'pyrite'})
+        await saveUser(user.id, user)
     }
 })()
 
@@ -88,6 +91,6 @@ apiProfile(app)
 apiUsers(app)
 
 app.listen(3030, () => {
-    app.logger.info("Pyrite manager listening on port 3030")
+    app.logger.info(`pyrite admin service listening on port ${settings.port}`)
 })
 

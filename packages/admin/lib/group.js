@@ -1,12 +1,18 @@
+import {dictionary} from './utils.js'
 import fetch from 'node-fetch'
 import fs from 'fs-extra'
 import {globby} from 'globby'
-import {nameGenerator} from './utils.js'
 import path from 'path'
+import {uniqueNamesGenerator} from 'unique-names-generator'
 
 export function groupTemplate(groupId = null) {
     return {
-        _name: groupId ? groupId : nameGenerator(),
+        _name: groupId ? groupId : uniqueNamesGenerator({
+            dictionaries: [dictionary.adjs, dictionary.nouns],
+            length: 2,
+            separator: '-',
+            style: 'lowercase',
+        }),
         _unsaved: true,
         'allow-anonymous': false,
         'allow-recording': true,
@@ -34,6 +40,8 @@ export async function loadGroup(groupName) {
     const exists = await fs.pathExists(groupFile)
     if (!exists) return null
     const groupData = JSON.parse(await fs.promises.readFile(groupFile, 'utf8'))
+    groupData._name = groupName
+    groupData._delete = false
     return groupData
 }
 
@@ -49,6 +57,7 @@ export async function loadGroups() {
     for (const [index, groupName] of groupNames.entries()) {
         const data = JSON.parse(fileData[index])
         data._name = groupName
+        data._delete = false
         groupData.push(data)
     }
 
@@ -66,8 +75,6 @@ export async function saveGroup(groupName, data) {
         if (key.startsWith('_')) delete saveData[key]
     }
     await fs.promises.writeFile(groupFile, JSON.stringify(saveData, null, '  '))
-    // This group is saved; remove the unsaved flag.
-    delete data._unsaved
     return data
 }
 

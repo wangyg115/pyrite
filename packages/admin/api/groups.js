@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import path from 'path'
-import {groupTemplate, loadGroups, pingGroups, saveGroup} from '../lib/group.js'
+import {syncUsers} from '../lib/user.js'
+import {groupTemplate, loadGroup, loadGroups, pingGroups, saveGroup} from '../lib/group.js'
 
 export default function(app) {
 
@@ -23,13 +24,10 @@ export default function(app) {
             return
         }
 
-        const targetFile = path.join(app.settings.paths.groups, `${groupId}.json`)
-        const exists = await fs.pathExists(targetFile)
-        if (exists) {
-            groupData = JSON.parse(await fs.promises.readFile(targetFile, 'utf8'))
-            groupData._name = groupId
-        } else {
-            groupData = groupTemplate(groupId)
+        groupData = await loadGroup(groupId)
+        if (!groupData) {
+            res.status(404).send({error: 'group not found'})
+            return
         }
 
         res.end(JSON.stringify(groupData))
@@ -38,7 +36,10 @@ export default function(app) {
     app.post('/api/groups/:groupid', async function(req, res) {
         const groupId = req.params.groupid
         const data = req.body
-        const group = await saveGroup(groupId, data)
+        await saveGroup(groupId, data)
+        await syncUsers()
+        await pingGroups([groupId])
+        const group = await loadGroup(groupId)
         res.end(JSON.stringify(group))
     })
 
@@ -48,6 +49,7 @@ export default function(app) {
         app.logger.info(`removing group file ${groupFile}`)
         await fs.remove(groupFile)
         const [_, groups] = await loadGroups()
+        await syncUsers()
         await pingGroups([groupId])
         res.end(JSON.stringify(groups))
     })

@@ -62,15 +62,16 @@ export default defineComponent({
     },
     methods: {
         async loadGroup(groupId) {
-            const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}`)
-            this.$s.admin.group = await res.json()
-            if (!this.$s.admin.groups.find((g) => g._name ===this.$s.admin.group._name)) {
-                this.$s.admin.groups.push(this.$s.admin.group)
+            const group = this.$s.admin.groups.find((i) => i._name === groupId)
+            if (group && group._unsaved) {
+                this.$s.admin.group = group
+            } else {
+                this.$s.admin.group = await (await fetch(`/api/groups/${encodeURIComponent(groupId)}`)).json()
             }
         },
         async saveGroup() {
             const groupId = this.$s.admin.group._name
-            await this.$m.groups.saveGroup(groupId, this.$s.admin.group)
+            await this.$m.group.saveGroup(groupId, this.$s.admin.group)
         },
     },
     watch: {

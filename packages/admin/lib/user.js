@@ -1,86 +1,114 @@
 import fs from 'fs-extra'
 import path from 'path'
-import {loadGroup, saveGroup} from './group.js'
+import {v4 as uuidv4} from 'uuid'
+import {adjectives, animals, colors, NumberDictionary, uniqueNamesGenerator} from 'unique-names-generator'
+import {loadGroups, saveGroup} from './group.js'
 
-export const userTemplate = [
-    {
-        admin:false,
-        groups:{
+export function userTemplate(overrides) {
+    const template = {
+        _unsaved: true,
+        admin: false,
+        groups: {
             op: [],
             other: [],
             presenter: [],
         },
-        id: 1,
-        name:"alice",
-        password: "alice",
-    },
-    {
-        admin: true,
-        groups: {
-            op:[],
-            other:[],
-            presenter:[],
-        },
-        id: 2,
-        name: "pyrite",
-        password: "pyrite",
-    },
-]
+        id: uuidv4(),
+        name: uniqueNamesGenerator({
+            dictionaries: [adjectives, colors, animals],
+            separator: '-',
+            style: 'lowercase',
+        }),
+        password: uniqueNamesGenerator({
+            dictionaries: [adjectives, colors, NumberDictionary.generate({max: 9999, min: 1000})],
+            separator: '-',
+        }),
+    }
 
-export async function saveUser(userId, userData) {
+    return {...template, ...overrides}
+}
+
+export async function loadUsers() {
     const targetFile = path.join(app.settings.paths.data, 'users.json')
-    let usersData = JSON.parse(await fs.promises.readFile(targetFile, 'utf8'))
-    let targetUser
+    return JSON.parse(await fs.promises.readFile(targetFile, 'utf8'))
+}
+
+export async function loadUser(userId) {
+    const users = await loadUsers()
+    for (const user of users) {
+        if (user.id === userId) return user
+    }
+}
+
+export async function saveUser(userId, data) {
+    const targetFile = path.join(app.settings.paths.data, 'users.json')
+    let usersData
+
+    const exists = await fs.pathExists(targetFile)
+    if (exists) usersData = JSON.parse(await fs.promises.readFile(targetFile, 'utf8'))
+    else usersData = []
+
+    let existingUser = false
 
     for (let [index, user] of usersData.entries()) {
         if (user.id === userId) {
-            usersData[index] = userData
-            targetUser = usersData[index]
+            usersData[index] = data
+            existingUser = true
         }
     }
 
-    await fs.promises.writeFile(targetFile, JSON.stringify(usersData))
-    return targetUser
+    if (!existingUser) {
+        app.logger.debug(`save new user ${userId}`)
+        usersData.push(data)
+    } else {
+        app.logger.debug(`updating existing user ${userId}`)
+    }
+
+    delete data._unsaved
+
+    await fs.promises.writeFile(targetFile, JSON.stringify(usersData, null, '  '))
+    return data
 }
 
-/**
- * To keep users.json groups in sync with the users in each group file:
- * - The user's permission group in users.json is not in the appropriate groups file yet => add to Galene group
- * - The user's permission group is in the group file, but not in users.json => delete from Galene group\
- * - The user's permission group is in the user definition, but the group doesn't exist.
- */
-export async function syncUserGroups(targetUser) {
-    const invalidRoleGroups = {
-        op: [],
-        other: [],
-        presenter: [],
+export async function saveUsers(data) {
+    const targetFile = path.join(app.settings.paths.data, 'users.json')
+    await fs.promises.writeFile(targetFile, JSON.stringify(data, null, '  '))
+}
+
+export async function syncUsers() {
+    app.logger.info('syncing users...')
+    const [validGroups, groups] = await loadGroups()
+
+    // A mapping from user => groups to groups => user, which
+    // makes it easier to save Galene groups.
+    const groupsUser = {}
+    for (const groupName of validGroups) {
+        groupsUser[groupName] = {op: [], other: [], presenter: []}
     }
-    for (const [roleName, roleGroups] of Object.entries(targetUser.groups)) {
 
-        for (const [groupIndex, groupName] of roleGroups.entries()) {
-            const galeneGroup = await loadGroup(groupName)
-            if (!galeneGroup) {
-                invalidRoleGroups[roleName].push(groupName)
-                app.logger.debug(`add to invalid groups: ${groupName}`)
-                continue
-            }
-            const galeneUserEntryIndex = galeneGroup[roleName].findIndex((g) => g.username === targetUser.name)
-            if (galeneUserEntryIndex >= 0) {
-                app.logger.info(`updating ${targetUser.name} in group ${groupName}`)
-                galeneGroup[roleName][galeneUserEntryIndex] = {password: targetUser.password, username: targetUser.name}
-            } else {
-                app.logger.info(`adding ${targetUser.name} to group ${groupName}`)
-                galeneGroup[roleName].push({password: targetUser.password, username: targetUser.name})
-            }
+    const users = await loadUsers()
 
-            await saveGroup(groupName, galeneGroup)
+    for (const user of users) {
+        for (const [roleName, role] of Object.entries(user.groups)) {
+            for (const [roleIndex, groupName] of role.entries()) {
+                if (!validGroups.includes(groupName)) {
+                    // Get rid of non-existing groups in users.json
+                    app.logger.debug(`remove invalid group ${groupName} from user ${user.name}`)
+                    role.splice(roleIndex, 1)
+                } else {
+                    if (!groupsUser[groupName][roleName].includes(user.name)) {
+                        groupsUser[groupName][roleName].push(user.name)
+                    }
+                }
+            }
         }
     }
 
-    for (const [roleName, invalidGroups] of Object.entries(invalidRoleGroups)) {
-        targetUser.groups[roleName] = targetUser.groups[roleName].filter((i) => !invalidGroups.includes(i))
+    // Update users.json
+    await saveUsers(users)
+    // Update all Galene groups roles with the ones from users.json
+    for (const group of groups) {
+        Object.assign(group, groupsUser[group._name])
+        await saveGroup(group._name, group)
     }
-
-    const user = await saveUser(targetUser.id, targetUser)
-    return user
 }

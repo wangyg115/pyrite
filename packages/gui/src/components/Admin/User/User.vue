@@ -78,19 +78,15 @@ export default defineComponent({
     },
     methods: {
         async loadUser(userId) {
-            const res = await fetch(`/api/users/${encodeURIComponent(userId)}`)
-            this.$s.admin.user = await res.json()
+            const user = this.$s.admin.users.find((i) => i.id === userId)
+            if (user && user._unsaved) {
+                this.$s.admin.user = user
+            } else {
+                this.$s.admin.user = await (await fetch(`/api/users/${encodeURIComponent(userId)}`)).json()
+            }
         },
         async saveUser() {
-            await fetch(`/api/users/${this.userId}`, {
-                body: JSON.stringify(this.$s.admin.user),
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                method: 'POST',
-            })
-            app.notifier.notify({level: 'info', message: this.$t('User saved')})
+            await this.$m.user.saveUser(this.userId, this.$s.admin.user)
         },
     },
     watch: {

@@ -1,59 +1,60 @@
 import fs from 'fs-extra'
 import path from 'path'
-import {saveUser, syncUserGroups} from '../lib/user.js'
+import {loadUser, loadUsers, saveUser, syncUsers, userTemplate} from '../lib/user.js'
 
 export default function(app) {
     const targetFile = path.join(app.settings.paths.data, 'users.json')
-    /**
-     * Read all users.
-     */
+
     app.get('/api/users', async function(req, res) {
-        const userData = JSON.parse(await fs.promises.readFile(targetFile, 'utf8'))
-        res.end(JSON.stringify(userData))
+        const users = await loadUsers()
+        res.end(JSON.stringify(users))
     })
 
-    /**
-     * Read an existing user.
-     */
+    app.get('/api/users/template', async function(req, res) {
+        res.end(JSON.stringify(userTemplate()))
+    })
+
     app.get('/api/users/:userid', async function(req, res) {
         const userId = req.params.userid
+        let user
         // Basic path traversal protection
         if (userId.match(/\.\.\//g) !== null) {
             res.end(JSON.stringify({error: 'invalid user id'}))
             return
         }
 
-        const userData = JSON.parse(await fs.promises.readFile(targetFile, 'utf8'))
-        const user = userData.find((i) => i.id === parseInt(userId))
+        const users = await loadUsers()
+        user = users.find((i) => i.id === userId)
+        // User doesn't exist yet; generate a user.
+        if (!user) {
+            res.status(404).send({error: 'user not found'})
+            return
+        }
         res.end(JSON.stringify(user))
     })
 
-    /**
-     * Create a new or update an existing user.
-     */
     app.post('/api/users/:userid', async function(req, res) {
-        const userId = parseInt(req.params.userid)
+        const userId = req.params.userid
         // TODO: Schema validation
-        const postedData = req.body
-        let targetUser = await saveUser(userId, postedData)
-        const user = await syncUserGroups(targetUser)
+        const userData = req.body
+        await saveUser(userId, userData)
+        await syncUsers()
+        const user = await loadUser(userId)
         res.end(JSON.stringify(user))
     })
 
-    /**
-     * Delete an existing user.
-     */
-    app.get('/manager/users/:userid/delete', async function(req, res) {
+    app.get('/api/users/:userid/delete', async function(req, res) {
         const userId = req.params.userid
-
-        const userData = JSON.parse(await fs.promises.readFile(targetFile, 'utf8'))
-        for (let [index, user] of userData.entries()) {
-            if (user.name === userId) {
-                userData.splice(index, 1)
+        const users = await loadUsers()
+        for (let [index, user] of users.entries()) {
+            if (user.id === userId) {
+                users.splice(index, 1)
             }
         }
 
-        await fs.promises.writeFile(targetFile, JSON.stringify(userData))
+        await fs.promises.writeFile(targetFile, JSON.stringify(users))
+        await syncUsers()
+
         res.end(JSON.stringify({status: 'ok'}))
     })
 
