@@ -6,8 +6,8 @@
             </button>
             <button
                 class="btn tooltip tooltip-right"
-                :data-tooltip="$t('mark for deletion')"
-                :disabled="!$s.admin.group" @click="markDelete"
+                :data-tooltip="$t('(un)mark for deletion')"
+                :disabled="!$s.admin.group" @click="toggleMarkDelete"
             >
                 <Icon class="item-icon icon-small" name="Minus" />
             </button>
@@ -23,7 +23,7 @@
                 class="btn tooltip tooltip-right"
                 :data-tooltip="$t('confirm deletion')"
                 :disabled="!deletionGroups.length"
-                @click="confirmDelete"
+                @click="deleteGroups"
             >
                 <Icon class="icon-small" name="Close" />
             </button>
@@ -33,12 +33,13 @@
             :key="group._name"
             class="group item"
         >
-            <Icon v-if="group._delete" class="item-icon icon-small" name="Close" />
+            <Icon v-if="group._delete" class="item-icon delete icon-small" name="Close" />
             <Icon
                 v-else class="item-icon icon-small"
                 :class="{unsaved: group._unsaved}"
                 :name="group.public ? 'Group' : 'GroupHidden'"
             />
+
             <RouterLink
                 class="name"
                 :class="{active: $route.params.groupId === group._name}"
@@ -83,45 +84,52 @@ export default {
             this.$s.admin.groups.push(group)
             this.toggleSelection(group._name)
         },
-        async confirmDelete() {
+        async deleteGroups() {
+            app.notifier.notify({level: 'info', message: `deleting ${this.deletionGroups.length} groups`})
+            const deleteRequests = []
             for (const group of this.deletionGroups) {
-                this.$s.admin.groups.splice(this.$s.admin.groups.findIndex((i) => i._name === this.$s.admin.group._name), 1)
+                this.$s.admin.groups.splice(this.$s.admin.groups.findIndex((i) => i._name === group._name), 1)
                 if (!group._unsaved) {
-                    await fetch(`/api/groups/${group._name}/delete`)
+                    deleteRequests.push(fetch(`/api/groups/${group._name}/delete`))
                 }
             }
 
+            await Promise.all(deleteRequests)
+
             if (this.orderedGroups.length) {
-                this.toggleSelection(this.orderedGroups[0]._name)
+                const groupId = this.orderedGroups[0]._name
+                this.$router.push({name: 'admin-groups-group', params: {groupId, tabId: 'misc'}})
             }
-            app.notifier.notify(`deleted ${this.deletionGroups.length} groups`)
         },
         async loadGroups() {
             this.$s.admin.groups = await (await fetch('/api/groups')).json()
         },
-        async markDelete() {
-            this.$s.admin.group._delete = !this.$s.admin.group._delete
-            for (let group of this.$s.admin.groups) {
-                if (group._name == this.$s.admin.group._name) {
-                    Object.assign(group, this.$s.admin.group)
-                }
-            }
-
-            const cleanGroups = this.orderedGroups.filter((i) => !i._delete)
-            if (cleanGroups.length) {
-                this.toggleSelection(cleanGroups[0]._name)
-            }
-        },
         async saveGroup() {
             const groupId = this.$s.admin.group._name
-            await this.$m.group.saveGroup(groupId, this.$s.admin.group)
-            // Select the next unsaved group, when this group was unsaved
-            // to allow rapid group creation.
+            const group = await this.$m.group.saveGroup(groupId, this.$s.admin.group)
+
+            // Select the next unsaved group to speed up group creation.
             if (this.$s.admin.group._unsaved) {
                 const nextGroupIndex = this.orderedGroups.findIndex((g) => g._unsaved)
                 if (nextGroupIndex >= 0) {
                     this.toggleSelection(this.orderedGroups[nextGroupIndex]._name)
                 }
+            } else {
+                // Reload the group, which may have been renamed.
+                this.$router.push({name: 'admin-groups-group', params: {groupId: group._name, tabId: 'misc'}})
+            }
+        },
+        async toggleMarkDelete() {
+            this.$s.admin.group._delete = !this.$s.admin.group._delete
+            for (let group of this.$s.admin.groups) {
+                if (group._name == this.$s.admin.group._name) {
+                    group._delete = this.$s.admin.group._delete
+                }
+            }
+
+            const similarStateGroups = this.orderedGroups.filter((i) => i._delete !== this.$s.admin.group._delete)
+            if (similarStateGroups.length) {
+                this.toggleSelection(similarStateGroups[0]._name)
             }
         },
         toggleSelection(groupId) {
@@ -129,7 +137,7 @@ export default {
                 this.$s.admin.group = null
                 this.$router.push({name: 'admin-groups'})
             } else {
-                this.$router.push({name: 'admin-groups-group', params: {groupId: groupId, tabId: 'misc'}})
+                this.$router.push({name: 'admin-groups-group', params: {groupId, tabId: 'misc'}})
             }
         },
     },

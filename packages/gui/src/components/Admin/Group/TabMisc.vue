@@ -1,7 +1,7 @@
 <template>
-    <section class="c-admin-group-tab-misc tab-content active">
+    <section v-if="$s.admin.group" class="c-admin-group-tab-misc tab-content active">
         <FieldText
-            v-model="$s.admin.group._name"
+            v-model="$s.admin.group._newName"
             label="Group Name"
             placeholder="..."
         />

@@ -66,12 +66,20 @@ export default defineComponent({
             if (group && group._unsaved) {
                 this.$s.admin.group = group
             } else {
-                this.$s.admin.group = await (await fetch(`/api/groups/${encodeURIComponent(groupId)}`)).json()
+                const updatedGroup = await (await fetch(`/api/groups/${encodeURIComponent(groupId)}`)).json()
+                // Don't update state properties.
+                for (const key of Object.keys(group)) {
+                    if (!key.startsWith('_')) group[key] = updatedGroup[key]
+                }
             }
+
+            this.$s.admin.group = group
         },
         async saveGroup() {
             const groupId = this.$s.admin.group._name
-            await this.$m.group.saveGroup(groupId, this.$s.admin.group)
+            const group = await this.$m.group.saveGroup(groupId, this.$s.admin.group)
+            this.$router.push({name: 'admin-groups-group', params: {groupId: group._name, tabId: 'misc'}})
+
         },
     },
     watch: {

@@ -34,12 +34,13 @@ export default function(app) {
     })
 
     app.post('/api/groups/:groupid', async function(req, res) {
-        const groupId = req.params.groupid
         const data = req.body
-        await saveGroup(groupId, data)
+        const {groupId} = await saveGroup(req.params.groupid, data)
         await syncUsers()
         await pingGroups([groupId])
         const group = await loadGroup(groupId)
+        group._name = req.params.groupid
+        group._newName = groupId
         res.end(JSON.stringify(group))
     })
 
