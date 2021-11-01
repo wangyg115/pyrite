@@ -4,7 +4,11 @@
             <button class="btn">
                 <Icon class="item-icon icon-small" name="Plus" @click="addUser" />
             </button>
-            <button class="btn" :disabled="!$s.admin.user" @click="deleteUser">
+            <button
+                class="btn tooltip tooltip-right"
+                :data-tooltip="$t('(un)mark for deletion')"
+                :disabled="!$s.admin.user" @click="toggleMarkDelete"
+            >
                 <Icon class="item-icon icon-small" name="Minus" />
             </button>
             <button
@@ -14,9 +18,22 @@
             >
                 <Icon class="icon-small" name="Save" />
             </button>
+            <button
+                class="btn tooltip tooltip-right"
+                :data-tooltip="$t('confirm deletion')"
+                :disabled="!deletionUsers.length"
+                @click="deleteUsers"
+            >
+                <Icon class="icon-small" name="Close" />
+            </button>
         </div>
         <div v-for="user of orderedUsers" :key="user.id" class="user item">
-            <Icon class="item-icon icon-small" :class="{unsaved: user._unsaved}" name="User" />
+            <Icon v-if="user._delete" class="item-icon delete icon-small" name="Close" />
+            <Icon
+                v-else class="item-icon icon-small"
+                :class="{unsaved: user._unsaved}"
+                name="User"
+            />
             <RouterLink
                 class="name"
                 :class="{active: parseInt($route.params.userId) === user.id}"
@@ -32,6 +49,9 @@
 <script>
 export default {
     computed: {
+        deletionUsers() {
+            return this.$s.admin.users.filter((i) => i._delete)
+        },
         orderedUsers() {
             const users = this.$s.admin.users
                 .filter((g) => g.admin).concat(this.$s.admin.users.filter((g) => !g.admin))
@@ -53,14 +73,21 @@ export default {
             this.$s.admin.users.push(user)
             this.toggleSelection(user.id)
         },
-        async deleteUser() {
-            this.$s.admin.users.splice(this.$s.admin.users.findIndex((i) => i.id === this.$s.admin.user.id), 1)
-            if (!this.$s.admin.user._unsaved) {
-                fetch(`/api/users/${app.$s.admin.user.id}/delete`)
+        async deleteUsers() {
+            app.notifier.notify({level: 'info', message: `deleting ${this.deletionUsers.length} users`})
+            const deleteRequests = []
+            for (const user of this.deletionUsers) {
+                this.$s.admin.users.splice(this.$s.admin.users.findIndex((i) => i.id === user.id), 1)
+                if (!user._unsaved) {
+                    deleteRequests.push(fetch(`/api/groups/${user.id}/delete`))
+                }
             }
 
+            await Promise.all(deleteRequests)
+
             if (this.orderedUsers.length) {
-                this.toggleSelection(this.orderedUsers[0].id)
+                const userId = this.orderedUsers[0].id
+                this.$router.push({name: 'admin-users-user', params: {tabId: 'misc',userId}})
             }
         },
         async loadUsers() {
@@ -74,6 +101,19 @@ export default {
                 if (nextUnsavedUserIndex >= 0) {
                     this.toggleSelection(this.orderedUsers[nextUnsavedUserIndex].id)
                 }
+            }
+        },
+        async toggleMarkDelete() {
+            this.$s.admin.user._delete = !this.$s.admin.user._delete
+            for (let user of this.$s.admin.users) {
+                if (user.name == this.$s.admin.user.name) {
+                    user._delete = this.$s.admin.user._delete
+                }
+            }
+
+            const similarStateUsers = this.orderedUsers.filter((i) => i._delete !== this.$s.admin.user._delete)
+            if (similarStateUsers.length) {
+                this.toggleSelection(similarStateUsers[0].id)
             }
         },
         toggleSelection(userId) {
