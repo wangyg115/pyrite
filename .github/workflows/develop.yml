@@ -23,7 +23,7 @@ jobs:
     - name: Install packages & verify code
       run: |
         npm ci
-        npm run lint
+        npm run lint --workspace=packages/gui
     - name: Deploy (Beta)
       env:
         RAND_ENDPOINT: ${{secrets.RAND_ENDPOINT}}

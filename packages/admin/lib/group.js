@@ -68,7 +68,7 @@ export async function loadGroups() {
         groupData.push(data)
     }
 
-    return [groupNames, groupData]
+    return {groupData, groupNames}
 }
 
 export async function pingGroups(groupNames) {
@@ -102,7 +102,7 @@ export async function saveGroup(groupName, data) {
 export async function renameGroup(oldGroupName, newGroupName) {
     const users = await loadUsers()
     for (const user of users) {
-        for (const [_, role] of Object.entries(user.groups)) {
+        for (const role of Object.values(user.groups)) {
             for (const [roleIndex, groupName] of role.entries()) {
                 if (groupName === oldGroupName) {
                     role[roleIndex] = newGroupName

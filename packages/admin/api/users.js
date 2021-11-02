@@ -1,9 +1,6 @@
-import fs from 'fs-extra'
-import path from 'path'
 import {loadUser, loadUsers, saveUser, saveUsers, syncUsers, userTemplate} from '../lib/user.js'
 
 export default function(app) {
-    const targetFile = path.join(app.settings.paths.data, 'users.json')
 
     app.get('/api/users', async function(req, res) {
         const users = await loadUsers()

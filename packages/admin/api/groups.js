@@ -6,7 +6,7 @@ import {groupTemplate, loadGroup, loadGroups, pingGroups, saveGroup, syncGroup} 
 export default function(app) {
 
     app.get('/api/groups', async function(req, res) {
-        const [groupNames, groupData] = await loadGroups()
+        const {groupData, groupNames} = await loadGroups()
         await pingGroups(groupNames)
         res.end(JSON.stringify(groupData))
     })
@@ -49,10 +49,10 @@ export default function(app) {
         const groupFile = path.join(app.settings.paths.groups, `${groupId}.json`)
         app.logger.info(`removing group file ${groupFile}`)
         await fs.remove(groupFile)
-        const [_, groups] = await loadGroups()
+        const {groupNames} = await loadGroups()
         await syncUsers()
         await pingGroups([groupId])
-        res.end(JSON.stringify(groups))
+        res.end(JSON.stringify(groupNames))
     })
 
 }

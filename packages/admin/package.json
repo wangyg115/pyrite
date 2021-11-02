@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon service.js"
+    "dev": "nodemon service.js",
+    "lint": "npm run lint:js",
+    "lint:js": "eslint \"{lib,api}/**/*.js\""
   },
   "repository": {
     "type": "git",

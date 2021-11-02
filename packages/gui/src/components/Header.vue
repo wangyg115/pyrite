@@ -61,8 +61,14 @@ export default defineComponent({
 
     header {
         align-items: center;
+        background: var(--grey-2);
+        border-bottom: var(--border) solid var(--grey-4);
         display: flex;
-        justify-content: space-between;
+        font-weight: bold;
+        height: var(--space-4);
+        margin-bottom: var(--spacer);
+        padding-right: var(--spacer);
+        position: relative;
 
         .logo {
             align-items: center;
@@ -70,6 +76,11 @@ export default defineComponent({
             display: flex;
             font-family: var(--font-secondary);
             justify-content: center;
+
+            svg {
+                color: var(--primary-color);
+                margin-right: var(--spacer);
+            }
 
             &.no-back-link:hover {
                 cursor: not-allowed;
@@ -83,34 +94,10 @@ export default defineComponent({
         }
 
         .version {
-            font-family: var(--font-secondary);
-            font-style: italic;
-        }
-    }
-
-    header {
-        align-items: center;
-        background: var(--grey-2);
-        border-bottom: var(--border) solid var(--grey-4);
-        display: flex;
-        font-weight: bold;
-        height: var(--space-4);
-        margin-bottom: var(--spacer);
-        padding-right: var(--spacer);
-        position: relative;
-
-        .logo {
-
-            svg {
-                color: var(--primary-color);
-                margin-right: var(--spacer);
-            }
-
-        }
-
-        .version {
             bottom: 0;
+            font-family: var(--font-secondary);
             font-size: var(--text-small);
+            font-style: italic;
             position: absolute;
             right: calc(var(--spacer) * 1.75);
         }

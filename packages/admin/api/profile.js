@@ -7,12 +7,12 @@ export default function(app) {
 
     app.get('/api/context', async function(req, res) {
         const session=req.session
-        const [_, groups] = await loadGroups()
+        const {groupData} = await loadGroups()
         const users = await loadUsers()
         if (session.userid) {
-            res.end(JSON.stringify({authenticated: true, groups, users}))
+            res.end(JSON.stringify({authenticated: true, groupData, users}))
         } else {
-            res.end(JSON.stringify({authenticated: true, groups, users}))
+            res.end(JSON.stringify({authenticated: true, groupData, users}))
         }
     })
 

@@ -8,8 +8,7 @@
   },
   "scripts": {
     "galene": "docker-compose -f galene/docker/docker-compose.yml --project-directory ./galene up --remove-orphans",
-    "lint": "npm run lint:js;npm run lint:scss",
-    "lint:js": "eslint \"packages/gui/src/**/*.{js,vue}\"",
+    "lint": "npm run lint -w ./packages",
     "semantic-release": "semantic-release"
   },
   "repository": {
