@@ -79,7 +79,7 @@ export async function syncUsers() {
     app.logger.info('syncing users...')
     const [validGroups, groups] = await loadGroups()
 
-    // A mapping from user => groups to groups => user, which
+    // A mapping from (user=>groups) to (groups=>user), which
     // makes it easier to save Galene groups.
     const groupsUser = {}
     for (const groupName of validGroups) {

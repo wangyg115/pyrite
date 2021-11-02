@@ -6,6 +6,8 @@ import path from 'path'
 import {uniqueNamesGenerator} from 'unique-names-generator'
 import {loadUsers, saveUsers} from './user.js'
 
+const ROLES = ['op', 'other', 'presenter']
+
 export function groupTemplate(groupId = null) {
     return {
         _name: groupId ? groupId : uniqueNamesGenerator({
@@ -74,32 +76,31 @@ export async function pingGroups(groupNames) {
 }
 
 export async function saveGroup(groupName, data) {
-    app.logger.debug(`save group ${groupName}`)
-
     const saveData = JSON.parse(JSON.stringify(data))
+
     for (const key of Object.keys(saveData)) {
         if (key.startsWith('_')) delete saveData[key]
     }
 
     const currentGroupFile = path.join(app.settings.paths.groups, `${data._name}.json`)
     if (data._name !== data._newName) {
-        // A rename action
+        app.logger.debug(`save and rename group ${groupName}`)
         const newGroupFile = path.join(app.settings.paths.groups, `${data._newName}.json`)
+        // Sync current group file in group definitions and users.json
         await renameGroup(data._name, data._newName)
         await fs.remove(currentGroupFile)
+
         await fs.promises.writeFile(newGroupFile, JSON.stringify(saveData, null, '  '))
-        // Sync current group file in group definitions and users.json
         return {data, groupId: data._newName}
     } else {
+        app.logger.debug(`save group ${groupName}`)
         await fs.promises.writeFile(currentGroupFile, JSON.stringify(saveData, null, '  '))
         return {data, groupId: data._name}
     }
 }
 
 export async function renameGroup(oldGroupName, newGroupName) {
-    app.logger.debug(`group rename: ${oldGroupName} => ${newGroupName}`)
     const users = await loadUsers()
-
     for (const user of users) {
         for (const [_, role] of Object.entries(user.groups)) {
             for (const [roleIndex, groupName] of role.entries()) {
@@ -112,5 +113,31 @@ export async function renameGroup(oldGroupName, newGroupName) {
     }
 
     await saveUsers(users)
+}
+
+/**
+ * Updates users in users.json from a Galène group.
+ */
+export async function syncGroup(groupId, groupData) {
+    app.logger.debug(`sync group ${groupId}`)
+    const users = await loadUsers()
+    let changed = false
+    for (const role of ROLES) {
+        for (const username of groupData[role]) {
+            const _user = users.find((i) => i.name === username)
+            // User from groups definition is in users.json;
+            // Make sure the group is there as well...
+            if (_user) {
+                if (!_user.groups[role].includes(groupId)) {
+                    app.logger.debug(`add group ${groupId} to users.json user ${_user.name}`)
+                    _user.groups[role].push(groupId)
+                    changed = true
+                }
+            }
+        }
+    }
+
+    if (changed) await saveUsers(users)
+
 }
 

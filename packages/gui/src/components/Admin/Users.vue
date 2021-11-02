@@ -79,7 +79,7 @@ export default {
             for (const user of this.deletionUsers) {
                 this.$s.admin.users.splice(this.$s.admin.users.findIndex((i) => i.id === user.id), 1)
                 if (!user._unsaved) {
-                    deleteRequests.push(fetch(`/api/groups/${user.id}/delete`))
+                    deleteRequests.push(fetch(`/api/users/${user.id}/delete`))
                 }
             }
 

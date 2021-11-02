@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import path from 'path'
 import {syncUsers} from '../lib/user.js'
-import {groupTemplate, loadGroup, loadGroups, pingGroups, saveGroup} from '../lib/group.js'
+import {groupTemplate, loadGroup, loadGroups, pingGroups, saveGroup, syncGroup} from '../lib/group.js'
 
 export default function(app) {
 
@@ -34,8 +34,8 @@ export default function(app) {
     })
 
     app.post('/api/groups/:groupid', async function(req, res) {
-        const data = req.body
-        const {groupId} = await saveGroup(req.params.groupid, data)
+        const {data, groupId} = await saveGroup(req.params.groupid, req.body)
+        await syncGroup(groupId, data)
         await syncUsers()
         await pingGroups([groupId])
         const group = await loadGroup(groupId)

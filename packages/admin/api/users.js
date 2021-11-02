@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
 import path from 'path'
-import {loadUser, loadUsers, saveUser, syncUsers, userTemplate} from '../lib/user.js'
+import {loadUser, loadUsers, saveUser, saveUsers, syncUsers, userTemplate} from '../lib/user.js'
 
 export default function(app) {
     const targetFile = path.join(app.settings.paths.data, 'users.json')
@@ -52,7 +52,7 @@ export default function(app) {
             }
         }
 
-        await fs.promises.writeFile(targetFile, JSON.stringify(users))
+        await saveUsers(users)
         await syncUsers()
 
         res.end(JSON.stringify({status: 'ok'}))

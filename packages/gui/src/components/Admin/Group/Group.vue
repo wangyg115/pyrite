@@ -23,11 +23,35 @@
             >
                 <Icon class="icon-small" name="Access" />
             </RouterLink>
+            <RouterLink
+                class="btn btn-menu tab tooltip"
+                :data-tooltip="$t('operator permission')"
+                :to="{name: 'admin-groups-group', params: {groupId: $s.admin.group._name, tabId: 'op'}}"
+            >
+                <Icon class="icon-small" name="Operator" />
+            </RouterLink>
+            <RouterLink
+                class="btn btn-menu tab tooltip"
+                :data-tooltip="$t('presenter permission')"
+                :to="{name: 'admin-groups-group', params: {groupId: $s.admin.group._name, tabId: 'presenter'}}"
+            >
+                <Icon class="icon-small" name="Present" />
+            </RouterLink>
+            <RouterLink
+                class="btn btn-menu tab tooltip"
+                :data-tooltip="$t('passive permission')"
+                :to="{name: 'admin-groups-group', params: {groupId: $s.admin.group._name, tabId: 'other'}}"
+            >
+                <Icon class="icon-small" name="OtherPermissions" />
+            </RouterLink>
         </ul>
 
         <div class="tabs-content">
             <TabMisc v-if="$route.params.tabId === 'misc'" />
             <TabAccess v-else-if="$route.params.tabId === 'access'" />
+            <TabPermissions v-if="$route.params.tabId === 'op'" category="op" />
+            <TabPermissions v-if="$route.params.tabId === 'presenter'" category="presenter" />
+            <TabPermissions v-if="$route.params.tabId === 'other'" category="other" />
 
             <div class="actions">
                 <button
@@ -46,6 +70,7 @@
 import {defineComponent} from 'vue'
 import TabAccess from './TabAccess.vue'
 import TabMisc from './TabMisc.vue'
+import TabPermissions from './TabPermissions.vue'
 
 export default defineComponent({
     async beforeMount() {
@@ -54,7 +79,7 @@ export default defineComponent({
     async beforeRouteUpdate(to) {
         this.groupId = to.params.groupId
     },
-    components: {TabAccess, TabMisc},
+    components: {TabAccess, TabMisc, TabPermissions},
     data() {
         return {
             groupId: null,
@@ -78,8 +103,7 @@ export default defineComponent({
         async saveGroup() {
             const groupId = this.$s.admin.group._name
             const group = await this.$m.group.saveGroup(groupId, this.$s.admin.group)
-            this.$router.push({name: 'admin-groups-group', params: {groupId: group._name, tabId: 'misc'}})
-
+            this.$router.push({name: 'admin-groups-group', params: {groupId: group._name, tabId: this.$route.params.tabId}})
         },
     },
     watch: {
