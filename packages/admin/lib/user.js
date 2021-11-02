@@ -79,8 +79,7 @@ export async function syncUsers() {
     app.logger.info('syncing users...')
     const [validGroups, groups] = await loadGroups()
 
-    // A mapping from (user=>groups) to (groups=>user), which
-    // makes it easier to save Galene groups.
+    // Contains per group the user's that are subscribed.
     const groupsUser = {}
     for (const groupName of validGroups) {
         groupsUser[groupName] = {op: [], other: [], presenter: []}
@@ -97,7 +96,10 @@ export async function syncUsers() {
                     role.splice(roleIndex, 1)
                 } else {
                     if (!groupsUser[groupName][roleName].includes(user.name)) {
-                        groupsUser[groupName][roleName].push(user.name)
+                        groupsUser[groupName][roleName].push({
+                            password: user.password,
+                            username: user.name,
+                        })
                     }
                 }
             }

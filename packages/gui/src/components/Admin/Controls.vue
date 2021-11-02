@@ -41,7 +41,7 @@
         <RouterLink
             v-if="$s.admin.group"
             class="btn btn-menu tooltip" :class="{active: $route.name === 'admin-groups'}"
-            :data-tooltip="$t('Groups')"
+            :data-tooltip="$t('Group Recordings')"
             :to="{name: 'admin-groups-group-recordings', params: {groupId: $s.admin.group._name}}"
         >
             <Icon class="icon-small" name="Record" />

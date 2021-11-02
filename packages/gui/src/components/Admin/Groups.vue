@@ -141,6 +141,9 @@ export default {
             }
         },
     },
+    unmounted() {
+        this.$s.admin.group = null
+    },
 }
 </script>
 
