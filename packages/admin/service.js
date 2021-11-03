@@ -13,7 +13,7 @@ import path from 'path'
 import rc from 'rc'
 import {saveUser} from './lib/user.js'
 import sessions from 'express-session'
-import {userTemplate} from './lib/user.js'
+import {loadUser, userTemplate} from './lib/user.js'
 import winston from 'winston'
 
 const basedir =path.dirname(import.meta.url).replace('file://', '')
@@ -85,6 +85,32 @@ app.use(expressWinston.logger({
 app.use(cookieParser())
 app.use(sessions(settings.session))
 app.use(bodyParser.json())
+
+// These endpoints are allowed to bypass the authentication middleware:
+const endpointAllowList = [
+    '/api/context',
+    '/api/login',
+]
+
+async function endpointAuthentication(req, res, next) {
+    const session=req.session
+
+    if (endpointAllowList.includes(req.originalUrl)) {
+        next()
+    } else if (session.userid) {
+        const user = await loadUser(session.userid)
+        // For now, only admin users may access endpoints.
+        if (user && user.admin) {
+            next()
+        } else {
+            res.status(404).send('not found')
+        }
+    } else {
+        res.status(404).send('not found')
+    }
+}
+
+app.use(endpointAuthentication)
 
 apiGroups(app)
 apiProfile(app)

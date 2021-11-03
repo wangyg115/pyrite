@@ -38,6 +38,7 @@ export async function loadUser(userId) {
     for (const user of users) {
         if (user.id === userId) return user
     }
+    return null
 }
 
 export async function saveUser(userId, data) {

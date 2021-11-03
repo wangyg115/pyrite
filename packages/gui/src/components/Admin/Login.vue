@@ -68,7 +68,7 @@ export default defineComponent({
                 app.notifier.notify({level: 'error', message: this.$t('Invalid credentials')})
             } else {
                 app.notifier.notify({level: 'info', message: this.$t('succesfully logged in')})
-                app.router.push({name: 'admin-splash'})
+                app.router.push({name: 'admin-users'})
             }
         },
     },

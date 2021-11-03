@@ -1,7 +1,5 @@
-import fs from 'fs-extra'
 import {loadGroups} from '../lib/group.js'
 import {loadUsers} from '../lib/user.js'
-import path from 'path'
 
 export default function(app) {
 
@@ -12,19 +10,26 @@ export default function(app) {
         if (session.userid) {
             res.end(JSON.stringify({authenticated: true, groupData, users}))
         } else {
-            res.end(JSON.stringify({authenticated: true, groupData, users}))
+            res.end(JSON.stringify({authenticated: false, groupData, users}))
         }
     })
 
     app.post('/api/login', async function(req, res) {
-        const targetFile = path.join(app.settings.paths.data, 'passwd')
-        let [username, password] = (await fs.promises.readFile(targetFile, 'utf8')).trim().split(':')
-        if (req.body.username === username && req.body.password === password) {
-            const session = req.session
-            session.userid = username
-            res.end(JSON.stringify({authenticated: true}))
-        } else {
+        const users = await loadUsers()
+        const username = req.body.username
+        const user = users.find((i) => i.name === username)
+
+        if (!user) {
             res.end(JSON.stringify({authenticated: false}))
+        } else {
+            const password = req.body.password
+            if (password === user.password) {
+                const session = req.session
+                session.userid = user.id
+                res.end(JSON.stringify({authenticated: true}))
+            } else {
+                res.end(JSON.stringify({authenticated: false}))
+            }
         }
     })
 
