@@ -1,5 +1,5 @@
 <template>
-    <div class="c-admin-login content">
+    <div class="c-admin-login content" @keypress.enter="login">
         <header>
             <div class="notice" />
             <div class="title">
