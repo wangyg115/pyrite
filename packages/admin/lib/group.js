@@ -58,17 +58,17 @@ export async function loadGroups() {
         return i.replace(app.settings.paths.groups, '').replace('.json', '').replace('/', '')
     })
 
-    const groupData = []
+    const groupsData = []
     for (const [index, groupName] of groupNames.entries()) {
         const data = JSON.parse(fileData[index])
         data._name = groupName
         data._newName = groupName
         data._delete = false
         data._unsaved = false
-        groupData.push(data)
+        groupsData.push(data)
     }
 
-    return {groupData, groupNames}
+    return {groupNames, groupsData}
 }
 
 export async function pingGroups(groupNames) {

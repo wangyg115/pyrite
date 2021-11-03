@@ -78,11 +78,11 @@ export async function saveUsers(data) {
 
 export async function syncUsers() {
     app.logger.info('syncing users...')
-    const [validGroups, groups] = await loadGroups()
+    const {groupNames, groupsData} = await loadGroups()
 
     // Contains per group the user's that are subscribed.
     const groupsUser = {}
-    for (const groupName of validGroups) {
+    for (const groupName of groupNames) {
         groupsUser[groupName] = {op: [], other: [], presenter: []}
     }
 
@@ -91,7 +91,7 @@ export async function syncUsers() {
     for (const user of users) {
         for (const [roleName, role] of Object.entries(user.groups)) {
             for (const [roleIndex, groupName] of role.entries()) {
-                if (!validGroups.includes(groupName)) {
+                if (!groupNames.includes(groupName)) {
                     // Get rid of non-existing groups in users.json
                     app.logger.debug(`remove invalid group ${groupName} from user ${user.name}`)
                     role.splice(roleIndex, 1)
@@ -110,7 +110,7 @@ export async function syncUsers() {
     // Update users.json
     await saveUsers(users)
     // Update all Galene groups roles with the ones from users.json
-    for (const group of groups) {
+    for (const group of groupsData) {
         Object.assign(group, groupsUser[group._name])
         await saveGroup(group._name, group)
     }

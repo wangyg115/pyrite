@@ -1,16 +1,25 @@
 import {loadGroups} from '../lib/group.js'
-import {loadUsers} from '../lib/user.js'
+import {loadUser, loadUsers} from '../lib/user.js'
 
 export default function(app) {
 
     app.get('/api/context', async function(req, res) {
         const session=req.session
-        const {groupData} = await loadGroups()
-        const users = await loadUsers()
+
         if (session.userid) {
-            res.end(JSON.stringify({authenticated: true, groupData, users}))
+            const user = await loadUser(session.userid)
+            if (!user) res.end(JSON.stringify({authenticated: false}))
+            else {
+                if (user.admin) {
+                    const [{groupsData}, users] = await Promise.all([loadGroups(), loadUsers()])
+                    res.end(JSON.stringify({authenticated: true, groups: groupsData, users}))
+                } else {
+                    res.end(JSON.stringify({authenticated: false}))
+                }
+            }
+
         } else {
-            res.end(JSON.stringify({authenticated: false, groupData, users}))
+            res.end(JSON.stringify({authenticated: false}))
         }
     })
 

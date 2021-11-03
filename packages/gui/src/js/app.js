@@ -133,6 +133,16 @@ class Pyrite extends EventEmitter {
         })
     }
 
+    async adminContext() {
+        const res = await fetch('/api/context', {
+            credentials: 'same-origin',
+            headers: {'Content-Type': 'application/json'},
+        })
+
+        const context = await res.json()
+        Object.assign(this.$s.admin, context)
+    }
+
     async connect() {
         if(this.connection && this.connection.socket) {
             this.connection.close()
@@ -300,7 +310,7 @@ class Pyrite extends EventEmitter {
     }
 
     async init() {
-        await this.managerContext()
+        await this.adminContext()
         this.router = router(this)
         this.router.beforeResolve((to, from, next) => {
             // All admin routes are authenticated.
@@ -321,16 +331,6 @@ class Pyrite extends EventEmitter {
             next()
         })
 
-    }
-
-    async managerContext() {
-        const res = await fetch('/api/context', {
-            credentials: 'same-origin',
-            headers: {'Content-Type': 'application/json'},
-        })
-
-        const context = await res.json()
-        Object.assign(this.$s.admin, context)
     }
 
     mapRequest(what) {

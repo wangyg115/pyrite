@@ -6,9 +6,9 @@ import {groupTemplate, loadGroup, loadGroups, pingGroups, saveGroup, syncGroup} 
 export default function(app) {
 
     app.get('/api/groups', async function(req, res) {
-        const {groupData, groupNames} = await loadGroups()
+        const {groupsData, groupNames} = await loadGroups()
         await pingGroups(groupNames)
-        res.end(JSON.stringify(groupData))
+        res.end(JSON.stringify(groupsData))
     })
 
     app.get('/api/groups/template', async function(req, res) {
@@ -17,14 +17,13 @@ export default function(app) {
 
     app.get('/api/groups/:groupid', async function(req, res) {
         const groupId = req.params.groupid
-        let groupData
         // Basic path traversal protection
         if (groupId.match(/\.\.\//g) !== null) {
             res.end(JSON.stringify({error: 'invalid group id'}))
             return
         }
 
-        groupData = await loadGroup(groupId)
+        const groupData = await loadGroup(groupId)
         if (!groupData) {
             res.status(404).send({error: 'group not found'})
             return
