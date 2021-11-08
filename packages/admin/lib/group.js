@@ -72,6 +72,7 @@ export async function loadGroups() {
 }
 
 export async function pingGroups(groupNames) {
+    app.logger.debug(`ping groups: ${groupNames}`)
     await Promise.all(groupNames.map((i) => fetch(`${app.settings.endpoints.galene}/group/${i}`)))
 }
 

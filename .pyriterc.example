@@ -1,0 +1,12 @@
+{
+    "endpoints": {
+        "galene": "http://localhost:8443"
+    },
+    "logger": {
+        "level": "info"
+    },
+    "port": 3030,
+    "session": {
+        "secret": "changeme: e.g. openssl rand -base64 36"
+    }
+}

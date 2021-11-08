@@ -36,10 +36,11 @@ export default function(app) {
         const {data, groupId} = await saveGroup(req.params.groupid, req.body)
         await syncGroup(groupId, data)
         await syncUsers()
-        await pingGroups([groupId])
+
         const group = await loadGroup(groupId)
         group._name = req.params.groupid
         group._newName = groupId
+        await pingGroups([groupId])
         res.end(JSON.stringify(group))
     })
 

@@ -13,28 +13,30 @@ import path from 'path'
 import rc from 'rc'
 import {saveUser} from './lib/user.js'
 import sessions from 'express-session'
-import {loadUser, userTemplate} from './lib/user.js'
 import winston from 'winston'
-
-const basedir =path.dirname(import.meta.url).replace('file://', '')
+import {loadUser, userTemplate} from './lib/user.js'
 
 const settings = rc('pyrite', {
     endpoints: {
         galene: 'http://localhost:8443',
     },
-    paths: {
-        data: path.join(basedir, '..', '..', 'galene', 'data'),
-        groups: path.join(basedir, '..', '..', 'galene', 'groups'),
-        recordings: path.join(basedir, '..', '..', 'galene', 'recordings'),
+    logger: {
+        level: 'info',
     },
     port: 3030,
     session: {
         cookie: {maxAge: 1000 * 60 * 60 * 24}, // One day
         resave: false,
         saveUninitialized:true,
-        secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
     },
 })
+
+const basedir =path.dirname(import.meta.url).replace('file://', '')
+settings.paths = {
+    data: path.join(basedir, '..', '..', 'galene', 'data'),
+    groups: path.join(basedir, '..', '..', 'galene', 'groups'),
+    recordings: path.join(basedir, '..', '..', 'galene', 'recordings'),
+}
 
 const logFormat = winston.format.printf(({level, message, timestamp}) => {
     return `[${timestamp}] [${level.toUpperCase()}] ${message}`
@@ -44,12 +46,17 @@ globalThis.app = express()
 app.logger = winston.createLogger({
     colorize: true,
     format: winston.format.json(),
-    level: 'info',
+    level: settings.logger.level,
     transports: [
         new winston.transports.File({filename: 'error.log', level: 'error'}),
         new winston.transports.File({filename: 'combined.log'}),
     ],
 })
+
+if (settings.session.secret === 'changeme: e.g. openssl rand -base64 36') {
+    console.error('Please use a random session secret in .pyriterc')
+    process.exit(1)
+}
 
 if (process.env.NODE_ENV !== 'production') {
     app.logger.add(new winston.transports.Console({
@@ -106,7 +113,12 @@ async function endpointAuthentication(req, res, next) {
             res.status(404).send('not found')
         }
     } else {
-        res.status(404).send('not found')
+        if (process.env.PYRITE_NO_SECURITY) {
+            // Development flag may override security.
+            next()
+        } else {
+            res.status(404).send('not found')
+        }
     }
 }
 

@@ -17,6 +17,9 @@ video conferencing solution (SFU) based on [Vue](https://v3.vuejs.org/) & [Pion]
   export UID=$(id -u)
   export GID=$(id -g)
   npm run galene
+
+  # Config file, mostly for the admin service
+  cp .pyriterc.example ~/.pyriterc
   # Start Pyrite services
   npm run dev --workspace=packages/gui
   npm run dev --workspace=packages/admin

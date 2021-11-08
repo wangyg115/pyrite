@@ -6,7 +6,11 @@ export default function(app) {
     app.get('/api/context', async function(req, res) {
         const session=req.session
 
-        if (session.userid) {
+        if (process.env.PYRITE_NO_SECURITY) {
+            app.logger.warn('session security is disabled (PYRITE_NO_SECURITY)')
+            const [{groupsData}, users] = await Promise.all([loadGroups(), loadUsers()])
+            res.end(JSON.stringify({authenticated: true, groups: groupsData, users}))
+        } else if (session.userid) {
             const user = await loadUser(session.userid)
             if (!user) res.end(JSON.stringify({authenticated: false}))
             else {
