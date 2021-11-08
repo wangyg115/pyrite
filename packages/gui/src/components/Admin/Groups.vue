@@ -37,17 +37,29 @@
             <Icon
                 v-else class="item-icon icon-small"
                 :class="{unsaved: group._unsaved}"
-                :name="group.public ? 'Group' : 'GroupHidden'"
+                name="Group"
             />
 
-            <RouterLink
-                class="name"
-                :class="{active: $route.params.groupId === group._name}"
-                :to="{name: 'admin-groups-group', params: {groupId: group._name, tabId: 'misc'}}"
-                @click="toggleSelection(group._name)"
-            >
-                {{ group._name }}
-            </Routerlink>
+            <div class="flex-column">
+                <RouterLink
+                    class="name"
+                    :class="{active: $route.params.groupId === group._name}"
+                    :to="{name: 'admin-groups-group', params: {groupId: group._name, tabId: 'misc'}}"
+                    @click="toggleSelection(group._name)"
+                >
+                    {{ group._name }}
+                </Routerlink>
+                <div class="item-properties">
+                    <Icon
+                        class="icon-mini"
+                        :name="group.public ? 'Eye' : 'EyeClosed'"
+                    />
+                    <Icon
+                        class="icon-mini"
+                        :name="group.locked ? 'Lock' : 'Lock'"
+                    />
+                </div>
+            </div>
         </div>
     </section>
 </template>
