@@ -9,7 +9,7 @@ import {loadUsers, saveUsers} from './user.js'
 const ROLES = ['op', 'other', 'presenter']
 
 export function groupTemplate(groupId = null) {
-    return {
+    const template = {
         _name: groupId ? groupId : uniqueNamesGenerator({
             dictionaries: [dictionary.adjs, dictionary.nouns],
             length: 2,
@@ -21,7 +21,7 @@ export function groupTemplate(groupId = null) {
         'allow-recording': true,
         'allow-subgroups': true,
         autokick: false,
-        autolock: true,
+        autolock: false,
         codecs: ['opus', 'vp8'],
         comment: '',
         contact: '',
@@ -35,6 +35,9 @@ export function groupTemplate(groupId = null) {
         public: true,
         redirect: '',
     }
+
+    template._newName = template._name
+    return template
 }
 
 export async function loadGroup(groupName) {

@@ -51,12 +51,12 @@
                 </Routerlink>
                 <div class="item-properties">
                     <Icon
-                        class="icon-mini"
+                        class="icon-tiny"
                         :name="group.public ? 'Eye' : 'EyeClosed'"
                     />
                     <Icon
-                        class="icon-mini"
-                        :name="group.locked ? 'Lock' : 'Lock'"
+                        class="icon-tiny"
+                        :name="group.locked ? 'Lock' : 'Unlock'"
                     />
                 </div>
             </div>
