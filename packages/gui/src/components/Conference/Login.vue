@@ -95,7 +95,10 @@ export default {
                 await app.connect()
             } finally {
                 this.connecting = false
-                this.$router.replace({name: 'conference-groups-connected', params: {groupId: this.$router.currentRoute.value.params.groupId}})
+                this.$router.replace({
+                    name: 'conference-groups-connected',
+                    params: {groupId: this.$router.currentRoute.value.params.groupId},
+                })
             }
         },
     },

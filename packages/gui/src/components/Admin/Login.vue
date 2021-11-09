@@ -13,6 +13,7 @@
                     <FieldText
                         v-model="username"
                         autocomplete="username"
+                        :autofocus="true"
                         :label="$t('Username')"
                         name="username"
                         placeholder="Alice, Bob, Carol..."
