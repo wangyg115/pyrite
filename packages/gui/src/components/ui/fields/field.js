@@ -33,7 +33,7 @@ export default {
         autocomplete: String,
         autofocus: {
             default: () => false,
-            type: Boolean,
+            type: [Boolean, String],
         },
         disabled: Boolean,
         elementclass: String,

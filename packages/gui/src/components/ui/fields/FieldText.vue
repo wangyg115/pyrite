@@ -43,6 +43,9 @@ export default {
     },
     emits: ['focus', 'update:modelValue'],
     extends: Field,
+    async mounted() {
+        if (this.autofocus) this.$refs.field.focus()
+    },
     props: {
         type: {
             default: 'text',

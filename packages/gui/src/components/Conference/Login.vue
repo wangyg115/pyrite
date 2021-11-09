@@ -1,5 +1,5 @@
 <template>
-    <div class="c-login content">
+    <div class="c-login content" @keypress.enter="login">
         <header>
             <div class="notice">
                 <Hint v-if="$s.group.locked" class="field" :text="$t('Only maintainers may login locked groups')" />
@@ -15,6 +15,7 @@
                     <FieldText
                         v-model="$s.user.username"
                         autocomplete="username"
+                        :autofocus="$route.params.groupId"
                         :label="$t('Username')"
                         name="username"
                         placeholder="Alice, Bob, Carol..."
@@ -101,6 +102,7 @@ export default {
     async mounted() {
         await app.queryDevices()
     },
+
 }
 </script>
 
