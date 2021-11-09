@@ -1,5 +1,5 @@
 <template>
-    <section class="c-admin-groups presence">
+    <section v-if="$s.admin.authenticated" class="c-admin-groups presence">
         <div class="actions">
             <button class="btn">
                 <Icon class="item-icon icon-small" name="Plus" @click="addGroup" />

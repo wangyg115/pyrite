@@ -62,9 +62,10 @@ export default defineComponent({
                 method: 'POST',
             })
 
-            const status = await res.json()
-            this.$s.admin.authenticated = status.authenticated
-            if (!status.authenticated) {
+            const context = await res.json()
+            Object.assign(this.$s.admin, context)
+
+            if (!context.authenticated) {
                 app.notifier.notify({level: 'error', message: this.$t('Invalid credentials')})
             } else {
                 app.notifier.notify({level: 'info', message: this.$t('succesfully logged in')})

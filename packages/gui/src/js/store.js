@@ -69,6 +69,7 @@ const volatileState = {
         name: '',
         recording: false,
     },
+    groups: [],
     mediaReady: false,
     notifications: [],
     permissions: {

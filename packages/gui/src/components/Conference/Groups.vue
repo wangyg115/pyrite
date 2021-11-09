@@ -1,6 +1,6 @@
 <template>
     <section class="c-groups presence">
-        <div v-for="group of groups" :key="group.name" class="group item">
+        <div v-for="group of $s.groups" :key="group.name" class="group item">
             <Icon v-if="!group.locked" class="item-icon icon-small" name="Group" />
             <Icon v-else class="item-icon icon-small" name="GroupLocked" />
             <RouterLink
@@ -16,7 +16,7 @@
                 <Icon class="icon-small" name="User" />
             </div>
         </div>
-        <div v-if="!groups.length" class="group item no-public-groups">
+        <div v-if="!$s.groups.length" class="group item no-public-groups">
             <Icon class="item-icon icon-small" name="Group" />
             <div class="name">
                 {{ $t('No public groups') }}
@@ -37,15 +37,10 @@
 
 <script>
 export default {
-    data() {
-        return {
-            groups: [],
-        }
-    },
     methods: {
         async pollGroups() {
-            this.groups = await (await fetch('/public-groups.json')).json()
-            for (const group of this.groups) {
+            this.$s.groups = await (await fetch('/public-groups.json')).json()
+            for (const group of this.$s.groups) {
                 if (group.name === this.$s.group.name) {
                     if (group.locked) this.$s.group.locked = true
                     else this.$s.group.locked = false
