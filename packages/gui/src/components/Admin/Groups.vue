@@ -92,7 +92,7 @@ export default {
     },
     methods: {
         async addGroup() {
-            const group = await (await fetch('/api/groups/template')).json()
+            const group = await app.api.get('/api/groups/template')
             this.$s.admin.groups.push(group)
             this.toggleSelection(group._name)
         },
@@ -114,7 +114,7 @@ export default {
             }
         },
         async loadGroups() {
-            this.$s.admin.groups = await (await fetch('/api/groups')).json()
+            this.$s.admin.groups = await app.api.get('/api/groups')
         },
         async saveGroup() {
             const groupId = this.$s.admin.group._name

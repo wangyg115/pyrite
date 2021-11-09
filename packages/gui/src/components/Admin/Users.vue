@@ -69,7 +69,7 @@ export default {
     },
     methods: {
         async addUser() {
-            const user = await (await fetch('/api/users/template')).json()
+            const user = await app.api.get('/api/users/template')
             this.$s.admin.users.push(user)
             this.toggleSelection(user.id)
         },
@@ -91,7 +91,7 @@ export default {
             }
         },
         async loadUsers() {
-            this.$s.admin.users = await (await fetch('/api/users')).json()
+            this.$s.admin.users = await app.api.get('/api/users')
         },
         async saveUser() {
             await this.$m.user.saveUser(this.$s.admin.user.id, this.$s.admin.user)

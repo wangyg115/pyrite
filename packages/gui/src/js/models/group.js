@@ -1,15 +1,6 @@
 export default {
     async saveGroup(groupId, data) {
-        const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}`, {
-            body: JSON.stringify(data),
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            method: 'POST',
-        })
-
-        const group = await res.json()
+        const group = await app.api.post(`/api/groups/${encodeURIComponent(groupId)}`, data)
 
         if (group._name === group._newName) {
             app.notifier.notify({level: 'info', message: app.$t('Group "{groupId}" saved', {groupId: group._name})})

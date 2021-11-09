@@ -39,7 +39,7 @@
 export default {
     methods: {
         async pollGroups() {
-            this.$s.groups = await (await fetch('/public-groups.json')).json()
+            this.$s.groups = await app.api.get('/public-groups.json')
             for (const group of this.$s.groups) {
                 if (group.name === this.$s.group.name) {
                     if (group.locked) this.$s.group.locked = true

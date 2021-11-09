@@ -110,14 +110,14 @@ async function endpointAuthentication(req, res, next) {
         if (user && user.admin) {
             next()
         } else {
-            res.status(404).send('not found')
+            res.status(401).send('Unauthorized')
         }
     } else {
         if (process.env.PYRITE_NO_SECURITY) {
             // Development flag may override security.
             next()
         } else {
-            res.status(404).send('not found')
+            res.status(401).send('Unauthorized')
         }
     }
 }

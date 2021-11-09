@@ -82,7 +82,7 @@ export default defineComponent({
             if (user && user._unsaved) {
                 this.$s.admin.user = user
             } else {
-                this.$s.admin.user = await (await fetch(`/api/users/${encodeURIComponent(userId)}`)).json()
+                this.$s.admin.user = await app.api.get(`/api/users/${encodeURIComponent(userId)}`)
             }
         },
         async saveUser() {

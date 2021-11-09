@@ -53,16 +53,11 @@ export default defineComponent({
     },
     methods: {
         async login() {
-            const res = await fetch('/api/login', {
-                body: JSON.stringify({password: this.password, username: this.username}),
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                method: 'POST',
+            const context = await app.api.post('/api/login', {
+                password: this.password,
+                username: this.username,
             })
 
-            const context = await res.json()
             Object.assign(this.$s.admin, context)
 
             if (!context.authenticated) {

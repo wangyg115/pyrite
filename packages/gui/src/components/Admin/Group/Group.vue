@@ -91,7 +91,7 @@ export default defineComponent({
             if (group && group._unsaved) {
                 this.$s.admin.group = group
             } else {
-                const updatedGroup = await (await fetch(`/api/groups/${encodeURIComponent(groupId)}`)).json()
+                const updatedGroup = await app.api.get(`/api/groups/${encodeURIComponent(groupId)}`)
                 // Don't update state properties.
                 for (const key of Object.keys(group)) {
                     if (!key.startsWith('_')) group[key] = updatedGroup[key]

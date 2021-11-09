@@ -3,6 +3,7 @@ import "@fontsource/oswald"
 import "@fontsource/roboto"
 
 import animate from './animate'
+import Api from './lib/api.js'
 import {createI18n} from 'vue-i18n'
 import env from './env.js'
 import EventEmitter from 'eventemitter3'
@@ -20,6 +21,8 @@ class Pyrite extends EventEmitter {
     constructor() {
         super()
         this.logger = new Logger(this)
+        this.api = new Api()
+
         this.logger.setLevel('debug')
 
         this.animate = animate
@@ -134,12 +137,7 @@ class Pyrite extends EventEmitter {
     }
 
     async adminContext() {
-        const res = await fetch('/api/context', {
-            credentials: 'same-origin',
-            headers: {'Content-Type': 'application/json'},
-        })
-
-        const context = await res.json()
+        const context = await app.api.get('/api/context')
         Object.assign(this.$s.admin, context)
     }
 

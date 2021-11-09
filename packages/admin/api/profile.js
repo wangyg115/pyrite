@@ -22,7 +22,7 @@ export default function(app) {
                 }
             }
         } else {
-            context = await authContext()
+            context = await noAuthContext()
         }
         res.end(JSON.stringify(context))
     })

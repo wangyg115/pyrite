@@ -17,8 +17,7 @@ import {defineComponent} from 'vue'
 export default defineComponent({
     methods: {
         async loadGroups() {
-            const res = await fetch('/api/groups')
-            this.$s.admin.groups = await res.json()
+            this.$s.admin.groups = await app.api.get('/api/groups')
         },
     },
     async mounted() {
