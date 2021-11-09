@@ -50,12 +50,27 @@
         <button v-else class="btn btn-menu" disabled>
             <Icon class="icon-small" name="Record" />
         </button>
+
+        <button
+            v-if="$s.admin.authenticated"
+            class="btn btn-menu btn-logout tooltip"
+            :data-tooltip="$t('log out')"
+            @click="logout"
+        >
+            <Icon class="icon-small" name="Logout" />
+        </button>
     </nav>
 </template>
 
 <script>
 export default {
-
+    methods: {
+        async logout() {
+            const context = await app.api.get('/api/logout')
+            Object.assign(this.$s.admin, context)
+            app.router.push({name: 'admin-login'})
+        },
+    },
 }
 </script>
 

@@ -50,9 +50,10 @@ export default function(app) {
         res.end(JSON.stringify(context))
     })
 
-    app.get('/api/logout',(req, res) => {
+    app.get('/api/logout',async(req, res) => {
         req.session.destroy()
-        res.end(JSON.stringify({status: 'ok'}))
+        const context = await noAuthContext()
+        res.end(JSON.stringify(context))
     })
 }
 
