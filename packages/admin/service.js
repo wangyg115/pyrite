@@ -1,5 +1,6 @@
 import apiGroups from './api/groups.js'
 import apiProfile from './api/profile.js'
+import apiRecordings from './api/recordings.js'
 import apiUsers from './api/users.js'
 
 import bodyParser from 'body-parser'
@@ -126,9 +127,13 @@ app.use(endpointAuthentication)
 
 apiGroups(app)
 apiProfile(app)
+apiRecordings(app)
 apiUsers(app)
 
 app.listen(3030, () => {
     app.logger.info(`pyrite admin service listening on port ${settings.port}`)
+    if (process.env.PYRITE_NO_SECURITY) {
+        app.logger.warn('SESSION SECURITY IS DISABLED')
+    }
 })
 
