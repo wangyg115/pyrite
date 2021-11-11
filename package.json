@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "galene": "docker-compose -f galene/docker/docker-compose.yml --project-directory ./galene up --remove-orphans",
+    "galene": "export UID=$(id -u) && export GID=$(id -g) && docker-compose -f galene/docker/docker-compose.yml --project-directory ./galene up --remove-orphans",
     "lint": "npm run lint -w ./packages",
     "semantic-release": "semantic-release"
   },
@@ -23,7 +23,7 @@
   "homepage": "https://github.com/garage44/pyrite#readme",
   "workspaces": [
     "packages/admin",
-    "packages/gui"
+    "packages/ui"
   ],
   "devDependencies": {
     "@semantic-release/changelog": "^5.0.1",
