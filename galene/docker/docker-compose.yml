@@ -2,7 +2,7 @@ services:
   galene:
     container_name: galene
     image: garage44/galene:latest
-    user: $UID:$GID
+    user: $PYRITE_UID:$PYRITE_GID
     volumes:
       - ./data:/go/src/galene/data
       - ./groups:/go/src/galene/groups

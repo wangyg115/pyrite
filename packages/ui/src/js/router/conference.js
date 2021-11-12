@@ -33,10 +33,8 @@ export default [{
             name: 'conference-groups',
             path: '/groups/:groupId',
             redirect: () => {
-                if (!app.$s.group.connected) {
-                    return {name: 'conference-groups-disconnected'}
-                }
-                return {name: 'conference-groups-connected'}
+                if (app.$s.group.connected) return {name: 'conference-groups-connected'}
+                return {name: 'conference-groups-disconnected'}
             },
         },
         {

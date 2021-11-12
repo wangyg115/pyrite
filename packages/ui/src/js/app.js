@@ -311,7 +311,8 @@ class Pyrite extends EventEmitter {
         await this.adminContext()
         this.router = router(this)
         this.router.beforeResolve((to, from, next) => {
-            // All admin routes are authenticated.
+            // All admin routes are authenticated. Redirect to the admin
+            // login if the authentication flag is unset.
             if ((to.name && to.name !== 'admin-login' && to.name.startsWith('admin')) && !this.$s.admin.authenticated) {
                 next({name: 'admin-login'})
                 return

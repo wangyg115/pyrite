@@ -31,7 +31,7 @@ export default defineComponent({
             } else if (this.$route.name === 'conference-groups-disconnected') {
                 // Use the selected group with the group in admin.
                 const groupId = this.$route.params.groupId
-                return {name: 'admin-group-settings', params: {groupId, tabId: 'misc'}}
+                return {name: 'admin-groups-group-settings', params: {groupId, tabId: 'misc'}}
             } else if (this.$route.name.startsWith('admin-group')) {
                 const groupId = this.$route.params.groupId
 

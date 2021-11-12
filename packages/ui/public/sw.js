@@ -7,9 +7,7 @@ self.addEventListener('install', function(event) {
             return cache.addAll([
                 '/',
                 'index.html',
-                'favicon.png',
-                'logo.png',
-                '/src/main.js',
+                'logo.svg',
             ])
         }),
     )

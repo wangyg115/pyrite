@@ -7,7 +7,8 @@
     "doc": "docs"
   },
   "scripts": {
-    "galene": "export UID=$(id -u) && export GID=$(id -g) && docker-compose -f galene/docker/docker-compose.yml --project-directory ./galene up --remove-orphans",
+    "check-env": "node -e 'console.log(process.env)' | grep npm",
+    "galene": "export PYRITE_UID=$(id -u)&&export PYRITE_GID=$(id -g)&&docker-compose -f galene/docker/docker-compose.yml --project-directory ./galene up --remove-orphans",
     "lint": "npm run lint -w ./packages",
     "semantic-release": "semantic-release"
   },
