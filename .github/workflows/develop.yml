@@ -30,4 +30,4 @@ jobs:
         RAND_CHANNEL: ${{secrets.RAND_CHANNEL_DEVELOP}}
         RAND_PW: ${{secrets.RAND_PW}}
         RAND_USER: ${{secrets.RAND_USER}}
-      run: VITE_VERSION=$(git rev-parse --short HEAD) npm run build --workspace=packages/gui;npm run deploy --workspace=packages/gui
+      run: VITE_VERSION=$(git rev-parse --short HEAD) npm run build --workspace=packages/ui;npm run deploy --workspace=packages/ui
