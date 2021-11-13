@@ -40,10 +40,10 @@
 </template>
 
 <style lang="scss">
-@keyframes anim-1 {
+@keyframes light-1 {
 
     0%,
-    55% {
+    85% {
         fill: var(--grey-4);
         opacity: 0;
     }
@@ -54,24 +54,23 @@
     }
 }
 
-@keyframes anim-2 {
+@keyframes light-2 {
 
     0%,
-    55% {
-        fill: transparent;
-
+    65% {
+        opacity: 0;
     }
 
     100% {
-        fill: var(--grey-3);
+        opacity: 1;
     }
 }
 
-@keyframes anim-3 {
+@keyframes blink {
 
     0% {
         fill: transparent;
-        opacity: 0.5;
+        opacity: 0.2;
     }
 
     50% {fill: var(--grey-3);}
@@ -80,7 +79,11 @@
     65% {fill: var(--primary-color);}
     70% {fill: var(--grey-3);}
     75% {fill: var(--primary-color);}
-    80% {fill: var(--grey-3);}
+
+    80% {
+        fill: var(--grey-3);
+        opacity: 0.2;
+    }
     83% {fill: var(--primary-color);}
     85% {fill: var(--grey-3);}
     87% {fill: var(--primary-color);}
@@ -102,15 +105,15 @@
 .logo-animated {
 
     .shard.primary {
-        animation: 0.75s ease-in-out running anim-1;
+        animation: 1.75s ease-in-out running light-1;
     }
 
     .shard.dark {
-        animation: 0.5s ease running anim-2;
+        animation: 1.5s ease running light-2;
     }
 
     .pupil {
-        animation: 0.3s ease-in-out running anim-3;
+        animation: 1.5s ease-in-out running blink;
     }
 }
 </style>

@@ -1,6 +1,9 @@
-<img height="100" src="./packages/ui/public/logo-text.svg">
-
 ![Pyrite build passing](https://github.com/garage44/pyrite/actions/workflows/test.yml/badge.svg)
+<br /><br />
+<img height="100" src="./packages/ui/public/logo-text.svg">
+<br />
+
+# About
 
 [Pyrite](https://pyrite.video) is a WebRTC client for the [Galène](https://github.com/jech/galene)
 videoconference server. Its purpose is to help establish a self-hosted

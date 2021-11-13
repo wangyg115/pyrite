@@ -6,7 +6,7 @@
         </div>
 
         <div class="propaganda">
-            {{ $t('Video Communication') }}
+            {{ $t('CONFERENCING') }}
         </div>
     </div>
 </template>
@@ -31,19 +31,23 @@ export default {
 
     .icon {
         height: 300px;
-        transform: scale(1.25);
+        transform: scale(1.5);
         width: 300px;
     }
 
     .title {
         color: var(--primary-color);
-        font-size: var(--text-huge);
+        font-size: 3.7rem;
         font-weight: 600;
+        height: 3.7rem;
+        line-height: 3.7rem;
+        margin: 0;
+        padding: 0;
     }
 
     .propaganda {
         color: var(--grey-5);
-        font-size: var(--text-large);
+        font-size: 1.67rem;
         font-weight: 500;
     }
 }
