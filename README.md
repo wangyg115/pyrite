@@ -5,7 +5,7 @@
 
 # About
 
-[Pyrite](https://pyrite.video) is a WebRTC client for the [Galène](https://github.com/jech/galene)
+[Pyrite](https://pyrite.video) is a web(RTC) client for the [Galène](https://github.com/jech/galene)
 videoconference server. Its purpose is to help establish a self-hosted
 [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software) alternative to proprietary
 video-conferencing services. The project consists of a [Vue](https://v3.vuejs.org/) PWA and
@@ -13,13 +13,13 @@ an [Express](http://expressjs.com/) (Node.js) backend to manage Galène with.
 
 ## Getting started
 
-### requirements
+### Requirements
 
 * Docker - Required, unless you build Galène yourself
 * Docker-compose - Required, unless you build Galène yourself
 * Node.js - Pyrite is a npm-based project
 
-### Basic installation
+### Installation
 
   ```bash
   git clone git@github.com:garage44/pyrite.git
@@ -34,10 +34,12 @@ an [Express](http://expressjs.com/) (Node.js) backend to manage Galène with.
   npm run dev --workspace=packages/ui
   ```
 
+### Usage
+
 Open a [browser](http://localhost:3000) and toggle the operator modus by
 clicking twice on the logo, until the screen turns red. The initial
 administrator password is generated on first use, and is located in
-`data/users.json`
+`data/users.json`.
 
 ## Hosting
 
