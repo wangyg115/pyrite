@@ -31,95 +31,97 @@
      inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="g858" />
-  <style
-     id="style824">
-      @keyframes anim-1 {
+  <style>
+    @keyframes light-1 {
 
-         0%,
-         55% {
+        0%,
+        85% {
             fill: var(--grey-4);
             opacity: 0;
-         }
+        }
 
-         100% {
+        100% {
             fill: var(--primary-color);
             opacity: 1;
-         }
-      }
+        }
+    }
 
-      @keyframes anim-2 {
+    @keyframes light-2 {
 
-         0%,
-         55% {
+        0%,
+        65% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes blink {
+
+        0% {
             fill: transparent;
+            opacity: 0.2;
+        }
 
-         }
+        50% {fill: var(--grey-3);}
+        52% {fill: var(--primary-color);}
+        60% {fill: var(--grey-3);}
+        65% {fill: var(--primary-color);}
+        70% {fill: var(--grey-3);}
+        75% {fill: var(--primary-color);}
 
-         100% {
+        80% {
             fill: var(--grey-3);
-         }
-      }
+            opacity: 0.2;
+        }
+        83% {fill: var(--primary-color);}
+        85% {fill: var(--grey-3);}
+        87% {fill: var(--primary-color);}
 
-      @keyframes anim-3 {
-
-         0% {
-            fill: transparent;
-            opacity: 0.5;
-         }
-
-         50% {fill: var(--grey-3);}
-         52% {fill: var(--primary-color);}
-         60% {fill: var(--grey-3);}
-         65% {fill: var(--primary-color);}
-         70% {fill: var(--grey-3);}
-         75% {fill: var(--primary-color);}
-         80% {fill: var(--grey-3);}
-         83% {fill: var(--primary-color);}
-         85% {fill: var(--grey-3);}
-         87% {fill: var(--primary-color);}
-
-         100% {
+        100% {
             fill: var(--primary-color);
             opacity: 1;
-         }
-      }
+        }
+    }
 
-      :root {
-         --grey-h: 210;
-         --grey-s: 15%;
-         --grey-3: hsl(var(--grey-h), var(--grey-s), 13%);
-         --grey-7: hsl(var(--grey-h), var(--grey-s), 60%);
-         --primary-color: hsl(200, 80%, 65%);
-      }
+    :root {
+        --grey-h: 210;
+        --grey-s: 15%;
+        --grey-3: hsl(var(--grey-h), var(--grey-s), 13%);
+        --grey-7: hsl(var(--grey-h), var(--grey-s), 60%);
+        --primary-color: hsl(200, 80%, 65%);
+    }
 
-      .shard.dark {
-         fill: hsl(220, 14%, 11%);
-      }
+    .shard.dark {
+        fill: hsl(220, 14%, 11%);
+    }
 
-      .shard.primary {
-         fill: var(--primary-color);
-      }
+    .shard.primary {
+        fill: var(--primary-color);
+    }
 
-      .pupil,
-      .title {
-         fill: var(--primary-color);
-      }
+    .pupil,
+    .title {
+        fill: var(--primary-color);
+    }
 
-      .subtitle {
-         fill: var(--grey-7);
-      }
+    .subtitle {
+        fill: var(--grey-7);
+    }
 
-      .shard.primary {
-         animation: 0.75s ease-in-out running anim-1;
-      }
+    .shard.primary {
+        animation: 1.75s ease-in-out running light-1;
+    }
 
-      .shard.dark {
-         animation: 0.5s ease running anim-2;
-      }
+    .shard.dark {
+        animation: 1.5s ease running light-2;
+    }
 
-      .pupil {
-         animation: 0.3s ease-in-out running anim-3;
-      }
+    .pupil {
+        animation: 1.5s ease-in-out running blink;
+    }
 
   </style>
   <g

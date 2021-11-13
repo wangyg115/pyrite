@@ -29,7 +29,7 @@ an [Express](http://expressjs.com/) (Node.js) backend to manage Galène with.
 
   # Config file, mostly for the backend
   cp .pyriterc.example ~/.pyriterc
-  # Use PYRITE_NO_SECURITY=1 env flag for dev modus
+  # Use PYRITE_NO_SECURITY=1 env to bypass session security
   npm run dev --workspace=packages/admin
   npm run dev --workspace=packages/ui
   ```
