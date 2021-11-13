@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 137.46089 51.956631"
+   version="1.1"
+   id="svg849"
+   width="137.46089"
+   height="51.956631"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+
+  <style>
+      @keyframes anim-1 {
+
+         0%,
+         55% {
+            fill: var(--grey-4);
+            opacity: 0;
+         }
+
+         100% {
+            fill: var(--primary-color);
+            opacity: 1;
+         }
+      }
+
+      @keyframes anim-2 {
+
+         0%,
+         55% {
+            fill: transparent;
+
+         }
+
+         100% {
+            fill: var(--grey-3);
+         }
+      }
+
+      @keyframes anim-3 {
+
+         0% {
+            fill: transparent;
+            opacity: 0.5;
+         }
+
+         50% {fill: var(--grey-3);}
+         52% {fill: var(--primary-color);}
+         60% {fill: var(--grey-3);}
+         65% {fill: var(--primary-color);}
+         70% {fill: var(--grey-3);}
+         75% {fill: var(--primary-color);}
+         80% {fill: var(--grey-3);}
+         83% {fill: var(--primary-color);}
+         85% {fill: var(--grey-3);}
+         87% {fill: var(--primary-color);}
+
+         100% {
+            fill: var(--primary-color);
+            opacity: 1;
+         }
+      }
+
+      :root {
+         --grey-h: 210;
+         --grey-s: 15%;
+         --grey-3: hsl(var(--grey-h), var(--grey-s), 13%);
+         --grey-7: hsl(var(--grey-h), var(--grey-s), 60%);
+         --primary-color: hsl(200, 80%, 65%);
+      }
+
+      .shard.dark {
+         fill: hsl(220, 14%, 11%);
+      }
+
+      .shard.primary {
+         fill: var(--primary-color);
+      }
+
+      .pupil,
+      .title {
+         fill: var(--primary-color);
+      }
+
+      .subtitle {
+         fill: var(--grey-7);
+      }
+
+      .shard.primary {
+         animation: 0.75s ease-in-out running anim-1;
+      }
+
+      .shard.dark {
+         animation: 0.5s ease running anim-2;
+      }
+
+      .pupil {
+         animation: 0.3s ease-in-out running anim-3;
+      }
+
+  </style>
+
+  <g
+     id="g1564"
+     transform="matrix(4.5578267,0,0,4.5578267,36.870381,-1.4719978)">
+    <circle
+       style="fill:#33c6c3;fill-opacity:1;stroke:#1a202c;stroke-width:1.07;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       id="path894"
+       cx="12"
+       cy="9.6159058"
+       r="0" />
+    <g
+       id="g875"
+       transform="translate(1.6229616)">
+      <g
+         id="g887"
+         transform="matrix(0.95902023,0,0,0.95902023,0.57206625,-5.5858053)">
+        <g
+           id="g65"
+           transform="translate(-0.73221559)">
+          <g
+             id="g896"
+             transform="translate(-6.5474084)">
+            <g
+               id="g1926"
+               transform="matrix(0.83493156,0,0,0.83493156,-7.6286797,2.1938903)">
+              <path
+                 class="shard dark"
+                 d="m 5.4804785,14.410944 a 7.1183372,7.1183372 0 0 0 5.2827995,4.444952 l 2.565838,-4.444952 z"
+                 id="path1883" />
+              <path
+                 class="shard primary"
+                 d="m 15.191999,12.207584 -3.886627,6.73271 a 7.1183372,7.1183372 0 0 0 0.824501,0.04797 7.1183372,7.1183372 0 0 0 5.486219,-2.58279 z"
+                 id="path1881" />
+              <path
+                 class="shard dark"
+                 d="M 14.215653,9.4927872 17.952241,15.96509 A 7.1183372,7.1183372 0 0 0 19.248144,11.869992 7.1183372,7.1183372 0 0 0 18.839139,9.4927872 Z"
+                 id="path1879" />
+              <path
+                 class="shard primary"
+                 d="m 6.6768355,7.2944764 a 7.1183372,7.1183372 0 0 0 -1.665233,4.5755156 7.1183372,7.1183372 0 0 0 0.295753,2.029876 h 5.1825315 z"
+                 id="path1877" />
+              <path
+                 class="shard primary"
+                 d="m 13.714316,4.9306159 -2.338973,4.0510954 h 7.260376 A 7.1183372,7.1183372 0 0 0 13.714316,4.9306159 Z"
+                 id="path1875" />
+              <path
+                 class="shard dark"
+                 d="M 12.129873,4.7517214 A 7.1183372,7.1183372 0 0 0 7.0378715,6.8962918 L 9.5131795,11.18435 13.181961,4.8299879 a 7.1183372,7.1183372 0 0 0 -1.052088,-0.078266 z"
+                 id="path1841" />
+              <circle
+                 class="pupil"
+                 id="circle1843"
+                 cx="12.129838"
+                 cy="11.870106"
+                 r="1.5759634" />
+            </g>
+            <g
+               aria-label="PYRITE"
+               id="text22"
+               style="font-style:normal;font-weight:normal;font-size:7.72127px;line-height:1.25;font-family:sans-serif;fill:#33c6c3;fill-opacity:1;stroke:none;stroke-width:0.289547"
+               transform="matrix(0.86665643,0,0,0.86665643,0.80015624,1.5588826)">
+              <path
+                 d="m 10.487636,8.9774082 h 1.984367 q 1.621466,0 1.621466,1.7990558 0,0.949716 -0.463276,1.351222 -0.463276,0.393785 -1.289452,0.393785 h -0.586816 v 2.710166 h -1.266289 z m 1.721843,2.6483958 q 0.409228,0 0.548211,-0.193032 0.138982,-0.193032 0.138982,-0.679472 0,-0.316572 -0.04633,-0.494161 -0.04633,-0.18531 -0.200753,-0.2856869 -0.146704,-0.1003765 -0.447834,-0.1003765 h -0.447833 v 1.7527284 z"
+                 class="title"
+                 id="path37" />
+              <path
+                 d="M 15.560501,12.753109 14.34054,8.9774082 h 1.196797 l 0.67175,2.2005618 0.617702,-2.2005618 h 1.165912 l -1.204518,3.7757008 v 2.478528 h -1.227682 z"
+                 class="title"
+                 id="path39" />
+              <path
+                 d="m 18.533184,8.9774082 h 1.621466 q 1.011487,0 1.521091,0.370621 0.509603,0.370621 0.509603,1.2817308 0,0.60998 -0.169867,0.988323 -0.169868,0.370621 -0.60226,0.563652 L 22.278,15.231637 h -1.304895 l -0.710357,-2.833706 h -0.463276 v 2.833706 h -1.266288 z m 1.64463,2.6638378 q 0.447834,0 0.625423,-0.216195 0.185311,-0.223917 0.185311,-0.694914 0,-0.463277 -0.162147,-0.679472 -0.162147,-0.2161958 -0.586817,-0.2161958 h -0.440112 v 1.8067768 z"
+                 class="title"
+                 id="path41" />
+              <path
+                 d="m 23.050114,8.9774082 h 1.266288 v 6.2542288 h -1.266288 z"
+                 class="title"
+                 id="path43" />
+              <path
+                 d="m 25.852931,9.9194032 h -0.965158 v -0.941995 h 3.196605 v 0.941995 h -0.949716 v 5.3122338 h -1.281731 z"
+                 class="title"
+                 id="path45" />
+              <path
+                 d="m 28.648029,8.9774082 h 2.725608 V 9.857633 h -1.45932 v 1.660073 h 1.127306 v 0.887946 h -1.127306 v 1.961203 h 1.474763 v 0.864782 h -2.741051 z"
+                 class="title"
+                 id="path47" />
+            </g>
+            <text
+               xml:space="preserve"
+               x="9.7756186"
+               y="16.80131"
+               id="text69"
+            >
+               <tspan
+                  id="tspan67"
+                  class="subtitle"
+                  x="9.7756186"
+                  y="17"
+                  style="font-weight:600;font-size:2.1px;font-family:Oswald;-inkscape-font-specification:'Oswald Semi-Bold';"
+               >VIDEO CONFERENCING</tspan>
+            </text>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

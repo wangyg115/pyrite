@@ -1,4 +1,4 @@
-<img height="50" src="./packages/ui/public/logo.svg">
+<img height="100" src="./packages/ui/public/logo-text.svg">
 
 ![Pyrite build passing](https://github.com/garage44/pyrite/actions/workflows/test.yml/badge.svg)
 
