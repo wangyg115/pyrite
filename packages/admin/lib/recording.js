@@ -23,3 +23,9 @@ export async function loadRecordings(groupId) {
 
     return filesData
 }
+
+export function recordingPath(groupId, recording) {
+    const dirname = path.join(app.settings.paths.recordings, groupId)
+    // Sanitize against directory traversal?
+    return path.join(dirname, recording)
+}
