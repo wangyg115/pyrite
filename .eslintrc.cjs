@@ -101,6 +101,7 @@ module.exports = {
             },
             singleline: 3,
         }],
+        'vue/no-v-html': 0,
         'vue/order-in-components': 'off',
         'vue/padding-line-between-blocks': [2],
         'vue/sort-keys': [2, 'asc', {
