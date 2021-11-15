@@ -54,8 +54,9 @@ import Field from './field'
 export default {
     computed: {
         currentOption() {
-            if (this.modelValue) {
-                const currentOption = this.options.find((o) => o.id === this.modelValue)
+            if (this.modelValue && this.modelValue.id) {
+                const currentOption = this.options.find((o) => o.id === this.modelValue.id)
+
                 if (currentOption) {
                     return currentOption.name
                 }
