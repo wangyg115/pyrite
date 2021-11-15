@@ -1,5 +1,5 @@
 <template>
-    <section class="c-admin-users presence">
+    <section class="c-admin-users-list presence">
         <div class="actions">
             <button class="btn">
                 <Icon class="item-icon icon-small" name="Plus" @click="addUser" />
@@ -24,11 +24,11 @@
                 :disabled="!deletionUsers.length"
                 @click="deleteUsers"
             >
-                <Icon class="icon-small" name="Close" />
+                <Icon class="icon-small" name="Trash" />
             </button>
         </div>
         <div v-for="user of orderedUsers" :key="user.id" class="user item">
-            <Icon v-if="user._delete" class="item-icon delete icon-small" name="Close" />
+            <Icon v-if="user._delete" class="item-icon delete icon-small" name="Trash" />
             <Icon
                 v-else class="item-icon icon-small"
                 :class="{unsaved: user._unsaved}"
@@ -140,7 +140,7 @@ export default {
 
 <style lang="scss">
 
-.c-admin-groups {
+.c-admin-users-list {
 
     .row {
         color: var(--grey-7);

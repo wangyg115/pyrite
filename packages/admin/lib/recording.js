@@ -1,4 +1,4 @@
-import {promises as fs} from 'fs'
+import fs from 'fs-extra'
 import {globby} from 'globby'
 import path from 'path'
 
@@ -28,4 +28,11 @@ export function recordingPath(groupId, recording) {
     const dirname = path.join(app.settings.paths.recordings, groupId)
     // Sanitize against directory traversal?
     return path.join(dirname, recording)
+}
+
+export async function deleteRecording(groupId, recording) {
+    const recordingTarget = recordingPath(groupId, recording)
+    await fs.remove(recordingTarget)
+    const recordings = await loadRecordings(groupId)
+    return recordings
 }

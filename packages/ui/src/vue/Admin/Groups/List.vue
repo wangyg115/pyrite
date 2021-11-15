@@ -21,11 +21,11 @@
             </button>
             <button
                 class="btn tooltip tooltip-right"
-                :data-tooltip="$t('confirm deletion')"
+                :data-tooltip="`${$t('confirm deletion of {amount} groups', {amount: deletionGroups.length})}`"
                 :disabled="!deletionGroups.length"
                 @click="deleteGroups"
             >
-                <Icon class="icon-small" name="Close" />
+                <Icon class="icon-small" name="Trash" />
             </button>
         </div>
         <div
@@ -33,7 +33,7 @@
             :key="group._name"
             class="group item"
         >
-            <Icon v-if="group._delete" class="item-icon delete icon-small" name="Close" />
+            <Icon v-if="group._delete" class="item-icon delete icon-small" name="Trash" />
             <Icon
                 v-else class="item-icon icon-small"
                 :class="{unsaved: group._unsaved}"
@@ -45,7 +45,6 @@
                     class="name"
                     :class="{active: $route.params.groupId === group._name}"
                     :to="groupLink(group._name)"
-                    @click="toggleSelection(group._name)"
                 >
                     {{ group._name }}
                 </Routerlink>
@@ -113,8 +112,10 @@ export default {
                 this.$router.push({name: 'admin-groups-group-settings', params: {groupId, tabId: 'misc'}})
             }
         },
+        // The group link depends on the context, e.g. whether a user
+        // may currently be watching the recordings view or group setitings.
         groupLink(groupId) {
-            return {name: 'admin-groups-group-settings', params: {groupId, tabId: 'misc'}}
+            return {name: this.$route.name, params: {groupId, tabId: 'misc'}}
         },
         async loadGroups() {
             this.$s.admin.groups = await app.api.get('/api/groups')
@@ -152,7 +153,7 @@ export default {
                 this.$s.admin.group = null
                 this.$router.push({name: 'admin-groups'})
             } else {
-                this.$router.push({name: 'admin-groups-group-settings', params: {groupId, tabId: 'misc'}})
+                this.$router.push({name: this.$route.name, params: {groupId}})
             }
         },
     },

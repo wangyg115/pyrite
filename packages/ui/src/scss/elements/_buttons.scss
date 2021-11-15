@@ -42,6 +42,11 @@
 
         width: var(--space-4);
 
+        &.btn-small {
+            height: var(--space-3);
+            width: var(--space-3);
+        }
+
         svg {
             transition: 0.35s -webkit-filter ease-out;
         }
