@@ -5,18 +5,31 @@
             PYRITE
         </div>
 
-        <div class="propaganda">
-            {{ $t('CONFERENCING') }}
+        <div class="subtitle">
+            {{ subtitle }}
         </div>
     </div>
 </template>
 
 <script>
 export default {
+    computed: {
+        subtitle() {
+            if (this.instruction) return this.instruction()
+            else return this.$t('CONFERENCING')
+        },
+    },
     mounted() {
         if (!this.$s.group.connected) {
             this.$s.group.name = ''
         }
+    },
+    props: {
+        instruction: {
+            required: false,
+            default: () => '',
+            type: Function,
+        },
     },
 }
 </script>
@@ -45,7 +58,7 @@ export default {
         padding: 0;
     }
 
-    .propaganda {
+    .subtitle {
         color: var(--grey-5);
         font-size: 1.67rem;
         font-weight: 500;

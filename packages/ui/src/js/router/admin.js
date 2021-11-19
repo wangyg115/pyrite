@@ -1,4 +1,5 @@
 import App from '@/vue/Admin/App.vue'
+import Dashboard from '@/vue/Admin/Dashboard.vue'
 import GroupRecordings from '@/vue/Admin/Groups/Group/Recordings.vue'
 import Groups from '@/vue/Admin/Groups/Groups.vue'
 import GroupSettings from '@/vue/Admin/Groups/Group/Settings/Settings.vue'
@@ -23,6 +24,16 @@ export default [{
                     component: Splash,
                     name: 'admin-groups-splash',
                     path: '/admin/groups/:groupId?',
+                    props: {
+                        instruction() {
+                            return app.$t('Select a group to continue')
+                        },
+                    },
+                },
+                {
+                    component: Dashboard,
+                    name: 'admin-groups-group-dashboard',
+                    path: '/admin/groups/:groupId?/dashboard',
                 },
                 {
                     component: GroupRecordings,

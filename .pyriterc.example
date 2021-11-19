@@ -1,6 +1,12 @@
 {
     "endpoints": {
-        "galene": "http://localhost:8443"
+        "galene": {
+            "url": "http://localhost:8443",
+            "admin": {
+                "username": "galene-admin-username",
+                "password": "galene-admin-password"
+            }
+        }
     },
     "logger": {
         "level": "info"

@@ -2,6 +2,7 @@ import '@/scss/app.scss'
 
 import App from '@/vue/Elements/App.vue'
 
+import ButtonGroup from '@/vue/Elements/ButtonGroup.vue'
 import ContextInput from '@/vue/Elements/Context/ContextInput.vue'
 import ContextSelect from '@/vue/Elements/Context/ContextSelect.vue'
 import {createApp} from 'vue'
@@ -25,6 +26,7 @@ Object.assign(app.vm.config.globalProperties, {
     $s: app.$s,
 })
 
+app.vm.component('ButtonGroup', ButtonGroup)
 app.vm.component('Notifications', Notifications)
 app.vm.component('Icon', Icon)
 app.vm.component('ContextInput', ContextInput)

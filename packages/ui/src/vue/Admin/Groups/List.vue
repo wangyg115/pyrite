@@ -112,10 +112,17 @@ export default {
                 this.$router.push({name: 'admin-groups-group-settings', params: {groupId, tabId: 'misc'}})
             }
         },
-        // The group link depends on the context, e.g. whether a user
-        // may currently be watching the recordings view or group setitings.
+        /**
+         * The group link depends on the context, e.g. whether a user
+         * may currently be watching the recordings view or group settings.
+         */
         groupLink(groupId) {
-            return {name: this.$route.name, params: {groupId, tabId: 'misc'}}
+            const allowList = ['admin-groups-group-dashboard', 'admin-groups-group-settings', 'admin-groups-group-recordings']
+            if (allowList.includes(this.$route.name)) {
+                return {name: this.$route.name, params: {groupId, tabId: 'misc'}}
+            } else {
+                return {name: 'admin-groups-group-dashboard', params: {groupId}}
+            }
         },
         async loadGroups() {
             this.$s.admin.groups = await app.api.get('/api/groups')

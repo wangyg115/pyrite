@@ -1,3 +1,4 @@
+import apiDashboard from './api/dashboard.js'
 import apiGroups from './api/groups.js'
 import apiProfile from './api/profile.js'
 import apiRecordings from './api/recordings.js'
@@ -125,6 +126,7 @@ async function endpointAuthentication(req, res, next) {
 
 app.use(endpointAuthentication)
 
+apiDashboard(app)
 apiGroups(app)
 apiProfile(app)
 apiRecordings(app)
