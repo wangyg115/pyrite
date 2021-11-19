@@ -1,9 +1,10 @@
+import {loadStats} from '../lib/dashboard.js'
+
 export default function(app) {
 
-    app.get('/api/dashboard', async function(req, res) {
-        console.log(app.settings.endpoints.galene)
-        // const {groupsData, groupNames} = await loadGroups()
-        // await pingGroups(groupNames)
-        // res.end(JSON.stringify(groupsData))
+    app.get('/api/dashboard/:groupid', async function(req, res) {
+        const groupId = req.params.groupid
+        const stats = await loadStats(groupId)
+        res.end(JSON.stringify(stats))
     })
 }
