@@ -81,7 +81,7 @@ export default {
     },
     methods: {
         async deleteRecording(rec) {
-            this.recordings = await app.api.get(`/api/recordings/${this.$s.admin.group._name}/${rec.filename}.${rec.extension}/delete`)
+            this.recordings = await app.api.get(`/api/recordings/${this.groupId}/${rec.filename}.${rec.extension}/delete`)
             app.notifier.notify({level: 'info', message: this.$t('Deleted recording {recording}', {recording: rec.filename})})
         },
         async loadRecordings(groupId) {
