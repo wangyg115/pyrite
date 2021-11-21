@@ -1,5 +1,5 @@
 <template>
-    <div class="c-admin-groups-dashboard content">
+    <div v-if="stats && Object.keys(stats.clients).length" class="c-admin-groups-dashboard content">
         <header>
             <div class="notice" />
             <div class="title">
@@ -8,14 +8,16 @@
             </div>
         </header>
 
-        <section v-if="stats && stats.clients">
-            <div v-for="client of stats.clients" :key="client.id">
-                ID: {{ client.id }}
+        <section>
+            <div v-for="client of stats.clients" :key="client.id" class="client">
+                <div class="client-id">
+                    {{ client.id }}
+                </div>
                 <template v-if="client">
                     <div v-for="stream of client.up" :key="stream.id" class="stream">
                         <!-- eslint-disable-next-line vue/valid-v-for -->
                         <div v-for="track of stream.tracks" :key="`${client.id}-${stream.id}`">
-                            <div v-for="(data, name) in track">
+                            <div v-for="(data, name) in track" :key="name">
                                 <Chart v-if="statProps[name]" :data="data" :name="name" />
                             </div>
                         </div>
@@ -24,14 +26,16 @@
             </div>
         </section>
     </div>
+    <Splash v-else :header="groupId" :instruction="$t('No client connected yet')" />
 </template>
 
 <script>
 import Chart from '@/vue/Elements/Chart.vue'
 import {defineComponent} from 'vue'
+import Splash from '@/vue/Elements/Splash.vue'
 
 export default defineComponent({
-    components: {Chart},
+    components: {Chart, Splash},
     data() {
         return {
             statProps: {
@@ -76,26 +80,22 @@ export default defineComponent({
                 if (!client.up) continue
 
                 if (!this.stats.clients[client.id]) {
-                    console.log("INIT 1")
                     this.stats.clients[client.id] = client
                     initClient = true
                 }
 
                 if (!this.stats.clients[client.id]) {
-                    console.log("INIT 2")
                     this.stats.clients[client.id] = JSON.parse(JSON.stringify(client))
                     initClient = true
                 }
 
                 if (!this.stats.clients[client.id].up || !this.stats.clients[client.id].up.length === client.up.length) {
-                    console.log("INIT 3", client.up)
                     this.stats.clients[client.id].up = JSON.parse(JSON.stringify(client.up))
                     initClient = true
                 }
 
                 for (const [streamIndex, stream] of client.up.entries()) {
                     if (stream.tracks.length !== this.stats.clients[client.id].up[streamIndex].tracks.length) {
-                        console.log("INIT 4")
                         this.stats.clients[client.id].up[streamIndex].tracks = JSON.parse(JSON.stringify(stream.tracks))
                         initClient = true
                     }
@@ -162,5 +162,23 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.c-admin-groups-dashboard {
 
+    .client {
+        background: var(--grey-1);
+        padding: var(--spacer);
+
+        .client-id {
+            font-family: var(--font-secondary);
+            font-size: var(--text-small);
+            padding: var(--spacer) 0;
+            padding-top: 0;
+        }
+
+        .stream {
+            background: var(--grey-2);
+            padding: var(--spacer);
+        }
+    }
+}
 </style>

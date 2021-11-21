@@ -19,13 +19,16 @@ export default defineComponent({
 
 <style lang="scss">
 .c-button-group {
+    background: var(--grey-3);
     transition: background 0.3s ease;
 
+    &:hover,
     &.active {
         background: var(--grey-5);
     }
 
     .btn {
+
         .active-group {
             opacity: 0.5;
             // color: var(--primary-color);

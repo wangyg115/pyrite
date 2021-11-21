@@ -2,7 +2,7 @@
     <div class="c-splash">
         <Icon class="icon logo-animated" name="Logo" />
         <div class="title">
-            PYRITE
+            {{ title }}
         </div>
 
         <div class="subtitle">
@@ -15,8 +15,18 @@
 export default {
     computed: {
         subtitle() {
-            if (this.instruction) return this.instruction()
+            if (this.instruction) {
+                if (typeof this.instruction === 'function') return this.instruction()
+                else return this.instruction
+            }
             else return this.$t('CONFERENCING')
+        },
+        title() {
+            if (this.header) {
+                return this.header
+            } else {
+                return 'PYRITE'
+            }
         },
     },
     mounted() {
@@ -25,10 +35,15 @@ export default {
         }
     },
     props: {
+        header: {
+            required: false,
+            default: () => '',
+            type: String,
+        },
         instruction: {
             required: false,
             default: () => '',
-            type: Function,
+            type: [Function, String],
         },
     },
 }

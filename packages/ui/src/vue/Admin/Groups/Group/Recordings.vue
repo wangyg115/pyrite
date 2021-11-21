@@ -1,5 +1,5 @@
 <template>
-    <section class="c-admin-recordings content">
+    <section v-if="recordings.length" class="c-admin-recordings content">
         <header>
             <div class="notice" />
             <div class="title">
@@ -64,16 +64,15 @@
                 </a>
             </div>
         </div>
-
-        <div v-if="!recordings.length" class="no-results">
-            <Icon class="icon-huge" name="Record" />
-            <span>{{ $t('No recordings yet') }}</span>
-        </div>
     </section>
+    <Splash v-else :header="groupId" :instruction="$t('No recordings yet')" />
 </template>
 
 <script>
+import Splash from '@/vue/Elements/Splash.vue'
+
 export default {
+    components: {Splash},
     data() {
         return {
             recordings: [],
