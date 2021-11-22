@@ -1,3 +1,4 @@
+import '@/js/lib/helpers.js'
 import '@/scss/app.scss'
 
 import App from '@/vue/Elements/App.vue'

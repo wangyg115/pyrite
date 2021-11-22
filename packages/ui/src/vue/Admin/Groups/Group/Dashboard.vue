@@ -10,16 +10,16 @@
 
         <section>
             <div v-for="client of stats.clients" :key="client.id" class="client">
-                <div class="client-id">
-                    {{ client.id }}
+                <div class="client-header" :class="{collapsed: client.collapsed}" @click="toggleCollapse(client)">
+                    <Icon class="icon icon-small" name="Dashboard" /> {{ client.id }}
                 </div>
-                <template v-if="client">
+                <template v-if="!client.collapsed">
                     <div v-for="stream of client.up" :key="stream.id" class="stream">
                         <!-- eslint-disable-next-line vue/valid-v-for -->
-                        <div v-for="track of stream.tracks" :key="`${client.id}-${stream.id}`">
-                            <div v-for="(data, name) in track" :key="name">
+                        <div v-for="track of stream.tracks" :key="`${client.id}-${stream.id}`" class="track">
+                            <template v-for="(data, name) in track" :key="name">
                                 <Chart v-if="statProps[name]" :data="data" :name="name" />
-                            </div>
+                            </template>
                         </div>
                     </div>
                 </template>
@@ -81,11 +81,7 @@ export default defineComponent({
 
                 if (!this.stats.clients[client.id]) {
                     this.stats.clients[client.id] = client
-                    initClient = true
-                }
-
-                if (!this.stats.clients[client.id]) {
-                    this.stats.clients[client.id] = JSON.parse(JSON.stringify(client))
+                    this.stats.clients[client.id].collapsed = true
                     initClient = true
                 }
 
@@ -137,6 +133,9 @@ export default defineComponent({
         statsPoller() {
             this.intervalId = setInterval(this.loadStats, 250)
         },
+        toggleCollapse(client) {
+            client.collapsed = !client.collapsed
+        },
     },
     mounted() {
         this.loadStats(this.groupId)
@@ -166,18 +165,38 @@ export default defineComponent({
 
     .client {
         background: var(--grey-1);
+        margin-bottom: var(--spacer);
         padding: var(--spacer);
 
-        .client-id {
+        .client-header {
+            align-items: center;
+            color: var(--primary-color);
+            display: flex;
             font-family: var(--font-secondary);
             font-size: var(--text-small);
-            padding: var(--spacer) 0;
-            padding-top: 0;
+            user-select: none;
+
+            &.collapsed {
+                color: var(--grey-7);
+            }
+
+            svg {
+                margin-right: var(--spacer);
+            }
+
+            &:hover {
+                cursor: pointer;
+            }
         }
 
         .stream {
-            background: var(--grey-2);
-            padding: var(--spacer);
+            padding: var(--space-05);
+
+            .track {
+                background: var(--grey-2);
+                margin-bottom: var(--space-1);
+                padding: var(--spacer);
+            }
         }
     }
 }
