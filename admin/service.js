@@ -19,8 +19,13 @@ import winston from 'winston'
 import {loadUser, userTemplate} from './lib/user.js'
 
 const settings = rc('pyrite', {
-    endpoints: {
-        galene: 'http://localhost:8443',
+    galene: {
+        admin: {
+            password: '',
+            username: '',
+        },
+        basedir: null,
+        url: 'http://localhost:8443',
     },
     logger: {
         level: 'info',
@@ -33,11 +38,19 @@ const settings = rc('pyrite', {
     },
 })
 
-const basedir =path.dirname(import.meta.url).replace('file://', '')
+let basedir = path.join(path.dirname(import.meta.url).replace('file://', ''), '..')
+
+let galeneBasedir
+if (settings.galene.basedir) {
+    galeneBasedir = settings.galene.basedir
+} else {
+    galeneBasedir = path.join(basedir, 'galene')
+}
+
 settings.paths = {
-    data: path.join(basedir, '..', '..', 'galene', 'data'),
-    groups: path.join(basedir, '..', '..', 'galene', 'groups'),
-    recordings: path.join(basedir, '..', '..', 'galene', 'recordings'),
+    data: path.join(galeneBasedir, 'data'),
+    groups: path.join(galeneBasedir, 'groups'),
+    recordings: path.join(galeneBasedir, 'recordings'),
 }
 
 const logFormat = winston.format.printf(({level, message, timestamp}) => {
@@ -71,7 +84,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.settings = settings
-
 const usersFile = path.join(app.settings.paths.data, 'users.json');
 
 // Start with a default users.json
@@ -102,6 +114,11 @@ const endpointAllowList = [
 ]
 
 async function endpointAuthentication(req, res, next) {
+    if (!req.url.startsWith('/api')) {
+        next()
+        return
+    }
+
     const session=req.session
 
     if (endpointAllowList.includes(req.originalUrl)) {
@@ -132,8 +149,15 @@ apiProfile(app)
 apiRecordings(app)
 apiUsers(app)
 
-app.listen(3030, () => {
-    app.logger.info(`pyrite admin service listening on port ${settings.port}`)
+app.use(express.static('ui/dist'))
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(basedir, 'ui', 'dist', 'index.html'))
+})
+
+app.listen(settings.port, () => {
+    app.logger.info(`pyrite service listening on port ${settings.port}`)
+    app.logger.debug(`galène basedir: ${basedir}`)
+    app.logger.debug(`galène endpoint: ${settings.galene.url}`)
     if (process.env.PYRITE_NO_SECURITY) {
         app.logger.warn('SESSION SECURITY IS DISABLED')
     }

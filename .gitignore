@@ -5,3 +5,4 @@ galene/groups
 packages/admin/combined.log
 packages/admin/error.log
 packages/gui/package-lock.json
+*.log

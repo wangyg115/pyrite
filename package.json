@@ -1,22 +1,36 @@
 {
   "name": "@garage44/pyrite",
+  "description": "Pyrite is a web(RTC) client for the Galène videoconference server.",
   "version": "1.0.0",
-  "description": "<img height=\"100\" src=\"./media/logo-text.svg\">",
   "main": "index.js",
   "directories": {
     "doc": "docs"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "admin",
+    "ui/dist"
+  ],
+  "type": "module",
   "scripts": {
+    "build-ui": "vite build ui",
+    "build-ui-watch": "vite build --watch",
     "check-env": "node -e 'console.log(process.env)' | grep npm",
+    "dev": "vite ui",
+    "pyrite": "nodemon admin/service.js",
     "galene": "export PYRITE_UID=$(id -u)&&export PYRITE_GID=$(id -g)&&docker-compose -f galene/docker/docker-compose.yml --project-directory ./galene up --remove-orphans",
-    "lint": "npm run lint -w ./packages",
+    "lint": "npm run lint:js;npm run lint:scss",
+    "lint:js": "eslint \"{admin,ui}/src/**/*.{js,vue}\"",
+    "lint:scss": "stylelint \"ui/src/**/*.{scss,vue}\"",
     "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/garage44/pyrite.git"
   },
-  "author": "",
+  "author": "Pyrite Contributors",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/garage44/pyrite/issues"
@@ -26,7 +40,33 @@
     "packages/admin",
     "packages/ui"
   ],
+  "dependencies": {
+    "@fontsource/oswald": "^4.4.0",
+    "@fontsource/roboto": "^4.4.0",
+    "eventemitter3": "^4.0.7",
+    "vue": "^3.2.20",
+    "vue-i18n": "^9.1.9",
+    "vue-router": "^4.0.12",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "express-pino-logger": "^6.0.0",
+    "express-session": "^1.17.2",
+    "express-winston": "^4.2.0",
+    "fs-extra": "^10.0.0",
+    "globby": "^12.0.1",
+    "joi": "^17.4.2",
+    "node-fetch": "^2.6.1",
+    "pino": "^6.13.1",
+    "pino-http-print": "^3.0.0",
+    "rc": "^1.2.8",
+    "unique-names-generator": "^4.6.0",
+    "uuid": "^8.3.2",
+    "winston": "^3.3.3"
+  },
   "devDependencies": {
+    "@vitejs/plugin-vue": "^1.9.3",
+    "vite": "^2.6.10",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/exec": "^5.0.0",
     "@semantic-release/git": "^9.0.0",
@@ -38,7 +78,9 @@
     "semantic-release": "^17.3.2",
     "stylelint": "^13.7.0",
     "stylelint-config-recommended": "^3.0.0",
-    "stylelint-order": "^4.1.0"
+    "stylelint-order": "^4.1.0",
+    "nodemon": "^2.0.12",
+    "pino-pretty": "^6.0.0"
   },
   "release": {
     "branches": [

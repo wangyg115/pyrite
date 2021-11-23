@@ -38,7 +38,6 @@ class Pyrite extends EventEmitter {
         this.logger.debug('loading store')
         this.store = new Store()
         this.$s = this.store.load()
-
         this.i18n = createI18n({
             formatFallbackMessages: true,
             locale: this.$s.language.id,
