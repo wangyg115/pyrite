@@ -15,8 +15,8 @@
   ],
   "type": "module",
   "scripts": {
-    "build-ui": "vite build ui",
-    "build-ui-watch": "vite build --watch",
+    "build": "vite build ui",
+    "build-watch": "vite build --watch",
     "check-env": "node -e 'console.log(process.env)' | grep npm",
     "dev": "vite ui",
     "pyrite": "nodemon admin/service.js",

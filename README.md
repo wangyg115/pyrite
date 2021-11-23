@@ -30,24 +30,22 @@ an [Express](http://expressjs.com/) (Node.js) backend to manage Galène with.
   # Config file, mostly for the backend
   cp .pyriterc.example ~/.pyriterc
   # Use PYRITE_NO_SECURITY=1 env to bypass session security
-  npm run dev --workspace=packages/admin
-  npm run dev --workspace=packages/ui
+  npm run build
+  npm run pyrite
   ```
 
-### Usage
-
-Open a [browser](http://localhost:3000) and toggle the operator modus by
+Open a [browser](http://localhost:3030) and toggle the operator modus by
 clicking twice on the logo, until the screen turns red. The initial
 administrator password is generated on first use, and is located in
 `data/users.json`.
 
-## Hosting
-
-Using Pyrite & Galène over a network requires HTTPS, because some browser API's won't
-work without it. Checkout the [documentation](./docs/index.md) on how to deploy Pyrite
-and Galène using a Nginx proxy. For a quick test, you can also fire up another browser
-with a fake WebRTC device. This can be done with:
+For a quick test, you can also fire up a second browser with a fake WebRTC
+device. This can be done with:
 
 ```bash
-chromium --use-fake-device-for-media-stream --enable-experimental-web-platform-features --user-data-dir=/tmp/.chromium-tmp http://localhost:3000
+chromium --use-fake-device-for-media-stream --enable-experimental-web-platform-features --user-data-dir=/tmp/.chromium-tmp http://localhost:3030
 ```
+
+Running Pyrite & Galène over a network requires some more configuration.
+Checkout the [docs](./docs/index.md) for more information about
+the subject.
