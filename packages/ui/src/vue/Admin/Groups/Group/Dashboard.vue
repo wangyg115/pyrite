@@ -1,5 +1,5 @@
 <template>
-    <div v-if="stats && Object.keys(stats.clients).length" class="c-admin-groups-dashboard content">
+    <div class="c-admin-groups-dashboard content">
         <header>
             <div class="notice" />
             <div class="title">
@@ -8,7 +8,7 @@
             </div>
         </header>
 
-        <section>
+        <section v-if="stats && Object.keys(stats.clients).length">
             <div v-for="client of stats.clients" :key="client.id" class="client">
                 <div class="client-header" :class="{collapsed: client.collapsed}" @click="toggleCollapse(client)">
                     <Icon class="icon icon-small" name="Dashboard" /> {{ client.id }}
@@ -25,17 +25,19 @@
                 </template>
             </div>
         </section>
+        <section v-else class="no-results">
+            <Icon class="icon icon-large" name="Dashboard" />
+            <span>{{ $t('No clients yet') }}</span>
+        </section>
     </div>
-    <Splash v-else :header="groupId" :instruction="$t('No client connected yet')" />
 </template>
 
 <script>
 import Chart from '@/vue/Elements/Chart.vue'
 import {defineComponent} from 'vue'
-import Splash from '@/vue/Elements/Splash.vue'
 
 export default defineComponent({
-    components: {Chart, Splash},
+    components: {Chart},
     data() {
         return {
             statProps: {

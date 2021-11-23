@@ -1,5 +1,5 @@
 <template>
-    <section v-if="recordings.length" class="c-admin-recordings content">
+    <div class="c-admin-recordings content">
         <header>
             <div class="notice" />
             <div class="title">
@@ -7,72 +7,74 @@
                 <Icon class="icon icon-regular" name="Record" />
             </div>
         </header>
-        <div v-for="rec of recordings" :key="rec.filename" class="recording">
-            <video controls :src="`/api/recordings/${$s.admin.group._name}/${rec.filename}.${rec.extension}`" type="video/webm" />
-            <div class="info">
-                <div class="line">
-                    <div class="key">
-                        {{ $t('Filename') }}
+        <section v-if="recordings.length">
+            <div v-for="rec of recordings" :key="rec.filename" class="recording">
+                <video controls :src="`/api/recordings/${$s.admin.group._name}/${rec.filename}.${rec.extension}`" type="video/webm" />
+                <div class="info">
+                    <div class="line">
+                        <div class="key">
+                            {{ $t('Filename') }}
+                        </div>
+                        <div class="value">
+                            {{ rec.filename }}
+                        </div>
                     </div>
-                    <div class="value">
-                        {{ rec.filename }}
+
+                    <div class="line">
+                        <div class="key">
+                            {{ $t('Type') }}
+                        </div>
+                        <div class="value">
+                            {{ rec.extension }}
+                        </div>
+                    </div>
+
+                    <div class="line">
+                        <div class="key">
+                            {{ $t('Size') }}
+                        </div>
+                        <div class="value">
+                            {{ (rec.size / 1024 / 1024).toFixed(2) }} MB
+                        </div>
+                    </div>
+
+                    <div class="line">
+                        <div class="key">
+                            {{ $t('Modified') }}
+                        </div>
+                        <div class="value">
+                            {{ rec.atime }}
+                        </div>
                     </div>
                 </div>
-
-                <div class="line">
-                    <div class="key">
-                        {{ $t('Type') }}
-                    </div>
-                    <div class="value">
-                        {{ rec.extension }}
-                    </div>
-                </div>
-
-                <div class="line">
-                    <div class="key">
-                        {{ $t('Size') }}
-                    </div>
-                    <div class="value">
-                        {{ (rec.size / 1024 / 1024).toFixed(2) }} MB
-                    </div>
-                </div>
-
-                <div class="line">
-                    <div class="key">
-                        {{ $t('Modified') }}
-                    </div>
-                    <div class="value">
-                        {{ rec.atime }}
-                    </div>
+                <div class="actions">
+                    <button
+                        class="btn btn-menu btn-small tooltip tooltip-right"
+                        :data-tooltip="`${$t('Delete recording')}`"
+                        @click="deleteRecording(rec)"
+                    >
+                        <Icon class="icon-mini" name="Trash" />
+                    </button>
+                    <a
+                        class="btn btn-menu btn-small tooltip tooltip-right"
+                        :data-tooltip="`${$t('Download recording')}`"
+                        :download="`${rec.filename}.${rec.extension}`"
+                        :href="`/api/recordings/${$s.admin.group._name}/${rec.filename}.${rec.extension}`"
+                    >
+                        <Icon class="icon-mini" name="Download" />
+                    </a>
                 </div>
             </div>
-            <div class="actions">
-                <button
-                    class="btn btn-menu btn-small tooltip tooltip-right"
-                    :data-tooltip="`${$t('Delete recording')}`"
-                    @click="deleteRecording(rec)"
-                >
-                    <Icon class="icon-mini" name="Trash" />
-                </button>
-                <a
-                    class="btn btn-menu btn-small tooltip tooltip-right"
-                    :data-tooltip="`${$t('Download recording')}`"
-                    :download="`${rec.filename}.${rec.extension}`"
-                    :href="`/api/recordings/${$s.admin.group._name}/${rec.filename}.${rec.extension}`"
-                >
-                    <Icon class="icon-mini" name="Download" />
-                </a>
-            </div>
-        </div>
-    </section>
-    <Splash v-else :header="groupId" :instruction="$t('No recordings yet')" />
+        </section>
+        <section v-else class="no-results">
+            <Icon class="icon icon-large" name="Record" />
+            <span>{{ $t('No recordings yet') }}</span>
+        </section>
+    </div>
 </template>
 
 <script>
-import Splash from '@/vue/Elements/Splash.vue'
-
 export default {
-    components: {Splash},
     data() {
         return {
             recordings: [],
@@ -147,23 +149,5 @@ export default {
         }
     }
 
-    .no-results {
-        align-content: center;
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-        font-family: var(--font-secondary);
-        font-size: var(--text-huge);
-        justify-content: center;
-        padding: var(--space-2);
-
-        svg {
-            color: var(--grey-4);
-        }
-
-        span {
-            color: var(--grey-5);
-        }
-    }
 }
 </style>

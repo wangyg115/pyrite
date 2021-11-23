@@ -25,14 +25,25 @@ export default defineComponent({
     &:hover,
     &.active {
         background: var(--grey-5);
+
+        .btn-menu {
+
+            &:hover {
+                color: var(--grey-10);
+
+                &::before {
+                    transform: scaleX(0);
+                }
+            }
+        }
     }
 
     .btn {
 
         .active-group {
             opacity: 0.5;
-            // color: var(--primary-color);
         }
     }
+
 }
 </style>

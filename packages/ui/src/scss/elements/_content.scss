@@ -30,14 +30,31 @@
                 color: var(--primary-color);
             }
         }
-
-
     }
 
     section {
         height: calc(100vh - var(--space-4));
         overflow-y: scroll;
         padding: var(--space-1);
+
+        &.no-results {
+            align-content: center;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            font-family: var(--font-secondary);
+            font-size: var(--text-huge);
+            justify-content: center;
+            padding: var(--space-2);
+
+            svg {
+                color: var(--grey-4);
+            }
+
+            span {
+                color: var(--grey-5);
+            }
+        }
     }
 
     .panels {
