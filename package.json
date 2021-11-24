@@ -2,7 +2,9 @@
   "name": "@garage44/pyrite",
   "description": "Pyrite is a web(RTC) client for the Galène videoconference server.",
   "version": "1.0.0",
-  "main": "admin/service.js",
+  "bin": {
+    "pyrite": "admin/service.js"
+  },
   "directories": {
     "doc": "docs"
   },
@@ -44,12 +46,9 @@
   "dependencies": {
     "@fontsource/oswald": "^4.4.0",
     "@fontsource/roboto": "^4.4.0",
-    "eventemitter3": "^4.0.7",
-    "vue": "^3.2.20",
-    "vue-i18n": "^9.1.9",
-    "vue-router": "^4.0.12",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
+    "eventemitter3": "^4.0.7",
     "express": "^4.17.1",
     "express-pino-logger": "^6.0.0",
     "express-session": "^1.17.2",
@@ -63,25 +62,28 @@
     "rc": "^1.2.8",
     "unique-names-generator": "^4.6.0",
     "uuid": "^8.3.2",
+    "vue": "^3.2.20",
+    "vue-i18n": "^9.1.9",
+    "vue-router": "^4.0.12",
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^1.9.3",
-    "vite": "^2.6.10",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/exec": "^5.0.0",
     "@semantic-release/git": "^9.0.0",
+    "@vitejs/plugin-vue": "^1.9.3",
     "eslint": "^7.16.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-sort-class-members": "^1.9.0",
     "eslint-plugin-vue": "^7.3.0",
+    "nodemon": "^2.0.12",
+    "pino-pretty": "^6.0.0",
     "sass": "^1.38.0",
     "semantic-release": "^17.3.2",
     "stylelint": "^13.7.0",
     "stylelint-config-recommended": "^3.0.0",
     "stylelint-order": "^4.1.0",
-    "nodemon": "^2.0.12",
-    "pino-pretty": "^6.0.0"
+    "vite": "^2.6.10"
   },
   "release": {
     "branches": [
