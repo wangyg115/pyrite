@@ -8,8 +8,8 @@ import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import express from 'express'
 import expressWinston from 'express-winston'
+import fetch from 'node-fetch'
 import fs from 'fs-extra'
-
 import path from 'path'
 
 import rc from 'rc'
@@ -19,14 +19,6 @@ import winston from 'winston'
 import {loadUser, userTemplate} from './lib/user.js'
 
 const settings = rc('pyrite', {
-    galene: {
-        admin: {
-            password: '',
-            username: '',
-        },
-        basedir: null,
-        url: 'http://localhost:8443',
-    },
     logger: {
         level: 'info',
     },
@@ -35,22 +27,31 @@ const settings = rc('pyrite', {
         cookie: {maxAge: 1000 * 60 * 60 * 24}, // One day
         resave: false,
         saveUninitialized:true,
+        secret: "changeme: e.g. openssl rand -base64 36",
+    },
+    sfu: {
+        admin: {
+            password: '',
+            username: '',
+        },
+        basedir: null,
+        url: 'http://localhost:8443',
     },
 })
 
 let basedir = path.join(path.dirname(import.meta.url).replace('file://', ''), '..')
 
-let galeneBasedir
-if (settings.galene.basedir) {
-    galeneBasedir = settings.galene.basedir
+let sfuBasedir
+if (settings.sfu.basedir) {
+    sfuBasedir = settings.sfu.basedir
 } else {
-    galeneBasedir = path.join(basedir, 'galene')
+    sfuBasedir = path.join(basedir, 'galene')
 }
 
 settings.paths = {
-    data: path.join(galeneBasedir, 'data'),
-    groups: path.join(galeneBasedir, 'groups'),
-    recordings: path.join(galeneBasedir, 'recordings'),
+    data: path.join(sfuBasedir, 'data'),
+    groups: path.join(sfuBasedir, 'groups'),
+    recordings: path.join(sfuBasedir, 'recordings'),
 }
 
 const logFormat = winston.format.printf(({level, message, timestamp}) => {
@@ -68,11 +69,6 @@ app.logger = winston.createLogger({
     ],
 })
 
-if (settings.session.secret === 'changeme: e.g. openssl rand -base64 36') {
-    console.error('Please use a random session secret in .pyriterc')
-    process.exit(1)
-}
-
 if (process.env.NODE_ENV !== 'production') {
     app.logger.add(new winston.transports.Console({
         format: winston.format.combine(
@@ -84,10 +80,52 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.settings = settings
-const usersFile = path.join(app.settings.paths.data, 'users.json');
 
-// Start with a default users.json
-(async() => {
+;(async() => {
+    // Start with some sanity checks
+    const dirsExists = await Promise.all([
+        fs.pathExists(settings.paths.data),
+        fs.pathExists(settings.paths.groups),
+        fs.pathExists(settings.paths.recordings),
+    ])
+
+    if (!dirsExists.every((i) => i)) {
+        app.logger.error(`a sfu directory is missing (data/groups/recordings)`)
+        app.logger.error(`check if these sub-directories exist in ${sfuBasedir}`)
+        process.exit(1)
+    }
+
+    const passwdFile = path.join(app.settings.paths.data, 'passwd')
+    const res = await fs.readFile(passwdFile, 'utf-8')
+    const [username, password] = res.trim().split(':')
+    app.settings.sfu.admin = {password, username}
+
+    if (settings.session.secret === 'changeme: e.g. openssl rand -base64 36') {
+        app.logger.error('use a random session secret in ~/.pyriterc')
+        process.exit(1)
+    } else if (!settings.sfu.admin.username || !settings.sfu.admin.password) {
+        app.logger.error('sfu requires admin credentials in ~/.pyriterc')
+        process.exit(1)
+    }
+
+    // Test sfu endpoint
+    const authHeader = `Basic ${Buffer.from(`${username}:${password}`, 'utf-8').toString('base64')}`
+    const headers = new fetch.Headers()
+    headers.append('Authorization', authHeader)
+
+    try {
+        const res = await fetch(`${app.settings.sfu.url}/stats.json`, {headers})
+        if (res.status === 401) {
+            app.logger.error('sfu endpoint unauthorized; check sfu config')
+            process.exit(1)
+        }
+    } catch(err) {
+        app.logger.error(`sfu (${settings.sfu.url}) unreachable; check ~/.pyriterc`)
+        process.exit(1)
+    }
+
+    app.logger.info(`sfu operational`)
+    const usersFile = path.join(app.settings.paths.data, 'users.json')
     const exists = await fs.pathExists(usersFile)
     if (!exists) {
         app.logger.info('writing initial users.json')
@@ -114,6 +152,7 @@ const endpointAllowList = [
 ]
 
 async function endpointAuthentication(req, res, next) {
+    // Skip static files.
     if (!req.url.startsWith('/api')) {
         next()
         return
@@ -156,10 +195,8 @@ app.get('/*', (req, res) => {
 
 app.listen(settings.port, () => {
     app.logger.info(`pyrite service listening on port ${settings.port}`)
-    app.logger.debug(`galène basedir: ${basedir}`)
-    app.logger.debug(`galène endpoint: ${settings.galene.url}`)
+
     if (process.env.PYRITE_NO_SECURITY) {
         app.logger.warn('SESSION SECURITY IS DISABLED')
     }
 })
-
