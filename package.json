@@ -2,7 +2,7 @@
   "name": "@garage44/pyrite",
   "description": "Pyrite is a web(RTC) client for the Galène videoconference server.",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "admin/service.js",
   "directories": {
     "doc": "docs"
   },
@@ -18,6 +18,7 @@
     "build": "vite build ui",
     "build-watch": "vite build --watch",
     "check-env": "node -e 'console.log(process.env)' | grep npm",
+    "deploy": "cd ui dist;zip -r pyrite.zip .;curl -X POST -F \"distChannel=$RAND_CHANNEL\" -F 'distFile=@pyrite.zip' $RAND_ENDPOINT -H \"Authorization: Basic $(echo $RAND_USER:$RAND_PW | base64)\"",
     "dev": "vite ui",
     "pyrite": "nodemon admin/service.js",
     "galene": "export PYRITE_UID=$(id -u)&&export PYRITE_GID=$(id -g)&&docker-compose -f galene/docker/docker-compose.yml --project-directory ./galene up --remove-orphans",
