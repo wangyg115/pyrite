@@ -5,39 +5,66 @@
 
 # About
 
-[Pyrite](https://pyrite.video) is a web(RTC) client for the [Galène](https://github.com/jech/galene)
-videoconference server. Its purpose is to help establish a self-hosted
-[FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software) alternative to proprietary
-video-conferencing services. The project consists of a [Vue](https://v3.vuejs.org/) PWA and
-an [Express](http://expressjs.com/) (Node.js) backend to manage Galène with.
+[Pyrite](https://pyrite.video) is a [Vue 3](https://v3.vuejs.org/) web(RTC) client and
+[Express.js](http://expressjs.com/) operator backend for the [Galène](https://github.com/jech/galene)
+SFU. Its purpose is to help establish a [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software)
+alternative to proprietary video-conferencing services.
 
-## Getting started
+## Getting Started
 
-### Requirements
+Requires: Node.js, Golang, Firefox/Chromium
 
-* Docker - Required, unless you build Galène yourself
-* Docker-compose - Required, unless you build Galène yourself
-* Node.js - Pyrite is a npm-based project
+```bash
+# Install Galène
+cd ~/code
+git clone https://github.com/jech/galene
+cd galene
+CGO_ENABLED=0 go build -ldflags='-s -w'
+mkdir -p {data,groups,recordings}
+./galene --insecure
 
-### Installation
+# Start Pyrite directly from npm
+npx @garage44/pyrite
+[2021-11-27T16:54:47.847Z] [INFO] verifying configuration
+[2021-11-27T16:54:47.851Z] [INFO] no settings file found; generate one...
+? Path to Galène SFU: ~/code/galene
+[2021-11-27T17:20:29.915Z] [INFO] config file written to: /home/you/.pyriterc
+[2021-11-27T17:20:29.915Z] [INFO] writing initial users.json
+[2021-11-27T17:20:29.917Z] [DEBUG] save new user b6676bd5-7d9a-4b91-b0e6-a8f0673d113c
+[2021-11-27T17:20:29.918Z] [INFO] creating sfu config: /home/you/code/galene/data/config.json
+[2021-11-27T17:20:29.934Z] [INFO] pyrite listening: 127.0.0.1:3030
+```
+
+* Open a browser to <http://localhost:3030>
+* Click on the logo to switch to operator mode
+
+* Find the administrator password:
+
+  ```bash
+  cat ~/code/galene/data/users.json
+  ```
+
+* Create groups & users
+
+### Deployment
+
+Running Pyrite & Galène over a network requires some more configuration.
+Checkout the [docs](./docs/index.md) for more information about
+the subject.
+
+## Developers
 
   ```bash
   git clone git@github.com:garage44/pyrite.git
   cd pyrite
   npm i  # Install dependencies
-  npm run galene
+  npm run galene  # Run dockerized galene
 
-  # Config file, mostly for the backend
-  cp .pyriterc.example ~/.pyriterc
-  # Use PYRITE_NO_SECURITY=1 env to bypass session security
   npm run build
+  # Use PYRITE_NO_SECURITY=1 env to bypass session security
   npm run pyrite
+  npm run dev
   ```
-
-Open a [browser](http://localhost:3030) and toggle the operator modus by
-clicking twice on the logo, until the screen turns red. The initial
-administrator password is generated on first use, and is located in
-`data/users.json`.
 
 For a quick test, you can also fire up a second browser with a fake WebRTC
 device. This can be done with:
@@ -45,7 +72,3 @@ device. This can be done with:
 ```bash
 chromium --use-fake-device-for-media-stream --enable-experimental-web-platform-features --user-data-dir=/tmp/.chromium-tmp http://localhost:3030
 ```
-
-Running Pyrite & Galène over a network requires some more configuration.
-Checkout the [docs](./docs/index.md) for more information about
-the subject.

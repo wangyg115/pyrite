@@ -46,7 +46,7 @@ export default function(app) {
 
     app.get('/api/groups/:groupid/delete', async function(req, res) {
         const groupId = req.params.groupid
-        const groupFile = path.join(app.settings.paths.groups, `${groupId}.json`)
+        const groupFile = path.join(app.config.sfu.path.groups, `${groupId}.json`)
         app.logger.info(`removing group file ${groupFile}`)
         await fs.remove(groupFile)
         const {groupNames} = await loadGroups()

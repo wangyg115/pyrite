@@ -4,10 +4,10 @@ import path from 'path'
 
 export async function loadRecordings(groupId) {
     app.logger.debug(`load recordings from group: ${groupId}`)
-    const files = await globby(path.join(app.settings.paths.recordings, groupId, '*.webm'))
+    const files = await globby(path.join(app.config.sfu.path.recordings, groupId, '*.webm'))
     const fileStats = await Promise.all(files.map((i) => fs.stat(i, 'utf8')))
     const fileNames = files.map((i) => {
-        return i.replace(path.join(app.settings.paths.recordings, groupId), '').replace('.webm', '').replace('/', '')
+        return i.replace(path.join(app.config.sfu.path.recordings, groupId), '').replace('.webm', '').replace('/', '')
     })
 
     const filesData = []
@@ -25,7 +25,7 @@ export async function loadRecordings(groupId) {
 }
 
 export function recordingPath(groupId, recording) {
-    const dirname = path.join(app.settings.paths.recordings, groupId)
+    const dirname = path.join(app.config.sfu.path.recordings, groupId)
     // Sanitize against directory traversal?
     return path.join(dirname, recording)
 }

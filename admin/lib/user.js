@@ -29,7 +29,7 @@ export function userTemplate(overrides) {
 }
 
 export async function loadUsers() {
-    const targetFile = path.join(app.settings.paths.data, 'users.json')
+    const targetFile = path.join(app.config.sfu.path.data, 'users.json')
     return JSON.parse(await fs.promises.readFile(targetFile, 'utf8'))
 }
 
@@ -42,7 +42,7 @@ export async function loadUser(userId) {
 }
 
 export async function saveUser(userId, data) {
-    const targetFile = path.join(app.settings.paths.data, 'users.json')
+    const targetFile = path.join(app.config.sfu.path.data, 'users.json')
     let usersData
 
     const exists = await fs.pathExists(targetFile)
@@ -72,7 +72,7 @@ export async function saveUser(userId, data) {
 }
 
 export async function saveUsers(data) {
-    const targetFile = path.join(app.settings.paths.data, 'users.json')
+    const targetFile = path.join(app.config.sfu.path.data, 'users.json')
     await fs.promises.writeFile(targetFile, JSON.stringify(data, null, '  '))
 }
 

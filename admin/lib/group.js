@@ -42,7 +42,7 @@ export function groupTemplate(groupId = null) {
 
 export async function loadGroup(groupName) {
     app.logger.debug(`load group ${groupName}`)
-    const groupFile = path.join(app.settings.paths.groups, `${groupName}.json`)
+    const groupFile = path.join(app.config.sfu.path.groups, `${groupName}.json`)
     const exists = await fs.pathExists(groupFile)
     if (!exists) return null
     const groupData = JSON.parse(await fs.promises.readFile(groupFile, 'utf8'))
@@ -55,10 +55,10 @@ export async function loadGroup(groupName) {
 
 export async function loadGroups() {
     app.logger.debug(`load groups`)
-    const files = await globby(path.join(app.settings.paths.groups, '**', '*.json'))
+    const files = await globby(path.join(app.config.sfu.path.groups, '**', '*.json'))
     const fileData = await Promise.all(files.map((i) => fs.promises.readFile(i, 'utf8')))
     const groupNames = files.map((i) => {
-        return i.replace(app.settings.paths.groups, '').replace('.json', '').replace('/', '')
+        return i.replace(app.config.sfu.path.groups, '').replace('.json', '').replace('/', '')
     })
 
     const groupsData = []
@@ -86,10 +86,10 @@ export async function saveGroup(groupName, data) {
         if (key.startsWith('_')) delete saveData[key]
     }
 
-    const currentGroupFile = path.join(app.settings.paths.groups, `${data._name}.json`)
+    const currentGroupFile = path.join(app.config.sfu.path.groups, `${data._name}.json`)
     if (data._name !== data._newName) {
         app.logger.debug(`save and rename group ${groupName}`)
-        const newGroupFile = path.join(app.settings.paths.groups, `${data._newName}.json`)
+        const newGroupFile = path.join(app.config.sfu.path.groups, `${data._newName}.json`)
         // Sync current group file in group definitions and users.json
         await renameGroup(data._name, data._newName)
         await fs.remove(currentGroupFile)
