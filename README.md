@@ -48,9 +48,9 @@ npx @garage44/pyrite
 
 ### Deployment
 
-Running Pyrite & Galène over a network requires some more configuration.
-Checkout the [docs](./docs/index.md) for more information about
-the subject.
+Running Pyrite & Galène over a network requires additional configuration.
+Checkout the [docs](./docs/index.md) for more information about setting up
+a proxy and configure all service.
 
 ## Developers
 
