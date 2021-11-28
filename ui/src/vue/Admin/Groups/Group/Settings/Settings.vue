@@ -10,48 +10,58 @@
 
         <ul class="tabs">
             <RouterLink
+                active-class="active-group"
                 class="btn btn-menu tab tooltip"
+                :class="{active: tabId === 'misc'}"
                 :data-tooltip="$t('miscellaneous')"
-                :to="{name: routeSettings, params: {groupId: groupId, tabId: 'misc'}}"
+                :to="routeSettings('misc')"
             >
                 <Icon class="icon-small" name="SettingsMisc" />
             </RouterLink>
             <RouterLink
+                active-class="active-group"
                 class="btn btn-menu tab tooltip"
+                :class="{active: tabId === 'access'}"
                 :data-tooltip="$t('access')"
-                :to="{name: routeSettings, params: {groupId: groupId, tabId: 'access'}}"
+                :to="routeSettings('access')"
             >
                 <Icon class="icon-small" name="Access" />
             </RouterLink>
             <RouterLink
+                active-class="active-group"
                 class="btn btn-menu tab tooltip"
+                :class="{active: tabId === 'op'}"
                 :data-tooltip="$t('operator permission')"
-                :to="{name: routeSettings, params: {groupId: groupId, tabId: 'op'}}"
+                :to="routeSettings('op')"
             >
                 <Icon class="icon-small" name="Operator" />
             </RouterLink>
             <RouterLink
+                active-class="active-group"
                 class="btn btn-menu tab tooltip"
+                :class="{active: tabId === 'presenter'}"
                 :data-tooltip="$t('presenter permission')"
-                :to="{name: routeSettings, params: {groupId: groupId, tabId: 'presenter'}}"
+                :to="routeSettings('presenter')"
             >
                 <Icon class="icon-small" name="Present" />
             </RouterLink>
             <RouterLink
+                active-class="active-group"
                 class="btn btn-menu tab tooltip"
+                :class="{active: tabId === 'other'}"
                 :data-tooltip="$t('passive permission')"
-                :to="{name: routeSettings, params: {groupId: groupId, tabId: 'other'}}"
+                :to="routeSettings('other')"
             >
                 <Icon class="icon-small" name="OtherPermissions" />
             </RouterLink>
         </ul>
 
         <div class="tabs-content">
-            <TabMisc v-if="$route.params.tabId === 'misc'" />
-            <TabAccess v-else-if="$route.params.tabId === 'access'" />
-            <TabPermissions v-if="$route.params.tabId === 'op'" category="op" />
-            <TabPermissions v-if="$route.params.tabId === 'presenter'" category="presenter" />
-            <TabPermissions v-if="$route.params.tabId === 'other'" category="other" />
+            <TabMisc v-if="tabId === 'misc'" />
+            <TabAccess v-else-if="tabId === 'access'" />
+            <TabPermissions v-else-if="tabId === 'op'" category="op" />
+            <TabPermissions v-else-if="tabId === 'presenter'" category="presenter" />
+            <TabPermissions v-else-if="tabId === 'other'" category="other" />
 
             <div class="actions">
                 <button
@@ -74,16 +84,23 @@ import TabPermissions from './TabPermissions.vue'
 
 export default defineComponent({
     components: {TabAccess, TabMisc, TabPermissions},
-    data() {
-        return {
-            routeSettings: 'admin-groups-group-settings',
-        }
+    computed: {
+        tabId() {
+            return this.$route.query.tab || 'misc'
+        },
     },
     methods: {
+        routeSettings(tabId) {
+            return {
+                params: {userId: this.$s.admin.group._name},
+                query: {tab: tabId},
+                to: 'admin-groups-settings',
+            }
+        },
         async saveGroup() {
             const groupId = this.$s.admin.group._name
             const group = await this.$m.group.saveGroup(groupId, this.$s.admin.group)
-            this.$router.push({name: 'admin-groups-group-settings', params: {groupId: group._name, tabId: this.$route.params.tabId}})
+            this.$router.push({name: 'admin-groups-settings', params: {groupId: group._name, tabId: this.$route.params.tabId}})
         },
     },
     props: {

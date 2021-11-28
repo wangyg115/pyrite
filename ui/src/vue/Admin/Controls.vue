@@ -1,44 +1,43 @@
 <template>
     <nav class="c-admin-controls">
-        <RouterLink
-            class="btn btn-menu tooltip"
-            :class="userRoute('admin-users-user-settings')"
-            :data-tooltip="$t('Users')"
-            :to="{name: 'admin-users'}"
-        >
-            <Icon class="icon-small" name="User" />
-        </RouterLink>
-
         <ButtonGroup :active="$route.name.startsWith('admin-groups')">
             <RouterLink
                 active-class="active-group"
                 class="btn btn-menu tooltip"
-                :class="{active: $route.name === 'admin-groups-group-dashboard'}"
+                :class="{active: $route.name === 'admin-groups-settings'}"
+                :data-tooltip="$t('Groups')"
+                :to="groupRoute('admin-groups-settings')"
+            >
+                <Icon class="icon-small" name="Settings" />
+            </RouterLink>
+            <RouterLink
+                active-class="active-group"
+                class="btn btn-menu tooltip"
+                :class="{active: $route.name === 'admin-groups-dashboard'}"
                 :data-tooltip="$t('Dashboard')"
-                :to="groupRoute('admin-groups-group-dashboard')"
+                :to="groupRoute('admin-groups-dashboard')"
             >
                 <Icon class="icon-small" name="Dashboard" />
             </RouterLink>
 
             <RouterLink
                 active-class="active-group"
-                class="btn btn-menu tooltip"
-                :class="{active: $route.name === 'admin-groups-group-settings'}"
-                :data-tooltip="$t('Groups')"
-                :to="groupRoute('admin-groups-group-settings')"
-            >
-                <Icon class="icon-small" name="Settings" />
-            </RouterLink>
-
-            <RouterLink
-                active-class="active-group"
-                class="btn btn-menu tooltip" :class="{active: $route.name === 'admin-groups-group-recordings'}"
+                class="btn btn-menu tooltip" :class="{active: $route.name === 'admin-groups-recordings'}"
                 :data-tooltip="$t('Group Recordings')"
-                :to="groupRoute('admin-groups-group-recordings')"
+                :to="groupRoute('admin-groups-recordings')"
             >
                 <Icon class="icon-small" name="Record" />
             </RouterLink>
         </ButtonGroup>
+
+        <RouterLink
+            class="btn btn-menu tooltip"
+            :class="{active: $route.name.startsWith('admin-users')}"
+            :data-tooltip="$t('People')"
+            :to="userRoute('admin-users-settings')"
+        >
+            <Icon class="icon-small" name="User" />
+        </RouterLink>
 
         <button
             v-if="$s.admin.authenticated"
@@ -58,7 +57,7 @@ export default {
             if (this.$s.admin.group) {
                 return {name, params: {groupId: this.$s.admin.group._name, tabId: 'misc'}}
             } else {
-                return {name: 'admin-groups-splash'}
+                return {name, params: {tabId: 'misc'}}
             }
         },
         async logout() {
@@ -70,7 +69,7 @@ export default {
             if (this.$s.admin.user) {
                 return {name, params: {tabId: 'misc', userId: this.$s.admin.user.id}}
             } else {
-                return {name: 'admin-users-splash'}
+                return {name: 'admin-users-settings'}
             }
         },
     },
@@ -80,7 +79,6 @@ export default {
 <style lang="scss">
 .c-admin-controls {
     background: var(--grey-4);
-    border-left: var(--border) solid var(--grey-4);
     display: flex;
     flex-direction: column;
 }

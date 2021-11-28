@@ -23,16 +23,16 @@ CGO_ENABLED=0 go build -ldflags='-s -w'
 mkdir -p {data,groups,recordings}
 ./galene --insecure
 
-# Start Pyrite directly from npm
+# Start Pyrite from npm
 npx @garage44/pyrite
-[2021-11-27T16:54:47.847Z] [INFO] verifying configuration
-[2021-11-27T16:54:47.851Z] [INFO] no settings file found; generate one...
+[INFO] verifying configuration
+[INFO] no settings file found; generate one...
 ? Path to Galène SFU: ~/code/galene
-[2021-11-27T17:20:29.915Z] [INFO] config file written to: /home/you/.pyriterc
-[2021-11-27T17:20:29.915Z] [INFO] writing initial users.json
-[2021-11-27T17:20:29.917Z] [DEBUG] save new user b6676bd5-7d9a-4b91-b0e6-a8f0673d113c
-[2021-11-27T17:20:29.918Z] [INFO] creating sfu config: /home/you/code/galene/data/config.json
-[2021-11-27T17:20:29.934Z] [INFO] pyrite listening: 127.0.0.1:3030
+[INFO] config file written to: /home/you/.pyriterc
+[INFO] writing initial users.json
+[DEBUG] save new user b6676bd5-7d9a-4b91-b0e6-a8f0673d113c
+[INFO] creating sfu config: /home/you/code/galene/data/config.json
+[INFO] pyrite listening: 127.0.0.1:3030
 ```
 
 * Open a browser to <http://localhost:3030>
@@ -50,7 +50,7 @@ npx @garage44/pyrite
 
 Running Pyrite & Galène over a network requires additional configuration.
 Checkout the [docs](./docs/index.md) for more information about setting up
-a proxy and configure all service.
+a proxy and configuring all services.
 
 ## Developers
 

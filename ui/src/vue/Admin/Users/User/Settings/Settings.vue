@@ -10,40 +10,48 @@
 
         <ul class="tabs">
             <RouterLink
+                active-class="active-group"
                 class="btn btn-menu tab tooltip"
+                :class="{active: tabId === 'misc'}"
                 :data-tooltip="$t('miscellaneous')"
-                :to="{name: routeSettings, params: {userId, tabId: 'misc'}}"
+                :to="routeSettings('misc')"
             >
                 <Icon class="icon-small" name="SettingsMisc" />
             </RouterLink>
             <RouterLink
+                active-class="active-group"
                 class="btn btn-menu tab tooltip"
+                :class="{active: tabId === 'op'}"
                 :data-tooltip="$t('operator permission')"
-                :to="{name: routeSettings, params: {userId, tabId: 'op'}}"
+                :to="routeSettings('op')"
             >
                 <Icon class="icon-small" name="Operator" />
             </RouterLink>
             <RouterLink
+                active-class="active-group"
                 class="btn btn-menu tab tooltip"
+                :class="{active: tabId === 'presenter'}"
                 :data-tooltip="$t('presenter permission')"
-                :to="{name: routeSettings, params: {userId, tabId: 'presenter'}}"
+                :to="routeSettings('presenter')"
             >
                 <Icon class="icon-small" name="Present" />
             </RouterLink>
             <RouterLink
+                active-class="active-group"
                 class="btn btn-menu tab tooltip"
+                :class="{active: tabId === 'other'}"
                 :data-tooltip="$t('passive permission')"
-                :to="{name: routeSettings, params: {userId, tabId: 'other'}}"
+                :to="routeSettings('other')"
             >
                 <Icon class="icon-small" name="OtherPermissions" />
             </RouterLink>
         </ul>
 
         <div class="tabs-content">
-            <TabMisc v-if="$route.params.tabId === 'misc'" />
-            <TabPermissions v-if="$route.params.tabId === 'op'" category="op" />
-            <TabPermissions v-if="$route.params.tabId === 'presenter'" category="presenter" />
-            <TabPermissions v-if="$route.params.tabId === 'other'" category="other" />
+            <TabMisc v-if="tabId === 'misc'" />
+            <TabPermissions v-else-if="tabId === 'op'" category="op" />
+            <TabPermissions v-else-if="tabId === 'presenter'" category="presenter" />
+            <TabPermissions v-else-if="tabId === 'other'" category="other" />
 
             <div class="actions">
                 <button
@@ -64,35 +72,22 @@ import TabMisc from './TabMisc.vue'
 import TabPermissions from './TabPermissions.vue'
 
 export default defineComponent({
-    async beforeMount() {
-        this.userId = this.$router.currentRoute.value.params.userId
-    },
-    async beforeRouteUpdate(to) {
-        this.userId = to.params.userId
-    },
     components: {TabMisc, TabPermissions},
-    data() {
-        return {
-            routeSettings: 'admin-users-user-settings',
-            userId: null,
-        }
+    computed: {
+        tabId() {
+            return this.$route.query.tab || 'misc'
+        },
     },
     methods: {
-        async loadUser(userId) {
-            const user = this.$s.admin.users.find((i) => i.id === userId)
-            if (user && user._unsaved) {
-                this.$s.admin.user = user
-            } else {
-                this.$s.admin.user = await app.api.get(`/api/users/${encodeURIComponent(userId)}`)
+        routeSettings(tabId) {
+            return {
+                params: {userId: this.$s.admin.user.id},
+                query: {tab: tabId},
+                to: 'admin-users-settings',
             }
         },
         async saveUser() {
             await this.$m.user.saveUser(this.userId, this.$s.admin.user)
-        },
-    },
-    watch: {
-        userId(userId) {
-            this.loadUser(userId)
         },
     },
 })

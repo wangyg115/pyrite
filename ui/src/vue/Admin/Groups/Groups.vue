@@ -1,14 +1,17 @@
 <template>
-    <RouterView />
+    <RouterView v-if="$s.admin.group" />
+    <Splash v-else :instruction="$t('Select a group to continue')" />
 </template>
 
 <script>
+import Splash from '@/vue/Elements/Splash.vue'
 /**
  * This is a container component that handles keeping
  * track of the current group, so its child components
  * don't have to.
  */
 export default {
+    components: {Splash},
     async beforeMount() {
         if (this.groupId) {
             this.loadGroup(this.groupId)
@@ -44,6 +47,10 @@ export default {
     },
     watch: {
         groupId(groupId) {
+            if (!groupId) {
+                this.$s.admin.group = null
+                return
+            }
             this.loadGroup(groupId)
         },
     },

@@ -37,8 +37,7 @@
             <RouterLink
                 class="name"
                 :class="{active: parseInt($route.params.userId) === user.id}"
-                :to="{name: 'admin-users-user-settings', params: {userId: user.id, tabId: 'misc'}}"
-                @click="toggleSelection(user.id)"
+                :to="userLink(user.id)"
             >
                 {{ user.name }}
             </Routerlink>
@@ -87,7 +86,7 @@ export default {
 
             if (this.orderedUsers.length) {
                 const userId = this.orderedUsers[0].id
-                this.$router.push({name: 'admin-users-user-settings', params: {tabId: 'misc',userId}})
+                this.$router.push({name: 'admin-users-settings', params: {tabId: 'misc',userId}})
             }
         },
         async loadUsers() {
@@ -117,11 +116,13 @@ export default {
             }
         },
         toggleSelection(userId) {
-            // Current clicked user is selected already; deselect by navigating to admin-users
-            if (this.$route.name === 'admin-users-user-settings' && parseInt(this.$route.params.userId) === userId) {
-                this.$router.push({name: 'admin-users'})
+            this.$router.push({name: this.$route.name, params: {userId}})
+        },
+        userLink(userId) {
+            if (this.$s.admin.user && this.$s.admin.user.id == userId) {
+                return {name: this.$route.name}
             } else {
-                this.$router.push({name: 'admin-users-user-settings', params: {tabId: 'misc', userId}})
+                return {name: this.$route.name, params: {userId}}
             }
         },
     },
@@ -139,7 +140,6 @@ export default {
 </script>
 
 <style lang="scss">
-
 .c-admin-users-list {
 
     .row {

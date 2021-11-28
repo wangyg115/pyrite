@@ -1,16 +1,22 @@
 <template>
-    <RouterView />
+    <RouterView v-if="$s.admin.user" />
+    <Splash v-else :instruction="$t('Select a person to continue')" />
 </template>
 
 <script>
+import Splash from '@/vue/Elements/Splash.vue'
 /**
  * This is a container component that handles keeping
  * track of the current user, so its child components
  * don't have to.
  */
 export default {
+    components: {Splash},
     async beforeMount() {
         await this.loadUsers()
+        if (this.userId) {
+            this.loadUser(this.userId)
+        }
     },
     props: {
         userId: {
@@ -20,6 +26,7 @@ export default {
     },
     methods: {
         async loadUser(userId) {
+            app.logger.debug(`load user ${userId}`)
             const user = this.$s.admin.users.find((i) => i.id === userId)
             if (user && user._unsaved) {
                 this.$s.admin.user = user
@@ -33,6 +40,10 @@ export default {
     },
     watch: {
         userId(userId) {
+            if (!userId) {
+                this.$s.admin.user = null
+                return
+            }
             this.loadUser(userId)
         },
     },

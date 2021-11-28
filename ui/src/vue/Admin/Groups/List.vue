@@ -109,7 +109,7 @@ export default {
 
             if (this.orderedGroups.length) {
                 const groupId = this.orderedGroups[0]._name
-                this.$router.push({name: 'admin-groups-group-settings', params: {groupId, tabId: 'misc'}})
+                this.$router.push({name: 'admin-groups-settings', params: {groupId, tabId: 'misc'}})
             }
         },
         /**
@@ -117,11 +117,10 @@ export default {
          * may currently be watching the recordings view or group settings.
          */
         groupLink(groupId) {
-            const allowList = ['admin-groups-group-dashboard', 'admin-groups-group-settings', 'admin-groups-group-recordings']
-            if (allowList.includes(this.$route.name)) {
-                return {name: this.$route.name, params: {groupId, tabId: 'misc'}}
+            if (this.$s.admin.group && this.$s.admin.group._name == groupId) {
+                return {name: this.$route.name}
             } else {
-                return {name: 'admin-groups-group-dashboard', params: {groupId}}
+                return {name: this.$route.name, params: {groupId, tabId: 'misc'}}
             }
         },
         async loadGroups() {
@@ -139,7 +138,7 @@ export default {
                 }
             } else {
                 // Reload the group, which may have been renamed.
-                this.$router.push({name: 'admin-groups-group-settings', params: {groupId: group._name, tabId: 'misc'}})
+                this.$router.push({name: 'admin-groups-settings', params: {groupId: group._name, tabId: 'misc'}})
             }
         },
         async toggleMarkDelete() {
@@ -156,12 +155,7 @@ export default {
             }
         },
         toggleSelection(groupId) {
-            if (this.$route.name === 'admin-groups-group-settings' && this.$route.params.groupId === groupId) {
-                this.$s.admin.group = null
-                this.$router.push({name: 'admin-groups'})
-            } else {
-                this.$router.push({name: this.$route.name, params: {groupId}})
-            }
+            this.$router.push({name: this.$route.name, params: {groupId}})
         },
     },
     unmounted() {
