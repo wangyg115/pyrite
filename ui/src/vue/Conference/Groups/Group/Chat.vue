@@ -1,5 +1,5 @@
 <template>
-    <div ref="view" class="c-chat" :style="`width: auto;`">
+    <div ref="view" class="c-chat">
         <div class="chat-channels">
             <div
                 v-for="(channel, key) in $s.chat.channels"
@@ -268,7 +268,6 @@ export default {
     height: 100vh;
     overflow: auto;
     resize: horizontal;
-
     width: 350px;
 
     .chat-channels {

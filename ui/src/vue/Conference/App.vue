@@ -13,6 +13,7 @@
         <ConferenceControls />
         <transition @enter="openChat" @leave="closeChat">
             <GroupChat v-if="$s.group.connected && !$s.chat.hidden" />
+            <div v-else />
         </transition>
 
         <RouterView />
@@ -75,10 +76,8 @@ export default {
 
 <style lang="scss">
 .c-conference-app {
-
-    &.dashboard {
-        grid-template-columns: var(--space-4) 1fr 1fr;
-    }
+    grid-template-columns: 300px var(--space-4) 0px 1fr var(--space-4);
+    height: 100vh;
 
     &.connected {
         grid-template-columns: 300px var(--space-4) min-content 1fr var(--space-4);
