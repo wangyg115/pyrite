@@ -26,6 +26,7 @@ const persistantState = reactive({
         upstream: {id: 'normal', name: 'Normal'},
     },
     permissions: {},
+    theme: {id: 'system'},
     user: {
         id: null,
         name: '',

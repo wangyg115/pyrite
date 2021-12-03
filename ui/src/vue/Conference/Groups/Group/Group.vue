@@ -140,7 +140,7 @@ export default {
     .c-stream {
         align-self: center;
         animation: show 0.25s ease-in-out;
-        box-shadow: 0px var(--spacer) var(--spacer) rgba(0, 0, 0, 0.4);
+        box-shadow: var(--shadow-l);
         position: relative;
     }
 

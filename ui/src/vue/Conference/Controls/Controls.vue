@@ -52,7 +52,9 @@ import Context from './Context.vue'
 export default {
     components: {Context},
     methods: {
-        disconnect: () => app.disconnect(),
+        disconnect: () => {
+            app.disconnect()
+        },
         toggleChatActive() {
             this.$s.chat.hidden = !this.$s.chat.hidden
         },

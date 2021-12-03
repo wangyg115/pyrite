@@ -1,9 +1,10 @@
 <template>
     <div
-        class="c-conference-app app theme-dark" :class="{
+        class="c-conference-app app" :class="{
             connected: $s.group.connected,
             'chat-hidden': $s.chat.hidden,
             'chat-toggle': chatToggle,
+            [`theme-${$s.theme.id}`]: true,
         }"
     >
         <Header>
@@ -11,13 +12,15 @@
         </Header>
 
         <ConferenceControls />
+
         <transition @enter="openChat" @leave="closeChat">
-            <GroupChat v-if="$s.group.connected && !$s.chat.hidden" />
-            <div v-else />
+            <GroupChat v-if="$s.group.connected && !$s.chat.hidden" ref="chat" />
         </transition>
 
         <RouterView />
+
         <GroupControls v-if="$s.group.connected" />
+
         <Notifications />
     </div>
 </template>
@@ -76,10 +79,13 @@ export default {
 
 <style lang="scss">
 .c-conference-app {
-    grid-template-columns: 300px var(--space-4) 0px 1fr var(--space-4);
+    // Presence, Controls, Login Screen
+    grid-template-columns: 300px var(--space-4) 1fr;
     height: 100vh;
+    overflow: hidden;
 
     &.connected {
+        // Presence, Controls, Chat, Conference Space, Conference Controls
         grid-template-columns: 300px var(--space-4) min-content 1fr var(--space-4);
 
         .c-chat {
@@ -89,15 +95,21 @@ export default {
         }
 
         &.chat-hidden {
+            // Presence, Controls, Conference Space, Conference Controls
             grid-template-columns: 300px var(--space-4) 1fr var(--space-4);
         }
 
         &.chat-toggle {
+            // Toggling chat while being active the group
+            // Blocks: Presence, Controls, Chat, Conference Space
             grid-template-columns: 300px var(--space-4) min-content 1fr var(--space-4);
         }
     }
 
     &.chat-toggle {
+        // Toggling chat while leaving the group
+        // Blocks: Presence, Controls, Chat, Login
+        grid-template-columns: 300px var(--space-4) min-content 1fr;
         overflow: hidden;
         resize: none;
 

@@ -1,8 +1,15 @@
 <template>
     <section class="tab-content active">
         <FieldSelect
+            v-model="$s.theme"
+            :label="$t('UI Theme')"
+            name="language"
+            :options="themes"
+        />
+
+        <FieldSelect
             v-model="$s.language"
-            :help="$t('The user interface language')"
+            :help="$t('A few languages are supported')"
             :label="$t('Language')"
             name="language"
             :options="languages"
@@ -49,6 +56,11 @@ export default {
                     id: 'unlimited',
                     name: this.$t('Unlimited'),
                 },
+            ],
+            themes: [
+                {id: 'system', name: 'System'},
+                {id: 'light', name: 'Light'},
+                {id: 'dark', name: 'Dark'},
             ],
         }
     },

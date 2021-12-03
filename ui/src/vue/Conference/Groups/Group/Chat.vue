@@ -271,8 +271,9 @@ export default {
     width: 350px;
 
     .chat-channels {
-        background: var(--grey-3);
+        background: var(--grey-4);
         display: flex;
+        height: var(--space-4);
         width: 100%;
 
         .chat-channel {

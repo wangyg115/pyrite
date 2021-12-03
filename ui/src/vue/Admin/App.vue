@@ -1,5 +1,5 @@
 <template>
-    <div class="c-admin-app app theme-dark">
+    <div class="c-admin-app app" :class="`theme-${$s.theme.id}`">
         <Header>
             <UsersList v-if="$route.name.startsWith('admin-users')" />
             <GroupsList v-else />
@@ -28,8 +28,13 @@ export default {
 
 <style lang="scss">
 .c-admin-app {
+    // Tone down greys to keep it clean...
+    --grey-h: 0;
+    --grey-s: 5%;
+
     --primary-color-h: 0;
     --primary-color-s: 40%;
+    --primary-color: hsl(var(--primary-color-h), var(--primary-color-s), 65%);
 
     grid-template-columns: 300px var(--space-4) 1fr;
 }

@@ -99,7 +99,7 @@
 
             svg {
                 // Bring the active icon a bit to the front:
-                filter: drop-shadow( 4px 4px 2px hsl(var(--grey-h), var(--grey-s), 3%));
+                filter: drop-shadow(var(--shadow));
             }
         }
     }
