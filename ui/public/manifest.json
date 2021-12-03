@@ -3,7 +3,7 @@
     "short_name": "Pyrite",
     "description": "Pyrite Video Communication",
     "background_color": "#1a202c",
-    "theme_color": "#33c6c3",
+    "theme_color": "#30abe8",
     "display": "standalone",
     "lang": "en-US",
     "icons": [

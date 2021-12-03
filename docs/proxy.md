@@ -1,6 +1,9 @@
 # Proxy Config
 
-This is an example Nginx configuration to use with Galene and Pyrite:
+This is an example Nginx configuration to use with the Galène and Pyrite services
+that were previously installed. Free Let's encrypt certificates are used for the
+HTTPS connection. Checkout the [certbot](https://wiki.archlinux.org/title/Certbot)
+documentation on how to generate certificates for your own domain.
 
 ```bash
 server {
@@ -18,10 +21,6 @@ server {
     access_log /var/log/nginx/pyrite.video.access.log;
     error_log /var/log/nginx/pyrite.video.error.log;
 
-    location /deployment {
-       proxy_pass http://127.0.0.1:8666;
-    }
-
     location /ws {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header Host $host;
@@ -38,8 +37,8 @@ server {
     }
 
     location / {
-        root /srv/http/pyrite;
-        error_page 404 = /index.html;
+        proxy_pass http://127.0.0.1:3030;
+        proxy_http_version 1.1;
     }
 
     ssl_certificate /etc/letsencrypt/live/pyrite.video/fullchain.pem; # managed by Certbot
