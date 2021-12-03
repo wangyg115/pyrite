@@ -1,5 +1,6 @@
 import {defineConfig} from 'vite'
 import {fileURLToPath} from 'url'
+import fs from 'fs'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
 
@@ -7,7 +8,8 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 if (!process.env.VITE_VERSION) {
-    process.env.VITE_VERSION = 'dev'
+    const packageData = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json')))
+    process.env.VITE_VERSION = packageData.version
 }
 
 // eslint-disable-next-line no-console
