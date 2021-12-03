@@ -3,28 +3,41 @@
 <img height="100" src="./ui/public/logo-text.svg">
 <br />
 
-# About
+[Pyrite](https://pyrite.video) is a webRTC client ([Vue 3](https://v3.vuejs.org/)) and
+operator backend ([Express.js](http://expressjs.com/)) for the [Galène](https://github.com/jech/galene)
+SFU. It may be of interest to people and organisations, looking for a simple & efficient
+[FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software) video-conferencing
+stack, as an alternative to proprietary video-conferencing services.
 
-[Pyrite](https://pyrite.video) is a [Vue 3](https://v3.vuejs.org/) web(RTC) client and
-[Express.js](http://expressjs.com/) operator backend for the [Galène](https://github.com/jech/galene)
-SFU. Its purpose is to help establish a [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software)
-alternative to proprietary video-conferencing services.
+# Getting Started
 
-## Getting Started
+> HTTPS is a requirement in a networked situation. Checkout the deployment section
+> for information about how to setup the stack.
 
-Requires: Node.js, Golang, Firefox/Chromium
+## Install Galène
+
+> Requires Golang
 
 ```bash
-# Install Galène
 cd ~/code
 git clone https://github.com/jech/galene
 cd galene
 CGO_ENABLED=0 go build -ldflags='-s -w'
 mkdir -p {data,groups,recordings}
 ./galene --insecure
+```
 
-# Start Pyrite from npm
+## Install Pyrite
+
+> Requires Node.js
+
+```bash
 npx @garage44/pyrite
+```
+
+You should see a similar startup sequence:
+
+```bash
 [INFO] verifying configuration
 [INFO] no settings file found; generate one...
 ? Path to Galène SFU: ~/code/galene
@@ -35,18 +48,22 @@ npx @garage44/pyrite
 [INFO] pyrite listening: 127.0.0.1:3030
 ```
 
-* Open a browser to <http://localhost:3030>
-* Click on the logo to switch to operator mode
+Open a browser to <http://localhost:3030> and click on the logo
+to switch to operator mode. You can find the users passwords
+in the users.json file:
 
-* Find the administrator password:
+```bash
+cat ~/code/galene/data/users.json
+```
 
-  ```bash
-  cat ~/code/galene/data/users.json
-  ```
+Next, create some groups & users. For a quick test, you can fire up a
+second Chromium browser with a fake WebRTC device:
 
-* Create groups & users
+```bash
+chromium --use-fake-device-for-media-stream --enable-experimental-web-platform-features --user-data-dir=/tmp/.chromium-tmp http://localhost:3030
+```
 
-### Deployment
+# Deployment
 
 Running Pyrite & Galène over a network requires additional configuration.
 Checkout the [docs](./docs/index.md) for more information about setting up
@@ -59,16 +76,8 @@ a proxy and configuring all services.
   cd pyrite
   npm i  # Install dependencies
   npm run galene  # Run dockerized galene
-
-  npm run build
-  # Use PYRITE_NO_SECURITY=1 env to bypass session security
+  # Uses Nodemon autoreload. Use PYRITE_NO_SECURITY=1 to bypass session security
   npm run pyrite
+  # Vite development server with proxy
   npm run dev
   ```
-
-For a quick test, you can also fire up a second browser with a fake WebRTC
-device. This can be done with:
-
-```bash
-chromium --use-fake-device-for-media-stream --enable-experimental-web-platform-features --user-data-dir=/tmp/.chromium-tmp http://localhost:3030
-```
