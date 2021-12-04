@@ -8,8 +8,8 @@
     "lang": "en-US",
     "icons": [
         {
-            "src": "/logo.png",
-            "sizes": "192x192",
+            "src": "/logo.svg",
+            "sizes": "any",
             "type": "image/png"
         }
     ],

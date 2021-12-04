@@ -1,12 +1,10 @@
 const workerVersion = 'pyrite-1'
 
 self.addEventListener('install', function(event) {
-    console.log(`install service worker ${workerVersion}`)
     event.waitUntil(
         caches.open(workerVersion).then(function(cache) {
             return cache.addAll([
                 '/',
-                'index.html',
                 'logo.svg',
             ])
         }),
@@ -27,7 +25,6 @@ self.addEventListener('activate', function(event) {
             return Promise.all(
                 keys.filter((key) => {
                     if (key !== workerVersion) {
-                        console.log(`remove stale service worker cache ${workerVersion}`)
                         return true
                     }
                     return false
