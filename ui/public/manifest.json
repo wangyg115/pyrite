@@ -2,18 +2,16 @@
     "name": "Pyrite Video",
     "short_name": "Pyrite",
     "description": "Pyrite Video Communication",
-    "background_color": "#1a202c",
+    "background_color": "#eef2f6",
     "theme_color": "#30abe8",
     "display": "standalone",
     "lang": "en-US",
     "icons": [
         {
             "src": "/logo.svg",
-            "sizes": "any",
-            "type": "image/png"
+            "sizes": "192x192"
         }
     ],
     "orientation": "landscape",
-    "start_url": "/",
-    "version": "1.9"
+    "start_url": "/"
 }
