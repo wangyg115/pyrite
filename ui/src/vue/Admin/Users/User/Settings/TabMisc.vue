@@ -36,7 +36,6 @@ export default defineComponent({
         span {
             color: var(--grey-9);
             font-family: var(--font-secondary);
-
         }
     }
 }

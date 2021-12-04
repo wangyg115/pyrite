@@ -73,20 +73,20 @@
         opacity: 0.2;
     }
 
-    50% {fill: var(--grey-3);}
-    52% {fill: var(--primary-color);}
-    60% {fill: var(--grey-3);}
-    65% {fill: var(--primary-color);}
-    70% {fill: var(--grey-3);}
-    75% {fill: var(--primary-color);}
+    50% { fill: var(--grey-3); }
+    52% { fill: var(--primary-color); }
+    60% { fill: var(--grey-3); }
+    65% { fill: var(--primary-color); }
+    70% { fill: var(--grey-3); }
+    75% { fill: var(--primary-color); }
 
     80% {
         fill: var(--grey-3);
         opacity: 0.2;
     }
-    83% {fill: var(--primary-color);}
-    85% {fill: var(--grey-3);}
-    87% {fill: var(--primary-color);}
+    83% { fill: var(--primary-color); }
+    85% { fill: var(--grey-3); }
+    87% { fill: var(--primary-color); }
 
     100% {
         fill: var(--primary-color);

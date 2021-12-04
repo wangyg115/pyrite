@@ -33,6 +33,5 @@ export default defineComponent({
             opacity: 0.5;
         }
     }
-
 }
 </style>

@@ -136,7 +136,7 @@ export default {
 
 <style lang="scss">
 .c-stream-reports {
-    background: rgba(0, 0, 0, 0.75);
+    background: rgb(0 0 0 / 75%);
     color: #fff;
     display: flex;
     flex-direction: column;
@@ -167,7 +167,6 @@ export default {
 
             .key {
                 font-weight: bold;
-
             }
 
             .value {
@@ -180,6 +179,5 @@ export default {
             display: flex;
         }
     }
-
 }
 </style>

@@ -50,7 +50,6 @@ export default {
 </script>
 
 <style lang="scss">
-
 .c-notifications {
     bottom: var(--spacer);
     display: flex;

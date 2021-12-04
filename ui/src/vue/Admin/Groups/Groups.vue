@@ -58,7 +58,6 @@ export default {
 </script>
 
 <style lang="scss">
-
 .c-admin-groups {
 
     .row {

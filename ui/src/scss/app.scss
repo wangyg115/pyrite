@@ -1,11 +1,9 @@
 @import "./lib/mixins";
-
 @import "./elements/animations";
 @import "./elements/buttons";
 @import "./elements/checkbox";
 @import "./elements/content";
 @import "./elements/context-menu";
-@import "./elements/fonts";
 @import "./elements/forms";
 @import "./elements/presence";
 @import "./elements/table";
@@ -18,16 +16,13 @@
     --sat: 50%;
     --sat-u: 75%;
     --sat-d: 30%;
-
     --text-tiny: 0.5rem;
     --text-small: 0.85rem;
     --text-base: 1rem;
     --text-large: 1.15rem;
     --text-huge: 2rem;
-
     --font-primary: "Roboto";
     --font-secondary: "Oswald", sans-serif;
-
     --border: 2px;
     --spacer: 8px;
     --space-4: calc(var(--spacer) * 8);
@@ -35,19 +30,15 @@
     --space-2: calc(var(--spacer) * 4);
     --space-1: calc(var(--spacer) * 2);
     --space-05: calc(var(--spacer) * 0.5);
-
     --warning-h: 53.8;
-    --warning-color: hsla(var(--warning-h), 20%, var(--sat), 100%);
-    --warning-color-u: hsla(var(--warning-h), 20%, var(--sat-u), 100%);
-    --warning-color-d: hsla(var(--warning-h), 20%, var(--sat-d), 100%);
-
+    --warning-color: hsl(var(--warning-h) 20% var(--sat) / 100%);
+    --warning-color-u: hsl(var(--warning-h) 20% var(--sat-u) / 100%);
+    --warning-color-d: hsl(var(--warning-h) 20% var(--sat-d) / 100%);
     --error-h: 0;
-    --error-color: hsla(var(--error-h), 20%, var(--sat), 100%);
-    --error-color-u: hsla(var(--error-h), 20%, var(--sat-u), 100%);
-    --error-color-d: hsla(var(--error-h), 20%, var(--sat-d), 100%);
-
+    --error-color: hsl(var(--error-h) 20% var(--sat) / 100%);
+    --error-color-u: hsl(var(--error-h) 20% var(--sat-u) / 100%);
+    --error-color-d: hsl(var(--error-h) 20% var(--sat-d) / 100%);
     --grey-h: 210;
-
     --primary-color-h: 200;
     --primary-color-s: 80%;
 }
@@ -79,7 +70,8 @@
 }
 
 ::-webkit-scrollbar-track {
-    background: transparent; }
+    background: transparent;
+}
 
 ::-webkit-scrollbar-thumb {
     background: var(--primary-color);
@@ -94,12 +86,14 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     font-family: var(--font-primary);
     font-size: var(--text-base);
     font-weight: 400;
     margin: 0;
     outline: none;
+
     /** The js  grid needs some time to catch up. */
     overflow-x: hidden;
 }

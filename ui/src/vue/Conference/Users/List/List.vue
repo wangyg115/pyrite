@@ -97,7 +97,6 @@ export default {
             animation-name: wave-animation;
             transform-origin: center bottom;
         }
-
     }
 
     .name {

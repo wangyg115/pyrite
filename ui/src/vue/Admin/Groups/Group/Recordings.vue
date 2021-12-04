@@ -108,7 +108,6 @@ export default {
 </script>
 
 <style lang="scss">
-
 .c-admin-recordings {
 
     .recording {
@@ -148,6 +147,5 @@ export default {
             }
         }
     }
-
 }
 </style>

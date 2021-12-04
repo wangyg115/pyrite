@@ -301,7 +301,6 @@ export default {
 
             &.active {
                 background: var(--grey-4);
-
                 color: var(--primary-color);
             }
 
@@ -314,7 +313,6 @@ export default {
     .messages {
         background: var(--grey-2);
         flex: 1;
-
         overflow-x: hidden;
         overflow-y: scroll;
         padding-top: calc(var(--spacer) * 2);

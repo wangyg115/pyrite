@@ -136,6 +136,7 @@ export default {
 
             &::-webkit-slider-thumb {
                 background: var(--warning-color);
+
                 // box-shadow: -80px 0 0 80px var(--warning-color);
 
                 &:hover {

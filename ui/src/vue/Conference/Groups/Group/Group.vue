@@ -114,10 +114,9 @@ export default {
 </script>
 
 <style lang='scss'>
-
 @keyframes show {
 
-    0%{
+    0% {
         opacity: 0;
         transform: scale(0) translateY(20px);
     }

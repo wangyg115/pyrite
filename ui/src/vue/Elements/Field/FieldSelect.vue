@@ -271,10 +271,9 @@ export default {
         .options {
             background: var(--grey-3);
             border: 1px solid var(--grey-4);
-            box-shadow: 0 0 var(--border) rgba(var(--grey-2), 0.8);
+            box-shadow: 0 0 var(--border) rgb(var(--grey-2) 0.8);
             margin-top: calc(var(--space-2) + 1px);
             max-height: 162px;
-
             max-width: inherit;
             overflow-y: auto;
             position: absolute;

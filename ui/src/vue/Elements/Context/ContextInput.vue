@@ -93,21 +93,21 @@ export default {
 </script>
 
 <style lang="scss">
-
 .c-context-input {
 
-    &-fade-active, &-fade-leave-active {
-        transition: opacity .25s ease-out;
+    &-fade-active,
+    &-fade-leave-active {
+        transition: opacity 0.25s ease-out;
     }
 
-    &-fade-enter-from, &-fade-leave-to {
+    &-fade-enter-from,
+    &-fade-leave-to {
         opacity: 0;
     }
 
     .action-input {
         display: flex;
         flex: 1;
-
         position: relative;
 
         .field {

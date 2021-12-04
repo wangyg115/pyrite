@@ -1,11 +1,14 @@
 {
     "plugins": ["stylelint-order"],
-    "extends": "stylelint-config-recommended",
+    "extends": [
+        "stylelint-config-standard-scss",
+        "stylelint-config-recommended-vue/scss"
+    ],
     "rules": {
         "max-nesting-depth": 6,
         "property-no-vendor-prefix": true,
         "max-empty-lines": 2,
-        "indentation": [4, {baseIndentLevel: 0}],
+        "indentation": [4, {"baseIndentLevel": 0}],
         "function-calc-no-unspaced-operator": true,
         "string-quotes": "double",
         "no-duplicate-selectors": true,

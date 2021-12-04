@@ -317,7 +317,7 @@ export default {
 <style lang="scss">
 .loading-transition-enter-active,
 .loading-transition-leave-active {
-    transition: opacity .5s;
+    transition: opacity 0.5s;
 }
 
 .loading-transition-enter,
@@ -368,7 +368,7 @@ export default {
         width: 100%;
 
         .icon {
-            filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+            filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 40%));
             height: 50%;
             width: 50%;
         }
@@ -396,7 +396,7 @@ export default {
 
     .btn-stream-reports {
         color: var(--grey-8);
-        filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+        filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 40%));
         position: absolute;
     }
 
@@ -455,7 +455,7 @@ export default {
                     position: absolute;
                 }
 
-                input[type=range] {
+                input[type="range"] {
                     // Cut off the top/bottom borders.
                     border-left: 0;
                     border-right: 0;
@@ -463,13 +463,12 @@ export default {
                     position: absolute;
                     right: 0;
                     transform: rotate(-90deg) translate(18px, 20px);
+
                     // This is actually the height (rotated).
                     width: var(--space-3);
                 }
             }
-
         }
     }
-
 }
 </style>
