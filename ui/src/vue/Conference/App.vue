@@ -74,6 +74,10 @@ export default {
             })
         },
     },
+    mounted() {
+        const themeColor = getComputedStyle(document.querySelector('.app')).getPropertyValue('--grey-4')
+        document.querySelector('meta[name="theme-color"]').content = themeColor
+    },
 }
 </script>
 

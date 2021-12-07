@@ -1,10 +1,9 @@
 {
     "id": "@garage44/pyrite",
     "name": "Pyrite Video",
-    "short_name": "Pyrite",
     "description": "Pyrite Video Communication",
     "background_color": "#eef2f6",
-    "theme_color": "#30abe8",
+    "theme_color": "#cad6e2",
     "display": "standalone",
     "lang": "en-US",
     "icons": [
