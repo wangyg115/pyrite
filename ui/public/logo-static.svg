@@ -24,12 +24,12 @@
      inkscape:pagecheckerboard="true"
      showgrid="false"
      inkscape:zoom="8.2291665"
-     inkscape:cx="2.1265823"
-     inkscape:cy="21.69114"
-     inkscape:window-width="1674"
-     inkscape:window-height="948"
-     inkscape:window-x="2480"
-     inkscape:window-y="119"
+     inkscape:cx="2.1873418"
+     inkscape:cy="21.751899"
+     inkscape:window-width="1427"
+     inkscape:window-height="841"
+     inkscape:window-x="2459"
+     inkscape:window-y="274"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg840" />
   <style
@@ -59,7 +59,7 @@
      class="shard primary"
      d="m 16.86638,12.559181 -6.176691,10.699733 a 11.312578,11.312578 0 0 0 1.31031,0.07624 11.312578,11.312578 0 0 0 8.718789,-4.104612 z"
      id="path828"
-     style="fill:#54799c;fill-opacity:1"
+     style="fill:#1c2126;fill-opacity:1"
      inkscape:export-filename="/home/jeroen/code/pyrite/ui/public/logo-512.png"
      inkscape:export-xdpi="2172.4695"
      inkscape:export-ydpi="2172.4695" />
@@ -75,7 +75,7 @@
      class="shard primary"
      d="M 3.3339431,4.7511908 A 11.312578,11.312578 0 0 0 0.68752768,12.022675 11.312578,11.312578 0 0 0 1.1575432,15.248587 h 8.2361635 z"
      id="path832"
-     style="fill:#54799c;fill-opacity:1"
+     style="fill:#1c2126;fill-opacity:1"
      inkscape:export-filename="/home/jeroen/code/pyrite/ui/public/logo-512.png"
      inkscape:export-xdpi="2172.4695"
      inkscape:export-ydpi="2172.4695" />
@@ -83,7 +83,7 @@
      class="shard primary"
      d="M 14.518022,0.99450516 10.800888,7.432572 H 22.339196 A 11.312578,11.312578 0 0 0 14.518022,0.99450516 Z"
      id="path834"
-     style="fill:#54799c;fill-opacity:1"
+     style="fill:#1c2126;fill-opacity:1"
      inkscape:export-filename="/home/jeroen/code/pyrite/ui/public/logo-512.png"
      inkscape:export-xdpi="2172.4695"
      inkscape:export-ydpi="2172.4695" />
