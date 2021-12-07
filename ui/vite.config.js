@@ -16,6 +16,15 @@ if (!process.env.VITE_VERSION) {
 console.log('Build version:', process.env.VITE_VERSION)
 
 export default defineConfig({
+    build: {
+        rollupOptions: {
+            output: {
+                assetFileNames: `assets/[name].[ext]`,
+                chunkFileNames: `assets/[name].js`,
+                entryFileNames: `assets/[name].js`,
+            },
+        },
+    },
     plugins: [
         vue(),
     ],
