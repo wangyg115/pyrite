@@ -4,11 +4,11 @@ import fs from 'fs'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const filename = fileURLToPath(import.meta.url)
+const dirname = path.dirname(filename)
 
 if (!process.env.VITE_VERSION) {
-    const packageData = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json')))
+    const packageData = JSON.parse(fs.readFileSync(path.join(dirname, '..', 'package.json')))
     process.env.VITE_VERSION = packageData.version
 }
 
@@ -16,21 +16,14 @@ if (!process.env.VITE_VERSION) {
 console.log('Build version:', process.env.VITE_VERSION)
 
 export default defineConfig({
-    build: {
-        rollupOptions: {
-            output: {
-                assetFileNames: `assets/[name].[ext]`,
-                chunkFileNames: `assets/[name].js`,
-                entryFileNames: `assets/[name].js`,
-            },
-        },
-    },
     plugins: [
-        vue(),
+        vue({
+            ssr: false,
+        }),
     ],
     resolve: {
         alias: {
-            '@/': `${path.resolve(__dirname, 'src')}/`,
+            '@/': `${path.resolve(dirname, 'src')}/`,
         },
     },
     server: {

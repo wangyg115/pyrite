@@ -25,9 +25,9 @@ export default defineComponent({
     computed: {
         toggleAdminConference() {
             if (this.$route.name === 'conference-splash') {
-                return {name: 'admin-users'}
+                return {name: 'admin-groups-settings'}
             } else if (this.$route.name === 'conference-groups-connected') {
-                return {name: 'admin-users'}
+                return {name: 'admin-groups-settings'}
             } else if (this.$route.name === 'conference-groups-disconnected') {
                 // Use the selected group with the group in admin.
                 const groupId = this.$route.params.groupId
@@ -44,7 +44,6 @@ export default defineComponent({
                         return {name: 'conference-groups-connected', params: {groupId}}
                     }
                 }
-
             }
             return {name: 'conference-main'}
         },
@@ -53,9 +52,6 @@ export default defineComponent({
         return {
             version: import.meta.env.VITE_VERSION,
         }
-    },
-    setup() {
-
     },
 })
 </script>

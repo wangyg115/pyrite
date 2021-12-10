@@ -2,14 +2,6 @@
     <nav class="c-general-controls">
         <div class="navigational-controls">
             <RouterLink
-                class="btn btn-menu tooltip"
-                :data-tooltip="$t('settings')"
-                :to="{name: 'conference-settings', params: {tabId: 'misc'}}"
-            >
-                <Icon class="icon-small" name="Settings" />
-            </RouterLink>
-
-            <RouterLink
                 v-if="$s.group.name" class="btn btn-menu tooltip"
                 :class="{ active: ['conference-groups-connected', 'conference-groups-disconnected'].includes($route.name)}"
                 :data-tooltip="$s.group.locked ? `${$t('current group')} (${$t('locked')})` : $t('current group')"
@@ -18,9 +10,18 @@
                 <Icon v-if="!$s.group.locked" class="icon-small" name="Group" />
                 <Icon v-else class="icon-small" name="GroupLocked" />
             </RouterLink>
+
             <button v-else class="btn btn-menu" disabled>
                 <Icon class="icon-small" name="Group" />
             </button>
+
+            <RouterLink
+                class="btn btn-menu tooltip"
+                :data-tooltip="$t('settings')"
+                :to="{name: 'conference-settings', params: {tabId: 'misc'}}"
+            >
+                <Icon class="icon-small" name="Settings" />
+            </RouterLink>
 
             <button
                 v-if="$s.group.connected"

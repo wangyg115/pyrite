@@ -87,7 +87,7 @@ export default {
         box-shadow: var(--shadow);
         display: flex;
         flex-direction: column;
-        height: calc(var(--spacer * 7));
+        height: calc(var(--spacer) * 7);
         margin: var(--spacer) calc(var(--spacer) / 2);
         padding: var(--spacer);
 

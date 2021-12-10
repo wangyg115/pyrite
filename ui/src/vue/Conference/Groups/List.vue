@@ -1,21 +1,24 @@
 <template>
     <section class="c-groups presence">
-        <div v-for="group of $s.groups" :key="group.name" class="group item">
+        <RouterLink
+            v-for="group of $s.groups"
+            :key="group.name"
+            class="group item"
+            :class="{active: $s.group.name === group.name}"
+            :to="groupLink(group.name)"
+        >
             <Icon v-if="!group.locked" class="item-icon icon-small" name="Group" />
             <Icon v-else class="item-icon icon-small" name="GroupLocked" />
-            <RouterLink
-                class="name"
-                :class="{active: $s.group.name === group.name}"
-                :to="{name: 'conference-groups', params: {groupId: group.name}}"
-            >
+
+            <div class="name">
                 {{ group.name }}
-            </RouterLink>
+            </div>
 
             <div class="count" :class="{active: group.clientCount > 0}">
                 {{ group.clientCount }}
                 <Icon class="icon-small" name="User" />
             </div>
-        </div>
+        </RouterLink>
         <div v-if="!$s.groups.length" class="group item no-public-groups">
             <Icon class="item-icon icon-small" name="Group" />
             <div class="name">
@@ -38,6 +41,13 @@
 <script>
 export default {
     methods: {
+        groupLink(groupId) {
+            if (this.$s.group && this.$s.group.name === groupId) {
+                return {name: 'conference-splash'}
+            } else {
+                return {name: 'conference-groups', params: {groupId}}
+            }
+        },
         async pollGroups() {
             this.$s.groups = await app.api.get('/public-groups.json')
             for (const group of this.$s.groups) {

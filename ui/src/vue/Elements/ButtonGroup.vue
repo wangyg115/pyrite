@@ -19,7 +19,7 @@ export default defineComponent({
 
 <style lang="scss">
 .c-button-group {
-    background: var(--grey-3);
+    // background: var(--grey-3);
     transition: background 0.3s ease;
 
     &:hover,

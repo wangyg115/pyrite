@@ -1,12 +1,9 @@
-const workerVersion = 'pyrite-1'
+const workerVersion = 'pyrite-2'
 
 self.addEventListener('install', function(event) {
     event.waitUntil(
         caches.open(workerVersion).then(function(cache) {
-            return cache.addAll([
-                '/',
-                'logo.svg',
-            ])
+            return cache.addAll([])
         }),
     )
 })

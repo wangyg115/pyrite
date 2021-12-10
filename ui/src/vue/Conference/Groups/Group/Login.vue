@@ -113,7 +113,6 @@ export default {
 .c-login {
 
     header {
-        font-family: var(--font-secondary);
         text-transform: uppercase;
     }
 

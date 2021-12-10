@@ -8,7 +8,7 @@
                 :data-tooltip="$t('Groups')"
                 :to="groupRoute('admin-groups-settings')"
             >
-                <Icon class="icon-small" name="Settings" />
+                <Icon class="icon-small" name="Group" />
             </RouterLink>
             <RouterLink
                 active-class="active-group"

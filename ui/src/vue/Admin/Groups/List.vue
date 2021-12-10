@@ -28,10 +28,13 @@
                 <Icon class="icon-small" name="Trash" />
             </button>
         </div>
-        <div
+
+        <RouterLink
             v-for="group of orderedGroups"
             :key="group._name"
             class="group item"
+            :class="{active: $route.params.groupId === group._name}"
+            :to="groupLink(group._name)"
         >
             <Icon v-if="group._delete" class="item-icon delete icon-small" name="Trash" />
             <Icon
@@ -41,13 +44,9 @@
             />
 
             <div class="flex-column">
-                <RouterLink
-                    class="name"
-                    :class="{active: $route.params.groupId === group._name}"
-                    :to="groupLink(group._name)"
-                >
+                <div class="name">
                     {{ group._name }}
-                </Routerlink>
+                </div>
                 <div class="item-properties">
                     <Icon
                         class="icon-tiny"
@@ -59,7 +58,7 @@
                     />
                 </div>
             </div>
-        </div>
+        </RouterLink>
     </section>
 </template>
 
