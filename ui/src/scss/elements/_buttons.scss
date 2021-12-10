@@ -8,6 +8,10 @@
     text-transform: uppercase;
     transition: all ease 0.5s;
 
+    .warning {
+        color: var(--warning-color);
+    }
+
     &[disabled] {
         color: var(--grey-6);
     }
@@ -40,6 +44,48 @@
         height: var(--space-4);
         position: relative;
         width: var(--space-4);
+
+        &.warning {
+
+            .icon {
+                color: var(--warning-color);
+            }
+
+            &::before {
+                background: var(--warning-color);
+
+                &:hover {
+                    background: var(--warning-color-l);
+                }
+            }
+
+            &:hover,
+            &.active {
+                border-bottom: 2px solid var(--warning-color-l);
+                color: var(--warning-color-l);
+
+                .icon {
+                    color: var(--warning-color-l);
+                }
+            }
+        }
+
+        &.error {
+
+            .icon {
+                color: var(--error-color);
+            }
+
+            &:hover,
+            &.active {
+                border-bottom: 2px solid var(--error-color) !important;
+                color: var(--error-color);
+            }
+
+            &::before {
+                background: var(--error-color);
+            }
+        }
 
         &.btn-small {
             height: var(--space-3);
@@ -83,10 +129,6 @@
         }
 
         &:not([disabled]):hover {
-
-            &.warning {
-                color: var(--warning-color);
-            }
 
             &::before {
                 transform: scaleX(1);
@@ -146,40 +188,6 @@
             border-bottom: 2px solid var(--primary-color);
             color: var(--grey-7);
             cursor: pointer;
-        }
-    }
-
-    &.warning {
-
-        .icon {
-            color: var(--warning-color);
-        }
-
-        &:hover,
-        &.active {
-            border-bottom: 2px solid var(--warning-color) !important;
-            color: var(--warning-color);
-        }
-
-        &::before {
-            background: var(--warning-color);
-        }
-    }
-
-    &.error {
-
-        .icon {
-            color: var(--error-color);
-        }
-
-        &:hover,
-        &.active {
-            border-bottom: 2px solid var(--error-color) !important;
-            color: var(--error-color);
-        }
-
-        &::before {
-            background: var(--error-color);
         }
     }
 }

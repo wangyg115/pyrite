@@ -28,7 +28,7 @@ export default {
         async loadUser(userId) {
             app.logger.debug(`load user ${userId}`)
             const user = this.$s.admin.users.find((i) => i.id === userId)
-            if (user && user._unsaved) {
+            if (user && (user._unsaved || user._delete)) {
                 this.$s.admin.user = user
             } else {
                 this.$s.admin.user = await app.api.get(`/api/users/${encodeURIComponent(userId)}`)

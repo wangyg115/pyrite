@@ -10,24 +10,6 @@
             >
                 <Icon class="icon-small" name="Group" />
             </RouterLink>
-            <RouterLink
-                active-class="active-group"
-                class="btn btn-menu tooltip"
-                :class="{active: $route.name === 'admin-groups-dashboard'}"
-                :data-tooltip="$t('Dashboard')"
-                :to="groupRoute('admin-groups-dashboard')"
-            >
-                <Icon class="icon-small" name="Dashboard" />
-            </RouterLink>
-
-            <RouterLink
-                active-class="active-group"
-                class="btn btn-menu tooltip" :class="{active: $route.name === 'admin-groups-recordings'}"
-                :data-tooltip="$t('Group Recordings')"
-                :to="groupRoute('admin-groups-recordings')"
-            >
-                <Icon class="icon-small" name="Record" />
-            </RouterLink>
         </ButtonGroup>
 
         <RouterLink

@@ -1,6 +1,4 @@
 import App from '@/vue/Admin/App.vue'
-import Dashboard from '@/vue/Admin/Groups/Group/Dashboard.vue'
-import GroupRecordings from '@/vue/Admin/Groups/Group/Recordings.vue'
 import Groups from '@/vue/Admin/Groups/Groups.vue'
 import GroupSettings from '@/vue/Admin/Groups/Group/Settings/Settings.vue'
 import Login from '@/vue/Admin/Login.vue'
@@ -26,13 +24,13 @@ export default [{
                     props: true,
                 },
                 {
-                    component: Dashboard,
-                    name: 'admin-groups-dashboard',
-                    path: '/admin/groups/dashboard/:groupId?',
+                    component: GroupSettings,
+                    name: 'admin-groups-stats',
+                    path: '/admin/groups/stats/:groupId?',
                     props: true,
                 },
                 {
-                    component: GroupRecordings,
+                    component: GroupSettings,
                     name: 'admin-groups-recordings',
                     path: '/admin/groups/recordings/:groupId?',
                     props: true,

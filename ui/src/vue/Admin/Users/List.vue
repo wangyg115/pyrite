@@ -6,14 +6,14 @@
             </button>
             <button
                 class="btn tooltip tooltip-right"
-                :data-tooltip="$t('(un)mark for deletion')"
+                :data-tooltip="$s.admin.user && $s.admin.user._delete ? $t('unmark for deletion') : $t('mark for deletion')"
                 :disabled="!$s.admin.user" @click="toggleMarkDelete"
             >
                 <Icon class="item-icon icon-small" name="Minus" />
             </button>
             <button
-                class="btn tooltip tooltip-left"
-                :data-tooltip="$t('save user to disk')"
+                class="btn tooltip tooltip-right"
+                :data-tooltip="$t('save user')"
                 @click="saveUser"
             >
                 <Icon class="icon-small" name="Save" />
@@ -27,21 +27,23 @@
                 <Icon class="icon-small" name="Trash" />
             </button>
         </div>
-        <div v-for="user of orderedUsers" :key="user.id" class="user item">
+        <RouterLink
+            v-for="user of orderedUsers"
+            :key="user.id"
+            class="user item"
+            :class="{active: parseInt($route.params.userId) === user.id}" :to="userLink(user.id)"
+        >
             <Icon v-if="user._delete" class="item-icon delete icon-small" name="Trash" />
             <Icon
                 v-else class="item-icon icon-small"
                 :class="{unsaved: user._unsaved}"
                 name="User"
             />
-            <RouterLink
-                class="name"
-                :class="{active: parseInt($route.params.userId) === user.id}"
-                :to="userLink(user.id)"
-            >
+
+            <div class="name">
                 {{ user.name }}
-            </Routerlink>
-        </div>
+            </div>
+        </Routerlink>
     </section>
 </template>
 

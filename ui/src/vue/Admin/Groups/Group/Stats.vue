@@ -1,35 +1,25 @@
 <template>
-    <div class="c-admin-groups-dashboard content">
-        <header>
-            <div class="notice" />
-            <div class="title">
-                <span>{{ $t('Dashboard') }}</span>
-                <Icon class="icon icon-regular" name="Dashboard" />
+    <section v-if="stats && Object.keys(stats.clients).length" class="c-admin-groups-stats tab-content active">
+        <div v-for="client of stats.clients" :key="client.id" class="client">
+            <div class="client-header" :class="{collapsed: client.collapsed}" @click="toggleCollapse(client)">
+                <Icon class="icon icon-small" name="Stats" /> {{ client.id }}
             </div>
-        </header>
-
-        <section v-if="stats && Object.keys(stats.clients).length">
-            <div v-for="client of stats.clients" :key="client.id" class="client">
-                <div class="client-header" :class="{collapsed: client.collapsed}" @click="toggleCollapse(client)">
-                    <Icon class="icon icon-small" name="Dashboard" /> {{ client.id }}
-                </div>
-                <template v-if="!client.collapsed">
-                    <div v-for="stream of client.up" :key="stream.id" class="stream">
-                        <!-- eslint-disable-next-line vue/valid-v-for -->
-                        <div v-for="track of stream.tracks" :key="`${client.id}-${stream.id}`" class="track">
-                            <template v-for="(data, name) in track" :key="name">
-                                <Chart v-if="statProps[name]" :data="data" :name="name" />
-                            </template>
-                        </div>
+            <template v-if="!client.collapsed">
+                <div v-for="stream of client.up" :key="stream.id" class="stream">
+                    <!-- eslint-disable-next-line vue/valid-v-for -->
+                    <div v-for="track of stream.tracks" :key="`${client.id}-${stream.id}`" class="track">
+                        <template v-for="(data, name) in track" :key="name">
+                            <Chart v-if="statProps[name]" :data="data" :name="name" />
+                        </template>
                     </div>
-                </template>
-            </div>
-        </section>
-        <section v-else class="no-results">
-            <Icon class="icon icon-large" name="Dashboard" />
-            <span>{{ $t('No clients yet') }}</span>
-        </section>
-    </div>
+                </div>
+            </template>
+        </div>
+    </section>
+    <section v-else class="c-admin-dashboard tab-content no-results">
+        <Icon class="icon icon-large" name="Dashboard" />
+        <span>{{ $t('No clients yet') }}</span>
+    </section>
 </template>
 
 <script>
@@ -163,7 +153,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.c-admin-groups-dashboard {
+.c-admin-groups-stats {
 
     .client {
         background: var(--grey-1);

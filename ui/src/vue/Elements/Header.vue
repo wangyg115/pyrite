@@ -4,7 +4,7 @@
             <RouterLink
                 class="logo tooltip"
                 :class="{active: $route.name && $route.name.includes('manager')}"
-                :data-tooltip="$route.name.includes('conference-') ? $t('switch to manager') : $t('switch to conference')"
+                :data-tooltip="$route.name.includes('conference-') ? $t('switch to admin') : $t('switch to conference')"
                 :to="toggleAdminConference"
             >
                 <Icon class="icon" name="Logo" />PYRITE

@@ -17,9 +17,7 @@ console.log('Build version:', process.env.VITE_VERSION)
 
 export default defineConfig({
     plugins: [
-        vue({
-            ssr: false,
-        }),
+        vue(),
     ],
     resolve: {
         alias: {

@@ -97,12 +97,12 @@ export default {
         }
 
         &.warning {
-            background: var(--warning-color-u);
+            background: var(--warning-color-xl);
             color: var(--warning-color-d);
         }
 
         &.error {
-            background: var(--error-color-u);
+            background: var(--error-color-xl);
             color: var(--error-color-d);
         }
 

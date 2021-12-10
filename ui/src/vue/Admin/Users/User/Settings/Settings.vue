@@ -55,7 +55,7 @@
 
             <div class="actions">
                 <button
-                    class="btn btn-menu tooltip tooltip-left"
+                    class="btn btn-menu tooltip tooltip-left warning"
                     :data-tooltip="$t('save user')"
                     @click="saveUser"
                 >
@@ -88,6 +88,13 @@ export default defineComponent({
         },
         async saveUser() {
             await this.$m.user.saveUser(this.userId, this.$s.admin.user)
+        },
+    },
+    props: {
+        userId: {
+            default: () => null,
+            required: false,
+            type: String,
         },
     },
 })

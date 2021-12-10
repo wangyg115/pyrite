@@ -13,9 +13,11 @@
 
 
 :root {
-    --sat: 50%;
-    --sat-u: 75%;
-    --sat-d: 30%;
+    --sat: 20%;
+    --light-d: 30%;
+    --light: 50%;
+    --light-l: 75%;
+    --light-xl: 80%;
     --text-tiny: 0.5rem;
     --text-small: 0.85rem;
     --text-base: 1rem;
@@ -30,14 +32,16 @@
     --space-2: calc(var(--spacer) * 4);
     --space-1: calc(var(--spacer) * 2);
     --space-05: calc(var(--spacer) * 0.5);
-    --warning-h: 53.8;
-    --warning-color: hsl(var(--warning-h) 20% var(--sat) / 100%);
-    --warning-color-u: hsl(var(--warning-h) 20% var(--sat-u) / 100%);
-    --warning-color-d: hsl(var(--warning-h) 20% var(--sat-d) / 100%);
+    --warning-h: 13;
+    --warning-color-d: hsl(var(--warning-h) var(--sat) var(--light-d));
+    --warning-color: hsl(var(--warning-h) var(--sat) var(--light));
+    --warning-color-l: hsl(var(--warning-h) var(--sat) var(--light-l));
+    --warning-color-xl: hsl(var(--warning-h) var(--sat) var(--light-xl));
     --error-h: 0;
-    --error-color: hsl(var(--error-h) 20% var(--sat) / 100%);
-    --error-color-u: hsl(var(--error-h) 20% var(--sat-u) / 100%);
-    --error-color-d: hsl(var(--error-h) 20% var(--sat-d) / 100%);
+    --error-color-d: hsl(var(--error-h) var(--sat) var(--light-d));
+    --error-color: hsl(var(--error-h) var(--sat) var(--light));
+    --error-color-l: hsl(var(--error-h) var(--sat) var(--light-l));
+    --error-color-xl: hsl(var(--error-h) var(--sat) var(--light-xl));
     --grey-h: 210;
     --primary-color-h: 200;
     --primary-color-s: 80%;
