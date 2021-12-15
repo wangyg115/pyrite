@@ -86,7 +86,7 @@ export default {
     },
     mounted: async function() {
         this.canvasContext = this.$refs.meter.getContext('2d')
-        const computedStyle = getComputedStyle(document.querySelector('.theme'))
+        const computedStyle = getComputedStyle(document.querySelector('.app'))
         this.colors = {
             primary: computedStyle.getPropertyValue('--primary-color'),
             warning: computedStyle.getPropertyValue('--warning-color'),

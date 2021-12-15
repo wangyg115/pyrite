@@ -37,7 +37,7 @@
                             <FieldSelect
                                 v-model="$s.devices.cam.selected"
                                 :disabled="!$s.devices.cam.enabled"
-                                :help="$t('Select the camera device')"
+                                :help="$t('Select the video device')"
                                 :label="$t('Camera')"
                                 name="video"
                                 :options="$s.devices.cam.options"
@@ -59,9 +59,9 @@
                             <RouterLink
                                 :to="{name: 'conference-settings', params: {tabId: 'devices'}}"
                             >
-                                Verify
+                                {{ $t('Verify') }}
                             </RouterLink>
-                            {{ $t('microphone & camera settings') }}
+                            {{ $t('microphone & video settings') }}
                         </div>
                     </div>
                 </form>

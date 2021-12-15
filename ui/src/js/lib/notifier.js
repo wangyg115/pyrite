@@ -43,7 +43,7 @@ export default function() {
                     target: 'You aqcuired the Presenter role', // The source is unknown in the onUser event
                 },
                 raisehand: {
-                    chat: '{source} requested speakertime',
+                    chat: '{source} requested speaking time',
                 },
                 record: {
                     level: 'warning',

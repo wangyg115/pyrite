@@ -14,7 +14,7 @@
             </div>
         </div>
 
-        <div v-if="Object.keys(description.settings.audio).length" class="category">
+        <div v-if="description.settings.audio && Object.keys(description.settings.audio).length" class="category">
             <div class="title">
                 Audio
             </div>

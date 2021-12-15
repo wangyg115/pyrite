@@ -2,6 +2,7 @@
     <section class="tab-content active">
         <FieldSelect
             v-model="$s.theme"
+            :help="$t('Force a theme or use the system theme')"
             :label="$t('UI Theme')"
             name="language"
             :options="themes"
@@ -9,7 +10,7 @@
 
         <FieldSelect
             v-model="$s.language"
-            :help="$t('A few languages are supported')"
+            :help="$t('Changes the used UI language')"
             :label="$t('Language')"
             name="language"
             :options="languages"
@@ -18,7 +19,7 @@
         <FieldSelect
             v-model="$s.media.accept"
             :help="$t('Stream types that you want to receive')"
-            :label="$t('Acceptable Media')"
+            :label="$t('Acceptable Media Types')"
             name="request"
             :options="acceptOptions"
         />
@@ -60,9 +61,9 @@ export default {
                 },
             ],
             themes: [
-                {id: 'system', name: 'System'},
-                {id: 'light', name: 'Light'},
-                {id: 'dark', name: 'Dark'},
+                {id: 'system', name: this.$t('System')},
+                {id: 'light', name: this.$t('Light')},
+                {id: 'dark', name: this.$t('Dark')},
             ],
         }
     },

@@ -54,8 +54,8 @@ export default {
             kick: {icon: 'Logout', title: `${this.$t('Kick')} ${this.user.username}`},
             statusOptions: [
                 {id: 'available', name: this.$t('Available')},
-                {id: 'away', name: this.$t('Away')},
-                {id: 'busy', name: this.$t('Busy')},
+                {id: 'away', name: this.$t('Unavailable')},
+                {id: 'busy', name: this.$t('Do Not Disturb')},
             ],
             warning: {icon: 'Megafone', title: this.$t('Send Notification')},
         }

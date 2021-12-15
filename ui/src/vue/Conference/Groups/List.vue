@@ -29,7 +29,7 @@
             <FieldText
                 v-model="$s.group.name"
                 class="custom-group"
-                :help="$t('Join unlisted group')"
+                :help="$t('Use unlisted group')"
                 name="group"
                 placeholder="..."
                 @focus="updateRoute"

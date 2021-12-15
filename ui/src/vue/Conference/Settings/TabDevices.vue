@@ -3,8 +3,8 @@
         <div class="camera-field">
             <FieldSelect
                 v-model="$s.devices.cam.selected"
-                :help="$t('Select the camera device for presence')"
-                :label="$t('Camera')"
+                :help="$t('Change the active video device')"
+                :label="$t('Video Camera')"
                 name="video"
                 :options="$s.devices.cam.options"
             />
@@ -18,7 +18,7 @@
 
         <FieldSelect
             v-model="$s.devices.cam.resolution"
-            :help="$t('Depends on the camera\'s capabilities')"
+            :help="$t('Supported resolutions depend on the device capabilities')"
             :label="$t('Preferred Resolution')"
             name="resolution"
             :options="resolutionOptions"
@@ -27,7 +27,7 @@
         <div class="flex">
             <FieldSelect
                 v-model="$s.devices.audio.selected"
-                :help="$t('Test your audio device by playing the test sound')"
+                :help="$t('Verify your audio configuration with the test sound')"
                 :label="$t('Audio Output')"
                 name="audio"
                 :options="$s.devices.audio.options"
