@@ -8,7 +8,7 @@
         >
             <div class="message">
                 <Icon class="icon icon-small" :name="notification.level[0].toUpperCase() + notification.level.slice(1)" />
-                <div class="text">
+                <div class="text uc">
                     {{ notification.message }}
                     <span v-if="notification.link" class="cf link" @click="openUrl(notification.link.url)">{{ notification.link.text }}</span>
                 </div>

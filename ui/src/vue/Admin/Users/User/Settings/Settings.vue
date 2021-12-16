@@ -13,7 +13,7 @@
                 active-class="active-group"
                 class="btn btn-menu tab tooltip"
                 :class="{active: tabId === 'misc'}"
-                :data-tooltip="$t('miscellaneous')"
+                :data-tooltip="$t('user settings')"
                 :to="routeSettings('misc')"
             >
                 <Icon class="icon-small" name="SettingsMisc" />
@@ -55,8 +55,8 @@
 
             <div class="actions">
                 <button
-                    class="btn btn-menu tooltip tooltip-left warning"
-                    :data-tooltip="$t('save user')"
+                    class="btn btn-menu tooltip tooltip-left"
+                    :data-tooltip="$t('store person')"
                     @click="saveUser"
                 >
                     <Icon class="icon-small" name="Save" />

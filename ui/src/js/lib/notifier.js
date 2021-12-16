@@ -30,7 +30,7 @@ export default function() {
                 notification: {
                     level: 'info',
                     source: 'Notification sent to Participant {target}: {message}',
-                    target: 'Incoming notification from Operator {source}',
+                    target: 'Incoming notification from Operator {source}: {message}',
                 },
                 op: {
                     level: 'info',
@@ -80,7 +80,7 @@ export default function() {
          * @param {*} personal
          * @param {*} channels
          */
-        message(messageId, context = {dir: 'target'}, personal = null, {chat =  false, notification = true} = {}) {
+        message(messageId, context = {dir: 'target'}, personal = null, {chat = false, notification = true} = {}) {
             const message = this.messages[messageId]
             if (notification) {
                 if (!context.dir) context.dir = 'target'
@@ -128,7 +128,6 @@ export default function() {
                 if (message === 'permission denied') return
                 this.notify({level: 'error', message})
             } else if (kind === 'info') {
-
                 this.notify({level: 'info', message})
             }
 
@@ -147,7 +146,7 @@ export default function() {
 
             this.notify({
                 level: this.messages[kind].level,
-                message:  app.$t(this.messages[kind].target, {group: app.$s.group.name, source}),
+                message:  app.$t(this.messages[kind].target, {group: app.$s.group.name, message, source}),
                 personal,
             })
         }

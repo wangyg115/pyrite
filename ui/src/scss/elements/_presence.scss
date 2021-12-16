@@ -4,7 +4,7 @@
 
     .actions {
         display: flex;
-        padding: var(--spacer);
+
 
         .btn {
             cursor: pointer;
@@ -18,7 +18,7 @@
     }
 
     .item {
-        align-items: stretch;
+        align-items: center;
         color: var(--grey-7);
         display: flex;
         padding: calc(var(--spacer) / 2) var(--spacer);

@@ -280,7 +280,7 @@ export default {
         .chat-channel {
             background: var(--grey-3);
             border: var(--border) solid var(--grey-4);
-            color: var(--grey-5);
+            color: var(--grey-6);
             display: flex;
             font-family: var(--font-secondary);
             margin: var(--spacer);
@@ -301,7 +301,7 @@ export default {
             }
 
             &.active {
-                background: var(--grey-4);
+                background: var(--grey-2);
                 color: var(--primary-color);
             }
 
@@ -350,6 +350,7 @@ export default {
             }
 
             &.me {
+                font-style: italic;
                 margin-left: 0;
                 margin-right: 0;
                 padding: 0 calc(var(--spacer) * 2);

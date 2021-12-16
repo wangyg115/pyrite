@@ -1,4 +1,5 @@
 @import "./lib/mixins";
+@import "./lib/utilities";
 @import "./elements/animations";
 @import "./elements/buttons";
 @import "./elements/checkbox";
@@ -43,8 +44,6 @@
     --error-color-l: hsl(var(--error-h) var(--sat) var(--light-l));
     --error-color-xl: hsl(var(--error-h) var(--sat) var(--light-xl));
     --grey-h: 210;
-    --primary-color-h: 200;
-    --primary-color-s: 80%;
 }
 
 @media (prefers-color-scheme: dark) {

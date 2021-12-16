@@ -18,7 +18,7 @@
     </section>
     <section v-else class="c-admin-dashboard tab-content no-results">
         <Icon class="icon icon-large" name="Dashboard" />
-        <span>{{ $t('No clients yet') }}</span>
+        <span>{{ $t('no connections') }}</span>
     </section>
 </template>
 

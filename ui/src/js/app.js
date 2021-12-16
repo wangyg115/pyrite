@@ -516,7 +516,7 @@ class Pyrite extends EventEmitter {
             // There might be a user with name 'RECORDING' that is an ordinary user;
             // only trigger the recording flag when it is a system user.
             if (user.username === 'RECORDING' && user.permissions.system) {
-                this.$s.group.recording = true
+                this.$s.group.recording = user.id
                 this.notifier.message('record', {group: this.$s.group.name})
             }
 
@@ -555,7 +555,7 @@ class Pyrite extends EventEmitter {
 
             this.$s.users.splice(this.$s.users.findIndex((i) => i.id === user.id), 1, user)
         } else if (kind === 'delete') {
-            if (user.username === 'RECORDING' && user.permissions.system) {
+            if (user.id === this.$s.group.recording) {
                 this.$s.group.recording = false
                 this.notifier.message('unrecord', {group: this.$s.group.name})
             }

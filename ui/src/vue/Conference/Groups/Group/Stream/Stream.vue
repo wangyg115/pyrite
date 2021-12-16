@@ -331,14 +331,16 @@ export default {
 }
 
 .c-stream {
-    background: var(--grey-2);
+    background: var(--grey-3);
     display: flex;
     flex-direction: column;
     justify-items: center;
     position: relative;
 
     video {
-        border: 2px solid var(--grey-3);
+        aspect-ratio: 4 / 3;
+        border: 2px solid var(--grey-4);
+        max-height: 100%;
         object-fit: cover;
         opacity: 1;
         transition: opacity 0.3s;
@@ -360,10 +362,13 @@ export default {
     .audio-container,
     .loading-container {
         align-items: center;
-        background: var(--grey-1);
+        aspect-ratio: 4 / 3;
+        background: var(--grey-2);
+        border: 2px solid var(--grey-4);
         display: flex;
         height: 100%;
         justify-content: center;
+        object-fit: cover;
         position: absolute;
         width: 100%;
 
@@ -395,7 +400,7 @@ export default {
     }
 
     .btn-stream-reports {
-        color: var(--grey-8);
+        color: var(--grey-10);
         filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 40%));
         position: absolute;
     }

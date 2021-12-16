@@ -58,7 +58,8 @@ export default {
                 const currentOption = this.options.find((o) => o.id === this.modelValue.id)
 
                 if (currentOption) {
-                    return currentOption.name
+                    console.log(currentOption.name)
+                    return this.$t(currentOption.name)
                 }
             }
             return this.placeholder

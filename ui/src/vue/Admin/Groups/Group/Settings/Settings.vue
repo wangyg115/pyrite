@@ -23,7 +23,7 @@
                 active-class="active-group"
                 class="btn btn-menu tooltip"
                 :class="{active: $route.name === 'admin-groups-stats'}"
-                :data-tooltip="$t('client statistics')"
+                :data-tooltip="$t('connection statistics')"
                 :to="groupRoute('admin-groups-stats')"
             >
                 <Icon class="icon-small" name="Stats" />
@@ -33,7 +33,7 @@
                 active-class="active-group"
                 class="btn btn-menu tooltip"
                 :class="{active: $route.name === 'admin-groups-recordings'}"
-                :data-tooltip="$t('Group Recordings')"
+                :data-tooltip="$t('group recordings')"
                 :to="groupRoute('admin-groups-recordings')"
             >
                 <Icon class="icon-small" name="Record" />
@@ -50,6 +50,14 @@
             <TabPermissions v-else-if="tabId === 'other'" category="other" />
 
             <div v-if="$route.name === 'admin-groups-settings'" class="actions">
+                <button
+                    class="btn btn-menu btn-save tooltip tooltip-left"
+                    :data-tooltip="$t('store group')"
+                    @click="saveGroup"
+                >
+                    <Icon class="icon-small" name="Save" />
+                </button>
+
                 <RouterLink
                     active-class="active-group"
                     class="btn btn-menu tab tooltip"
@@ -95,13 +103,6 @@
                 >
                     <Icon class="icon-small" name="OtherPermissions" />
                 </RouterLink>
-                <button
-                    class="btn btn-menu tooltip tooltip-left warning"
-                    :data-tooltip="$t('save group')"
-                    @click="saveGroup"
-                >
-                    <Icon class="icon-small" name="Save" />
-                </button>
             </div>
         </div>
     </div>
@@ -151,3 +152,9 @@ export default defineComponent({
     },
 })
 </script>
+
+<style lang="scss">
+.btn-save {
+    margin-bottom: var(--space-1);
+}
+</style>

@@ -1,11 +1,28 @@
 <template>
     <section v-if="recordings.length" class="c-admin-recordings tab-content active">
         <div v-for="rec of recordings" :key="rec.filename" class="recording">
+            <div class="actions">
+                <button
+                    class="btn btn-menu btn-small tooltip tooltip-right"
+                    :data-tooltip="`${$t('delete recording')}`"
+                    @click="deleteRecording(rec)"
+                >
+                    <Icon class="icon-mini" name="Trash" />
+                </button>
+                <a
+                    class="btn btn-menu btn-small tooltip tooltip-right"
+                    :data-tooltip="`${$t('download recording')}`"
+                    :download="`${rec.filename}.${rec.extension}`"
+                    :href="`/api/recordings/${$s.admin.group._name}/${rec.filename}.${rec.extension}`"
+                >
+                    <Icon class="icon-mini" name="Download" />
+                </a>
+            </div>
             <video controls :src="`/api/recordings/${$s.admin.group._name}/${rec.filename}.${rec.extension}`" type="video/webm" />
             <div class="info">
                 <div class="line">
-                    <div class="key">
-                        {{ $t('Filename') }}
+                    <div class="key uc">
+                        {{ $t('file') }}
                     </div>
                     <div class="value">
                         {{ rec.filename }}
@@ -13,8 +30,8 @@
                 </div>
 
                 <div class="line">
-                    <div class="key">
-                        {{ $t('Type') }}
+                    <div class="key uc">
+                        {{ $t('type') }}
                     </div>
                     <div class="value">
                         {{ rec.extension }}
@@ -22,8 +39,8 @@
                 </div>
 
                 <div class="line">
-                    <div class="key">
-                        {{ $t('Size') }}
+                    <div class="key uc">
+                        {{ $t('size') }}
                     </div>
                     <div class="value">
                         {{ (rec.size / 1024 / 1024).toFixed(2) }} MB
@@ -31,36 +48,19 @@
                 </div>
 
                 <div class="line">
-                    <div class="key">
-                        {{ $t('Modified') }}
+                    <div class="key uc">
+                        {{ $t('modified') }}
                     </div>
                     <div class="value">
                         {{ rec.atime }}
                     </div>
                 </div>
             </div>
-            <div class="actions">
-                <button
-                    class="btn btn-menu btn-small tooltip tooltip-right"
-                    :data-tooltip="`${$t('Delete recording')}`"
-                    @click="deleteRecording(rec)"
-                >
-                    <Icon class="icon-mini" name="Trash" />
-                </button>
-                <a
-                    class="btn btn-menu btn-small tooltip tooltip-right"
-                    :data-tooltip="`${$t('Download recording')}`"
-                    :download="`${rec.filename}.${rec.extension}`"
-                    :href="`/api/recordings/${$s.admin.group._name}/${rec.filename}.${rec.extension}`"
-                >
-                    <Icon class="icon-mini" name="Download" />
-                </a>
-            </div>
         </div>
     </section>
     <section v-else class="c-admin-recordings tab-content active no-results">
         <Icon class="icon icon-large" name="Record" />
-        <span>{{ $t('No recordings yet') }}</span>
+        <span>{{ $t('no recordings') }}</span>
     </section>
 </template>
 
@@ -74,7 +74,7 @@ export default {
     methods: {
         async deleteRecording(rec) {
             this.recordings = await app.api.get(`/api/recordings/${this.groupId}/${rec.filename}.${rec.extension}/delete`)
-            app.notifier.notify({level: 'info', message: this.$t('Deleted recording {recording}', {recording: rec.filename})})
+            app.notifier.notify({level: 'info', message: this.$t('deleted recording: {recording}', {recording: rec.filename})})
         },
         async loadRecordings(groupId) {
             this.recordings = await app.api.get(`/api/recordings/${groupId}`)
@@ -104,14 +104,14 @@ export default {
     .recording {
         background: var(--grey-1);
         display: flex;
+        margin-bottom: var(--spacer);
 
         video {
-            border: 1px solid var(--grey-5);
-            max-width: 200px;
+            max-height: 90px;
         }
 
         .actions {
-            background: var(--grey-2);
+            background: var(--grey-4);
         }
 
         .info {
@@ -133,7 +133,7 @@ export default {
                 }
 
                 .value {
-                    color: var(--grey-8);
+                    color: var(--primary-color);
                 }
             }
         }

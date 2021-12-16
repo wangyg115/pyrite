@@ -1,21 +1,19 @@
 <template>
     <nav class="c-admin-controls">
-        <ButtonGroup :active="$route.name.startsWith('admin-groups')">
-            <RouterLink
-                active-class="active-group"
-                class="btn btn-menu tooltip"
-                :class="{active: $route.name === 'admin-groups-settings'}"
-                :data-tooltip="$t('Groups')"
-                :to="groupRoute('admin-groups-settings')"
-            >
-                <Icon class="icon-small" name="Group" />
-            </RouterLink>
-        </ButtonGroup>
+        <RouterLink
+            active-class="active-group"
+            class="btn btn-menu tooltip"
+            :class="{active: $route.name === 'admin-groups-settings'}"
+            :data-tooltip="$t('groups')"
+            :to="groupRoute('admin-groups-settings')"
+        >
+            <Icon class="icon-small" name="Group" />
+        </RouterLink>
 
         <RouterLink
             class="btn btn-menu tooltip"
             :class="{active: $route.name.startsWith('admin-users')}"
-            :data-tooltip="$t('People')"
+            :data-tooltip="$t('people')"
             :to="userRoute('admin-users-settings')"
         >
             <Icon class="icon-small" name="User" />

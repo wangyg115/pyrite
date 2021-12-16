@@ -2,18 +2,18 @@
     <section class="c-admin-group-tab-misc tab-content active">
         <FieldText
             v-model="$s.admin.user.name"
-            label="Username"
+            :label="$t('Username')"
             placeholder="..."
         />
         <FieldText
             v-model="$s.admin.user.password"
-            label="Password"
+            :label="$t('Password')"
             placeholder="..."
         />
         <FieldCheckbox
             v-model="$s.admin.user.admin"
-            help="Grants Pyrite admin privileges"
-            label="Admin"
+            :help="$t('Grants Pyrite admin privileges')"
+            :label="$t('Admin')"
         />
     </section>
 </template>

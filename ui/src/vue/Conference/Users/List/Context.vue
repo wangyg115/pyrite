@@ -1,5 +1,5 @@
 <template>
-    <div class="c-user-context context-menu" :class="{active}">
+    <div v-click-outside="toggleMenu" class="c-user-context context-menu" :class="{active}">
         <Icon class="icon icon-small" name="Menu" @click="toggleMenu" />
         <div v-if="active" class="actions">
             <button
@@ -9,7 +9,7 @@
                 <Icon class="icon icon-mini" name="Chat" />{{ `${$t('Chat with')} ${user.username}` }}
             </button>
             <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="muteUser">
-                <Icon class="icon icon-mini" name="Mic" />{{ `${$t('Mute')} ${user.username}` }}
+                <Icon class="icon icon-mini" name="Mic" />{{ $t('Mute microphone') }}
             </button>
 
             <ContextInput
@@ -86,14 +86,15 @@ export default {
             this.toggleMenu()
         },
         sendNotification(message) {
-            app.notifier.message('notify', {dir: 'source', message, target: this.user.username})
-            app.connection.userMessage('notify', this.user.id, message)
+            app.notifier.message('notification', {dir: 'source', message, target: this.user.username})
+            app.connection.userMessage('notification', this.user.id, message)
             this.toggleMenu()
         },
         setAvailability(availability) {
             app.connection.userAction('setstatus', app.connection.id, {availability})
         },
         toggleMenu(e, forceState) {
+            console.log("TOGGLE OUT")
             // The v-click-outside
             if (typeof forceState === 'object') {
                 this.active = false

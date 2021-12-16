@@ -1,26 +1,29 @@
 <template>
     <section class="c-admin-users-list presence">
         <div class="actions">
-            <button class="btn">
+            <button
+                class="btn tooltip tooltip-right"
+                :data-tooltip="$t('add new user')"
+            >
                 <Icon class="item-icon icon-small" name="Plus" @click="addUser" />
             </button>
             <button
                 class="btn tooltip tooltip-right"
-                :data-tooltip="$s.admin.user && $s.admin.user._delete ? $t('unmark for deletion') : $t('mark for deletion')"
+                :data-tooltip="$s.admin.user && $s.admin.user._delete ? $t('undo mark deletion') : $t('mark for deletion')"
                 :disabled="!$s.admin.user" @click="toggleMarkDelete"
             >
                 <Icon class="item-icon icon-small" name="Minus" />
             </button>
             <button
                 class="btn tooltip tooltip-right"
-                :data-tooltip="$t('save user')"
+                :data-tooltip="$t('store person')"
                 @click="saveUser"
             >
                 <Icon class="icon-small" name="Save" />
             </button>
             <button
                 class="btn tooltip tooltip-right"
-                :data-tooltip="$t('confirm deletion')"
+                :data-tooltip="`${$t('confirm deletion of {amount} users', {amount: deletionUsers.length})}`"
                 :disabled="!deletionUsers.length"
                 @click="deleteUsers"
             >

@@ -84,7 +84,7 @@ export default {
     .item-icon {
 
         &.away {
-            color: var(--grey-6);
+            color: var(--warning-color);
         }
 
         &.busy {

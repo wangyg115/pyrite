@@ -111,10 +111,15 @@ export default {
 
     .help {
         margin-top: var(--spacer);
+
+        &::first-letter {
+            text-transform: capitalize;
+        }
     }
 
     .field-label {
         font-family: var(--font-secondary);
+        text-transform: capitalize;
     }
 }
 </style>

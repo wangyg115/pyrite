@@ -3,6 +3,7 @@
         <button class="action" @click.stop="buttonAction">
             <Icon class="icon icon-mini" :name="icon" />{{ title }} ({{ model.name }})
         </button>
+
         <FieldSelect
             v-show="input"
             ref="select"

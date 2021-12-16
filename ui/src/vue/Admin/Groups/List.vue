@@ -1,12 +1,15 @@
 <template>
     <section v-if="$s.admin.authenticated" class="c-admin-groups presence">
         <div class="actions">
-            <button class="btn">
+            <button
+                class="btn tooltip tooltip-right"
+                :data-tooltip="$t('add new group')"
+            >
                 <Icon class="item-icon icon-small" name="Plus" @click="addGroup" />
             </button>
             <button
                 class="btn tooltip tooltip-right"
-                :data-tooltip="$t('(un)mark for deletion')"
+                :data-tooltip="$s.admin.group && $s.admin.group._delete ? $t('undo mark deletion') : $t('mark for deletion')"
                 :disabled="!$s.admin.group" @click="toggleMarkDelete"
             >
                 <Icon class="item-icon icon-small" name="Minus" />

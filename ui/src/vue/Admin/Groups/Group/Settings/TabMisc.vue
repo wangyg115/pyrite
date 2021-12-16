@@ -2,31 +2,31 @@
     <section v-if="$s.admin.group" class="c-admin-group-tab-misc tab-content active">
         <FieldText
             v-model="$s.admin.group._newName"
-            label="Group Name"
+            :label="$t('group name')"
             placeholder="..."
         />
         <FieldText
             v-model="$s.admin.group.description"
-            help="Add a short description to the group listing page"
-            label="Group Description"
+            :help="$t('add a short description to the group listing page')"
+            :label="$t('group description')"
             placeholder="..."
         />
         <FieldText
             v-model="$s.admin.group.contact"
-            help="Show contact information to a group administrator"
-            label="Group Contact"
+            :help="$t('show contact information to a group operator')"
+            :label="$t('group contact')"
             placeholder="..."
         />
         <FieldText
             v-model="$s.admin.group.comment"
-            help="Add a comment to the group login page"
-            label="Group Comment"
+            :help="$t('add a short text to the group login page')"
+            :label="$t('group comment')"
             placeholder="..."
         />
         <FieldCheckbox
             v-model="$s.admin.group['allow-recording']"
-            help="When enabled, recording of this group is allowed"
-            label="Recording"
+            :help="$t('enables recording of the group streams')"
+            :label="$t('recording')"
         />
 
         <!-- <FieldText
