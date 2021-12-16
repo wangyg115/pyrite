@@ -55,7 +55,7 @@ export default {
     Presence: 'Aanwezigheid',
     Receive: 'Ontvangen',
     'Request speaking time': 'Vraag om spreektijd',
-    'Save Settings': 'Instellingen Opslaan',
+    'save settings': 'instellingen opslaan',
     Screenshare: 'Schermdeling',
     'Select the microphone device': 'Selecteer het microfoon apparaat',
     'Select the video device': 'Selecteer het video apparaat',

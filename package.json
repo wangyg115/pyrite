@@ -1,7 +1,7 @@
 {
   "name": "@garage44/pyrite",
   "description": "Pyrite is a web(RTC) client for the Galène videoconference server.",
-  "version": "1.9.13",
+  "version": "1.9.14",
   "bin": {
     "pyrite": "admin/service.js"
   },

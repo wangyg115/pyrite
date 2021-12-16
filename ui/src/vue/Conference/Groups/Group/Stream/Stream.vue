@@ -446,9 +446,9 @@ export default {
             }
 
             .volume-slider {
-                height: var(--space-3);
+                bottom: 2px;
+                height: var(--spacer);
                 position: absolute;
-                width: 10px;
 
                 &.tooltip-left::after {
                     margin-top: -100px;
