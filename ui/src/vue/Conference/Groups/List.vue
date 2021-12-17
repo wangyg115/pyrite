@@ -22,14 +22,14 @@
         <div v-if="!$s.groups.length" class="group item no-public-groups">
             <Icon class="item-icon icon-small" name="Group" />
             <div class="name">
-                {{ $t('No public groups') }}
+                {{ $t('no public groups') }}
             </div>
         </div>
         <div class="group group-input item">
             <FieldText
                 v-model="$s.group.name"
                 class="custom-group"
-                :help="$t('Use unlisted group')"
+                :help="$t('use unlisted group')"
                 name="group"
                 placeholder="..."
                 @focus="updateRoute"

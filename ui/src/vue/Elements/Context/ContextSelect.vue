@@ -1,7 +1,7 @@
 <template>
     <div class="c-context-select">
         <button class="action" @click.stop="buttonAction">
-            <Icon class="icon icon-mini" :name="icon" />{{ title }} ({{ model.name }})
+            <Icon class="icon icon-mini" :name="icon" /><span class="ucfl">{{ title }} ({{ model.name }})</span>
         </button>
 
         <FieldSelect

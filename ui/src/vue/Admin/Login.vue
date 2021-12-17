@@ -3,7 +3,7 @@
         <header>
             <div class="notice" />
             <div class="title">
-                <span>{{ $t('Admin Login') }}</span>
+                <span>{{ $t('admin login') }}</span>
                 <Icon class="item-icon icon-small" name="Dashboard" />
             </div>
         </header>
@@ -14,7 +14,7 @@
                         v-model="username"
                         autocomplete="username"
                         :autofocus="true"
-                        :label="$t('Username')"
+                        :label="$t('username')"
                         name="username"
                         placeholder="Alice, Bob, Carol..."
                     />
@@ -22,7 +22,7 @@
                     <FieldText
                         v-model="password"
                         autocomplete="password"
-                        :label="$t('Password')"
+                        :label="$t('password')"
                         name="pasword"
                         placeholder="Alice, Bob, Carol..."
                         type="password"
@@ -62,7 +62,7 @@ export default defineComponent({
             Object.assign(this.$s.admin, context)
 
             if (!context.authenticated) {
-                app.notifier.notify({level: 'error', message: this.$t('Invalid credentials')})
+                app.notifier.notify({level: 'error', message: this.$t('invalid credentials')})
             } else {
                 app.notifier.notify({level: 'info', message: this.$t('succesfully logged in')})
                 app.router.push({name: 'admin-users'})

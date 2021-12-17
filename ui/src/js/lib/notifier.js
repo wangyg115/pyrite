@@ -5,68 +5,68 @@ export default function() {
             this.messages = {
                 clearchat: {
                     level: 'warning',
-                    source: 'General chat history has been cleared',
-                    target: 'General chat history has been cleared',
+                    source: 'General chat history was removed',
+                    target: 'General chat history was removed',
                 },
                 error: {
                     level: 'error',
-                    target: 'An error occured: {message}',
+                    target: 'an error occured: {message}',
                 },
                 kicked: {
                     level: 'warning',
-                    source: 'You kicked Participant {target}',
-                    target: 'You were kicked by Operator {source}',
+                    source: 'you removed participant {target}',
+                    target: 'you were removed by operator {source}',
                 },
                 lock: {
                     level: 'warning',
-                    source: 'You locked group {group}',
-                    target: 'Group {group} has been locked',
+                    source: 'you locked group {group}',
+                    target: 'group {group} has been locked',
                 },
                 mute: {
                     level: 'warning',
-                    source: 'You muted the microphone of Participant {target}',
-                    target: 'Your microphone was muted by Operator {source}',
+                    source: 'You muted the microphone of participant {target}',
+                    target: 'your microphone was muted by operator {source}',
                 },
                 notification: {
                     level: 'info',
-                    source: 'Notification sent to Participant {target}: {message}',
-                    target: 'Incoming notification from Operator {source}: {message}',
+                    source: 'notification sent to participant {target}: {message}',
+                    target: 'incoming notification from operator {source}: {message}',
                 },
                 op: {
                     level: 'info',
-                    source: 'You assigned the Operator role to Participant {target}',
-                    target: 'You aqcuired the Operator role', // The source is unknown in the onUser event
+                    source: 'you assigned the operator role to participant {target}',
+                    target: 'you aqcuired the operator role', // The source is unknown in the onUser event
                 },
                 present: {
                     level: 'info',
-                    source: 'You assigned the Presenter role to {target}',
-                    target: 'You aqcuired the Presenter role', // The source is unknown in the onUser event
+                    source: 'you assigned the presenter role to {target}',
+                    target: 'you aqcuired the presenter role', // The source is unknown in the onUser event
                 },
                 raisehand: {
                     chat: '{source} requested speaking time',
                 },
                 record: {
                     level: 'warning',
-                    target: 'Group {group} is being recorded!',
+                    target: 'group {group} is being recorded!',
                 },
                 unlock: {
                     level: 'warning',
-                    source: 'Group {group} has been unlocked',
-                    target: 'Group {group} has been unlocked',
+                    source: 'group {group} has been unlocked',
+                    target: 'group {group} has been unlocked',
                 },
                 unop: {
                     level: 'info',
-                    source: 'You revoked the Operator role from Participant {target}',
-                    target: 'Your Operator role was revoked', // The source is unknown in the onUser event
+                    source: 'you revoked the operator role from participant {target}',
+                    target: 'your operator role was revoked', // The source is unknown in the onUser event
                 },
                 unpresent: {
                     level: 'info',
-                    source: 'You revoked the Presenter role from Participant {target}',
-                    target: 'Your Presenter role was revoked', // The source is unknown in the onUser event
+                    source: 'you revoked the presenter role from participant {target}',
+                    target: 'your presenter role was revoked', // The source is unknown in the onUser event
                 },
                 unrecord: {
                     level: 'warning',
-                    target: 'Group {group} stopped being recorded',
+                    target: 'group {group} stopped being recorded',
                 },
             }
         }

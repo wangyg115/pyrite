@@ -10,7 +10,12 @@
                 <div class="channel-name">
                     <Icon class="icon icon-mini" :icon-props="{unread: channel.unread}" name="Chat" />
                 </div>
-                {{ channel.name }}
+                <span v-if="key === 'main'" class="ucfl">
+                    {{ $t('general') }}
+                </span>
+                <span v-else>
+                    {{ channel.name }}
+                </span>
 
                 <button v-if="channel.id !== 'main'" class="btn btn-icon btn-close" @click.stop="closeChannel(channel)">
                     <Icon class="icon icon-tiny" name="Close" />
@@ -49,7 +54,7 @@
             <textarea
                 v-model="rawMessage"
                 autofocus
-                :placeholder="$t('Type /help for help')"
+                :placeholder="$t('type /help for help')"
                 @keydown.enter="$event.preventDefault()"
                 @keyup.enter="sendMessage"
             />

@@ -1,4 +1,13 @@
 .uc {
+    text-transform: capitalize;
+}
+
+
+.uca {
+    text-transform: uppercase;
+}
+
+.ucfl {
 
     &::first-letter {
         text-transform: uppercase;

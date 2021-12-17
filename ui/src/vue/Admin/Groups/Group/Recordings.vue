@@ -21,7 +21,7 @@
             <video controls :src="`/api/recordings/${$s.admin.group._name}/${rec.filename}.${rec.extension}`" type="video/webm" />
             <div class="info">
                 <div class="line">
-                    <div class="key uc">
+                    <div class="key ucfl">
                         {{ $t('file') }}
                     </div>
                     <div class="value">
@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="line">
-                    <div class="key uc">
+                    <div class="key ucfl">
                         {{ $t('type') }}
                     </div>
                     <div class="value">
@@ -39,7 +39,7 @@
                 </div>
 
                 <div class="line">
-                    <div class="key uc">
+                    <div class="key ucfl">
                         {{ $t('size') }}
                     </div>
                     <div class="value">
@@ -48,7 +48,7 @@
                 </div>
 
                 <div class="line">
-                    <div class="key uc">
+                    <div class="key ucfl">
                         {{ $t('modified') }}
                     </div>
                     <div class="value">

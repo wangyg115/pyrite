@@ -465,7 +465,9 @@ class Pyrite extends EventEmitter {
         switch(kind) {
         case 'fail':
             if (message === 'group is locked') {
-                this.notifier.notify({level: 'error', message: this.$t('Group {group} is locked; only maintainers may login.', {group: this.$s.group.name})})
+                this.notifier.notify({level: 'error', message: this.$t('group {group} is locked; only maintainers may login', {group: this.$s.group.name})})
+            } else if (message === 'not authorised') {
+                this.notifier.notify({level: 'error', message: this.$t('invalid credentials for group {group}', {group: this.$s.group.name})})
             }
 
             // Closing the connection will trigger a 'leave' message,

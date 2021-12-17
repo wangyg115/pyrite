@@ -1,6 +1,6 @@
 <template>
     <RouterView v-if="$s.admin.group" />
-    <Splash v-else :instruction="$t('Select a group to continue')" />
+    <Splash v-else :instruction="$t('select a group to continue')" />
 </template>
 
 <script>

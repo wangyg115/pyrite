@@ -1,6 +1,6 @@
 <template>
     <RouterView v-if="$s.admin.user" />
-    <Splash v-else :instruction="$t('Select a person to continue')" />
+    <Splash v-else :instruction="$t('select a person to continue')" />
 </template>
 
 <script>

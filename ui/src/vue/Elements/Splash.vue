@@ -19,7 +19,7 @@ export default {
                 if (typeof this.instruction === 'function') return this.instruction()
                 else return this.instruction
             }
-            else return this.$t('CONFERENCING')
+            else return this.$t('conferencing')
         },
         title() {
             if (this.header) {

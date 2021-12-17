@@ -10,7 +10,7 @@ const persistantState = reactive({
         cam: {
             enabled: true,
             options: [],
-            resolution: {id: 'default', name: 'Default'},
+            resolution: {id: 'default', name: ''},
             selected: {id: null, name: ''},
         },
         mic: {
@@ -22,8 +22,8 @@ const persistantState = reactive({
     language: {id: 'en'},
     loading: true,
     media: {
-        accept: {id: 'everything', name: 'Everything'},
-        upstream: {id: 'normal', name: 'Normal'},
+        accept: {id: 'everything', name: ''},
+        upstream: {id: 'normal', name: ''},
     },
     permissions: {},
     theme: {id: 'system'},
@@ -32,7 +32,7 @@ const persistantState = reactive({
         name: '',
         password: '',
         status: {
-            availability: {id: 'available', name: 'Available'},
+            availability: {id: 'available', name: ''},
             mic: true,
             raisehand: false,
         },
@@ -56,7 +56,6 @@ const volatileState = {
             main: {
                 id: 'main',
                 messages: [],
-                name: 'General',
                 unread: 0,
             },
         },

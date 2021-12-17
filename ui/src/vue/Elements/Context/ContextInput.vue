@@ -12,14 +12,14 @@
                 </button>
                 <button
                     v-else class="btn tooltip tooltip-right"
-                    :data-tooltip="$t('Submit')"
+                    :data-tooltip="$t('submit')"
                     @click="submitMethod"
                 >
                     <Icon class="icon icon-mini" name="Send" />
                 </button>
             </div>
             <button v-else class="action" @click="buttonAction">
-                <Icon class="icon icon-mini" :name="icon" />{{ title }}
+                <Icon class="icon icon-mini" :name="icon" /><span class="ucfl">{{ title }}</span>
             </button>
         </transition>
     </div>

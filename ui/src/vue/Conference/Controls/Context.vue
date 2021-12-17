@@ -10,12 +10,12 @@
                 @click="toggleRecording($s.group.recording)"
             >
                 <Icon class="icon icon-mini" name="Record" />
-                <span v-if="$s.group.recording">{{ $t('Stop Recording') }}</span>
-                <span v-else>{{ $t('Start Recording') }}</span>
+                <span v-if="$s.group.recording" class="ucfl">{{ $t('stop recording') }}</span>
+                <span v-else class="ucfl">{{ $t('start recording') }}</span>
             </button>
 
             <button v-if="$s.permissions.op" class="action" @click="muteAllUsers">
-                <Icon class="icon icon-mini" name="MicMute" />{{ $t('Mute Participants') }}
+                <Icon class="icon icon-mini" name="MicMute" /><span class="ucfl">{{ $t('mute participants') }}</span>
             </button>
 
             <ContextInput
@@ -25,7 +25,7 @@
             />
 
             <button v-if="$s.permissions.op" class="action" @click="clearChat">
-                <Icon class="icon icon-mini" name="ChatRemove" />{{ $t('Clear Chat') }}
+                <Icon class="icon icon-mini" name="ChatRemove" /><span class="ucfl">{{ $t('clear chat') }}</span>
             </button>
 
             <ContextInput v-if="$s.permissions.op" v-model="warning" :submit="sendNotification" />
@@ -40,9 +40,9 @@ export default {
             active: false,
             lock: {
                 icon: () => this.$s.group.locked ? 'Unlock' : 'Lock',
-                title: () => this.$s.group.locked ? this.$t('Unlock Group') : this.$t('Lock Group'),
+                title: () => this.$s.group.locked ? this.$t('unlock group') : this.$t('lock group'),
             },
-            warning: {icon: 'Megafone', title: this.$t('Send Notification')},
+            warning: {icon: 'Megafone', title: this.$t('send notification')},
         }
     },
     methods: {

@@ -1,6 +1,6 @@
 <template>
     <div v-click-outside="toggleSelect.bind(this)" class="c-field-select field">
-        <label class="field-label" :for="name">{{ label }}</label>
+        <label class="field-label uc" :for="name">{{ label }}</label>
 
         <div class="input-container">
             <div class="button-wrapper">
@@ -39,10 +39,10 @@
                 </div>
             </div>
         </div>
-        <div v-if="searchSelected.help" class="help">
+        <div v-if="searchSelected.help" class="help ucfl">
             {{ searchSelected.help }}
         </div>
-        <div v-else-if="help" class="help">
+        <div v-else-if="help" class="help ucfl">
             {{ help }}
         </div>
     </div>
@@ -58,7 +58,6 @@ export default {
                 const currentOption = this.options.find((o) => o.id === this.modelValue.id)
 
                 if (currentOption) {
-                    console.log(currentOption.name)
                     return this.$t(currentOption.name)
                 }
             }
@@ -224,6 +223,7 @@ export default {
     width: 100%;
 
     label {
+        display: inline-block;
         font-family: var(--font-secondary);
     }
 

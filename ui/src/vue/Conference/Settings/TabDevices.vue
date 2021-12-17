@@ -3,8 +3,8 @@
         <div class="camera-field">
             <FieldSelect
                 v-model="$s.devices.cam.selected"
-                :help="$t('Change the active video device')"
-                :label="$t('Video Camera')"
+                :help="$t('change the active video device')"
+                :label="$t('video camera')"
                 name="video"
                 :options="$s.devices.cam.options"
             />
@@ -18,8 +18,8 @@
 
         <FieldSelect
             v-model="$s.devices.cam.resolution"
-            :help="$t('Supported resolutions depend on the device capabilities')"
-            :label="$t('Preferred Resolution')"
+            :help="$t('supported resolutions depend on the device capabilities')"
+            :label="$t('preferred resolution')"
             name="resolution"
             :options="resolutionOptions"
         />
@@ -27,8 +27,8 @@
         <div class="flex">
             <FieldSelect
                 v-model="$s.devices.audio.selected"
-                :help="$t('Verify your audio configuration with the test sound')"
-                :label="$t('Audio Output')"
+                :help="$t('verify your audio configuration with the test sound')"
+                :label="$t('audio output')"
                 name="audio"
                 :options="$s.devices.audio.options"
             />
@@ -39,8 +39,8 @@
 
         <FieldSelect
             v-model="$s.devices.mic.selected"
-            :help="$t('Verify the microphone is working with the soundmeter')"
-            :label="$t('Microphone')"
+            :help="$t('verify the microphone is working with the soundmeter')"
+            :label="$t('microphone')"
             name="audio"
             :options="$s.devices.mic.options"
         />
@@ -74,16 +74,16 @@ export default {
             resolutionOptions: [
                 {
                     id: 'default',
-                    name: this.$t('Default'),
+                    name: this.$t('default'),
                 },
                 {
                     id: '720p',
-                    name: this.$t('HD - 720p (1280x720)'),
+                    name: this.$t('hd - 720p (1280x720)'),
                 },
                 {
-                    help: this.$t('Full HD video requires extensive bandwidth!'),
+                    help: this.$t('full hd video requires excessive bandwidth!'),
                     id: '1080p',
-                    name: this.$t('Full HD - 1080p (1920x1080)'),
+                    name: this.$t('full hd - 1080p (1920x1080)'),
                 },
             ],
             sound: {
@@ -183,7 +183,7 @@ export default {
 
         .c-stream {
             border: var(--border) solid var(--grey-5);
-            margin: var(--spacer);
+            margin: var(--spacer) 0;
             right: 0;
             width: 180px;
         }

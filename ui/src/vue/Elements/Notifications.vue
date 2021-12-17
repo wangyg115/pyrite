@@ -8,15 +8,15 @@
         >
             <div class="message">
                 <Icon class="icon icon-small" :name="notification.level[0].toUpperCase() + notification.level.slice(1)" />
-                <div class="text uc">
+                <div class="text ucfl">
                     {{ notification.message }}
                     <span v-if="notification.link" class="cf link" @click="openUrl(notification.link.url)">{{ notification.link.text }}</span>
                 </div>
             </div>
             <div v-if="notification.personal" class="personal">
                 <div class="op">
-                    <span v-if="notification.personal.op">{{ $t('Operator') }} {{ notification.personal.op }}:</span>
-                    <span v-else-if="notification.personal.group">{{ $t('Group') }} {{ notification.personal.group }}:</span>
+                    <span v-if="notification.personal.op">{{ $t('operator') }} {{ notification.personal.op }}:</span>
+                    <span v-else-if="notification.personal.group">{{ $t('group') }} {{ notification.personal.group }}:</span>
                 </div>
                 <div class="message">
                     {{ notification.personal.message }}

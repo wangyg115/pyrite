@@ -3,7 +3,9 @@
         <div class="navigational-controls">
             <RouterLink
                 v-if="$s.group.name" class="btn btn-menu tooltip"
-                :class="{ active: ['conference-groups-connected', 'conference-groups-disconnected'].includes($route.name)}"
+                :class="{
+                    active: ['conference-groups-connected', 'conference-groups-disconnected'].includes($route.name)
+                }"
                 :data-tooltip="$s.group.locked ? `${$t('current group')} (${$t('locked')})` : $t('current group')"
                 :to="{name: 'conference-groups', params: {groupId: $s.group.name}}"
             >
@@ -17,6 +19,7 @@
 
             <RouterLink
                 class="btn btn-menu tooltip"
+                :class="{active: $route.name === 'conference-settings'}"
                 :data-tooltip="$t('settings')"
                 :to="{name: 'conference-settings', params: {tabId: 'misc'}}"
             >

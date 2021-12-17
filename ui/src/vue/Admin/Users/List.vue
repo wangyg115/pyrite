@@ -125,9 +125,9 @@ export default {
         },
         userLink(userId) {
             if (this.$s.admin.user && this.$s.admin.user.id == userId) {
-                return {name: this.$route.name}
+                return {name: 'admin-users'}
             } else {
-                return {name: this.$route.name, params: {userId}}
+                return {name: 'admin-users-settings', params: {userId}}
             }
         },
     },

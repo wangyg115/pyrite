@@ -6,10 +6,10 @@
                 v-if="user.id !== $s.user.id" class="action"
                 @click="activateUserChat"
             >
-                <Icon class="icon icon-mini" name="Chat" />{{ `${$t('Chat with')} ${user.username}` }}
+                <Icon class="icon icon-mini" name="Chat" />{{ `${$t('chat with')} ${user.username}` }}
             </button>
             <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="muteUser">
-                <Icon class="icon icon-mini" name="Mic" />{{ $t('Mute microphone') }}
+                <Icon class="icon icon-mini" name="Mic" />{{ $t('mute microphone') }}
             </button>
 
             <ContextInput
@@ -20,18 +20,18 @@
 
             <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="toggleOperator">
                 <template v-if="user.permissions.op">
-                    <Icon class="icon icon-mini" name="Operator" />{{ $t('Remove Operator role') }}
+                    <Icon class="icon icon-mini" name="Operator" />{{ $t('remove operator role') }}
                 </template>
                 <template v-else>
-                    <Icon class="icon icon-mini" name="Operator" />{{ $t('Add Operator role') }}
+                    <Icon class="icon icon-mini" name="Operator" />{{ $t('add operator role') }}
                 </template>
             </button>
             <button v-if="user.id !== $s.user.id && $s.permissions.op" class="action" @click="togglePresenter">
                 <template v-if="user.permissions.present">
-                    <Icon class="icon icon-mini" name="Present" />{{ $t('Remove Presenter role') }}
+                    <Icon class="icon icon-mini" name="Present" />{{ $t('remove presenter role') }}
                 </template>
                 <template v-else>
-                    <Icon class="icon icon-mini" name="Present" />{{ $t('Add Presenter role') }}
+                    <Icon class="icon icon-mini" name="Present" />{{ $t('add presenter role') }}
                 </template>
             </button>
             <ContextInput v-if="$s.permissions.op && user.id !== $s.user.id" v-model="warning" :submit="sendNotification" />
@@ -40,7 +40,7 @@
                 icon="Present"
                 :options="statusOptions"
                 :submit="setAvailability"
-                :title="$t('Change status')"
+                :title="$t('change status')"
             />
         </div>
     </div>
@@ -51,13 +51,13 @@ export default {
     data(){
         return {
             active: false,
-            kick: {icon: 'Logout', title: `${this.$t('Kick')} ${this.user.username}`},
+            kick: {icon: 'Logout', title: `${this.$t('remove')} ${this.user.username}`},
             statusOptions: [
-                {id: 'available', name: this.$t('Available')},
-                {id: 'away', name: this.$t('Unavailable')},
-                {id: 'busy', name: this.$t('Do Not Disturb')},
+                {id: 'available', name: this.$t('available')},
+                {id: 'away', name: this.$t('unavailable')},
+                {id: 'busy', name: this.$t('do not disturb')},
             ],
-            warning: {icon: 'Megafone', title: this.$t('Send Notification')},
+            warning: {icon: 'Megafone', title: this.$t('send notification')},
         }
     },
     methods: {

@@ -16,7 +16,7 @@
                         v-model="$s.user.username"
                         autocomplete="username"
                         :autofocus="$route.params.groupId"
-                        :label="$t('Username')"
+                        :label="$t('username')"
                         name="username"
                         placeholder="Alice, Bob, Carol..."
                     />
@@ -24,21 +24,21 @@
                     <FieldText
                         v-model="$s.user.password"
                         autocomplete="password"
-                        :label="$t('Password')"
+                        :label="$t('password')"
                         name="pasword"
                         placeholder="Alice, Bob, Carol..."
                         type="password"
                     />
 
                     <div class="field presence-setup">
-                        <label>{{ $t('Presence') }}</label>
+                        <label class="uc">{{ $t('presence') }}</label>
                         <div class="cam">
                             <FieldCheckbox v-model="$s.devices.cam.enabled" />
                             <FieldSelect
                                 v-model="$s.devices.cam.selected"
                                 :disabled="!$s.devices.cam.enabled"
-                                :help="$t('Select the video device')"
-                                :label="$t('Camera')"
+                                :help="$t('select the video device')"
+                                :label="$t('camera')"
                                 name="video"
                                 :options="$s.devices.cam.options"
                             />
@@ -49,17 +49,17 @@
                             <FieldSelect
                                 v-model="$s.devices.mic.selected"
                                 :disabled="!$s.devices.mic.enabled"
-                                :help="$t('Select the microphone device')"
-                                :label="$t('Microphone')"
+                                :help="$t('select the microphone device')"
+                                :label="$t('microphone')"
                                 name="audio"
                                 :options="$s.devices.mic.options"
                             />
                         </div>
-                        <div class="verify">
+                        <div class="verify ucfl">
                             <RouterLink
                                 :to="{name: 'conference-settings', params: {tabId: 'devices'}}"
                             >
-                                {{ $t('Verify') }}
+                                {{ $t('verify') }}
                             </RouterLink>
                             {{ $t('microphone & video settings') }}
                         </div>

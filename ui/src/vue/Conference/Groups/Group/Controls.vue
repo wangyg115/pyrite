@@ -48,7 +48,7 @@
                 v-if="$s.permissions.present"
                 class="btn btn-menu tooltip tooltip-left"
                 :class="{active: $s.user.status.raisehand}"
-                :data-tooltip="$s.user.status.raisehand ? $t('Hinting for speaking time') : $t('Request speaking time')"
+                :data-tooltip="$s.user.status.raisehand ? $t('hinting for speaking time') : $t('request speaking time')"
                 @click="toggleRaiseHand"
             >
                 <Icon class="hand icon-small" :class="{wave: $s.user.status.raisehand}" name="Hand" />
