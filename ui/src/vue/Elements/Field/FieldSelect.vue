@@ -205,9 +205,14 @@ export default {
     updated() {
         const input = this.$refs.input
         const options = this.$refs.options
+
         let selected
         if (this.searchSelected.id) {
-            selected = document.querySelector(`#option-${this.searchSelected.id}`)
+            for (const childNode of options.childNodes) {
+                if (`#option-${this.searchSelected.id}` === childNode.id) {
+                    selected = childNode
+                }
+            }
         }
 
         if (selected) {

@@ -1,4 +1,3 @@
-// Font config
 import "@fontsource/oswald"
 import "@fontsource/roboto"
 
@@ -8,6 +7,7 @@ import {createI18n} from 'vue-i18n'
 import env from './lib/env.js'
 import EventEmitter from 'eventemitter3'
 import groupModel from './models/group.js'
+import localeFR from './locales/fr.js'
 import localeNL from './locales/nl.js'
 import Logger from './lib/logger.js'
 import Notifier from './lib/notifier.js'
@@ -42,6 +42,7 @@ class Pyrite extends EventEmitter {
             formatFallbackMessages: true,
             locale: this.$s.language.id,
             messages: {
+                fr: localeFR,
                 nl: localeNL,
             },
             silentFallbackWarn: true,
@@ -591,27 +592,36 @@ class Pyrite extends EventEmitter {
         let devices = await navigator.mediaDevices.enumerateDevices()
         const labelnr = {audio: 1, cam: 1, mic: 1}
 
+        const added = []
+
         this.$s.devices.mic.options = []
         this.$s.devices.cam.options = []
         this.$s.devices.audio.options = []
 
-        devices.forEach(d => {
-            let name = d.label
+        for (const device of devices) {
+            // The same device may end up in the queryList multiple times;
+            // Don't add it twice to the options list.
+            if (added.includes(device.deviceId)) {
+                continue
+            }
+            let name = device.label
 
-            if(d.kind === 'videoinput') {
+            if(device.kind === 'videoinput') {
                 if(!name) name = `Camera ${labelnr.cam}`
-                this.$s.devices.cam.options.push({id: d.deviceId, name})
+                this.$s.devices.cam.options.push({id: device.deviceId, name})
                 labelnr.cam++
-            } else if(d.kind === 'audioinput') {
+            } else if(device.kind === 'audioinput') {
                 if(!name) name = `Microphone ${labelnr.mic}`
-                this.$s.devices.mic.options.push({id: d.deviceId, name})
+                this.$s.devices.mic.options.push({id: device.deviceId, name})
                 labelnr.mic++
-            } else if (d.kind === 'audiooutput') {
+            } else if (device.kind === 'audiooutput') {
                 if(!name) name = `Output ${labelnr.audio}`
-                this.$s.devices.audio.options.push({id: d.deviceId, name})
+                this.$s.devices.audio.options.push({id: device.deviceId, name})
                 labelnr.audio++
             }
-        })
+
+            added.push(device.deviceId)
+        }
 
         // Set default audio/video options when none is set.
         if (this.$s.devices.mic.selected.id === null && this.$s.devices.mic.options.length) {

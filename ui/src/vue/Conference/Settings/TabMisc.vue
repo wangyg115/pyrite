@@ -48,6 +48,7 @@ export default {
             ],
             languages: [
                 {id: 'en', name: this.$t('english')},
+                {id: 'fr', name: this.$t('french')},
                 {id: 'nl', name: this.$t('dutch')},
             ],
             sendOptions: [

@@ -44,6 +44,7 @@ export default {
     english: 'anglais',
     file: 'fichier',
     'For unlisted groups': 'Pour les groupes non répertoriés',
+    french: 'française',
     'full hd - 1080p (1920x1080)': 'Full HD - 1080p (1920x1080)',
     'full hd video requires excessive bandwidth!': 'la vidéo Full HD nécessite une bande passante excessive !',
     fullscreen: 'plein écran',
