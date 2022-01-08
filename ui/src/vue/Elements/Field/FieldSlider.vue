@@ -81,7 +81,7 @@ export default {
         appearance: none;
         background: var(--grey-1);
         border: 1px solid var(--grey-5);
-        height: 100%;
+        height: 10px;
         margin: 0;
         overflow: hidden;
         transform: rotate(-90deg);
