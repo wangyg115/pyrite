@@ -3,15 +3,12 @@
 <img height="100" src="./ui/public/logo-text.svg">
 <br />
 
+# About
+
 [Pyrite](https://pyrite.video) is a WebRTC client ([Vue](https://v3.vuejs.org/)/[Express.js](http://expressjs.com/))
 for the [Galène](https://github.com/jech/galene) video conferencing server. Its purpose is to accomodate
 the need for a simple & efficient [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software)
 video-conferencing stack.
-
-# Getting Started
-
-> HTTPS is a requirement in a networked situation. Checkout the deployment section
-> for information about how to setup the stack.
 
 ## Install Galène
 
@@ -27,8 +24,6 @@ mkdir -p {data,groups,recordings}
 ```
 
 ## Install Pyrite
-
-> Requires Node.js
 
 ```bash
 npx @garage44/pyrite
@@ -55,8 +50,8 @@ in the users.json file:
 cat ~/code/galene/data/users.json
 ```
 
-Next, create some groups & users. For a quick test, you can fire up a
-second Chromium browser with a fake WebRTC device:
+Create some groups & users. For a quick test, you can fire up a
+second Chromium browser with a fake WebRTC device.
 
 ```bash
 chromium --use-fake-device-for-media-stream --enable-experimental-web-platform-features --user-data-dir=/tmp/.chromium-tmp http://localhost:3030
@@ -70,13 +65,13 @@ a proxy and configuring all services.
 
 ## Developers
 
-  ```bash
-  git clone git@github.com:garage44/pyrite.git
-  cd pyrite
-  npm i  # Install dependencies
-  npm run galene  # Run dockerized galene
-  # Uses Nodemon autoreload. Use PYRITE_NO_SECURITY=1 to bypass session security
-  npm run pyrite
-  # Vite development server with proxy
-  npm run dev
-  ```
+```bash
+git clone git@github.com:garage44/pyrite.git
+cd pyrite
+npm i  # Install dependencies
+npm run galene  # Run dockerized galene
+# Uses Nodemon autoreload. Use PYRITE_NO_SECURITY=1 to bypass session security
+npm run pyrite
+# Vite development server with proxy
+npm run dev
+```
