@@ -3,11 +3,10 @@
 <img height="100" src="./ui/public/logo-text.svg">
 <br />
 
-[Pyrite](https://pyrite.video) is a webRTC client ([Vue 3](https://v3.vuejs.org/)) and
+[Pyrite](https://pyrite.video) is a WebRTC client ([Vue 3](https://v3.vuejs.org/)) and
 operator backend ([Express.js](http://expressjs.com/)) for the [Galène](https://github.com/jech/galene)
-SFU. It may be of interest to people and organisations, looking for a simple & efficient
-[FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software) video-conferencing
-stack, as an alternative to proprietary video-conferencing services.
+video conferencing server. Its purpose is to accomodate the need for a simple & efficient
+[FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software) video-conferencing stack.
 
 # Getting Started
 
