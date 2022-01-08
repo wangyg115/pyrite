@@ -61,7 +61,7 @@ export default {
     'group {group} has been locked': 'groep {group} is vergrendeld',
     'group {group} has been unlocked': 'groep {group} is ontgrendeld',
     'group {group} is being recorded!': 'groep {group} wordt opgenomen!',
-    'group {group} is locked; only maintainers may login': 'group {group is vergrendeld; alleen beheerders mogen inloggen',
+    'group {group} is locked; only maintainers may login': 'groep {group} is vergrendeld; alleen beheerders mogen inloggen',
     'group {group} stopped being recorded': 'groep {group} wordt niet langer opgenomen',
     'group {group} stored': 'groep {group} opgeslagen',
     'group {oldgroup} renamed to {newgroup}': 'groep {oldgroup} hernoemd naar {newgroup}',
