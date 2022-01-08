@@ -17,7 +17,7 @@
         </div>
     </section>
     <section v-else class="c-admin-dashboard tab-content no-results">
-        <Icon class="icon icon-large" name="Dashboard" />
+        <Icon class="icon icon-large" name="Stats" />
         <span>{{ $t('no connections') }}</span>
     </section>
 </template>

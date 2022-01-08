@@ -23,7 +23,7 @@
             </button>
             <button
                 class="btn tooltip tooltip-right"
-                :data-tooltip="`${$t('confirm deletion of {amount} users', {amount: deletionUsers.length})}`"
+                :data-tooltip="`${$t('confirm deletion of {amount} person |confirm deletion of {amount} persons', {amount: deletionUsers.length})}`"
                 :disabled="!deletionUsers.length"
                 @click="deleteUsers"
             >

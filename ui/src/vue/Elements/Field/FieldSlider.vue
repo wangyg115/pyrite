@@ -115,7 +115,7 @@ export default {
         &::-webkit-slider-thumb {
             appearance: none;
             background: var(--primary-color);
-            box-shadow: -80px 0 0 80px var(--grey-5);
+            box-shadow: -80px 0 0 80px var(--grey-1);
             height: var(--spacer);
             width: var(--space-1);
         }

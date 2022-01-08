@@ -24,7 +24,7 @@
             </button>
             <button
                 class="btn tooltip tooltip-right"
-                :data-tooltip="`${$t('confirm deletion of {amount} groups', {amount: deletionGroups.length})}`"
+                :data-tooltip="`${$tc('confirm deletion of {amount} group | confirm deletion of {amount} groups', {amount: deletionGroups.length})}`"
                 :disabled="!deletionGroups.length"
                 @click="deleteGroups"
             >
@@ -98,7 +98,7 @@ export default {
             this.toggleSelection(group._name)
         },
         async deleteGroups() {
-            app.notifier.notify({level: 'info', message: `deleting ${this.deletionGroups.length} groups`})
+            app.notifier.notify({level: 'info', message: this.$tc('deleting one group | deleting {count} groups', this.deletionGroups.length)})
             const deleteRequests = []
             for (const group of this.deletionGroups) {
                 this.$s.admin.groups.splice(this.$s.admin.groups.findIndex((i) => i._name === group._name), 1)

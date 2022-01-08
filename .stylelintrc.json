@@ -13,6 +13,7 @@
         "string-quotes": "double",
         "no-duplicate-selectors": true,
         "no-descending-specificity": null,
+        "no-eol-whitespace": [true, {"ignore": ["empty-lines"]}],
         "color-hex-case": "lower",
         "color-named": "never",
         "selector-max-id": 0,

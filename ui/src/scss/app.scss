@@ -14,11 +14,11 @@
 
 
 :root {
-    --sat: 20%;
+    --sat: 70%;
     --light-d: 30%;
     --light: 50%;
     --light-l: 75%;
-    --light-xl: 80%;
+    --light-xl: 90%;
     --text-tiny: 0.5rem;
     --text-small: 0.85rem;
     --text-base: 1rem;
@@ -33,7 +33,7 @@
     --space-2: calc(var(--spacer) * 4);
     --space-1: calc(var(--spacer) * 2);
     --space-05: calc(var(--spacer) * 0.5);
-    --warning-h: 13;
+    --warning-h: 23;
     --warning-color-d: hsl(var(--warning-h) var(--sat) var(--light-d));
     --warning-color: hsl(var(--warning-h) var(--sat) var(--light));
     --warning-color-l: hsl(var(--warning-h) var(--sat) var(--light-l));

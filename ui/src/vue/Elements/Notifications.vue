@@ -87,23 +87,22 @@ export default {
         box-shadow: var(--shadow);
         display: flex;
         flex-direction: column;
-        height: calc(var(--spacer) * 7);
         margin: var(--spacer) calc(var(--spacer) / 2);
-        padding: var(--spacer);
+        padding: calc(var(--spacer) * 1.5);
 
         &.info {
-            background: var(--grey-7);
+            background: var(--grey-10);
             color: var(--grey-2);
         }
 
         &.warning {
-            background: var(--warning-color-xl);
-            color: var(--warning-color-d);
+            background: var(--warning-color-d);
+            color: var(--warning-color-xl);
         }
 
         &.error {
-            background: var(--error-color-xl);
-            color: var(--error-color-d);
+            background: var(--error-color-d);
+            color: var(--error-color-xl);
         }
 
         .message {

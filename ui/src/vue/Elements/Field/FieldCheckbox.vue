@@ -63,7 +63,7 @@ export default {
             width: calc(var(--spacer) * 5);
 
             .slider {
-                background-color: var(--grey-3);
+                background-color: var(--grey-1);
                 border-radius: calc(var(--spacer) * 2);
                 bottom: 0;
                 cursor: pointer;

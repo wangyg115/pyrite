@@ -102,16 +102,19 @@ export default {
 .c-admin-recordings {
 
     .recording {
+        align-items: center;
         background: var(--grey-1);
         display: flex;
         margin-bottom: var(--spacer);
+        padding: var(--spacer);
 
         video {
             max-height: 90px;
         }
 
         .actions {
-            background: var(--grey-4);
+            background: var(--grey-3);
+            margin-right: var(--spacer);
         }
 
         .info {

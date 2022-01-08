@@ -125,7 +125,7 @@ export default {
         .mic,
         .cam {
             align-items: center;
-            background: var(--grey-2);
+            background: var(--grey-4);
             border: 2px solid var(--grey-4);
             display: flex;
             margin: var(--space-1) 0;

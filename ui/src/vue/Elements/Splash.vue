@@ -1,11 +1,11 @@
 <template>
     <div class="c-splash">
         <Icon class="icon logo-animated" name="Logo" />
-        <div class="title">
+        <div class="title uca">
             {{ title }}
         </div>
 
-        <div class="subtitle">
+        <div class="subtitle uca">
             {{ subtitle }}
         </div>
     </div>
@@ -25,7 +25,7 @@ export default {
             if (this.header) {
                 return this.header
             } else {
-                return 'PYRITE'
+                return 'pyrite'
             }
         },
     },
