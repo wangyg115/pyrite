@@ -10,9 +10,7 @@ for the [Galène](https://github.com/jech/galene) video conferencing server. Its
 the need for a simple & efficient [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software)
 video-conferencing stack.
 
-## Install Galène
-
-> Requires Golang
+## Getting Started
 
 ```bash
 cd ~/code
@@ -23,13 +21,9 @@ mkdir -p {data,groups,recordings}
 ./galene --insecure
 ```
 
-## Install Pyrite
-
 ```bash
 npx @garage44/pyrite
 ```
-
-You should see a similar startup sequence:
 
 ```bash
 [INFO] verifying configuration
@@ -42,28 +36,15 @@ You should see a similar startup sequence:
 [INFO] pyrite listening: 127.0.0.1:3030
 ```
 
-Open a browser to <http://localhost:3030> and click on the logo
-to switch to operator mode. You can find the users passwords
-in the users.json file:
+![Pyrite screenshot](./docs/pyrite.png "Pyrite")
 
-```bash
-cat ~/code/galene/data/users.json
-```
+## Documentation
 
-Create some groups & users. For a quick test, you can fire up a
-second Chromium browser with a fake WebRTC device.
+Checkout the [documentation](./docs/index.md) for more information about topics like
+deployment and usage. Running Pyrite & Galène over a network requires additional
+configuration.
 
-```bash
-chromium --use-fake-device-for-media-stream --enable-experimental-web-platform-features --user-data-dir=/tmp/.chromium-tmp http://localhost:3030
-```
-
-# Deployment
-
-Running Pyrite & Galène over a network requires additional configuration.
-Checkout the [docs](./docs/index.md) for more information about setting up
-a proxy and configuring all services.
-
-## Developers
+### Developers
 
 ```bash
 git clone git@github.com:garage44/pyrite.git
@@ -71,7 +52,7 @@ cd pyrite
 npm i  # Install dependencies
 npm run galene  # Run dockerized galene
 # Uses Nodemon autoreload. Use PYRITE_NO_SECURITY=1 to bypass session security
-npm run pyrite
+nodemon admin/app.js
 # Vite development server with proxy
 npm run dev
 ```
