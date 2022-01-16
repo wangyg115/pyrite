@@ -615,6 +615,7 @@ class Pyrite extends EventEmitter {
                 this.$s.devices.mic.options.push({id: device.deviceId, name})
                 labelnr.mic++
             } else if (device.kind === 'audiooutput') {
+                // Firefox doesn't support audiooutput enumeration and setSinkid
                 if(!name) name = `Output ${labelnr.audio}`
                 this.$s.devices.audio.options.push({id: device.deviceId, name})
                 labelnr.audio++

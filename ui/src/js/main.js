@@ -23,6 +23,7 @@ const app = globalThis.app = new Pyrite()
 app.vm = createApp(App)
 
 Object.assign(app.vm.config.globalProperties, {
+    $env: app.env,
     $m: app.$m,
     $s: app.$s,
 })

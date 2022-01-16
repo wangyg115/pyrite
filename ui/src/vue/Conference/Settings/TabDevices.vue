@@ -23,15 +23,30 @@
             name="resolution"
             :options="resolutionOptions"
         />
-
         <div class="flex">
+            <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1498512 -->
+            <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1152401 -->
             <FieldSelect
+                v-if="$s.devices.audio.options.length && !$env.isFirefox"
                 v-model="$s.devices.audio.selected"
                 :help="$t('verify your audio configuration with the test sound')"
                 :label="$t('audio output')"
                 name="audio"
                 :options="$s.devices.audio.options"
             />
+            <div v-else class="no-options-warning">
+                <div class="help ucfl">
+                    {{ $t('verify your audio configuration with the test sound') }}
+                </div>
+                <div class="explanation">
+                    No audio output options found; please check your system configuration
+                    to select the right device for audio output.
+                </div>
+
+                <div v-if="$env.isFirefox" class="env-warning">
+                    {{ $env.browserName }} {{ $t('doesn\'t support this option') }}
+                </div>
+            </div>
             <button class="btn" :disabled="sound.audio.playing" @click="soundAudio.play()">
                 <Icon class="icon-small" name="Play" />
             </button>

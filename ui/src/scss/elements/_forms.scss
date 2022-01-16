@@ -12,3 +12,20 @@
         font-style: italic;
     }
 }
+
+.no-options-warning {
+    background: var(--grey-2);
+    border: 2px dashed var(--grey-5);
+    font-size: var(--text-small);
+    padding: var(--spacer);
+
+    .explanation {
+        margin-top: var(--spacer);
+    }
+}
+
+.env-warning {
+    color: var(--warning-color);
+    font-size: var(--text-small);
+    margin-top: var(--spacer);
+}
