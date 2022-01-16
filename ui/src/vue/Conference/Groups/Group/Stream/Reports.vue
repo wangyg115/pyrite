@@ -175,7 +175,7 @@ export default {
     .category {
         display: flex;
         flex-direction: column;
-        font-size: var(--text-tiny);
+        font-size: var(--text-xs);
         gap: var(--spacer);
         margin-top: var(--spacer);
         overflow-y: scroll;
@@ -204,7 +204,7 @@ export default {
         display: flex;
         flex: 1;
         font-family: var(--font-secondary);
-        font-size: var(--text-large);
+        font-size: var(--text-l);
         justify-content: center;
         margin-bottom: var(--space-3);
     }

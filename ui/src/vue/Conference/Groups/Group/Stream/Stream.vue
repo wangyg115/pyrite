@@ -427,7 +427,7 @@ export default {
             display: flex;
             flex: 1;
             font-family: var(--font-secondary);
-            font-size: var(--text-small);
+            font-size: var(--text-s);
             font-weight: 600;
             height: var(--space-3);
             justify-content: flex-end;

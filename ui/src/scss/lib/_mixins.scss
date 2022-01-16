@@ -25,14 +25,14 @@
 
 @mixin theme-light {
     // A bit more saturation on tinted greys gives a 'friendlier' look.
-    --grey-s: 30%;
+    --grey-s: 40%;
 
     // Light shades; Light => Dark
-    --grey-5: hsl(var(--grey-h) var(--grey-s) 76%);
-    --grey-4: hsl(var(--grey-h) var(--grey-s) 80%);
-    --grey-3: hsl(var(--grey-h) var(--grey-s) 84%);
-    --grey-2: hsl(var(--grey-h) var(--grey-s) 88%);
-    --grey-1: hsl(var(--grey-h) var(--grey-s) 92%);
+    --grey-5: hsl(var(--grey-h) var(--grey-s) 83%);
+    --grey-4: hsl(var(--grey-h) var(--grey-s) 86%);
+    --grey-3: hsl(var(--grey-h) var(--grey-s) 89%);
+    --grey-2: hsl(var(--grey-h) var(--grey-s) 92%);
+    --grey-1: hsl(var(--grey-h) var(--grey-s) 96%);
 
     // Dark shades; Light => Dark
     --grey-10: hsl(var(--grey-h) var(--grey-s) 20%);

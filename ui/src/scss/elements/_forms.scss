@@ -8,7 +8,7 @@
 
     .help {
         color: var(--grey-6);
-        font-size: var(--text-small);
+        font-size: var(--text-s);
         font-style: italic;
     }
 }
@@ -16,7 +16,7 @@
 .no-options-warning {
     background: var(--grey-2);
     border: 2px dashed var(--grey-5);
-    font-size: var(--text-small);
+    font-size: var(--text-s);
     padding: var(--spacer);
 
     .explanation {
@@ -26,6 +26,6 @@
 
 .env-warning {
     color: var(--warning-color);
-    font-size: var(--text-small);
+    font-size: var(--text-s);
     margin-top: var(--spacer);
 }

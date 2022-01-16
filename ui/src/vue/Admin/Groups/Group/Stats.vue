@@ -165,7 +165,7 @@ export default defineComponent({
             color: var(--primary-color);
             display: flex;
             font-family: var(--font-secondary);
-            font-size: var(--text-small);
+            font-size: var(--text-s);
             user-select: none;
 
             &.collapsed {

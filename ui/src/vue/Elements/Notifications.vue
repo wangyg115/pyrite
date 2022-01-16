@@ -96,7 +96,7 @@ export default {
         }
 
         &.warning {
-            background: var(--warning-color-d);
+            background: var(--warning-color);
             color: var(--warning-color-xl);
         }
 

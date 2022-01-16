@@ -140,7 +140,7 @@ export default {
         .name {
             fill: var(--grey-6);
             font-family: var(--font-secondary);
-            font-size: var(--text-tiny);
+            font-size: var(--text-xs);
             stroke: none;
         }
     }

@@ -125,7 +125,7 @@ export default {
 
             .line {
                 display: flex;
-                font-size: var(--text-small);
+                font-size: var(--text-s);
                 padding: var(--space-05) var(--spacer);
 
                 .key {

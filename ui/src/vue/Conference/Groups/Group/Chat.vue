@@ -338,7 +338,7 @@ export default {
                 margin-bottom: var(--spacer);
 
                 .time {
-                    font-size: var(--text-tiny);
+                    font-size: var(--text-xs);
                 }
             }
 
@@ -403,7 +403,7 @@ export default {
             padding: var(--spacer);
 
             &::placeholder {
-                color: var(--grey-5);
+                color: var(--grey-7);
             }
         }
     }

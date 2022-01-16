@@ -30,7 +30,7 @@ export default {
 
     .explanation {
         color: var(--grey-7);
-        font-size: var(--text-small);
+        font-size: var(--text-s);
         font-style: italic;
     }
 }

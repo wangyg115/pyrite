@@ -98,7 +98,7 @@ export default defineComponent({
         .version {
             bottom: 0;
             font-family: var(--font-secondary);
-            font-size: var(--text-small);
+            font-size: var(--text-s);
             font-style: italic;
             position: absolute;
             right: calc(var(--spacer) * 1.75);
