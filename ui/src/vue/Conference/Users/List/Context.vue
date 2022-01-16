@@ -94,7 +94,6 @@ export default {
             app.connection.userAction('setstatus', app.connection.id, {availability})
         },
         toggleMenu(e, forceState) {
-            console.log("TOGGLE OUT")
             // The v-click-outside
             if (typeof forceState === 'object') {
                 this.active = false

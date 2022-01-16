@@ -39,12 +39,16 @@
                     {{ $t('verify your audio configuration with the test sound') }}
                 </div>
                 <div class="explanation">
-                    No audio output options found; please check your system configuration
-                    to select the right device for audio output.
+                    <div class="ucfl">
+                        {{ $t('no audio output options found.') }}
+                    </div>
+                    <div class="ucfl">
+                        {{ $t('the system configuration determines the audio output device.') }}
+                    </div>
                 </div>
 
                 <div v-if="$env.isFirefox" class="env-warning">
-                    {{ $env.browserName }} {{ $t('doesn\'t support this option') }}
+                    {{ $env.browserName }} {{ $t('does not support this option') }}
                 </div>
             </div>
             <button class="btn" :disabled="sound.audio.playing" @click="soundAudio.play()">

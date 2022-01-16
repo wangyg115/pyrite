@@ -18,14 +18,6 @@
             </div>
         </transition>
 
-        <button
-            v-if="!loading && !stats.visible && controls" class="btn-stream-reports btn btn-menu small tooltip no-feedback"
-            :data-tooltip="$t('stream info')"
-            @click="toggleStats"
-        >
-            <Icon class="icon-mini" name="Info" />
-        </button>
-
         <Reports v-if="stats.visible" :description="modelValue" @click="toggleStats" />
 
         <div v-if="controls && !loading" class="stream-bar">
@@ -39,6 +31,14 @@
                 </button>
                 <button class="btn btn-menu small tooltip" :data-tooltip="$t('fullscreen')" @click="setFullscreen">
                     <Icon class="icon-mini" name="Fullscreen" />
+                </button>
+                <button
+                    v-if="!loading && controls" class="btn btn-menu small tooltip"
+                    :class="{active: stats.visible}"
+                    :data-tooltip="$t('stream info')"
+                    @click="toggleStats"
+                >
+                    <Icon class="icon-mini" name="Info" />
                 </button>
             </div>
 
@@ -398,12 +398,6 @@ export default {
         .icon {
             color: var(--primary-color);
         }
-    }
-
-    .btn-stream-reports {
-        color: var(--grey-10);
-        filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 40%));
-        position: absolute;
     }
 
     .stream-bar {

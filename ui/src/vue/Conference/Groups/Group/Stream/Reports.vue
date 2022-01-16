@@ -1,8 +1,11 @@
 <template>
     <div class="c-stream-reports">
-        <div v-if="Object.keys(description.settings.video).length" class="category">
+        <div v-if="!hasAudioStats && !hasVideoStats" class="no-stats-available">
+            {{ $t('no connection statistics available') }}
+        </div>
+        <div v-if="hasVideoStats" class="category">
             <div class="title">
-                Video
+                {{ $t('video') }}
             </div>
             <div v-for="(stat, statName) of description.settings.video" :key="statName" class="stat">
                 <div class="key">
@@ -14,9 +17,9 @@
             </div>
         </div>
 
-        <div v-if="description.settings.audio && Object.keys(description.settings.audio).length" class="category">
+        <div v-if="hasAudioStats" class="category">
             <div class="title">
-                Audio
+                {{ $t('audio') }}
             </div>
             <div v-for="(stat, statName) of description.settings.audio" :key="statName" class="stat">
                 <div class="key">
@@ -49,6 +52,22 @@
 
 <script>
 export default {
+    computed: {
+        hasAudioStats() {
+            if (this.description.settings && this.description.settings.audio && Object.keys(this.description.settings.audio).length) {
+                return true
+            }
+
+            return false
+        },
+        hasVideoStats() {
+            if (this.description.settings && this.description.settings.video && Object.keys(this.description.settings.video).length) {
+                return true
+            }
+
+            return false
+        },
+    },
     data() {
         return {
             active: null,
@@ -178,6 +197,16 @@ export default {
         &.active {
             display: flex;
         }
+    }
+
+    .no-stats-available {
+        align-items: center;
+        display: flex;
+        flex: 1;
+        font-family: var(--font-secondary);
+        font-size: var(--text-large);
+        justify-content: center;
+        margin-bottom: var(--space-3);
     }
 }
 </style>
