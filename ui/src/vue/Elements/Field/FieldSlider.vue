@@ -97,7 +97,7 @@ export default {
         }
 
         &::-moz-range-thumb {
-            background: var(--primary-color);
+            background: var(--grey-10);
             border: 0;
             border-radius: 0;
             box-shadow: -80px 0 0 80px var(--primary-color);
@@ -114,8 +114,8 @@ export default {
 
         &::-webkit-slider-thumb {
             appearance: none;
-            background: var(--primary-color);
-            box-shadow: -80px 0 0 80px var(--grey-1);
+            background: var(--grey-10);
+            box-shadow: -80px 0 0 80px var(--primary-color);
             height: var(--spacer);
             width: var(--space-1);
         }
@@ -136,8 +136,6 @@ export default {
 
             &::-webkit-slider-thumb {
                 background: var(--warning-color);
-
-                // box-shadow: -80px 0 0 80px var(--warning-color);
 
                 &:hover {
                     cursor: disabled !important;

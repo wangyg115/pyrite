@@ -85,7 +85,8 @@ export default {
          * Audio toggle for down streams that have audio.
          */
         audioEnabled() {
-            return (this.modelValue.direction === 'down' && this.modelValue.hasAudio && this.stream)
+            const audioEnabled = !!(this.modelValue.direction === 'down' && (this.modelValue.hasAudio && this.stream))
+            return audioEnabled
         },
         fullscreenEnabled() {
             if (this.$refs.media) {
@@ -145,7 +146,10 @@ export default {
         mountDownstream() {
             app.logger.debug(`mount downstream ${this.modelValue.id}`)
 
-            // Only setup the video element in case the stream is already active.
+            this.glnStream = app.connection.down[this.modelValue.id]
+            this.stream = this.glnStream.stream
+
+            // No need for further setup; this is an existing stream.
             if (app.connection.down[this.modelValue.id].stream) {
                 this.$refs.media.srcObject = app.connection.down[this.modelValue.id].stream
                 this.$refs.media.play().catch(e => {
@@ -153,9 +157,6 @@ export default {
                 })
                 return
             }
-
-            this.glnStream = app.connection.down[this.modelValue.id]
-            this.stream = this.glnStream.stream
 
             this.label = this.glnStream.username
 
