@@ -1,3 +1,5 @@
+import app from '@/js/app.js'
+
 export default {
     async saveGroup(groupId, data) {
         const group = await app.api.post(`/api/groups/${encodeURIComponent(groupId)}`, data)

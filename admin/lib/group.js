@@ -1,3 +1,5 @@
+import app from '../app.js'
+
 import {dictionary} from './utils.js'
 import fetch from 'node-fetch'
 import fs from 'fs-extra'

@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
 import {defineComponent} from 'vue'
 
 export default defineComponent({

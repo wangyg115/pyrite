@@ -381,6 +381,7 @@ ServerConnection.prototype.connect = async function(url) {
 
                 break;
             case 'chat':
+            case 'chathistory':
                 if(sc.onchat)
                     sc.onchat.call(
                         sc, m.source, m.dest, m.username, m.time,

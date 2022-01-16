@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
 import TabDevices from './TabDevices.vue'
 import TabMisc from './TabMisc.vue'
 

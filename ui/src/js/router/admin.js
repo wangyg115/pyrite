@@ -1,3 +1,5 @@
+import app from '@/js/app.js'
+
 import App from '@/vue/Admin/App.vue'
 import Groups from '@/vue/Admin/Groups/Groups.vue'
 import GroupSettings from '@/vue/Admin/Groups/Group/Settings/Settings.vue'

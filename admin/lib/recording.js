@@ -1,3 +1,4 @@
+import app from '../app.js'
 import fs from 'fs-extra'
 import {globby} from 'globby'
 import path from 'path'

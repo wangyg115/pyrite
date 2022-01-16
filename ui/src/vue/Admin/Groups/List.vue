@@ -66,6 +66,8 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
+
 export default {
     computed: {
         deletionGroups() {

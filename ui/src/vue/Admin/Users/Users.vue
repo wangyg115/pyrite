@@ -4,6 +4,7 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
 import Splash from '@/vue/Elements/Splash.vue'
 /**
  * This is a container component that handles keeping

@@ -1,3 +1,5 @@
+import app from '@/js/app.js'
+
 export default {
     async saveUser(userId, data) {
         const user = await app.api.post(`/api/users/${userId}`, data)

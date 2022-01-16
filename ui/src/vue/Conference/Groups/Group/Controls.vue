@@ -58,6 +58,8 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
+
 export default {
     data() {
         return {
@@ -72,23 +74,22 @@ export default {
         toggleCam() {
             this.$s.devices.cam.enabled = !this.$s.devices.cam.enabled
             app.logger.debug(`switching cam stream: ${this.$s.devices.cam.enabled}`)
-            app.delUpMediaKind('camera')
+            app.$m.sfu.delUpMediaKind('camera')
             app.getUserMedia(this.$s.devices)
         },
         toggleMicrophone() {
-            app.muteMicrophone(this.$s.devices.mic.enabled)
-
+            app.$m.sfu.muteMicrophone(this.$s.devices.mic.enabled)
         },
         togglePlayFile(file) {
             if (file) {
-                app.addFileMedia(file)
+                app.$m.sfu.addFileMedia(file)
             } else {
                 this.playFiles = []
-                app.delUpMediaKind('video')
+                app.$m.sfu.delUpMediaKind('video')
             }
         },
         toggleRaiseHand() {
-            app.connection.userAction('setstatus', app.connection.id, {raisehand: !this.$s.user.status.raisehand})
+            app.$m.sfu.connection.userAction('setstatus', app.$m.sfu.connection.id, {raisehand: !this.$s.user.status.raisehand})
             if (!this.$s.user.status.raisehand) {
                 app.notifier.message('raisehand', {source: this.$s.user.name}, null, {chat: true, notification: false})
             }
@@ -96,16 +97,16 @@ export default {
         async toggleScreenshare() {
             if (this.$s.upMedia.screenshare.length) {
                 app.logger.debug('turn screenshare stream off')
-                app.delUpMedia(this.screenStream)
+                app.$m.sfu.delUpMedia(this.screenStream)
             } else {
                 app.logger.debug('turn screenshare stream on')
-                this.screenStream = await app.addShareMedia()
+                this.screenStream = await app.$m.sfu.addShareMedia()
             }
         },
     },
     watch: {
         '$s.devices.mic.enabled'(enabled) {
-            app.connection.userAction('setstatus', app.connection.id, {mic: enabled})
+            app.$m.sfu.connection.userAction('setstatus', app.$m.sfu.connection.id, {mic: enabled})
         },
         volume(volume) {
             for (const description of this.$s.streams) {

@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
+
 export default {
     data(){
         return {
@@ -77,21 +79,21 @@ export default {
         },
         kickUser(text) {
             app.notifier.message('kicked', {dir: 'source', target: this.user.username})
-            app.connection.userAction('kick', this.user.id, text)
+            app.$m.sfu.connection.userAction('kick', this.user.id, text)
             this.toggleMenu()
         },
         muteUser() {
             app.notifier.message('mute', {dir: 'source', target: this.user.username})
-            app.connection.userMessage('mute', this.user.id, null)
+            app.$m.sfu.connection.userMessage('mute', this.user.id, null)
             this.toggleMenu()
         },
         sendNotification(message) {
             app.notifier.message('notification', {dir: 'source', message, target: this.user.username})
-            app.connection.userMessage('notification', this.user.id, message)
+            app.$m.sfu.connection.userMessage('notification', this.user.id, message)
             this.toggleMenu()
         },
         setAvailability(availability) {
-            app.connection.userAction('setstatus', app.connection.id, {availability})
+            app.$m.sfu.connection.userAction('setstatus', app.$m.sfu.connection.id, {availability})
         },
         toggleMenu(e, forceState) {
             // The v-click-outside
@@ -108,7 +110,7 @@ export default {
             else action = 'op'
 
             app.notifier.message(action, {dir: 'source', target: this.user.username})
-            app.connection.userAction(action, this.user.id)
+            app.$m.sfu.connection.userAction(action, this.user.id)
             this.toggleMenu()
         },
         togglePresenter() {
@@ -117,7 +119,7 @@ export default {
             else action = 'present'
 
             app.notifier.message(action, {dir: 'source', target: this.user.username})
-            app.connection.userAction(action, this.user.id)
+            app.$m.sfu.connection.userAction(action, this.user.id)
             this.toggleMenu()
         },
     },

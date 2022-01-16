@@ -22,7 +22,7 @@
     "check-env": "node -e 'console.log(process.env)' | grep npm",
     "deploy": "cd ui dist;zip -r pyrite.zip .;curl -X POST -F \"distChannel=$RAND_CHANNEL\" -F 'distFile=@pyrite.zip' $RAND_ENDPOINT -H \"Authorization: Basic $(echo $RAND_USER:$RAND_PW | base64)\"",
     "dev": "vite ui",
-    "pyrite": "nodemon admin/service.js",
+    "pyrite": "nodemon admin/app.js",
     "galene": "export PYRITE_UID=$(id -u)&&export PYRITE_GID=$(id -g)&&docker-compose -f galene/docker/docker-compose.yml --project-directory ./galene up --remove-orphans",
     "lint": "npm run lint:js;npm run lint:scss",
     "lint:js": "eslint \"{admin,ui}/src/**/*.{js,vue}\"",

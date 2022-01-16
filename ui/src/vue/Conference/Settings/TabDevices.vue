@@ -71,6 +71,7 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
 import {nextTick} from 'vue'
 import Sound from '@/js/lib/sound.js'
 import SoundMeter from '@/vue/Elements/SoundMeter.vue'
@@ -79,7 +80,7 @@ import Stream from '@/vue/Conference/Groups/Group/Stream/Stream.vue'
 export default {
     beforeUnmount() {
         if (!this.$s.group.connected) {
-            app.delLocalMedia()
+            app.$m.sfu.delLocalMedia()
         }
     },
     components: {SoundMeter, Stream},

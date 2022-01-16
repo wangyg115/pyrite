@@ -1,3 +1,25 @@
+import app from '@/js/app.js'
+
+// Copyright (c) 2020 by Juliusz Chroboczek.
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 /**
  * A command known to the command-line parser.
  *
@@ -25,7 +47,7 @@ function userCommand(c, r) {
     if(!p[0]) throw new Error(`/${c} requires parameters`)
     let id = findUserId(p[0])
     if(!id) throw new Error(`Unknown user ${p[0]}`)
-    app.connection.userAction(c, id, p[1])
+    app.$m.sfu.connection.userAction(c, id, p[1])
 }
 
 function userMessage(c, r) {
@@ -33,21 +55,21 @@ function userMessage(c, r) {
     if(!p[0]) throw new Error(`/${c} requires parameters`)
     let id = findUserId(p[0])
     if(!id) throw new Error(`Unknown user ${p[0]}`)
-    app.connection.userMessage(c, id, p[1])
+    app.$m.sfu.connection.userMessage(c, id, p[1])
 }
 
 let commands = {}
 
 function operatorPredicate() {
-    if(app.connection && app.connection.permissions &&
-        app.connection.permissions.op)
+    if(app.$m.sfu.connection && app.$m.sfu.connection.permissions &&
+        app.$m.sfu.connection.permissions.op)
         return null
     return 'You are not an operator'
 }
 
 function recordingPredicate() {
-    if(app.connection && app.connection.permissions &&
-        app.connection.permissions.record)
+    if(app.$m.sfu.connection && app.$m.sfu.connection.permissions &&
+        app.$m.sfu.connection.permissions.record)
         return null
     return 'You are not allowed to record'
 }
@@ -83,16 +105,16 @@ commands.me = {
 commands.leave = {
     description: "leave group",
     f: () => {
-        if(!app.connection)
+        if(!app.$m.sfu.connection)
             throw new Error('Not connected')
-        app.connection.close()
+        app.$m.sfu.connection.close()
     },
 }
 
 commands.clear = {
     description: 'clear the chat history',
     f: () => {
-        app.connection.groupAction('clearchat')
+        app.$m.sfu.connection.groupAction('clearchat')
     },
     predicate: operatorPredicate,
 }
@@ -100,7 +122,7 @@ commands.clear = {
 commands.lock = {
     description: 'lock this group',
     f: (c, r) => {
-        app.connection.groupAction('lock', r)
+        app.$m.sfu.connection.groupAction('lock', r)
     },
     parameters: '[message]',
     predicate: operatorPredicate,
@@ -109,7 +131,7 @@ commands.lock = {
 commands.unlock = {
     description: 'unlock this group, revert the effect of /lock',
     f: () => {
-        app.connection.groupAction('unlock')
+        app.$m.sfu.connection.groupAction('unlock')
     },
     predicate: operatorPredicate,
 }
@@ -117,7 +139,7 @@ commands.unlock = {
 commands.record = {
     description: 'start recording',
     f: () => {
-        app.connection.groupAction('record')
+        app.$m.sfu.connection.groupAction('record')
     },
     predicate: recordingPredicate,
 }
@@ -125,7 +147,7 @@ commands.record = {
 commands.unrecord = {
     description: 'stop recording',
     f: () => {
-        app.connection.groupAction('unrecord')
+        app.$m.sfu.connection.groupAction('unrecord')
     },
     predicate: recordingPredicate,
 }
@@ -133,7 +155,7 @@ commands.unrecord = {
 commands.subgroups = {
     description: 'list subgroups',
     f: () => {
-        app.connection.groupAction('subgroups')
+        app.$m.sfu.connection.groupAction('subgroups')
     },
     predicate: operatorPredicate,
 }
@@ -141,11 +163,11 @@ commands.subgroups = {
 commands.renegotiate = {
     description: 'renegotiate media streams',
     f: () => {
-        for(let id in app.connection.up) {
-            app.connection.up[id].restartIce()
+        for(let id in app.$m.sfu.connection.up) {
+            app.$m.sfu.connection.up[id].restartIce()
         }
-        for(let id in app.connection.down) {
-            app.connection.down[id].restartIce()
+        for(let id in app.$m.sfu.connection.down) {
+            app.$m.sfu.connection.down[id].restartIce()
         }
     },
 }
@@ -195,7 +217,7 @@ commands.mute = {
 commands.muteall = {
     description: 'mute all remote users',
     f: () => {
-        app.connection.userMessage('mute', null, null, true)
+        app.$m.sfu.connection.userMessage('mute', null, null, true)
     },
     predicate: operatorPredicate,
 }
@@ -213,7 +235,7 @@ commands.wall = {
     description: 'send a warning to all users',
     f: (c, r) => {
         if(!r) throw new Error('empty message')
-        app.connection.userMessage('warning', '', r)
+        app.$m.sfu.connection.userMessage('warning', '', r)
     },
     parameters: 'message',
     predicate: operatorPredicate,

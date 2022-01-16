@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
+
 export default {
     data() {
         return {
@@ -47,21 +49,21 @@ export default {
     },
     methods: {
         clearChat() {
-            app.connection.groupAction('clearchat')
+            app.$m.sfu.connection.groupAction('clearchat')
             this.toggleMenu()
         },
         muteAllUsers() {
-            app.connection.userMessage('mute', null, null)
+            app.$m.sfu.connection.userMessage('mute', null, null)
             this.active = false
         },
         sendNotification(text) {
-            app.connection.userMessage('notification', null, text)
+            app.$m.sfu.connection.userMessage('notification', null, text)
         },
         toggleLockGroup(text) {
             if (this.$s.group.locked) {
-                app.connection.groupAction('unlock')
+                app.$m.sfu.connection.groupAction('unlock')
             } else {
-                app.connection.groupAction('lock', text)
+                app.$m.sfu.connection.groupAction('lock', text)
             }
         },
         toggleMenu(e, forceState) {
@@ -78,7 +80,7 @@ export default {
             }
         },
         toggleRecording(isRecording) {
-            app.connection.groupAction(isRecording ? 'unrecord' : 'record')
+            app.$m.sfu.connection.groupAction(isRecording ? 'unrecord' : 'record')
         },
 
     },

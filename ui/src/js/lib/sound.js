@@ -1,3 +1,5 @@
+import app from '@/js/app.js'
+
 export default class Sound {
 
     constructor(description) {

@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
 import ConferenceControls from './Controls/Controls.vue'
 import GroupChat from './Groups/Group/Chat.vue'
 import GroupControls from './Groups/Group/Controls.vue'

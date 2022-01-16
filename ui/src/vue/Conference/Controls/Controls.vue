@@ -51,13 +51,14 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
 import Context from './Context.vue'
 
 export default {
     components: {Context},
     methods: {
         disconnect: () => {
-            app.disconnect()
+            app.$m.sfu.disconnect()
         },
         toggleChatActive() {
             this.$s.chat.hidden = !this.$s.chat.hidden

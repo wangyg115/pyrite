@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
 import commands from '@/js/lib/commands.js'
 import {nextTick} from 'vue'
 
@@ -231,11 +232,11 @@ export default {
             // Sending to the main channel uses an empty string;
             // a direct message uses the user (connection) id.
             if (this.$s.chat.channel === 'main') {
-                app.connection.chat(me ? 'me' : '', '', message)
+                app.$m.sfu.connection.chat(me ? 'me' : '', '', message)
             } else {
                 // A direct message is not replayed locally through
                 // onChat, so we need to add the message ourselves.
-                app.connection.chat(me ? 'me' : '', this.$s.chat.channel, message)
+                app.$m.sfu.connection.chat(me ? 'me' : '', this.$s.chat.channel, message)
             }
 
             // Adjust the chat window scroller
@@ -249,8 +250,8 @@ export default {
         },
     },
     mounted() {
-        app.connection.onchat = this.onMessage.bind(this)
-        app.connection.onclearchat = this.clearChannel.bind(this)
+        app.$m.sfu.connection.onchat = this.onMessage.bind(this)
+        app.$m.sfu.connection.onclearchat = this.clearChannel.bind(this)
 
         // Keep track of the user-set width of the chat-window, so
         // we can restore it after toggling the chat window.

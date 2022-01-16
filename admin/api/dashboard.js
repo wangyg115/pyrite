@@ -1,3 +1,5 @@
+import app from '../app.js'
+
 import {loadStats} from '../lib/dashboard.js'
 
 export default function(app) {

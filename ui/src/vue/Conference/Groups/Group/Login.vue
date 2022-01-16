@@ -81,6 +81,8 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
+
 export default {
     data() {
         return {
@@ -92,7 +94,7 @@ export default {
             this.connecting = true
             try {
                 app.store.save()
-                await app.connect()
+                await app.$m.sfu.connect()
             } finally {
                 this.connecting = false
                 this.$router.replace({

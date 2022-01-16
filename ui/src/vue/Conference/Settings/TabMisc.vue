@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
 import {nextTick} from 'vue'
 
 export default {

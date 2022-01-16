@@ -1,3 +1,4 @@
+import app from '../app.js'
 import crypto from 'crypto'
 import fetch from 'node-fetch'
 import fs from 'fs-extra'

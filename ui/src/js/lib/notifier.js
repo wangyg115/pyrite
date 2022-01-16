@@ -1,3 +1,5 @@
+import app from '@/js/app.js'
+
 export default function() {
     return new class Notify {
 
@@ -94,7 +96,7 @@ export default function() {
             if (chat) {
                 let chatMessage = app.$t(message.chat)
                 if (personal) chatMessage = `${chatMessage} (${personal.message})`
-                app.connection.chat('me', '', chatMessage)
+                app.$m.sfu.connection.chat('me', '', chatMessage)
             }
         }
 

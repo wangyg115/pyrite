@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
 import Chart from '@/vue/Elements/Chart.vue'
 import {defineComponent} from 'vue'
 

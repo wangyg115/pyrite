@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import app from '@/js/app.js'
 import Reports from './Reports.vue'
 import SoundMeter from '@/vue/Elements/SoundMeter.vue'
 
@@ -146,12 +147,12 @@ export default {
         mountDownstream() {
             app.logger.debug(`mount downstream ${this.modelValue.id}`)
 
-            this.glnStream = app.connection.down[this.modelValue.id]
+            this.glnStream = app.$m.sfu.connection.down[this.modelValue.id]
             this.stream = this.glnStream.stream
 
             // No need for further setup; this is an existing stream.
-            if (app.connection.down[this.modelValue.id].stream) {
-                this.$refs.media.srcObject = app.connection.down[this.modelValue.id].stream
+            if (app.$m.sfu.connection.down[this.modelValue.id].stream) {
+                this.$refs.media.srcObject = app.$m.sfu.connection.down[this.modelValue.id].stream
                 this.$refs.media.play().catch(e => {
                     app.notifier.notify({level: 'error', message: e})
                 })
@@ -208,7 +209,7 @@ export default {
 
             if (!this.modelValue.src) {
                 // Local media stream from a device.
-                this.glnStream = app.connection.up[this.modelValue.id]
+                this.glnStream = app.$m.sfu.connection.up[this.modelValue.id]
                 this.stream = this.glnStream.stream
                 this.$refs.media.srcObject = this.stream
             } else {
@@ -222,7 +223,7 @@ export default {
                         this.stream = this.$refs.media.mozCaptureStream()
                     }
 
-                    this.glnStream = app.connection.up[this.modelValue.id]
+                    this.glnStream = app.$m.sfu.connection.up[this.modelValue.id]
                     this.glnStream.userdata.play = true
 
                     this.stream.onaddtrack = (e) => {

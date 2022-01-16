@@ -33,7 +33,7 @@ const logFormat = winston.format.printf(({level, message, timestamp}) => {
     return `[${timestamp}] [${level.toUpperCase()}] ${message}`
 })
 
-globalThis.app = express()
+const app = express()
 app.config = {
     path:  {
         base: path.join(path.dirname(import.meta.url).replace('file://', ''), '..'),
@@ -77,3 +77,4 @@ app.settings = settings
     })
 })()
 
+export default app

@@ -1,3 +1,5 @@
+import app from '../app.js'
+
 import apiDashboard from '../api/dashboard.js'
 import apiGroups from '../api/groups.js'
 import apiProfile from '../api/profile.js'
