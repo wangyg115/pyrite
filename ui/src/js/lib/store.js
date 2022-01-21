@@ -62,6 +62,9 @@ const volatileState = {
         hidden: false,
         width: 350,
     },
+    files: {
+        playing: [],
+    },
     group: {
         connected: false,
         locked: false,

@@ -1,10 +1,9 @@
 <template>
-    <label class="c-field-file">
+    <label class="c-field-file tooltip tooltip-left" :data-tooltip="tooltip">
         <Icon class="icon icon-small" name="Play" />
         <input
             ref="input"
-            accept="audio/*,video/*"
-            multiple
+            :accept="accept"
             type="file"
             @change="previewFiles"
             @click="resetInput"
@@ -46,9 +45,19 @@ export default {
         },
     },
     props: {
+        accept: {
+            default: () => '',
+            required: true,
+            type: String,
+        },
         modelValue: {
             required: true,
             type:Object,
+        },
+        tooltip: {
+            default: () => '',
+            required: false,
+            type: String,
         },
     },
 }
@@ -68,9 +77,10 @@ export default {
         color: var(--grey-6);
         height: var(--space-4);
         left: 0;
+        opacity: 0;
         outline: none;
         position: absolute;
-        width: var(--space-4);
+        width: 0;
 
         &::-webkit-file-upload-button {
             outline: none;

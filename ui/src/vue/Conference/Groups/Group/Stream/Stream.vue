@@ -75,10 +75,9 @@ export default {
         app.logger.debug(`unmounting stream ${this.modelValue.id}`)
         if (this.$refs.media.src) {
             URL.revokeObjectURL(this.$refs.media.src)
-            this.$refs.media.src = null
+        } else {
+            this.$refs.media.srcObject = null
         }
-
-        this.$refs.media.srcObject = null
     },
     components: {Reports, SoundMeter},
     computed: {
@@ -126,7 +125,7 @@ export default {
     },
     emits: ['update:modelValue'],
     methods: {
-        loadSettings() {
+        loadTrackStats() {
             app.logger.debug('retrieving stream settings')
             const settings = {}
             const audioTracks = this.stream.getAudioTracks()
@@ -195,7 +194,7 @@ export default {
                         app.notifier.notify({level: 'error', message})
                     }
 
-                    this.loadSettings()
+                    this.loadTrackStats()
                 }
             }
         },
@@ -212,10 +211,12 @@ export default {
                 this.glnStream = app.$m.sfu.connection.up[this.modelValue.id]
                 this.stream = this.glnStream.stream
                 this.$refs.media.srcObject = this.stream
+                this.loadTrackStats()
             } else {
                 // Local media stream playing from a file...
                 if (this.modelValue.src instanceof File) {
                     const url = URL.createObjectURL(this.modelValue.src)
+                    this.$refs.media.src = url
 
                     if (this.$refs.media.captureStream) {
                         this.stream = this.$refs.media.captureStream()
@@ -238,13 +239,21 @@ export default {
                         this.glnStream.pc.addTrack(track, this.stream)
                     }
 
-                    this.glnStream.onclose = () =>{
-                        app.logger.info('revoking file-stream url')
-                        URL.revokeObjectURL(this.$refs.media.src)
-                        this.$refs.media.src = null
+                    // Previously handled by `glnStream.onclose`, but that event doesn't seem to be
+                    // triggered here. TODO: Checkout later if glnStream can be used instead.
+                    this.stream.onremovetrack = () => {
+                        if (this.$refs.media && this.$refs.media.src) {
+                            app.$m.sfu.delUpMedia(this.glnStream)
+                            this.$s.files.playing = []
+                        }
                     }
 
-                    this.$refs.media.src = url
+                    this.glnStream.onstatus = async(status) => {
+                        if (status === 'connected') {
+                            this.loadTrackStats()
+                        }
+                    }
+
                 } else if (this.modelValue.src instanceof MediaStream) {
                     // Local MediaStream (not part of Galene); e.g. Webcam test
                     this.stream = this.modelValue.src
@@ -253,8 +262,6 @@ export default {
                     throw new Error('invalid Stream source type')
                 }
             }
-
-            this.loadSettings()
 
             // A local stream that's not networked (e.g. cam preview in ettings)
             if (!this.glnStream) return

@@ -2,6 +2,15 @@
     <nav class="c-general-controls">
         <div class="navigational-controls">
             <RouterLink
+                class="btn btn-menu tooltip"
+                :class="{active: $route.name === 'conference-settings'}"
+                :data-tooltip="$t('settings')"
+                :to="{name: 'conference-settings', params: {tabId: 'misc'}}"
+            >
+                <Icon class="icon-small" name="Settings" />
+            </RouterLink>
+
+            <RouterLink
                 v-if="$s.group.name" class="btn btn-menu tooltip"
                 :class="{
                     active: ['conference-groups-connected', 'conference-groups-disconnected'].includes($route.name)
@@ -17,18 +26,9 @@
                 <Icon class="icon-small" name="Group" />
             </button>
 
-            <RouterLink
-                class="btn btn-menu tooltip"
-                :class="{active: $route.name === 'conference-settings'}"
-                :data-tooltip="$t('settings')"
-                :to="{name: 'conference-settings', params: {tabId: 'misc'}}"
-            >
-                <Icon class="icon-small" name="Settings" />
-            </RouterLink>
-
             <button
                 v-if="$s.group.connected"
-                class="btn btn-menu tooltip"
+                class="btn btn-menu tooltip mb-1"
                 :class="{active: !$s.chat.hidden}"
                 :data-tooltip="$s.chat.hidden ? $t('show chat') : $t('hide chat')"
                 @click="toggleChatActive"
@@ -40,7 +40,7 @@
 
             <button
                 v-if="$s.group.connected"
-                class="btn btn-menu btn-logout warning tooltip"
+                class="btn btn-menu btn-logout tooltip"
                 :data-tooltip="$t('leave group')"
                 @click="disconnect"
             >
@@ -74,11 +74,5 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-
-    .btn-logout {
-        // Keep some addition space between the other buttons
-        // to avoid accidental logouts.
-        margin-top: var(--space-1);
-    }
 }
 </style>

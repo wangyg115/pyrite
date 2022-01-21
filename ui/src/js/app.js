@@ -256,4 +256,6 @@ class Pyrite extends EventEmitter {
 
 // Keep a global namespace around for debugging.
 const app = new Pyrite()
+if (import.meta.env.DEV) globalThis.app = app
+
 export default app

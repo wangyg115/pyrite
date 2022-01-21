@@ -17,6 +17,16 @@
 
             <button
                 v-if="$s.permissions.present"
+                class="btn btn-menu tooltip tooltip-left mb-1"
+                :class="{active: $s.user.status.raisehand}"
+                :data-tooltip="$s.user.status.raisehand ? $t('hinting for speaking time') : $t('request speaking time')"
+                @click="toggleRaiseHand"
+            >
+                <Icon class="hand icon-small" :class="{wave: $s.user.status.raisehand}" name="Hand" />
+            </button>
+
+            <button
+                v-if="$s.permissions.present"
                 class="btn btn-menu tooltip tooltip-left"
                 :class="{active: $s.devices.cam.enabled, warning: !$s.devices.cam.enabled}"
                 :data-tooltip="`${$t('switch camera')} ${$s.devices.cam.enabled ? $t('off') : $t('on')}`"
@@ -37,21 +47,15 @@
 
             <button
                 v-if="$s.permissions.present"
-                class="btn btn-menu tooltip tooltip-left"
+                class="btn btn-menu"
                 :class="{active: $s.upMedia.video.length}"
-                :data-tooltip="playFiles"
             >
-                <FieldFile v-model="playFiles" @file="togglePlayFile" />
-            </button>
-
-            <button
-                v-if="$s.permissions.present"
-                class="btn btn-menu tooltip tooltip-left"
-                :class="{active: $s.user.status.raisehand}"
-                :data-tooltip="$s.user.status.raisehand ? $t('hinting for speaking time') : $t('request speaking time')"
-                @click="toggleRaiseHand"
-            >
-                <Icon class="hand icon-small" :class="{wave: $s.user.status.raisehand}" name="Hand" />
+                <FieldFile
+                    v-model="$s.files.playing"
+                    :accept="fileMediaAccept"
+                    :tooltip="filePlayTooltip"
+                    @file="togglePlayFile"
+                />
             </button>
         </div>
     </nav>
@@ -61,9 +65,31 @@
 import app from '@/js/app.js'
 
 export default {
+    computed: {
+        fileMediaAccept() {
+            if (app.env.isFirefox) {
+                return '.mp4'
+            } else {
+                // Chromium supports at least these 3 formats:
+                return '.mp4,.mkv,.webm'
+            }
+        },
+        filePlayTooltip() {
+            if (this.$s.files.playing.length) {
+                return this.$t('streaming video file')
+            }
+            let formats = []
+            if (app.env.isFirefox) {
+                formats.push('.mp4')
+            } else {
+                formats.push('.mp4', 'webm', 'mkv')
+            }
+            return this.$t('stream video file ({formats})', {formats: formats.join(',')})
+        },
+
+    },
     data() {
         return {
-            playFiles: [],
             volume: {
                 locked: null,
                 value: 100,
@@ -84,7 +110,7 @@ export default {
             if (file) {
                 app.$m.sfu.addFileMedia(file)
             } else {
-                this.playFiles = []
+                this.$s.files.playing = []
                 app.$m.sfu.delUpMediaKind('video')
             }
         },

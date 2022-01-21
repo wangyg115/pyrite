@@ -134,6 +134,8 @@ export default {
     'store group': 'groep opslaan',
     'store person': 'persoon opslaan',
     'stream types that you want to be able to receive': 'stream types die je wilt kunnen ontvangen',
+    'stream video file ({formats})': 'stream video bestand ({formats})',
+    'streaming video file': 'streaming video bestand',
     subgroups: 'subgroepen',
     submit: 'verstuur',
     'succesfully logged in': 'succesvol ingelogd',

@@ -133,6 +133,8 @@ export default {
     'store group': 'sauvegarder le groupe',
     'store person': 'sauvegarder l’utilisateur',
     'stream types that you want to be able to receive': 'types de flux que vous souhaitez pouvoir recevoir',
+    'stream video file ({formats})': 'flux de fichier vidéo ({formats})',
+    'streaming video file': 'fichier vidéo en continu',
     subgroups: 'sous-groupes',
     submit: 'soumettre',
     'succesfully logged in': 'connexion réussie',
