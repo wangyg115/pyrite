@@ -30,6 +30,7 @@
                 class="btn btn-menu tooltip tooltip-left"
                 :class="{active: $s.devices.cam.enabled, warning: !$s.devices.cam.enabled}"
                 :data-tooltip="`${$t('switch camera')} ${$s.devices.cam.enabled ? $t('off') : $t('on')}`"
+                :disabled="!$s.mediaReady"
                 @click="toggleCam"
             >
                 <Icon class="icon-small" name="Webcam" />

@@ -72,7 +72,7 @@ import SoundMeter from '@/vue/Elements/SoundMeter.vue'
 
 export default {
     beforeUnmount() {
-        app.logger.debug(`unmounting stream ${this.modelValue.id}`)
+        app.logger.debug(`unmounting ${this.modelValue.direction} stream ${this.modelValue.id}`)
         if (this.$refs.media.src) {
             URL.revokeObjectURL(this.$refs.media.src)
         } else {
@@ -144,16 +144,23 @@ export default {
          * Handle mounting a remote 'down' stream.
          */
         mountDownstream() {
-            app.logger.debug(`mount downstream ${this.modelValue.id}`)
-
             this.glnStream = app.$m.sfu.connection.down[this.modelValue.id]
+
+            if (!this.glnStream) {
+                app.logger.debug(`no sfu stream on mounting stream ${this.modelValue.id}`)
+                return
+            } else {
+                app.logger.debug(`mount downstream ${this.modelValue.id}`)
+            }
+
             this.stream = this.glnStream.stream
 
             // No need for further setup; this is an existing stream.
             if (app.$m.sfu.connection.down[this.modelValue.id].stream) {
                 this.$refs.media.srcObject = app.$m.sfu.connection.down[this.modelValue.id].stream
                 this.$refs.media.play().catch(e => {
-                    app.notifier.notify({level: 'error', message: e})
+                    app.logger.warn(`stream ${this.glnStream.id} terminated due to failing play`)
+                    app.$m.sfu.delMedia(this.glnStream.id)
                 })
                 return
             }
@@ -190,11 +197,11 @@ export default {
 
                     try {
                         await this.$refs.media.play()
+                        this.loadTrackStats()
                     } catch (message) {
-                        app.notifier.notify({level: 'error', message})
+                        app.logger.warn(`stream ${this.glnStream.id} terminated due to failing play`)
+                        app.$m.sfu.delMedia(this.glnStream.id)
                     }
-
-                    this.loadTrackStats()
                 }
             }
         },

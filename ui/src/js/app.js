@@ -70,6 +70,7 @@ class Pyrite extends EventEmitter {
     }
 
     async getUserMedia(presence) {
+        this.$s.mediaReady = false
         // Cleanup the old networked stream first:
         if (this.localStream && this.$s.group.connected) {
             this.$m.sfu.delUpMediaKind('camera')
@@ -119,7 +120,7 @@ class Pyrite extends EventEmitter {
 
         try {
             this.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-            this.$s.mediaReady = true
+
         } catch(message) {
             this.notifier.notify({level: 'error', message})
             return
@@ -127,9 +128,10 @@ class Pyrite extends EventEmitter {
 
         // Add local stream to Galène; handle peer connection logic.
         if (this.$s.group.connected) {
-            this.$m.sfu.addUserMedia()
+            await this.$m.sfu.addUserMedia()
         }
 
+        this.$s.mediaReady = true
         return this.localStream
     }
 

@@ -107,6 +107,14 @@ class SfuModel {
             }
             glnStream.pc.addTrack(t, app.localStream)
         })
+
+        return new Promise((resolve) => {
+            this.localGlnStream.onstatus = (status) => {
+                if (status === 'connected') {
+                    resolve()
+                }
+            }
+        })
     }
 
     async connect() {
@@ -152,8 +160,12 @@ class SfuModel {
     }
 
     delMedia(id) {
-        app.logger.debug(`[delMedia] remove stream ${id} from state`)
-        app.$s.streams.splice(app.$s.streams.findIndex(i => i.id === id), 1)
+        const delStreamIndex = app.$s.streams.findIndex(i => i.id === id)
+        if (delStreamIndex === -1) return
+
+        const delStream = app.$s.streams[delStreamIndex]
+        app.logger.debug(`[delMedia] remove stream ${delStream.id} from stream state (${delStreamIndex})`)
+        app.$s.streams.splice(delStreamIndex, 1)
     }
 
     delUpMedia(c) {
@@ -345,9 +357,9 @@ class SfuModel {
         switch(kind) {
         case 'fail':
             if (message === 'group is locked') {
-                app.notifier.notify({level: 'error', message: this.$t('group {group} is locked; only maintainers may login', {group: app.$s.group.name})})
+                app.notifier.notify({level: 'error', message: app.$t('group {group} is locked; only maintainers may login', {group: app.$s.group.name})})
             } else if (message === 'not authorised') {
-                app.notifier.notify({level: 'error', message: this.$t('invalid credentials for group {group}', {group: app.$s.group.name})})
+                app.notifier.notify({level: 'error', message: app.$t('invalid credentials for group {group}', {group: app.$s.group.name})})
             }
 
             // Closing the connection will trigger a 'leave' message,
@@ -506,6 +518,7 @@ class SfuModel {
         c.stream.getTracks().forEach(t => t.stop())
 
         app.$s.upMedia[c.label].splice(app.$s.upMedia[c.label].indexOf(c.id), 1)
+        app.$s.streams.splice(app.$s.streams.indexOf(c.id), 1)
     }
 
 }
