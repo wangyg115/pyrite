@@ -157,7 +157,7 @@ export default {
             // No need for further setup; this is an existing stream.
             if (this.$m.sfu.connection.down[this.modelValue.id].stream) {
                 this.$refs.media.srcObject = this.$m.sfu.connection.down[this.modelValue.id].stream
-                this.$refs.media.play().catch(e => {
+                this.$refs.media.play().catch(() => {
                     this.app.logger.warn(`stream ${this.glnStream.id} terminated due to failing play`)
                     this.$m.sfu.delMedia(this.glnStream.id)
                 })

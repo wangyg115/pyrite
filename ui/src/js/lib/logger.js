@@ -1,5 +1,3 @@
-import {app} from '@/js/app.js'
-
 class Logger {
 
     constructor(app) {
