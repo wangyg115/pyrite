@@ -113,33 +113,38 @@ export default {
     methods: {
         async login() {
             this.v$.$clearExternalResults()
+            this.v$.$validate()
+
             this.connecting = true
             try {
                 await this.$m.sfu.connect()
+
             } catch(err) {
                 if (err === 'group is locked') {
-                    this.app.notifier.notify({level: 'error', message: app.$t('group {group} is locked; only maintainers may login', {group: app.$s.group.name})})
+                    this.app.notifier.notify({
+                        level: 'error',
+                        message: this.$t('group {group} is locked; only maintainers may login', {group: this.$s.group.name}),
+                    })
                     this.vuelidateExternalResults.user.username = [this.$t('group {group} has been locked')]
                     this.vuelidateExternalResults.user.password = [this.$t('group {group} has been locked')]
                 } else if (err === 'not authorised') {
-                    const message = app.$t('invalid credentials for group {group}', {group: app.$s.group.name})
+                    const message = this.$t('invalid credentials for group {group}', {group: this.$s.group.name})
                     this.app.notifier.notify({level: 'error', message})
                     this.vuelidateExternalResults.user.username = [message]
                     this.vuelidateExternalResults.user.password = [message]
                 }
-
-                this.v$.$validate()
-
             } finally {
+
                 this.connecting = false
+
                 if (!this.v$.$invalid) {
                     // Save credentials for the next time.
                     this.app.store.save()
 
-                    app.$s.group.connected = true
-                    app.router.replace({
+                    this.$s.group.connected = true
+                    this.$router.replace({
                         name: 'conference-groups-connected',
-                        params: {groupId: app.router.currentRoute.value.params.groupId},
+                        params: {groupId: this.$router.currentRoute.value.params.groupId},
                     })
                 }
             }
