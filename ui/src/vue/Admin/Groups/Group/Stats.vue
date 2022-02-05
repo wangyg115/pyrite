@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
 import Chart from '@/vue/Elements/Chart.vue'
 import {defineComponent} from 'vue'
 
@@ -45,7 +44,7 @@ export default defineComponent({
     methods: {
         async loadStats() {
             let initClient = false
-            const stats = await app.api.get(`/api/dashboard/${this.groupId}`)
+            const stats = await this.app.api.get(`/api/dashboard/${this.groupId}`)
             if (!stats.clients) {
                 this.stats.clients = {}
                 return
@@ -61,7 +60,7 @@ export default defineComponent({
             const removedClients = Object.keys(this.stats.clients).filter((i) => !clients.includes(i))
             // A client was removed.
             for (const clientId of removedClients) {
-                app.logger.info(`remove client ${clientId}`)
+                this.app.logger.info(`remove client ${clientId}`)
                 delete this.stats.clients[clientId]
             }
 

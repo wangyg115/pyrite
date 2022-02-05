@@ -63,12 +63,10 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
-
 export default {
     computed: {
         fileMediaAccept() {
-            if (app.env.isFirefox) {
+            if (this.app.env.isFirefox) {
                 return '.mp4'
             } else {
                 // Chromium supports at least these 3 formats:
@@ -80,7 +78,7 @@ export default {
                 return this.$t('streaming video file')
             }
             let formats = []
-            if (app.env.isFirefox) {
+            if (this.app.env.isFirefox) {
                 formats.push('.mp4')
             } else {
                 formats.push('.mp4', 'webm', 'mkv')
@@ -100,40 +98,40 @@ export default {
     methods: {
         toggleCam() {
             this.$s.devices.cam.enabled = !this.$s.devices.cam.enabled
-            app.logger.debug(`switching cam stream: ${this.$s.devices.cam.enabled}`)
-            app.$m.sfu.delUpMediaKind('camera')
-            app.getUserMedia(this.$s.devices)
+            this.app.logger.debug(`switching cam stream: ${this.$s.devices.cam.enabled}`)
+            this.$m.sfu.delUpMediaKind('camera')
+            this.$m.media.getUserMedia(this.$s.devices)
         },
         toggleMicrophone() {
-            app.$m.sfu.muteMicrophone(this.$s.devices.mic.enabled)
+            this.$m.sfu.muteMicrophone(this.$s.devices.mic.enabled)
         },
         togglePlayFile(file) {
             if (file) {
-                app.$m.sfu.addFileMedia(file)
+                this.$m.sfu.addFileMedia(file)
             } else {
                 this.$s.files.playing = []
-                app.$m.sfu.delUpMediaKind('video')
+                this.$m.sfu.delUpMediaKind('video')
             }
         },
         toggleRaiseHand() {
-            app.$m.sfu.connection.userAction('setstatus', app.$m.sfu.connection.id, {raisehand: !this.$s.user.status.raisehand})
+            this.$m.sfu.connection.userAction('setstatus', this.$m.sfu.connection.id, {raisehand: !this.$s.user.status.raisehand})
             if (!this.$s.user.status.raisehand) {
-                app.notifier.message('raisehand', {source: this.$s.user.name}, null, {chat: true, notification: false})
+                this.app.notifier.message('raisehand', {source: this.$s.user.name}, null, {chat: true, notification: false})
             }
         },
         async toggleScreenshare() {
             if (this.$s.upMedia.screenshare.length) {
-                app.logger.debug('turn screenshare stream off')
-                app.$m.sfu.delUpMedia(this.screenStream)
+                this.app.logger.debug('turn screenshare stream off')
+                this.$m.sfu.delUpMedia(this.screenStream)
             } else {
-                app.logger.debug('turn screenshare stream on')
-                this.screenStream = await app.$m.sfu.addShareMedia()
+                this.app.logger.debug('turn screenshare stream on')
+                this.screenStream = await this.$m.sfu.addShareMedia()
             }
         },
     },
     watch: {
         '$s.devices.mic.enabled'(enabled) {
-            app.$m.sfu.connection.userAction('setstatus', app.$m.sfu.connection.id, {mic: enabled})
+            this.$m.sfu.connection.userAction('setstatus', this.$m.sfu.connection.id, {mic: enabled})
         },
         volume(volume) {
             for (const description of this.$s.streams) {

@@ -66,8 +66,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
-
 export default {
     computed: {
         deletionGroups() {
@@ -95,12 +93,12 @@ export default {
     },
     methods: {
         async addGroup() {
-            const group = await app.api.get('/api/groups/template')
+            const group = await this.app.api.get('/api/groups/template')
             this.$s.admin.groups.push(group)
             this.toggleSelection(group._name)
         },
         async deleteGroups() {
-            app.notifier.notify({level: 'info', message: this.$tc('deleting one group | deleting {count} groups', this.deletionGroups.length)})
+            this.app.notifier.notify({level: 'info', message: this.$tc('deleting one group | deleting {count} groups', this.deletionGroups.length)})
             const deleteRequests = []
             for (const group of this.deletionGroups) {
                 this.$s.admin.groups.splice(this.$s.admin.groups.findIndex((i) => i._name === group._name), 1)
@@ -128,7 +126,7 @@ export default {
             }
         },
         async loadGroups() {
-            this.$s.admin.groups = await app.api.get('/api/groups')
+            this.$s.admin.groups = await this.app.api.get('/api/groups')
         },
         async saveGroup() {
             const groupId = this.$s.admin.group._name

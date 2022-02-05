@@ -4,7 +4,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
 import Splash from '@/vue/Elements/Splash.vue'
 /**
  * This is a container component that handles keeping
@@ -27,12 +26,12 @@ export default {
     },
     methods: {
         async loadGroup(groupId) {
-            app.logger.debug(`load group ${groupId}`)
+            this.app.logger.debug(`load group ${groupId}`)
             let group = this.$s.admin.groups.find((i) => i._name === groupId)
             if (group && group._unsaved) {
                 this.$s.admin.group = group
             } else {
-                const apiGroup = await app.api.get(`/api/groups/${encodeURIComponent(groupId)}`)
+                const apiGroup = await this.app.api.get(`/api/groups/${encodeURIComponent(groupId)}`)
                 if (group) {
                     // Don't update internal state properties.
                     for (const key of Object.keys(group)) {

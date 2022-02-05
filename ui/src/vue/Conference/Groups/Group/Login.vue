@@ -81,8 +81,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
-
 export default {
     data() {
         return {
@@ -93,19 +91,16 @@ export default {
         async login() {
             this.connecting = true
             try {
-                app.store.save()
-                await app.$m.sfu.connect()
+                this.app.store.save()
+                await this.$m.sfu.connect()
             } finally {
                 this.connecting = false
-                this.$router.replace({
-                    name: 'conference-groups-connected',
-                    params: {groupId: this.$router.currentRoute.value.params.groupId},
-                })
+
             }
         },
     },
     async mounted() {
-        await app.queryDevices()
+        await this.$m.media.queryDevices()
     },
 
 }

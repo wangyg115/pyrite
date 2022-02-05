@@ -27,26 +27,11 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
-
 export default {
-    data() {
-        return {
-            state: app.state,
-        }
-    },
     methods: {
-        close: function(notification) {
-            let notifications = this.notifications.filter((i) => i.id !== notification.id)
-            app.setState({app: {notifications}})
-        },
         openUrl: function(url) {
             window.open(url, '_blank')
         },
-    },
-    store: {
-        notifications: 'app.notifications',
-        session: 'session',
     },
 }
 </script>

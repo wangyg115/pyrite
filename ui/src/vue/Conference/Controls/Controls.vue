@@ -31,7 +31,7 @@
                 class="btn btn-menu tooltip mb-1"
                 :class="{active: !$s.chat.hidden}"
                 :data-tooltip="$s.chat.hidden ? $t('show chat') : $t('hide chat')"
-                @click="toggleChatActive"
+                @click="$s.chat.hidden = !$s.chat.hidden"
             >
                 <Icon class="icon-small" name="Chat" />
             </button>
@@ -42,7 +42,7 @@
                 v-if="$s.group.connected"
                 class="btn btn-menu btn-logout tooltip"
                 :data-tooltip="$t('leave group')"
-                @click="disconnect"
+                @click="$m.sfu.disconnect"
             >
                 <Icon class="icon-small" name="Logout" />
             </button>
@@ -51,19 +51,10 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
 import Context from './Context.vue'
 
 export default {
     components: {Context},
-    methods: {
-        disconnect: () => {
-            app.$m.sfu.disconnect()
-        },
-        toggleChatActive() {
-            this.$s.chat.hidden = !this.$s.chat.hidden
-        },
-    },
 }
 </script>
 

@@ -43,7 +43,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
 import {defineComponent} from 'vue'
 
 export default defineComponent({
@@ -55,7 +54,7 @@ export default defineComponent({
     },
     methods: {
         async login() {
-            const context = await app.api.post('/api/login', {
+            const context = await this.app.api.post('/api/login', {
                 password: this.password,
                 username: this.username,
             })
@@ -63,10 +62,10 @@ export default defineComponent({
             Object.assign(this.$s.admin, context)
 
             if (!context.authenticated) {
-                app.notifier.notify({level: 'error', message: this.$t('invalid credentials')})
+                this.app.notifier.notify({level: 'error', message: this.$t('invalid credentials')})
             } else {
-                app.notifier.notify({level: 'info', message: this.$t('succesfully logged in')})
-                app.router.push({name: 'admin-users'})
+                this.app.notifier.notify({level: 'info', message: this.$t('succesfully logged in')})
+                this.$router.push({name: 'admin-users'})
             }
         },
     },

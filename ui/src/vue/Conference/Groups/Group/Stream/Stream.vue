@@ -66,13 +66,12 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
 import Reports from './Reports.vue'
 import SoundMeter from '@/vue/Elements/SoundMeter.vue'
 
 export default {
     beforeUnmount() {
-        app.logger.debug(`unmounting ${this.modelValue.direction} stream ${this.modelValue.id}`)
+        this.app.logger.debug(`unmounting ${this.modelValue.direction} stream ${this.modelValue.id}`)
         if (this.$refs.media.src) {
             URL.revokeObjectURL(this.$refs.media.src)
         } else {
@@ -126,7 +125,7 @@ export default {
     emits: ['update:modelValue'],
     methods: {
         loadTrackStats() {
-            app.logger.debug('retrieving stream settings')
+            this.app.logger.debug('retrieving stream settings')
             const settings = {}
             const audioTracks = this.stream.getAudioTracks()
             if (audioTracks.length) settings.audio = audioTracks[0].getSettings()
@@ -135,7 +134,7 @@ export default {
             if (videoTracks.length) settings.video = videoTracks[0].getSettings()
 
             if (!audioTracks.length && !videoTracks.length) {
-                app.logger.warn('no audio & video settings found; stream not ready yet?')
+                this.app.logger.warn('no audio & video settings found; stream not ready yet?')
             }
 
             this.$emit('update:modelValue', {...this.modelValue, settings})
@@ -144,23 +143,23 @@ export default {
          * Handle mounting a remote 'down' stream.
          */
         mountDownstream() {
-            this.glnStream = app.$m.sfu.connection.down[this.modelValue.id]
+            this.glnStream = this.$m.sfu.connection.down[this.modelValue.id]
 
             if (!this.glnStream) {
-                app.logger.debug(`no sfu stream on mounting stream ${this.modelValue.id}`)
+                this.app.logger.debug(`no sfu stream on mounting stream ${this.modelValue.id}`)
                 return
             } else {
-                app.logger.debug(`mount downstream ${this.modelValue.id}`)
+                this.app.logger.debug(`mount downstream ${this.modelValue.id}`)
             }
 
             this.stream = this.glnStream.stream
 
             // No need for further setup; this is an existing stream.
-            if (app.$m.sfu.connection.down[this.modelValue.id].stream) {
-                this.$refs.media.srcObject = app.$m.sfu.connection.down[this.modelValue.id].stream
+            if (this.$m.sfu.connection.down[this.modelValue.id].stream) {
+                this.$refs.media.srcObject = this.$m.sfu.connection.down[this.modelValue.id].stream
                 this.$refs.media.play().catch(e => {
-                    app.logger.warn(`stream ${this.glnStream.id} terminated due to failing play`)
-                    app.$m.sfu.delMedia(this.glnStream.id)
+                    this.app.logger.warn(`stream ${this.glnStream.id} terminated due to failing play`)
+                    this.$m.sfu.delMedia(this.glnStream.id)
                 })
                 return
             }
@@ -172,10 +171,10 @@ export default {
                     this.stream = this.glnStream.stream
                 }
 
-                app.logger.debug(`downstream ondowntrack/${this.glnStream.id}`)
+                this.app.logger.debug(`downstream ondowntrack/${this.glnStream.id}`)
                 // An incoming audio-track; enable volume controls.
                 if (track.kind === 'audio') {
-                    app.logger.debug(`stream ondowntrack - enable audio controls`)
+                    this.app.logger.debug(`stream ondowntrack - enable audio controls`)
                     this.$emit('update:modelValue', {...this.modelValue, hasAudio: true})
                 } else if(track.kind === 'video') {
                     this.$emit('update:modelValue', {...this.modelValue, hasVideo: true})
@@ -191,16 +190,16 @@ export default {
 
                     this.$refs.media.srcObject = this.stream
                     if (this.audioEnabled) {
-                        app.logger.debug(`set stream sink: ${app.$s.devices.audio.selected.id}`)
-                        this.$refs.media.setSinkId(app.$s.devices.audio.selected.id)
+                        this.app.logger.debug(`set stream sink: ${this.$s.devices.audio.selected.id}`)
+                        this.$refs.media.setSinkId(this.$s.devices.audio.selected.id)
                     }
 
                     try {
                         await this.$refs.media.play()
                         this.loadTrackStats()
                     } catch (message) {
-                        app.logger.warn(`stream ${this.glnStream.id} terminated due to failing play`)
-                        app.$m.sfu.delMedia(this.glnStream.id)
+                        this.app.logger.warn(`stream ${this.glnStream.id} terminated due to failing play`)
+                        this.$m.sfu.delMedia(this.glnStream.id)
                     }
                 }
             }
@@ -210,12 +209,12 @@ export default {
             if (!this.muted) {
                 this.toggleMuteVolume()
             }
-            app.logger.debug(`mount upstream ${this.modelValue.id}`)
+            this.app.logger.debug(`mount upstream ${this.modelValue.id}`)
             this.label = `${this.$s.user.username} (${this.$t('you')})`
 
             if (!this.modelValue.src) {
                 // Local media stream from a device.
-                this.glnStream = app.$m.sfu.connection.up[this.modelValue.id]
+                this.glnStream = this.$m.sfu.connection.up[this.modelValue.id]
                 this.stream = this.glnStream.stream
                 this.$refs.media.srcObject = this.stream
                 this.loadTrackStats()
@@ -231,7 +230,7 @@ export default {
                         this.stream = this.$refs.media.mozCaptureStream()
                     }
 
-                    this.glnStream = app.$m.sfu.connection.up[this.modelValue.id]
+                    this.glnStream = this.$m.sfu.connection.up[this.modelValue.id]
                     this.glnStream.userdata.play = true
 
                     this.stream.onaddtrack = (e) => {
@@ -250,7 +249,7 @@ export default {
                     // triggered here. TODO: Checkout later if glnStream can be used instead.
                     this.stream.onremovetrack = () => {
                         if (this.$refs.media && this.$refs.media.src) {
-                            app.$m.sfu.delUpMedia(this.glnStream)
+                            this.$m.sfu.delUpMedia(this.glnStream)
                             this.$s.files.playing = []
                         }
                     }

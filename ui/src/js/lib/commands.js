@@ -1,4 +1,4 @@
-import app from '@/js/app.js'
+import {app} from '@/js/app.js'
 
 // Copyright (c) 2020 by Juliusz Chroboczek.
 

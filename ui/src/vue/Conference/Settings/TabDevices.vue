@@ -27,7 +27,7 @@
             <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1498512 -->
             <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1152401 -->
             <FieldSelect
-                v-if="$s.devices.audio.options.length && !$env.isFirefox"
+                v-if="$s.devices.audio.options.length && !app.env.isFirefox"
                 v-model="$s.devices.audio.selected"
                 :help="$t('verify your audio configuration with the test sound')"
                 :label="$t('audio output')"
@@ -47,8 +47,8 @@
                     </div>
                 </div>
 
-                <div v-if="$env.isFirefox" class="env-warning">
-                    {{ $env.browserName }} {{ $t('does not support this option') }}
+                <div v-if="app.envenv.isFirefox" class="env-warning">
+                    {{ app.env.browserName }} {{ $t('does not support this option') }}
                 </div>
             </div>
             <button class="btn" :disabled="sound.audio.playing" @click="soundAudio.play()">
@@ -71,7 +71,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
 import {nextTick} from 'vue'
 import Sound from '@/js/lib/sound.js'
 import SoundMeter from '@/vue/Elements/SoundMeter.vue'
@@ -80,7 +79,7 @@ import Stream from '@/vue/Conference/Groups/Group/Stream/Stream.vue'
 export default {
     beforeUnmount() {
         if (!this.$s.group.connected) {
-            app.$m.sfu.delLocalMedia()
+            this.$m.sfu.delLocalMedia()
         }
     },
     components: {SoundMeter, Stream},
@@ -118,7 +117,7 @@ export default {
     },
     methods: {
         async remountStream() {
-            this.stream = await app.getUserMedia()
+            this.stream = await this.$m.media.getUserMedia()
             this.streamId = this.stream.id
             this.description = null
             // Give the stream time to unmount first...
@@ -126,8 +125,8 @@ export default {
 
             this.description = {
                 direction: 'up',
-                hasAudio: app.$s.devices.mic.enabled,
-                hasVideo: app.$s.devices.cam.enabled,
+                hasAudio: this.$s.devices.mic.enabled,
+                hasVideo: this.$s.devices.cam.enabled,
                 id: this.stream.id,
                 kind: 'video',
                 mirror: false,
@@ -146,19 +145,19 @@ export default {
         this.soundAudio = new Sound(this.sound.audio)
 
         // Not a media stream yet? Create one for the audio settings
-        if (!app.localStream) {
-            const res = await app.getUserMedia()
+        if (!this.$m.media.localStream) {
+            const res = await this.$m.media.getUserMedia()
             if (!res) {
-                app.notifier.notify({level: 'error', message: 'Unable to find a valid device'})
+                this.app.notifier.notify({level: 'error', message: 'Unable to find a valid device'})
                 return
             }
         }
-        this.stream = app.localStream
-        this.streamId = app.localStream.id
+        this.stream = this.$m.media.localStream
+        this.streamId = this.$m.media.localStream.id
         this.description = {
             direction: 'up',
-            hasAudio: app.$s.devices.mic.enabled,
-            hasVideo: app.$s.devices.cam.enabled,
+            hasAudio: this.$s.devices.mic.enabled,
+            hasVideo: this.$s.devices.cam.enabled,
             id: this.stream.id,
             kind: 'video',
             mirror: false,

@@ -35,7 +35,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
 import {nextTick} from 'vue'
 
 export default {
@@ -73,7 +72,7 @@ export default {
         async '$s.theme'() {
             await nextTick()
             const themeColor = getComputedStyle(document.querySelector('.app')).getPropertyValue('--grey-4')
-            app.logger.info(`setting theme color to ${themeColor}`)
+            this.app.logger.info(`setting theme color to ${themeColor}`)
             document.querySelector('meta[name="theme-color"]').content = themeColor
         },
     },

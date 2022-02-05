@@ -1,4 +1,4 @@
-import app from '@/js/app.js'
+import {app} from '@/js/app.js'
 
 import App from '@/vue/Conference/App.vue'
 import Login from '@/vue/Conference/Groups/Group/Login.vue'

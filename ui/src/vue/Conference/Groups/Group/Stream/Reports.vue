@@ -51,8 +51,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
-
 export default {
     computed: {
         hasAudioStats() {
@@ -133,11 +131,11 @@ export default {
     },
     mounted() {
         this.glnStream = null
-        if (app.$m.sfu.connection.up[this.description.id]) {
-            this.glnStream = app.$m.sfu.connection.up[this.description.id]
+        if (this.$m.sfu.connection.up[this.description.id]) {
+            this.glnStream = this.$m.sfu.connection.up[this.description.id]
             this.glnStream.onstats = this.onUpStats
         } else {
-            this.glnStream = app.$m.sfu.connection.down[this.description.id]
+            this.glnStream = this.$m.sfu.connection.down[this.description.id]
             this.glnStream.onstats = this.onDownStats
         }
 

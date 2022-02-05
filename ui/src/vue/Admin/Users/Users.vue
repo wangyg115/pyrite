@@ -4,7 +4,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
 import Splash from '@/vue/Elements/Splash.vue'
 /**
  * This is a container component that handles keeping
@@ -27,16 +26,16 @@ export default {
     },
     methods: {
         async loadUser(userId) {
-            app.logger.debug(`load user ${userId}`)
+            this.app.logger.debug(`load user ${userId}`)
             const user = this.$s.admin.users.find((i) => i.id === userId)
             if (user && (user._unsaved || user._delete)) {
                 this.$s.admin.user = user
             } else {
-                this.$s.admin.user = await app.api.get(`/api/users/${encodeURIComponent(userId)}`)
+                this.$s.admin.user = await this.app.api.get(`/api/users/${encodeURIComponent(userId)}`)
             }
         },
         async loadUsers() {
-            this.$s.admin.users = await app.api.get('/api/users')
+            this.$s.admin.users = await this.app.api.get('/api/users')
         },
     },
     watch: {

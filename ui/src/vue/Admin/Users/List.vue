@@ -51,8 +51,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
-
 export default {
     computed: {
         deletionUsers() {
@@ -75,12 +73,12 @@ export default {
     },
     methods: {
         async addUser() {
-            const user = await app.api.get('/api/users/template')
+            const user = await this.app.api.get('/api/users/template')
             this.$s.admin.users.push(user)
             this.toggleSelection(user.id)
         },
         async deleteUsers() {
-            app.notifier.notify({level: 'info', message: `deleting ${this.deletionUsers.length} users`})
+            this.app.notifier.notify({level: 'info', message: `deleting ${this.deletionUsers.length} users`})
             const deleteRequests = []
             for (const user of this.deletionUsers) {
                 this.$s.admin.users.splice(this.$s.admin.users.findIndex((i) => i.id === user.id), 1)
@@ -97,7 +95,7 @@ export default {
             }
         },
         async loadUsers() {
-            this.$s.admin.users = await app.api.get('/api/users')
+            this.$s.admin.users = await this.app.api.get('/api/users')
         },
         async saveUser() {
             await this.$m.user.saveUser(this.$s.admin.user.id, this.$s.admin.user)

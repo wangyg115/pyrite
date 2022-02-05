@@ -47,8 +47,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
-
 export default {
     data(){
         return {
@@ -64,7 +62,7 @@ export default {
     },
     methods: {
         activateUserChat() {
-            app.emit('channel', {
+            this.app.emit('channel', {
                 action: 'switch',
                 channel: {
                     id: this.user.id,
@@ -78,22 +76,22 @@ export default {
             this.toggleMenu()
         },
         kickUser(text) {
-            app.notifier.message('kicked', {dir: 'source', target: this.user.username})
-            app.$m.sfu.connection.userAction('kick', this.user.id, text)
+            this.app.notifier.message('kicked', {dir: 'source', target: this.user.username})
+            this.$m.sfu.connection.userAction('kick', this.user.id, text)
             this.toggleMenu()
         },
         muteUser() {
-            app.notifier.message('mute', {dir: 'source', target: this.user.username})
-            app.$m.sfu.connection.userMessage('mute', this.user.id, null)
+            this.app.notifier.message('mute', {dir: 'source', target: this.user.username})
+            this.$m.sfu.connection.userMessage('mute', this.user.id, null)
             this.toggleMenu()
         },
         sendNotification(message) {
-            app.notifier.message('notification', {dir: 'source', message, target: this.user.username})
-            app.$m.sfu.connection.userMessage('notification', this.user.id, message)
+            this.app.notifier.message('notification', {dir: 'source', message, target: this.user.username})
+            this.$m.sfu.connection.userMessage('notification', this.user.id, message)
             this.toggleMenu()
         },
         setAvailability(availability) {
-            app.$m.sfu.connection.userAction('setstatus', app.$m.sfu.connection.id, {availability})
+            this.$m.sfu.connection.userAction('setstatus', this.$m.sfu.connection.id, {availability})
         },
         toggleMenu(e, forceState) {
             // The v-click-outside
@@ -109,8 +107,8 @@ export default {
             if (this.user.permissions.op) action = 'unop'
             else action = 'op'
 
-            app.notifier.message(action, {dir: 'source', target: this.user.username})
-            app.$m.sfu.connection.userAction(action, this.user.id)
+            this.app.notifier.message(action, {dir: 'source', target: this.user.username})
+            this.$m.sfu.connection.userAction(action, this.user.id)
             this.toggleMenu()
         },
         togglePresenter() {
@@ -118,8 +116,8 @@ export default {
             if (this.user.permissions.present) action = 'unpresent'
             else action = 'present'
 
-            app.notifier.message(action, {dir: 'source', target: this.user.username})
-            app.$m.sfu.connection.userAction(action, this.user.id)
+            this.app.notifier.message(action, {dir: 'source', target: this.user.username})
+            this.$m.sfu.connection.userAction(action, this.user.id)
             this.toggleMenu()
         },
     },

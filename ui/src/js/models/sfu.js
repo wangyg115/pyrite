@@ -20,10 +20,10 @@
  * THE SOFTWARE.
  */
 
-import app from '@/js/app.js'
+import {app} from '@/js/app.js'
 import protocol from '../lib/protocol.js'
 
-class SfuModel {
+class ModelSFU {
 
     async addFileMedia(file) {
 
@@ -87,12 +87,12 @@ class SfuModel {
 
         const {glnStream, streamState} = this.newUpStream(localStreamId)
         glnStream.label = 'camera'
-        glnStream.stream = app.localStream
+        glnStream.stream = app.$m.media.localStream
         this.localGlnStream = glnStream
 
         app.$s.upMedia[glnStream.label].push(glnStream.id)
 
-        app.localStream.getTracks().forEach(t => {
+        app.$m.media.localStream.getTracks().forEach(t => {
             if(t.kind === 'audio') {
                 streamState.hasAudio = true
                 if(!app.$s.devices.mic.enabled) {
@@ -105,7 +105,7 @@ class SfuModel {
                     t.contentHint = 'detail'
                 }
             }
-            glnStream.pc.addTrack(t, app.localStream)
+            glnStream.pc.addTrack(t, app.$m.media.localStream)
         })
 
         return new Promise((resolve) => {
@@ -123,7 +123,14 @@ class SfuModel {
         }
         this.connection = new protocol.ServerConnection()
 
-        this.connection.onconnected = this.onConnected.bind(this)
+        this.connection.onconnected = () => {
+            app.logger.info('[connected] connected to Galène websocket')
+            app.$s.user.id = this.connection.id
+            const groupName = app.router.currentRoute.value.params.groupId
+
+            this.connection.join(groupName, app.$s.user.username, app.$s.user.password)
+        }
+
         this.connection.onclose = this.onClose.bind(this)
         this.connection.ondownstream = this.onDownStream.bind(this)
         this.connection.onuser = this.onUser.bind(this)
@@ -134,7 +141,6 @@ class SfuModel {
         app.logger.info(`connecting websocket ${url}`)
         try {
             await this.connection.connect(url)
-            app.$s.group.connected = true
             // Share initial status with other users.
             this.connection.userAction('setstatus', this.connection.id, app.$s.user.status)
         } catch(e) {
@@ -146,17 +152,17 @@ class SfuModel {
     }
 
     delLocalMedia() {
-        if (!app.localStream) return
+        if (!app.$m.media.localStream) return
 
         app.logger.info('delete local media share media')
-        const stream = app.localStream
+        const stream = app.$m.media.localStream
         const tracks = stream.getTracks()
         tracks.forEach(track => {
             app.logger.debug(`stopping track ${track.id}`)
             track.stop()
         })
 
-        delete app.localStream
+        delete app.$m.media.localStream
     }
 
     delMedia(id) {
@@ -312,14 +318,6 @@ class SfuModel {
         app.router.push({name: 'conference-groups'}, {params: {groupId: app.$s.group.name}})
     }
 
-    onConnected() {
-        app.logger.info('[connected] connected to Galène websocket')
-        app.$s.user.id = this.connection.id
-        const groupName = app.router.currentRoute.value.params.groupId
-
-        this.connection.join(groupName, app.$s.user.username, app.$s.user.password)
-    }
-
     onDownStream(c) {
         app.logger.debug(`[onDownStream] ${c.id}`)
         c.onclose = (replace) => {
@@ -370,6 +368,12 @@ class SfuModel {
             this.disconnect()
             return
         case 'join':
+            app.$s.group.connected = true
+            app.router.replace({
+                name: 'conference-groups-connected',
+                params: {groupId: app.router.currentRoute.value.params.groupId},
+            })
+            break
         case 'change':
             if (status && status.locked) {
                 app.$s.group.locked = true
@@ -398,7 +402,7 @@ class SfuModel {
         this.connection.request(this.mapRequest(app.$s.media.accept.id))
 
         if(this.connection.permissions.present && !this.findUpMedia('camera')) {
-            await app.getUserMedia(app.$s.devices)
+            await app.$m.media.getUserMedia(app.$s.devices)
         }
     }
 
@@ -489,7 +493,6 @@ class SfuModel {
                 const streamState = app.$s.streams.find((s) => s.id === glnStream.id)
                 streamState.hasVideo = false
             }
-
         })
     }
 
@@ -523,6 +526,4 @@ class SfuModel {
 
 }
 
-export default function() {
-    return new SfuModel()
-}
+export default ModelSFU

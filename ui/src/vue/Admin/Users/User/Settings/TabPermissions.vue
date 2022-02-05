@@ -12,13 +12,12 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
 import {defineComponent} from 'vue'
 
 export default defineComponent({
     methods: {
         async loadGroups() {
-            this.$s.admin.groups = await app.api.get('/api/groups')
+            this.$s.admin.groups = await this.app.api.get('/api/groups')
         },
     },
     async mounted() {

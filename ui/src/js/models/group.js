@@ -1,6 +1,6 @@
-import app from '@/js/app.js'
+import {app} from '@/js/app.js'
 
-export default {
+class ModelGroup {
     async saveGroup(groupId, data) {
         const group = await app.api.post(`/api/groups/${encodeURIComponent(groupId)}`, data)
 
@@ -22,5 +22,7 @@ export default {
         }
 
         return group
-    },
+    }
 }
+
+export default ModelGroup

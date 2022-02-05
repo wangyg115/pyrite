@@ -31,8 +31,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
-
 export default {
     methods: {
         groupRoute(name) {
@@ -43,9 +41,9 @@ export default {
             }
         },
         async logout() {
-            const context = await app.api.get('/api/logout')
+            const context = await this.app.api.get('/api/logout')
             Object.assign(this.$s.admin, context)
-            app.router.push({name: 'admin-login'})
+            this.$router.push({name: 'admin-login'})
         },
         userRoute(name) {
             if (this.$s.admin.user) {

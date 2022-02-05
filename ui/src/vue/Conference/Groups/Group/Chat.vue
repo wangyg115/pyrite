@@ -63,7 +63,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
 import commands from '@/js/lib/commands.js'
 import {nextTick} from 'vue'
 
@@ -79,7 +78,7 @@ export default {
     },
     created() {
         // User left; clean up the channel.
-        app.on('user', ({action, user}) => {
+        this.app.on('user', ({action, user}) => {
             if (action === 'del' && this.$s.chat.channels[user.id]) {
                 // Change the active to-be-deleted channel to main
                 if (this.$s.chat.channel === user.id) {
@@ -89,8 +88,8 @@ export default {
             }
         })
 
-        app.on('channel', ({action, channelId, channel = null}) => {
-            app.logger.debug('switch chat channel to ', channelId)
+        this.app.on('channel', ({action, channelId, channel = null}) => {
+            this.app.logger.debug('switch chat channel to ', channelId)
             if (action === 'switch') {
                 if (!this.$s.chat.channels[channelId]) {
                     this.$s.chat.channels[channelId] = channel
@@ -107,7 +106,7 @@ export default {
     },
     methods: {
         clearChannel() {
-            app.logger.debug('clearing chat from remote')
+            this.app.logger.debug('clearing chat from remote')
             this.$s.chat.channels.main.messages = []
         },
         async closeChannel(channel) {
@@ -203,7 +202,7 @@ export default {
                     } else {
                         let c = commands[cmd]
                         if(!c) {
-                            app.notifier.notify({
+                            this.app.notifier.notify({
                                 level: 'error',
                                 message: `Uknown command /${cmd}, type /help for help`,
                             })
@@ -212,14 +211,14 @@ export default {
                         if(c.predicate) {
                             const message = c.predicate()
                             if(message) {
-                                app.notifier.notify({level: 'error', message})
+                                this.app.notifier.notify({level: 'error', message})
                                 return
                             }
                         }
                         try {
                             c.f(cmd, rest)
                         } catch(e) {
-                            app.notifier.notify({level: 'error', message: e})
+                            this.app.notifier.notify({level: 'error', message: e})
                         }
                         return
                     }
@@ -232,11 +231,11 @@ export default {
             // Sending to the main channel uses an empty string;
             // a direct message uses the user (connection) id.
             if (this.$s.chat.channel === 'main') {
-                app.$m.sfu.connection.chat(me ? 'me' : '', '', message)
+                this.$m.sfu.connection.chat(me ? 'me' : '', '', message)
             } else {
                 // A direct message is not replayed locally through
                 // onChat, so we need to add the message ourselves.
-                app.$m.sfu.connection.chat(me ? 'me' : '', this.$s.chat.channel, message)
+                this.$m.sfu.connection.chat(me ? 'me' : '', this.$s.chat.channel, message)
             }
 
             // Adjust the chat window scroller
@@ -250,8 +249,8 @@ export default {
         },
     },
     mounted() {
-        app.$m.sfu.connection.onchat = this.onMessage.bind(this)
-        app.$m.sfu.connection.onclearchat = this.clearChannel.bind(this)
+        this.$m.sfu.connection.onchat = this.onMessage.bind(this)
+        this.$m.sfu.connection.onclearchat = this.clearChannel.bind(this)
 
         // Keep track of the user-set width of the chat-window, so
         // we can restore it after toggling the chat window.

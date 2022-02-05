@@ -42,7 +42,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
 import TabDevices from './TabDevices.vue'
 import TabMisc from './TabMisc.vue'
 
@@ -50,10 +49,10 @@ export default {
     components: {TabDevices, TabMisc},
     methods: {
         saveSettings() {
-            app.i18n.global.locale = this.$s.language.id
-            app.logger.debug(`settings language to ${this.$s.language.id}`)
-            app.store.save()
-            app.notifier.notify({level: 'info', message: this.$t('Settings saved')})
+            this.app.i18n.global.locale = this.$s.language.id
+            this.app.logger.debug(`settings language to ${this.$s.language.id}`)
+            this.app.store.save()
+            this.app.notifier.notify({level: 'info', message: this.$t('Settings saved')})
         },
     },
 }

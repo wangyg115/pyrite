@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
 import ConferenceControls from './Controls/Controls.vue'
 import GroupChat from './Groups/Group/Chat.vue'
 import GroupControls from './Groups/Group/Controls.vue'
@@ -45,7 +44,7 @@ export default {
         async closeChat(el, done) {
             el.style.width = `${this.$s.chat.width}px`
             this.chatToggle = true
-            app.animate({
+            this.app.animate({
                 duration: 350,
                 from: this.$s.chat.width,
                 onFinish: () => {
@@ -61,7 +60,7 @@ export default {
         async openChat(el, done) {
             el.style.width = '0px'
             this.chatToggle = true
-            app.animate({
+            this.app.animate({
                 duration: 350,
                 from: 0,
                 onFinish: () => {

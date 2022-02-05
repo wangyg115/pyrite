@@ -65,8 +65,6 @@
 </template>
 
 <script>
-import app from '@/js/app.js'
-
 export default {
     data() {
         return {
@@ -75,11 +73,11 @@ export default {
     },
     methods: {
         async deleteRecording(rec) {
-            this.recordings = await app.api.get(`/api/recordings/${this.groupId}/${rec.filename}.${rec.extension}/delete`)
-            app.notifier.notify({level: 'info', message: this.$t('deleted recording: {recording}', {recording: rec.filename})})
+            this.recordings = await this.app.api.get(`/api/recordings/${this.groupId}/${rec.filename}.${rec.extension}/delete`)
+            this.app.notifier.notify({level: 'info', message: this.$t('deleted recording: {recording}', {recording: rec.filename})})
         },
         async loadRecordings(groupId) {
-            this.recordings = await app.api.get(`/api/recordings/${groupId}`)
+            this.recordings = await this.app.api.get(`/api/recordings/${groupId}`)
         },
     },
     mounted() {
