@@ -112,8 +112,8 @@ export default {
     },
     methods: {
         async login() {
-            this.v$.$clearExternalResults()
-            this.v$.$validate()
+            this.vuelidateExternalResults.user.username = []
+            this.vuelidateExternalResults.user.password = []
 
             this.connecting = true
             try {
@@ -132,22 +132,22 @@ export default {
                     this.app.notifier.notify({level: 'error', message})
                     this.vuelidateExternalResults.user.username = [message]
                     this.vuelidateExternalResults.user.password = [message]
-                }
-            } finally {
-
-                this.connecting = false
-
-                if (!this.v$.$invalid) {
-                    // Save credentials for the next time.
-                    this.app.store.save()
-
-                    this.$s.group.connected = true
-                    this.$router.replace({
-                        name: 'conference-groups-connected',
-                        params: {groupId: this.$router.currentRoute.value.params.groupId},
-                    })
+                    this.v$.$validate()
                 }
             }
+
+            this.connecting = false
+            if (this.v$.$invalid) return
+
+            // Save credentials for the next time.
+            this.app.store.save()
+
+            this.$s.group.connected = true
+            this.$router.replace({
+                name: 'conference-groups-connected',
+                params: {groupId: this.$router.currentRoute.value.params.groupId},
+            })
+
         },
     },
     async mounted() {
@@ -161,7 +161,6 @@ export default {
             },
         }
     },
-
 }
 </script>
 
