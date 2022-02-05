@@ -5,10 +5,10 @@
 
 # About
 
-[Pyrite](https://pyrite.video) is a WebRTC client ([Vue](https://v3.vuejs.org/)/[Express.js](http://expressjs.com/))
-for the [Galène](https://github.com/jech/galene) video conferencing server. Its purpose is to accomodate
-the need for a simple & efficient [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software)
-video-conferencing stack.
+[Pyrite](https://pyrite.video) is a [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software)
+web-based video-conferencing client & management tool for the [Galène](https://github.com/jech/galene)
+SFU. It consists of a [Vue 3](https://v3.vuejs.org/) UI and an [Express.js](http://expressjs.com/)
+backend.
 
 ## Getting Started
 
@@ -36,14 +36,6 @@ npx @garage44/pyrite
 [INFO] pyrite listening: 127.0.0.1:3030
 ```
 
-![Pyrite screenshot](./docs/pyrite.png "Pyrite")
-
-## Documentation
-
-Checkout the [documentation](./docs/index.md) for more information about topics like
-deployment and usage. Running Pyrite & Galène over a network requires additional
-configuration.
-
 ### Developers
 
 ```bash
@@ -56,3 +48,10 @@ nodemon admin/app.js
 # Vite development server with proxy
 npm run dev
 ```
+
+## Documentation
+
+Running Pyrite & Galène over a network requires additional configuration.
+Checkout the [documentation](./docs/index.md) for more information.
+
+![Pyrite screenshot](./docs/pyrite.png "Pyrite")
