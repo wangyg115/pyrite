@@ -13,21 +13,23 @@
             <section>
                 <form>
                     <FieldText
-                        v-model="$s.user.username"
+                        v-model="v$.user.username.$model"
                         autocomplete="username"
                         :autofocus="$route.params.groupId"
                         :label="$t('username')"
                         name="username"
                         placeholder="Alice, Bob, Carol..."
+                        :validation="v$.user.username"
                     />
 
                     <FieldText
-                        v-model="$s.user.password"
+                        v-model="v$.user.password.$model"
                         autocomplete="password"
                         :label="$t('password')"
                         name="pasword"
                         placeholder="Alice, Bob, Carol..."
                         type="password"
+                        :validation="v$.user.password"
                     />
 
                     <div class="field presence-setup">
@@ -56,9 +58,7 @@
                             />
                         </div>
                         <div class="verify ucfl">
-                            <RouterLink
-                                :to="{name: 'conference-settings', params: {tabId: 'devices'}}"
-                            >
+                            <RouterLink :to="{name: 'conference-settings', params: {tabId: 'devices'}}">
                                 {{ $t('verify') }}
                             </RouterLink>
                             {{ $t('microphone & video settings') }}
@@ -70,7 +70,7 @@
                 <button
                     class="btn btn-menu tooltip tooltip-left"
                     :data-tooltip="$s.group.locked ? $t('join locked group') : $t('join group')"
-                    :disabled="connecting"
+                    :disabled="btnLoginDisabled"
                     @click="login"
                 >
                     <Icon class="icon-small" name="Login" />
@@ -81,26 +81,80 @@
 </template>
 
 <script>
+import {required} from '@vuelidate/validators'
+import useVuelidate from '@vuelidate/core'
+
 export default {
+    computed: {
+        btnLoginDisabled() {
+            if (this.connecting || !this.$s.user.username || !this.$s.user.password) {
+                return true
+            }
+            // Server validation should not disable the login button.
+            const hasErrors = this.v$.$silentErrors.filter((v) => v.$validator !== '$externalResults').length > 0
+            return hasErrors
+        },
+    },
+    setup() {
+        return {v$: useVuelidate()}
+    },
     data() {
         return {
             connecting: false,
+            user: this.$s.user,
+            vuelidateExternalResults: {
+                user: {
+                    password: [],
+                    username: [],
+                },
+            },
         }
     },
     methods: {
         async login() {
+            this.v$.$clearExternalResults()
             this.connecting = true
             try {
-                this.app.store.save()
                 await this.$m.sfu.connect()
+            } catch(err) {
+                if (err === 'group is locked') {
+                    this.app.notifier.notify({level: 'error', message: app.$t('group {group} is locked; only maintainers may login', {group: app.$s.group.name})})
+                    this.vuelidateExternalResults.user.username = [this.$t('group {group} has been locked')]
+                    this.vuelidateExternalResults.user.password = [this.$t('group {group} has been locked')]
+                } else if (err === 'not authorised') {
+                    const message = app.$t('invalid credentials for group {group}', {group: app.$s.group.name})
+                    this.app.notifier.notify({level: 'error', message})
+                    this.vuelidateExternalResults.user.username = [message]
+                    this.vuelidateExternalResults.user.password = [message]
+                }
+
+                this.v$.$validate()
+
             } finally {
                 this.connecting = false
+                if (!this.v$.$invalid) {
+                    // Save credentials for the next time.
+                    this.app.store.save()
 
+                    app.$s.group.connected = true
+                    app.router.replace({
+                        name: 'conference-groups-connected',
+                        params: {groupId: app.router.currentRoute.value.params.groupId},
+                    })
+                }
             }
         },
     },
     async mounted() {
         await this.$m.media.queryDevices()
+    },
+    validations() {
+        return  {
+            user: {
+                password: {required},
+                username: {required},
+            },
+        }
     },
 
 }

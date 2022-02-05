@@ -139,6 +139,7 @@ class ModelSFU {
 
         let url = `ws${location.protocol === 'https:' ? 's' : ''}://${location.host}/ws`
         app.logger.info(`connecting websocket ${url}`)
+
         try {
             await this.connection.connect(url)
             // Share initial status with other users.
@@ -149,6 +150,11 @@ class ModelSFU {
                 message: e.message ? e.message : "Couldn't connect to " + url,
             })
         }
+
+        return new Promise((resolve, reject) => {
+            this.promiseConnect = {reject, resolve}
+        })
+
     }
 
     delLocalMedia() {
@@ -354,11 +360,8 @@ class ModelSFU {
 
         switch(kind) {
         case 'fail':
-            if (message === 'group is locked') {
-                app.notifier.notify({level: 'error', message: app.$t('group {group} is locked; only maintainers may login', {group: app.$s.group.name})})
-            } else if (message === 'not authorised') {
-                app.notifier.notify({level: 'error', message: app.$t('invalid credentials for group {group}', {group: app.$s.group.name})})
-            }
+            this.promiseConnect.reject(message)
+            this.promiseConnect = null
 
             // Closing the connection will trigger a 'leave' message,
             // which handles the accompanying UI flow.
@@ -368,11 +371,8 @@ class ModelSFU {
             this.disconnect()
             return
         case 'join':
-            app.$s.group.connected = true
-            app.router.replace({
-                name: 'conference-groups-connected',
-                params: {groupId: app.router.currentRoute.value.params.groupId},
-            })
+            this.promiseConnect.resolve(message)
+            this.promiseConnect = null
             break
         case 'change':
             if (status && status.locked) {

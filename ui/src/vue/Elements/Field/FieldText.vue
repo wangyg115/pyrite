@@ -1,5 +1,5 @@
 <template>
-    <div class="c-field-text field">
+    <div class="c-field-text field" :class="className">
         <label v-if="label" class="field-label" :for="name">{{ label }}</label>
         <div class="input-container">
             <input
@@ -25,6 +25,17 @@
                 <Icon class="icon icon-mini" :class="{active: visible}" name="Eye" />
             </div>
         </div>
+        <div v-if="validation" class="validation-message">
+            <template v-if="validation.$invalid && validation.$dirty">
+                <div
+                    v-for="error of validation.$silentErrors"
+                    :key="error.$propertyPath"
+                    class="error ucfl"
+                >
+                    {{ error.$message }}
+                </div>
+            </template>
+        </div>
         <div v-if="help" class="help">
             {{ help }}
         </div>
@@ -36,6 +47,18 @@ import Field from './field'
 import {nextTick} from 'vue'
 
 export default {
+    computed: {
+        className() {
+            const classes = {}
+            if (this.validation) {
+                classes.validation = true
+                if (this.validation.$invalid && this.validation.$dirty) {
+                    classes.invalid = true
+                }
+            }
+            return classes
+        },
+    },
     data() {
         return {
             visible: false,
@@ -54,6 +77,11 @@ export default {
                 return ['password', 'text'].includes(value)
             },
         },
+        validation: {
+            default: () => null,
+            required: false,
+            type: Object,
+        },
     },
     watch: {
         async 'autofocus'(value) {
@@ -70,7 +98,30 @@ export default {
 .c-field-text {
     display: flex;
     flex-direction: column;
-    overflow: auto;
+    position: relative;
+
+    &.validation {
+
+        &.invalid {
+
+            .input-container {
+
+                input {
+                    border-bottom: var(--border) solid var(--error-color);
+                }
+            }
+        }
+
+        .validation-message {
+            bottom: calc(-1 * var(--spacer));
+            color: var(--error-color);
+            flex: 1;
+            font-size: var(--text-s);
+            height: var(--space1);
+            min-height: var(--space-1);
+            position: absolute;
+        }
+    }
 
     .input-container {
         align-items: center;
