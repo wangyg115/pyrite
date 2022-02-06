@@ -79,7 +79,7 @@ export default {
 
     input[type="range"] {
         appearance: none;
-        background: var(--grey-1);
+        background: var(--grey-8);
         border: 1px solid var(--grey-5);
         height: 10px;
         margin: 0;

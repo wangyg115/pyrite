@@ -84,8 +84,7 @@ export default {
          * Audio toggle for down streams that have audio.
          */
         audioEnabled() {
-            const audioEnabled = !!(this.modelValue.direction === 'down' && (this.modelValue.hasAudio && this.stream))
-            return audioEnabled
+            return !!(this.modelValue.hasAudio && this.stream)
         },
         fullscreenEnabled() {
             if (this.$refs.media) {
@@ -424,11 +423,9 @@ export default {
         width: 100%;
 
         .soundmeter {
-            background: var(--grey-3);
-            border: 0;
             height: var(--space-3);
-            margin: 0;
-            width: 1px;
+            margin: 1px;
+            width: 8px;
         }
 
         .buttons {
