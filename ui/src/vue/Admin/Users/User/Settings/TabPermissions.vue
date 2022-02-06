@@ -21,7 +21,7 @@ export default defineComponent({
         },
     },
     async mounted() {
-        if (this.$s.admin.authenticated) {
+        if (this.$s.admin.authenticated && this.$s.admin.permission) {
             this.loadGroups()
         }
     },

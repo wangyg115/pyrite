@@ -20,7 +20,7 @@
         </RouterLink>
 
         <button
-            v-if="$s.admin.authenticated"
+            v-if="$s.admin.authenticated && $s.admin.permission"
             class="btn btn-menu btn-logout tooltip"
             :data-tooltip="$t('log out')"
             @click="logout"

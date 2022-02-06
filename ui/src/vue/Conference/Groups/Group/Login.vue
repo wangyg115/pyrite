@@ -95,9 +95,7 @@ export default {
             return hasErrors
         },
     },
-    setup() {
-        return {v$: useVuelidate()}
-    },
+
     data() {
         return {
             connecting: false,
@@ -152,6 +150,9 @@ export default {
     },
     async mounted() {
         await this.$m.media.queryDevices()
+    },
+    setup() {
+        return {v$: useVuelidate()}
     },
     validations() {
         return  {

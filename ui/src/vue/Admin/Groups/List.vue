@@ -1,5 +1,5 @@
 <template>
-    <section v-if="$s.admin.authenticated" class="c-admin-groups presence">
+    <section v-if="$s.admin.authenticated && $s.admin.permission" class="c-admin-groups presence">
         <div class="actions">
             <button
                 class="btn tooltip tooltip-right"

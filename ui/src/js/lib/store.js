@@ -47,6 +47,7 @@ const volatileState = {
         authenticated: null,
         group: null,
         groups: [],
+        permission: false,
         user: null,
         users: [],
     },

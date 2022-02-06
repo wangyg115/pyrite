@@ -1,4 +1,4 @@
-import {authContext, noAuthContext} from '../lib/profile.js'
+import {authContext, noAuthContext, noPermissionContext} from '../lib/profile.js'
 import {loadUser, loadUsers} from '../lib/user.js'
 
 export default function(app) {
@@ -10,19 +10,18 @@ export default function(app) {
         if (process.env.PYRITE_NO_SECURITY) {
             app.logger.warn('session security is disabled (PYRITE_NO_SECURITY)')
             context = await authContext()
-        } else if (session.userid) {
+            return res.end(JSON.stringify(context))
+        }
+
+        if (session.userid) {
             const user = await loadUser(session.userid)
-            if (!user) {
-                context = await noAuthContext()
+            if (!user || !user.admin) {
+                context = noAuthContext()
             } else {
-                if (user.admin) {
-                    context = await authContext()
-                } else {
-                    context = await noAuthContext()
-                }
+                context = await authContext()
             }
         } else {
-            context = await noAuthContext()
+            context = noAuthContext()
         }
         res.end(JSON.stringify(context))
     })
@@ -34,17 +33,21 @@ export default function(app) {
         let context
 
         if (!user) {
-            context = await noAuthContext()
+            context = noAuthContext()
             res.end(JSON.stringify(context))
         } else {
             const password = req.body.password
-            if (password === user.password) {
-                const session = req.session
-                session.userid = user.id
-                context = await authContext()
 
+            if (password === user.password) {
+                if (user.admin) {
+                    const session = req.session
+                    session.userid = user.id
+                    context = await authContext()
+                } else {
+                    context = noPermissionContext()
+                }
             } else {
-                context = await noAuthContext()
+                context = noAuthContext()
             }
         }
         res.end(JSON.stringify(context))
@@ -52,7 +55,7 @@ export default function(app) {
 
     app.get('/api/logout',async(req, res) => {
         req.session.destroy()
-        const context = await noAuthContext()
+        const context = noAuthContext()
         res.end(JSON.stringify(context))
     })
 }

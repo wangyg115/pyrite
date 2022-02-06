@@ -132,13 +132,13 @@ export default {
         },
     },
     async mounted() {
-        if (this.$s.admin.authenticated) {
+        if (this.$s.admin.authenticated && this.$s.admin.permission) {
             this.loadUsers()
         }
     },
     watch: {
         '$s.admin.authenticated': async function(authenticated) {
-            if (authenticated) this.loadUsers()
+            if (authenticated && this.$s.admin.permission) this.loadUsers()
         },
     },
 }
