@@ -98,7 +98,7 @@ export default {
 
 <style lang="scss">
 .icon {
-    fill: currentColor;
+    fill: currentcolor;
     height: 40px;
     width: 40px;
 
