@@ -25,18 +25,6 @@ export default [{
                     path: '/admin/groups/settings/:groupId?',
                     props: true,
                 },
-                {
-                    component: GroupSettings,
-                    name: 'admin-groups-stats',
-                    path: '/admin/groups/stats/:groupId?',
-                    props: true,
-                },
-                {
-                    component: GroupSettings,
-                    name: 'admin-groups-recordings',
-                    path: '/admin/groups/recordings/:groupId?',
-                    props: true,
-                },
             ],
             component: Groups,
             name: 'admin-groups',

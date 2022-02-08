@@ -21,37 +21,17 @@
             <RouterLink
                 active-class="active-group"
                 class="btn btn-menu tab tooltip"
-                :class="{active: tabId === 'op'}"
-                :data-tooltip="$t('operator permission')"
-                :to="routeSettings('op')"
+                :class="{active: tabId === 'permissions'}"
+                :data-tooltip="$t('permissions')"
+                :to="routeSettings('permissions')"
             >
                 <Icon class="icon-small" name="Operator" />
-            </RouterLink>
-            <RouterLink
-                active-class="active-group"
-                class="btn btn-menu tab tooltip"
-                :class="{active: tabId === 'presenter'}"
-                :data-tooltip="$t('presenter permission')"
-                :to="routeSettings('presenter')"
-            >
-                <Icon class="icon-small" name="Present" />
-            </RouterLink>
-            <RouterLink
-                active-class="active-group"
-                class="btn btn-menu tab tooltip"
-                :class="{active: tabId === 'other'}"
-                :data-tooltip="$t('passive permission')"
-                :to="routeSettings('other')"
-            >
-                <Icon class="icon-small" name="OtherPermissions" />
             </RouterLink>
         </ul>
 
         <div class="tabs-content">
             <TabMisc v-if="tabId === 'misc'" />
-            <TabPermissions v-else-if="tabId === 'op'" category="op" />
-            <TabPermissions v-else-if="tabId === 'presenter'" category="presenter" />
-            <TabPermissions v-else-if="tabId === 'other'" category="other" />
+            <TabPermissions v-else-if="tabId === 'permissions'" ref="" />
 
             <div class="actions">
                 <button

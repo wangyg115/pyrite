@@ -42,12 +42,57 @@ export function groupTemplate(groupId = null) {
     return template
 }
 
+export async function loadGroupPermissions(groupName) {
+    const permissions = {op: [], other: [], presenter: []}
+    // Permissions from a group perspective; transformed from users.json
+    const users = await loadUsers()
+    for (const user of users) {
+        for (const permissionName of Object.keys(user.groups)) {
+            for (const _groupName of user.groups[permissionName]) {
+                if (groupName === _groupName) {
+                    permissions[permissionName].push(user.name)
+                }
+            }
+        }
+    }
+    return permissions
+}
+
+export async function saveGroupPermissions(groupName, groupPermissions) {
+    // Save the group permissions to users.json and
+    // sync back to the group files afterwards.
+    const users = await loadUsers()
+    for (const permissionName of Object.keys(groupPermissions)) {
+
+        for (const user of users) {
+            let userGroupMatch = false
+            for (const username of groupPermissions[permissionName]) {
+                if (user.name === username) {
+                    userGroupMatch = true
+                    if (!user.groups[permissionName].includes(groupName)) {
+                        user.groups[permissionName].push(groupName)
+                    }
+                }
+            }
+
+            if (!userGroupMatch) {
+                if (user.groups[permissionName].includes(groupName)) {
+                    user.groups[permissionName].splice(user.groups[permissionName].indexOf(groupName), 1)
+                }
+            }
+        }
+    }
+
+    await saveUsers(users)
+}
+
 export async function loadGroup(groupName) {
     app.logger.debug(`load group ${groupName}`)
     const groupFile = path.join(app.config.sfu.path.groups, `${groupName}.json`)
     const exists = await fs.pathExists(groupFile)
     if (!exists) return null
     const groupData = JSON.parse(await fs.promises.readFile(groupFile, 'utf8'))
+    groupData._permissions = await loadGroupPermissions(groupName)
     groupData._name = groupName
     groupData._newName = groupName
     groupData._delete = false
@@ -66,6 +111,7 @@ export async function loadGroups() {
     const groupsData = []
     for (const [index, groupName] of groupNames.entries()) {
         const data = JSON.parse(fileData[index])
+        data._permissions = await loadGroupPermissions(groupName)
         data._name = groupName
         data._newName = groupName
         data._delete = false
@@ -84,6 +130,10 @@ export async function pingGroups(groupNames) {
 export async function saveGroup(groupName, data) {
     const saveData = JSON.parse(JSON.stringify(data))
 
+    await saveGroupPermissions(groupName, saveData._permissions)
+
+    // All actions not directly related to the Galene file format
+    // should go before removing the private variables.
     for (const key of Object.keys(saveData)) {
         if (key.startsWith('_')) delete saveData[key]
     }

@@ -424,7 +424,7 @@ export default {
 
         .soundmeter {
             height: var(--space-3);
-            margin: 1px;
+            margin: 0;
             width: 8px;
         }
 

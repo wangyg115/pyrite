@@ -12,42 +12,60 @@
             <RouterLink
                 active-class="active-group"
                 class="btn btn-menu tab tooltip"
-                :class="{active: $route.name === 'admin-groups-settings'}"
+                :class="{active: tabId === 'misc'}"
                 :data-tooltip="$t('group settings')"
-                :to="groupRoute('admin-groups-settings')"
+                :to="routeSettings('misc')"
             >
-                <Icon class="icon-small" name="Settings" />
+                <Icon class="icon-small" name="SettingsMisc" />
             </RouterLink>
 
             <RouterLink
                 active-class="active-group"
-                class="btn btn-menu tooltip"
-                :class="{active: $route.name === 'admin-groups-stats'}"
+                class="btn btn-menu tab tooltip"
+                :class="{active: tabId === 'access'}"
+                :data-tooltip="$t('access')"
+                :to="routeSettings('access')"
+            >
+                <Icon class="icon-small" name="Access" />
+            </RouterLink>
+
+            <RouterLink
+                active-class="active-group"
+                class="btn btn-menu tab tooltip"
+                :class="{active: tabId === 'permissions'}"
+                :data-tooltip="$t('permissions')"
+                :to="routeSettings('permissions')"
+            >
+                <Icon class="icon-small" name="Operator" />
+            </RouterLink>
+
+            <RouterLink
+                active-class="active-group"
+                class="btn btn-menu tab tooltip"
+                :class="{active: tabId === 'stats'}"
                 :data-tooltip="$t('connection statistics')"
-                :to="groupRoute('admin-groups-stats')"
+                :to="routeSettings('stats')"
             >
                 <Icon class="icon-small" name="Stats" />
             </RouterLink>
 
             <RouterLink
                 active-class="active-group"
-                class="btn btn-menu tooltip"
-                :class="{active: $route.name === 'admin-groups-recordings'}"
+                class="btn btn-menu tab tooltip"
+                :class="{active: tabId === 'recordings'}"
                 :data-tooltip="$t('group recordings')"
-                :to="groupRoute('admin-groups-recordings')"
+                :to="routeSettings('recordings')"
             >
                 <Icon class="icon-small" name="Record" />
             </RouterLink>
         </ul>
 
         <div class="tabs-content">
-            <Stats v-if="$route.name === 'admin-groups-stats'" :group-id="groupId" />
-            <Recordings v-else-if="$route.name === 'admin-groups-recordings'" :group-id="groupId" />
-            <TabMisc v-else-if="tabId === 'misc'" />
+            <TabMisc v-if="tabId === 'misc'" />
             <TabAccess v-else-if="tabId === 'access'" />
-            <TabPermissions v-else-if="tabId === 'op'" category="op" />
-            <TabPermissions v-else-if="tabId === 'presenter'" category="presenter" />
-            <TabPermissions v-else-if="tabId === 'other'" category="other" />
+            <TabPermissions v-else-if="tabId === 'permissions'" />
+            <Stats v-else-if="tabId === 'stats'" :group-id="groupId" />
+            <Recordings v-else-if="tabId === 'recordings'" :group-id="groupId" />
 
             <div v-if="$route.name === 'admin-groups-settings'" class="actions">
                 <button
@@ -57,52 +75,6 @@
                 >
                     <Icon class="icon-small" name="Save" />
                 </button>
-
-                <RouterLink
-                    active-class="active-group"
-                    class="btn btn-menu tab tooltip"
-                    :class="{active: tabId === 'misc'}"
-                    :data-tooltip="$t('miscellaneous')"
-                    :to="routeSettings('misc')"
-                >
-                    <Icon class="icon-small" name="SettingsMisc" />
-                </RouterLink>
-                <RouterLink
-                    active-class="active-group"
-                    class="btn btn-menu tab tooltip"
-                    :class="{active: tabId === 'access'}"
-                    :data-tooltip="$t('access')"
-                    :to="routeSettings('access')"
-                >
-                    <Icon class="icon-small" name="Access" />
-                </RouterLink>
-                <RouterLink
-                    active-class="active-group"
-                    class="btn btn-menu tab tooltip"
-                    :class="{active: tabId === 'op'}"
-                    :data-tooltip="$t('operator permission')"
-                    :to="routeSettings('op')"
-                >
-                    <Icon class="icon-small" name="Operator" />
-                </RouterLink>
-                <RouterLink
-                    active-class="active-group"
-                    class="btn btn-menu tab tooltip"
-                    :class="{active: tabId === 'presenter'}"
-                    :data-tooltip="$t('presenter permission')"
-                    :to="routeSettings('presenter')"
-                >
-                    <Icon class="icon-small" name="Present" />
-                </RouterLink>
-                <RouterLink
-                    active-class="active-group"
-                    class="btn btn-menu tab tooltip"
-                    :class="{active: tabId === 'other'}"
-                    :data-tooltip="$t('passive permission')"
-                    :to="routeSettings('other')"
-                >
-                    <Icon class="icon-small" name="OtherPermissions" />
-                </RouterLink>
             </div>
         </div>
     </div>
@@ -124,13 +96,6 @@ export default defineComponent({
         },
     },
     methods: {
-        groupRoute(name) {
-            if (this.$s.admin.group) {
-                return {name, params: {groupId: this.groupId, tabId: 'misc'}}
-            } else {
-                return {name, params: {tabId: 'misc'}}
-            }
-        },
         routeSettings(tabId) {
             return {
                 params: {groupId: this.groupId},
@@ -140,7 +105,7 @@ export default defineComponent({
         },
         async saveGroup() {
             const group = await this.$m.group.saveGroup(this.groupId, this.$s.admin.group)
-            this.$router.push({name: 'admin-groups-settings', params: {groupId: group._name, tabId: this.$route.params.tabId}})
+            this.$router.push({name: 'admin-groups-settings', params: {groupId: group._name}, query: this.$route.query})
         },
     },
     props: {
