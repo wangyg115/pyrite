@@ -47,7 +47,7 @@
                     </div>
                 </div>
 
-                <div v-if="app.envenv.isFirefox" class="env-warning">
+                <div v-if="app.env.isFirefox" class="env-warning">
                     {{ app.env.browserName }} {{ $t('does not support this option') }}
                 </div>
             </div>
