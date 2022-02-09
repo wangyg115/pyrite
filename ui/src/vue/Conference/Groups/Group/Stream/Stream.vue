@@ -47,7 +47,7 @@
                     {{ label }}
                 </div>
                 <div
-                    v-if="audioEnabled" key=""
+                    v-if="audioEnabled && modelValue.direction === 'down'" key=""
                     class="volume-slider tooltip tooltip-left"
                     :data-tooltip="`${volume.value}% ${$t('audio volume')}`"
                 >
@@ -67,7 +67,6 @@
 
 <script>
 import Reports from './Reports.vue'
-import SoundMeter from '@/vue/Elements/SoundMeter.vue'
 
 export default {
     beforeUnmount() {
@@ -78,7 +77,7 @@ export default {
             this.$refs.media.srcObject = null
         }
     },
-    components: {Reports, SoundMeter},
+    components: {Reports},
     computed: {
         /**
          * Audio toggle for down streams that have audio.

@@ -32,6 +32,7 @@ import Notifications from '@/vue/Elements/Notifications.vue'
 import Notifier from './lib/notifier.js'
 import router from './router/router.js'
 import Store from './lib/store.js'
+import SoundMeter from '@/vue/Elements/SoundMeter.vue'
 
 class Pyrite extends EventEmitter {
 
@@ -119,6 +120,7 @@ class Pyrite extends EventEmitter {
         this.vm.component('FieldSlider', FieldSlider)
         this.vm.component('FieldText', FieldText)
         this.vm.component('Hint', Hint)
+        this.vm.component('SoundMeter', SoundMeter)
 
         this.vm.directive('click-outside', {
             beforeMount(el, binding) {

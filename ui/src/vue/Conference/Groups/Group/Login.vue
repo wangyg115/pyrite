@@ -149,6 +149,7 @@ export default {
         },
     },
     async mounted() {
+        await app.$m.media.getUserMedia(app.$s.devices)
         await this.$m.media.queryDevices()
     },
     setup() {
