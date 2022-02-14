@@ -1,6 +1,7 @@
 import {app} from '@/js/app.js'
 
 class ModelMedia {
+
     async getUserMedia(presence) {
         app.$s.mediaReady = false
         // Cleanup the old networked stream first:
@@ -11,8 +12,6 @@ class ModelMedia {
         if (this.localStream) {
             app.$m.sfu.delLocalMedia()
         }
-
-        await this.queryDevices()
 
         let selectedAudioDevice = false
         let selectedVideoDevice = false
@@ -52,7 +51,6 @@ class ModelMedia {
 
         try {
             this.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-
         } catch(message) {
             app.notifier.notify({level: 'error', message})
             return
@@ -68,7 +66,15 @@ class ModelMedia {
     }
 
     async queryDevices() {
-        let devices = await navigator.mediaDevices.enumerateDevices()
+        app.logger.info('querying for devices')
+        // The device labels stay empty when there is no media permission.
+        const stream = await this.getUserMedia()
+        // The device labels are only available in Firefox before tearing down the stream.
+        const devices = await navigator.mediaDevices.enumerateDevices()
+        for (const track of stream.getTracks()) {
+            track.stop()
+        }
+
         const labelnr = {audio: 1, cam: 1, mic: 1}
 
         const added = []

@@ -1,6 +1,9 @@
 <template>
     <div v-click-outside="toggleSelect.bind(this)" class="c-field-select field">
-        <label class="field-label uc" :for="name">{{ label }}</label>
+        <div class="label-container">
+            <label class="field-label uc" :for="name">{{ label }}</label>
+            <slot class="label-extra" name="header" />
+        </div>
 
         <div class="input-container">
             <div class="button-wrapper">
@@ -227,11 +230,6 @@ export default {
     max-width: 350px;
     width: 100%;
 
-    label {
-        display: inline-block;
-        font-family: var(--font-secondary);
-    }
-
     .input-container {
         display: flex;
         flex-direction: column;
@@ -277,7 +275,7 @@ export default {
         .options {
             background: var(--grey-3);
             border: 1px solid var(--grey-4);
-            box-shadow: 0 0 var(--border) rgb(var(--grey-2) 0.8);
+            box-shadow: 0 0 var(--spacer) var(--space-05) var(--grey-2);
             margin-top: calc(var(--space-2) + 1px);
             max-height: 162px;
             max-width: inherit;

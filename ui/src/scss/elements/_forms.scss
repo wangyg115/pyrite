@@ -1,9 +1,17 @@
 .field {
     padding: var(--spacer) 0;
 
+    .label-container {
+        align-items: center;
+        display: flex;
+        gap: var(--spacer);
+    }
+
     label,
     .field-label {
         color: var(--grey-9);
+        display: inline-block;
+        font-family: var(--font-secondary);
     }
 
     .help {
@@ -16,11 +24,16 @@
 .no-options-warning {
     background: var(--grey-2);
     border: 2px dashed var(--grey-5);
+    flex: 1;
     font-size: var(--text-s);
+    margin: var(--spacer) 0;
     padding: var(--spacer);
+    width: 100%;
 
     .explanation {
-        margin-top: var(--spacer);
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--spacer) * 0.5);
     }
 }
 

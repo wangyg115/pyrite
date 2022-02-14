@@ -23,38 +23,6 @@
             name="resolution"
             :options="resolutionOptions"
         />
-        <div class="flex">
-            <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1498512 -->
-            <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1152401 -->
-            <FieldSelect
-                v-if="$s.devices.audio.options.length && !app.env.isFirefox"
-                v-model="$s.devices.audio.selected"
-                :help="$t('verify your audio configuration with the test sound')"
-                :label="$t('audio output')"
-                name="audio"
-                :options="$s.devices.audio.options"
-            />
-            <div v-else class="no-options-warning">
-                <div class="help ucfl">
-                    {{ $t('verify your audio configuration with the test sound') }}
-                </div>
-                <div class="explanation">
-                    <div class="ucfl">
-                        {{ $t('no audio output options found.') }}
-                    </div>
-                    <div class="ucfl">
-                        {{ $t('the system configuration determines the audio output device.') }}
-                    </div>
-                </div>
-
-                <div v-if="app.env.isFirefox" class="env-warning">
-                    {{ app.env.browserName }} {{ $t('does not support this option') }}
-                </div>
-            </div>
-            <button class="btn" :disabled="sound.audio.playing" @click="soundAudio.play()">
-                <Icon class="icon-small" name="Play" />
-            </button>
-        </div>
 
         <FieldSelect
             v-model="$s.devices.mic.selected"
@@ -67,13 +35,43 @@
         <div class="soundmeter">
             <SoundMeter v-if="streamId && stream" :stream="stream" :stream-id="streamId" />
         </div>
+
+        <div class="output-config">
+            <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1498512 -->
+            <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1152401 -->
+            <FieldSelect
+                v-if="$s.devices.audio.options.length && !app.env.isFirefox"
+                v-model="$s.devices.audio.selected"
+                :help="$t('verify your audio configuration with the test sound')"
+                :label="$t('audio output')"
+                name="audio"
+                :options="$s.devices.audio.options"
+            >
+                <template #header>
+                    <button class="btn" :disabled="sound.audio.playing" @click="soundAudio.play()">
+                        <Icon class="icon-small" name="Play" />
+                    </button>
+                </template>
+            </FieldSelect>
+            <div v-else class="field">
+                <div class="label-container">
+                    <label class="field-label uc">{{ $t('audio output') }}</label>
+                    <button class="btn" :disabled="sound.audio.playing" @click="soundAudio.play()">
+                        <Icon class="icon-small" name="Play" />
+                    </button>
+                </div>
+
+                <div class="help ucfl">
+                    {{ $t('verify your audio configuration with the test sound') }}
+                </div>
+            </div>
+        </div>
     </section>
 </template>
 
 <script>
 import {nextTick} from 'vue'
 import Sound from '@/js/lib/sound.js'
-import SoundMeter from '@/vue/Elements/SoundMeter.vue'
 import Stream from '@/vue/Conference/Groups/Group/Stream/Stream.vue'
 
 export default {
@@ -82,7 +80,7 @@ export default {
             this.$m.sfu.delLocalMedia()
         }
     },
-    components: {SoundMeter, Stream},
+    components: {Stream},
     data() {
         return {
             description: null,
@@ -142,10 +140,11 @@ export default {
         },
     },
     async mounted() {
+        await this.$m.media.queryDevices()
         this.soundAudio = new Sound(this.sound.audio)
 
         // Not a media stream yet? Create one for the audio settings
-        if (!this.$m.media.localStream) {
+        if (!this.$s.group.connected) {
             const res = await this.$m.media.getUserMedia()
             if (!res) {
                 this.app.notifier.notify({level: 'error', message: 'Unable to find a valid device'})
@@ -206,6 +205,19 @@ export default {
             right: 0;
             width: 180px;
         }
+    }
+
+    .soundmeter {
+
+        canvas {
+            margin: 0;
+        }
+    }
+
+    .output-config {
+        align-content: center;
+        align-items: center;
+        display: flex;
     }
 }
 

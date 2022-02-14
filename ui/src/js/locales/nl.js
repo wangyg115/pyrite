@@ -145,7 +145,6 @@ export default {
     'switch screensharing': 'zet schermdelen',
     system: 'systeem',
     'the group will start locked and stay locked whenever there are no clients with operator privileges': 'de groep begint en blijft vergrendeld als er geen deelnemers meer zijn met operator privileges',
-    'the system configuration determines the audio output device.': 'de systeem configuratie bepaalt het audio uitvoer apparaat.',
     theme: 'thema',
     type: 'type',
     'type /help for help': 'type /help voor hulp',

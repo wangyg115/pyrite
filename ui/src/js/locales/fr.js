@@ -144,7 +144,6 @@ export default {
     'switch screensharing': 'changer le partage d’écran',
     system: 'système',
     'the group will start locked and stay locked whenever there are no clients with operator privileges': 'le groupe démarrera verrouillé et restera verrouillé chaque fois qu’il n’y aura pas de clients avec des privilèges d’opérateur',
-    'the system configuration determines the audio output device.': 'la configuration du système détermine le périphérique de sortie audio.',
     theme: 'thème',
     type: 'type',
     'type /help for help': 'tapez /help pour obtenir de l’aide',

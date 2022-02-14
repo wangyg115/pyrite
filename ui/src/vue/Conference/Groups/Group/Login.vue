@@ -34,29 +34,48 @@
 
                     <div class="field presence-setup">
                         <label class="uc">{{ $t('presence') }}</label>
-                        <div class="cam">
-                            <FieldCheckbox v-model="$s.devices.cam.enabled" />
-                            <FieldSelect
-                                v-model="$s.devices.cam.selected"
-                                :disabled="!$s.devices.cam.enabled"
-                                :help="$t('select the video device')"
-                                :label="$t('camera')"
-                                name="video"
-                                :options="$s.devices.cam.options"
-                            />
+                        <div class="media">
+                            <div class="media-option">
+                                <FieldSelect
+                                    v-model="$s.devices.cam.selected"
+                                    :disabled="!$s.devices.cam.enabled"
+                                    :help="$t('select the video device')"
+                                    :label="$t('camera')"
+                                    name="video"
+                                    :options="$s.devices.cam.options"
+                                >
+                                    <template #header>
+                                        <FieldCheckbox v-model="$s.devices.cam.enabled" />
+                                    </template>
+                                </FieldSelect>
+                            </div>
+
+                            <div class="media-option">
+                                <FieldSelect
+                                    v-model="$s.devices.mic.selected"
+                                    :disabled="!$s.devices.mic.enabled"
+                                    :help="$t('select the microphone device')"
+                                    :label="$t('microphone')"
+                                    name="audio"
+                                    :options="$s.devices.mic.options"
+                                >
+                                    <template #header>
+                                        <FieldCheckbox v-model="$s.devices.mic.enabled" />
+                                    </template>
+                                </FieldSelect>
+                            </div>
+
+                            <div v-if="!app.env.isFirefox" class="media-option">
+                                <FieldSelect
+                                    v-model="$s.devices.audio.selected"
+                                    :help="app.env.isFirefox ? `${app.env.browserName} ${$t('does not support this option')}` : $t('select the microphone device')"
+                                    :label="$t('audio output')"
+                                    name="audio"
+                                    :options="$s.devices.audio.options"
+                                />
+                            </div>
                         </div>
 
-                        <div class="mic">
-                            <FieldCheckbox v-model="$s.devices.mic.enabled" />
-                            <FieldSelect
-                                v-model="$s.devices.mic.selected"
-                                :disabled="!$s.devices.mic.enabled"
-                                :help="$t('select the microphone device')"
-                                :label="$t('microphone')"
-                                name="audio"
-                                :options="$s.devices.mic.options"
-                            />
-                        </div>
                         <div class="verify ucfl">
                             <RouterLink :to="{name: 'conference-settings', params: {tabId: 'devices'}}">
                                 {{ $t('verify') }}
@@ -149,7 +168,6 @@ export default {
         },
     },
     async mounted() {
-        await app.$m.media.getUserMedia(app.$s.devices)
         await this.$m.media.queryDevices()
     },
     setup() {
@@ -175,37 +193,32 @@ export default {
 
     .presence-setup {
 
-        label {
-            font-family: var(--font-secondary);
-        }
-
-        .mic,
-        .cam {
-            align-items: center;
-            background: var(--grey-4);
-            border: 2px solid var(--grey-4);
+        .media {
             display: flex;
-            margin: var(--space-1) 0;
-            padding: var(--spacer);
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: var(--space-1);
 
-            .c-field-checkbox {
-                padding-left: 0;
-                padding-right: var(--spacer);
+            .media-option {
+                align-items: center;
+                display: flex;
+                width: calc(50% - var(--spacer));
 
-                label {
-                    margin-right: 0;
+                .field {
+                    background: var(--grey-4);
+                    padding: var(--spacer);
                 }
             }
         }
 
-        .c-field-select {
-            padding: 0;
+        label {
+            font-family: var(--font-secondary);
         }
 
         .verify {
             font-style: italic;
             font-weight: 600;
-            margin-bottom: var(--space-2);
+            margin-top: var(--space-1);
         }
     }
 }

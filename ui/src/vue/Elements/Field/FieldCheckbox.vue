@@ -1,7 +1,7 @@
 <template>
     <div class="c-field-checkbox field">
         <div class="checkbox-row">
-            <div class="field-label">
+            <div v-if="label" class="field-label">
                 {{ label }}
             </div>
             <label class="switch" :class="elementclass" :for="name">
