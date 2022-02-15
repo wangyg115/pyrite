@@ -106,7 +106,7 @@ import useVuelidate from '@vuelidate/core'
 export default {
     computed: {
         btnLoginDisabled() {
-            if (this.connecting || !this.$s.user.username || !this.$s.user.password) {
+            if (this.busy || !this.$s.user.username || !this.$s.user.password) {
                 return true
             }
             // Server validation should not disable the login button.
@@ -117,7 +117,7 @@ export default {
 
     data() {
         return {
-            connecting: false,
+            busy: false,
             user: this.$s.user,
             vuelidateExternalResults: {
                 user: {
@@ -132,7 +132,7 @@ export default {
             this.vuelidateExternalResults.user.username = []
             this.vuelidateExternalResults.user.password = []
 
-            this.connecting = true
+            this.busy = true
             try {
                 await this.$m.sfu.connect()
 
@@ -153,7 +153,7 @@ export default {
                 }
             }
 
-            this.connecting = false
+            this.busy = false
             if (this.v$.$invalid) return
 
             // Save credentials for the next time.
@@ -168,7 +168,9 @@ export default {
         },
     },
     async mounted() {
+        this.busy = true
         await this.$m.media.queryDevices()
+        this.busy = false
     },
     setup() {
         return {v$: useVuelidate()}
