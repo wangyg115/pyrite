@@ -1,10 +1,9 @@
-import app from '../app.js'
-
 import apiDashboard from '../api/dashboard.js'
 import apiGroups from '../api/groups.js'
 import apiProfile from '../api/profile.js'
 import apiRecordings from '../api/recordings.js'
 import apiUsers from '../api/users.js'
+import app from '../app.js'
 
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
@@ -20,6 +19,7 @@ import sessions from 'express-session'
 const endpointAllowList = [
     '/api/context',
     '/api/login',
+    '/api/groups/public',
 ]
 
 export async function authMiddleware(req, res, next) {

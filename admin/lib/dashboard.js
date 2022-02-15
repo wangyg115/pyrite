@@ -8,5 +8,4 @@ export async function loadStats(groupId) {
     headers.append('Authorization', authHeader)
     const stats = await (await fetch(`${app.settings.sfu.url}/stats.json`, {headers})).json()
     return stats.find((i) => i.name === groupId)
-
 }

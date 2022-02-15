@@ -10,6 +10,22 @@ import {loadUsers, saveUsers} from './user.js'
 
 const ROLES = ['op', 'other', 'presenter']
 
+// Public group data Exposed on /api/groups/public
+const PUBLIC_GROUP_FIELDS = [
+    'allow-anonymous',
+    'allow-recording',
+    'allow-subgroups',
+    'autokick',
+    'autolock',
+    'codecs',
+    'comment',
+    'contact',
+    'description',
+    'displayName',
+    'max-clients',
+    'max-history-age',
+]
+
 export function groupTemplate(groupId = null) {
     const template = {
         _name: groupId ? groupId : uniqueNamesGenerator({
@@ -100,8 +116,10 @@ export async function loadGroup(groupName) {
     return groupData
 }
 
-export async function loadGroups() {
+export async function loadGroups({publicEndpoint = true} = {}) {
     app.logger.debug(`load groups`)
+    // Contains clientCount; mix it with the Pyrite group info.
+    let galeneGroups = await (await fetch(`${app.settings.sfu.url}/public-groups.json`)).json()
     const files = await globby(path.join(app.config.sfu.path.groups, '**', '*.json'))
     const fileData = await Promise.all(files.map((i) => fs.promises.readFile(i, 'utf8')))
     const groupNames = files.map((i) => {
@@ -110,13 +128,36 @@ export async function loadGroups() {
 
     const groupsData = []
     for (const [index, groupName] of groupNames.entries()) {
-        const data = JSON.parse(fileData[index])
-        data._permissions = await loadGroupPermissions(groupName)
-        data._name = groupName
-        data._newName = groupName
-        data._delete = false
-        data._unsaved = false
+        const groupData = JSON.parse(fileData[index])
+        let data = {}
+
+        if (publicEndpoint) {
+            // name, description, clientCount
+            for (const [key, value] of Object.entries(groupData)) {
+                if (key === 'public' && value === false) {
+                    continue
+                }
+
+                if (PUBLIC_GROUP_FIELDS.includes(key)) {
+                    data[key] = value
+                }
+            }
+        } else {
+            data = groupData
+            data._permissions = await loadGroupPermissions(groupName)
+            data._name = groupName
+            data._newName = groupName
+            data._delete = false
+            data._unsaved = false
+        }
+
+        const galeneGroup = galeneGroups.find((i) => i.name === groupName)
+        if (galeneGroup) {
+            Object.assign(data, galeneGroup)
+        }
+
         groupsData.push(data)
+
     }
 
     return {groupNames, groupsData}

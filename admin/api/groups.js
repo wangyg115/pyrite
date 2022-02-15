@@ -11,6 +11,12 @@ export default function(app) {
         res.end(JSON.stringify(groupsData))
     })
 
+    app.get('/api/groups/public', async function(req, res) {
+        const {groupsData, groupNames} = await loadGroups({publicEndpoint: true})
+        await pingGroups(groupNames)
+        res.end(JSON.stringify(groupsData))
+    })
+
     app.get('/api/groups/template', async function(req, res) {
         res.end(JSON.stringify(groupTemplate()))
     })
