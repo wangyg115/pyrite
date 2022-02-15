@@ -357,7 +357,6 @@ class ModelSFU {
 
     async onJoined(kind, group, perms, message, status) {
         app.logger.debug(`[onJoined] ${kind}/${group}`)
-
         switch(kind) {
         case 'fail':
             this.promiseConnect.reject(message)
@@ -371,10 +370,13 @@ class ModelSFU {
             this.disconnect()
             return
         case 'join':
+            app.$s.permissions = perms
             this.promiseConnect.resolve(message)
             this.promiseConnect = null
             break
         case 'change':
+            app.$s.permissions = perms
+
             if (status && status.locked) {
                 app.$s.group.locked = true
                 // A custom message is sent along:
@@ -387,7 +389,6 @@ class ModelSFU {
                 app.notifier.message('unlock', {group})
             }
 
-            app.$s.permissions = perms
             app.logger.debug(`permissions: ${JSON.stringify(perms)}`)
             if(kind === 'change')
                 return
