@@ -117,6 +117,11 @@ class ModelSFU {
         })
     }
 
+    clearChat() {
+        this.app.logger.debug('clearing chat from remote')
+        this.$s.chat.channels.main.messages = []
+    }
+
     async connect(username, password) {
         if(this.connection && this.connection.socket) {
             this.connection.close()
@@ -130,6 +135,8 @@ class ModelSFU {
             this.connection.join(groupName, username, password)
         }
 
+        this.connection.onchat = this.onMessage.bind(this)
+        this.connection.onclearchat = this.clearChat.bind(this)
         this.connection.onclose = this.onClose.bind(this)
         this.connection.ondownstream = this.onDownStream.bind(this)
         this.connection.onuser = this.onUser.bind(this)
@@ -403,6 +410,35 @@ class ModelSFU {
         if(this.connection.permissions.present && !this.findUpMedia('camera')) {
             await app.$m.media.getUserMedia(app.$s.devices)
         }
+    }
+
+    async onMessage(sourceId, destinationId, nick, time, privileged, history, kind, message) {
+        if (!kind) kind = 'default'
+        let channelId
+        // Incoming message for the main channel
+        if (!destinationId) {
+            channelId = 'main'
+            app.$s.chat.channels.main.messages.push({kind, message, nick, time})
+        }
+        // This is a private message
+        else if (destinationId && sourceId) {
+            channelId = sourceId
+            const activeUser = this.$s.users.find((user) => user.id === sourceId)
+            if (activeUser) {
+                if (!app.$s.chat.channels[sourceId]) {
+                    app.$s.chat.channels[sourceId] = {
+                        id: sourceId,
+                        messages: [],
+                        name: nick,
+                        unread: 0,
+                    }
+                }
+
+                app.$s.chat.channels[sourceId].messages.push({kind, message, nick, time})
+            }
+        }
+
+        app.emit('chat:message', {channelId})
     }
 
     onUser(id, kind, permission, data) {

@@ -1,7 +1,7 @@
 <template>
     <div v-click-outside="toggleSelect.bind(this)" class="c-field-select field">
         <div class="label-container">
-            <label class="field-label uc" :for="name">{{ label }}</label>
+            <label class="field-label uc" :for="`${uniqueId}-${name}`">{{ label }}</label>
             <slot class="label-extra" name="header" />
         </div>
 
@@ -9,7 +9,7 @@
             <div class="button-wrapper">
                 <input
                     v-if="options && options.length"
-                    :id="name"
+                    :id="`${uniqueId}-${name}`"
                     ref="input"
                     v-model="searchQuery"
                     autocomplete="off"
@@ -32,7 +32,7 @@
             <div v-show="active" ref="options" class="options">
                 <div
                     v-for="option in filteredOptions"
-                    :id="`option-${option.id}`"
+                    :id="`${uniqueId}-option-${option.id}`"
                     :key="option.id"
                     class="option"
                     :class="{selected: searchSelected.id === option.id}"
@@ -55,6 +55,9 @@
 import Field from './field'
 
 export default {
+    beforeMount() {
+        this.uniqueId = Math.random().toString(36).substr(2, 9)
+    },
     computed: {
         currentOption() {
             if (this.modelValue && this.modelValue.id) {
@@ -212,7 +215,7 @@ export default {
         let selected
         if (this.searchSelected.id) {
             for (const childNode of options.childNodes) {
-                if (`#option-${this.searchSelected.id}` === childNode.id) {
+                if (`#${this.uniqueId}-option-${this.searchSelected.id}` === childNode.id) {
                     selected = childNode
                 }
             }

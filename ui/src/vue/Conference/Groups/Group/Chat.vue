@@ -77,6 +77,16 @@ export default {
         },
     },
     created() {
+        this.app.on('chat:message', async({channelId}) => {
+            if (channelId === this.$s.chat.channel) {
+                // A message was added to the active channel; update the chat scroller.
+                await nextTick()
+                this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
+            } else {
+                // User is currently watching another channel; bump unread.
+                this.$s.chat.channels[channelId].unread += 1
+            }
+        })
         // User left; clean up the channel.
         this.app.on('user', ({action, user}) => {
             if (action === 'del' && this.$s.chat.channels[user.id]) {
@@ -105,10 +115,6 @@ export default {
         }
     },
     methods: {
-        clearChannel() {
-            this.app.logger.debug('clearing chat from remote')
-            this.$s.chat.channels.main.messages = []
-        },
         async closeChannel(channel) {
             // Return to the main channel when closing a direct user channel.
             this.switchChannel('main')
@@ -120,43 +126,6 @@ export default {
         formatTime(ts) {
             const date = new Date(ts)
             return date.toLocaleTimeString()
-        },
-        async onMessage(sourceId, destinationId, nick, time, privileged, history, kind, message) {
-            if (!kind) kind = 'default'
-            let channelId
-            // Incoming message for the main channel
-            if (!destinationId) {
-                channelId = 'main'
-                this.$s.chat.channels.main.messages.push({kind, message, nick, time})
-            }
-            // This is a private message
-            else if (destinationId && sourceId) {
-                channelId = sourceId
-                const activeUser = this.$s.users.find((user) => user.id === sourceId)
-                if (activeUser) {
-                    if (!this.$s.chat.channels[sourceId]) {
-                        this.$s.chat.channels[sourceId] = {
-                            id: sourceId,
-                            messages: [],
-                            name: nick,
-                            unread: 0,
-                        }
-                    }
-
-                    this.$s.chat.channels[sourceId].messages.push({kind, message, nick, time})
-                }
-            }
-
-            if (channelId === this.$s.chat.channel) {
-                // A message was added to the active channel; update the chat scroller.
-                await nextTick()
-                this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
-            } else {
-                // User is currently watching another channel; bump unread.
-                this.$s.chat.channels[channelId].unread += 1
-
-            }
-
         },
         selectChannel(channel) {
             this.$s.chat.channel = channel.id
@@ -249,9 +218,6 @@ export default {
         },
     },
     mounted() {
-        this.$m.sfu.connection.onchat = this.onMessage.bind(this)
-        this.$m.sfu.connection.onclearchat = this.clearChannel.bind(this)
-
         // Keep track of the user-set width of the chat-window, so
         // we can restore it after toggling the chat window.
         this.resizeObserver = new ResizeObserver(async() => {
