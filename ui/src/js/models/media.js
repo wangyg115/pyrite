@@ -16,8 +16,13 @@ class ModelMedia {
         let selectedAudioDevice = false
         let selectedVideoDevice = false
 
-        if (app.$s.devices.mic.selected.id !== null) selectedAudioDevice = {deviceId: app.$s.devices.mic.selected.id}
-        if (app.$s.devices.cam.selected.id !== null) selectedVideoDevice = {deviceId: app.$s.devices.cam.selected.id}
+        if (app.$s.devices.mic.selected.id !== null) {
+            selectedAudioDevice = {deviceId: app.$s.devices.mic.selected.id}
+        }
+
+        if (app.$s.devices.cam.selected.id !== null) {
+            selectedVideoDevice = {deviceId: app.$s.devices.cam.selected.id}
+        }
 
         if (presence) {
             if (!presence.cam.enabled) selectedVideoDevice = false
@@ -68,15 +73,19 @@ class ModelMedia {
     async queryDevices() {
         app.logger.info('querying for devices')
         // The device labels stay empty when there is no media permission.
-        const stream = await this.getUserMedia()
-        // The device labels are only available in Firefox before tearing down the stream.
-        const devices = await navigator.mediaDevices.enumerateDevices()
-        for (const track of stream.getTracks()) {
-            track.stop()
+        let devices
+        if (app.env.isFirefox) {
+            // The device labels are only available in Firefox while a stream is active.
+            const stream = await navigator.mediaDevices.getUserMedia({audio: true, video: true})
+            devices = await navigator.mediaDevices.enumerateDevices()
+            for (const track of stream.getTracks()) {
+                track.stop()
+            }
+        } else {
+            devices = await navigator.mediaDevices.enumerateDevices()
         }
 
         const labelnr = {audio: 1, cam: 1, mic: 1}
-
         const added = []
 
         app.$s.devices.mic.options = []

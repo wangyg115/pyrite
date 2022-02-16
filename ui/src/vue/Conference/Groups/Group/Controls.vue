@@ -18,11 +18,11 @@
             <button
                 v-if="$s.permissions.present"
                 class="btn btn-menu tooltip tooltip-left mb-1"
-                :class="{active: $s.user.status.raisehand}"
-                :data-tooltip="$s.user.status.raisehand ? $t('hinting for speaking time') : $t('request speaking time')"
+                :class="{active: $s.user.data.raisehand}"
+                :data-tooltip="$s.user.data.raisehand ? $t('hinting for speaking time') : $t('request speaking time')"
                 @click="toggleRaiseHand"
             >
-                <Icon class="hand icon-small" :class="{wave: $s.user.status.raisehand}" name="Hand" />
+                <Icon class="hand icon-small" :class="{wave: $s.user.data.raisehand}" name="Hand" />
             </button>
 
             <button
@@ -114,8 +114,8 @@ export default {
             }
         },
         toggleRaiseHand() {
-            this.$m.sfu.connection.userAction('setstatus', this.$m.sfu.connection.id, {raisehand: !this.$s.user.status.raisehand})
-            if (!this.$s.user.status.raisehand) {
+            this.$m.sfu.connection.userAction('setdata', this.$m.sfu.connection.id, {raisehand: !this.$s.user.data.raisehand})
+            if (!this.$s.user.data.raisehand) {
                 this.app.notifier.message('raisehand', {source: this.$s.user.name}, null, {chat: true, notification: false})
             }
         },
@@ -131,7 +131,7 @@ export default {
     },
     watch: {
         '$s.devices.mic.enabled'(enabled) {
-            this.$m.sfu.connection.userAction('setstatus', this.$m.sfu.connection.id, {mic: enabled})
+            this.$m.sfu.connection.userAction('setdata', this.$m.sfu.connection.id, {mic: enabled})
         },
         volume(volume) {
             for (const description of this.$s.streams) {

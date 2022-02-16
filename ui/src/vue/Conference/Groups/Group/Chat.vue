@@ -121,7 +121,7 @@ export default {
             const date = new Date(ts)
             return date.toLocaleTimeString()
         },
-        async onMessage(sourceId, destinationId, nick, time, privileged, kind, message) {
+        async onMessage(sourceId, destinationId, nick, time, privileged, history, kind, message) {
             if (!kind) kind = 'default'
             let channelId
             // Incoming message for the main channel

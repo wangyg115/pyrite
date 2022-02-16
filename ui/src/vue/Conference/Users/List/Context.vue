@@ -91,7 +91,7 @@ export default {
             this.toggleMenu()
         },
         setAvailability(availability) {
-            this.$m.sfu.connection.userAction('setstatus', this.$m.sfu.connection.id, {availability})
+            this.$m.sfu.connection.userAction('setdata', this.$m.sfu.connection.id, {availability})
         },
         toggleMenu(e, forceState) {
             // The v-click-outside

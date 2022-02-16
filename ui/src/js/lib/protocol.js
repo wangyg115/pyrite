@@ -64,7 +64,7 @@ function newLocalId() {
  * @typedef {Object} user
  * @property {string} username
  * @property {Object<string,boolean>} permissions
- * @property {Object<string,any>} status
+ * @property {Object<string,any>} data
  * @property {Object<string,Object<string,boolean>>} down
  */
 
@@ -164,7 +164,7 @@ function ServerConnection() {
      *
      * kind is one of 'join', 'fail', 'change' or 'leave'.
      *
-     * @type{(this: ServerConnection, kind: string, group: string, permissions: Object<string,boolean>, message: string) => void}
+     * @type{(this: ServerConnection, kind: string, group: string, permissions: Object<string,boolean>, status: Object<string,any>, data: Object<string,any>, message: string) => void}
      */
     this.onjoined = null;
     /**
@@ -178,7 +178,7 @@ function ServerConnection() {
     /**
      * onchat is called whenever a new chat message is received.
      *
-     * @type {(this: ServerConnection, id: string, dest: string, username: string, time: number, privileged: boolean, kind: string, message: unknown) => void}
+     * @type {(this: ServerConnection, id: string, dest: string, username: string, time: number, privileged: boolean, history: boolean, kind: string, message: unknown) => void}
      */
     this.onchat = null;
     /**
@@ -208,6 +208,7 @@ function ServerConnection() {
   * @property {boolean} [privileged]
   * @property {Object<string,boolean>} [permissions]
   * @property {Object<string,any>} [status]
+  * @property {Object<string,any>} [data]
   * @property {string} [group]
   * @property {unknown} [value]
   * @property {boolean} [noecho]
@@ -284,7 +285,7 @@ ServerConnection.prototype.connect = async function(url) {
                     sc.onuser.call(sc, id, 'delete');
             }
             if(sc.group && sc.onjoined)
-                sc.onjoined.call(sc, 'leave', sc.group, {}, '');
+                sc.onjoined.call(sc, 'leave', sc.group, {}, {}, {}, '');
             sc.group = null;
             sc.username = null;
             if(sc.onclose)
@@ -293,7 +294,6 @@ ServerConnection.prototype.connect = async function(url) {
         };
         this.socket.onmessage = function(e) {
             let m = JSON.parse(e.data);
-
             switch(m.type) {
             case 'handshake':
                 break;
@@ -334,10 +334,11 @@ ServerConnection.prototype.connect = async function(url) {
                             sc.onuser.call(sc, id, 'delete');
                     }
                 }
-                if(sc.onjoined) {
-                    sc.onjoined.call(sc, m.kind, m.group, m.permissions || {}, m.value || null, m.status || {});
-                }
-
+                if(sc.onjoined)
+                    sc.onjoined.call(sc, m.kind, m.group,
+                                     m.permissions || {},
+                                     m.status, m.data,
+                                     m.value || null);
                 break;
             case 'user':
                 switch(m.kind) {
@@ -347,7 +348,7 @@ ServerConnection.prototype.connect = async function(url) {
                     sc.users[m.id] = {
                         username: m.username,
                         permissions: m.permissions || {},
-                        status: m.status || {},
+                        data: m.data || {},
                         down: {},
                     };
                     break;
@@ -357,13 +358,13 @@ ServerConnection.prototype.connect = async function(url) {
                         sc.users[m.id] = {
                             username: m.username,
                             permissions: m.permissions || {},
-                            status: m.status || {},
+                            data: m.data || {},
                             down: {},
                         };
                     } else {
                         sc.users[m.id].username = m.username;
                         sc.users[m.id].permissions = m.permissions || {};
-                        sc.users[m.id].status = m.status || {};
+                        sc.users[m.id].data = m.data || {};
                     }
                     break;
                 case 'delete':
@@ -375,17 +376,15 @@ ServerConnection.prototype.connect = async function(url) {
                     console.warn(`Unknown user action ${m.kind}`);
                     return;
                 }
-                if(sc.onuser) {
-                    sc.onuser.call(sc, m.id, m.kind, m.permission, m.status);
-                }
-
+                if(sc.onuser)
+                    sc.onuser.call(sc, m.id, m.kind);
                 break;
             case 'chat':
             case 'chathistory':
                 if(sc.onchat)
                     sc.onchat.call(
-                        sc, m.source, m.dest, m.username, m.time,
-                        m.privileged, m.kind, m.value,
+                        sc, m.source, m.dest, m.username, m.time, m.privileged,
+                        m.type === 'chathistory', m.kind, m.value,
                     );
                 break;
             case 'usermessage':
@@ -418,15 +417,19 @@ ServerConnection.prototype.connect = async function(url) {
  * @param {string} group - The name of the group to join.
  * @param {string} username - the username to join as.
  * @param {string} password - the password.
+ * @param {Object<string,any>} [data] - the initial associated data.
  */
-ServerConnection.prototype.join = function(group, username, password) {
-    this.send({
+ServerConnection.prototype.join = function(group, username, password, data) {
+    let m = {
         type: 'join',
         kind: 'join',
         group: group,
         username: username,
         password: password,
-    });
+    };
+    if(data)
+        m.data = data;
+    this.send(m);
 };
 
 /**
@@ -679,6 +682,10 @@ ServerConnection.prototype.gotOffer = async function(id, label, source, username
         };
 
         c.pc.ontrack = function(e) {
+            if(e.streams.length < 1) {
+                console.error("Got track with no stream");
+                return;
+            }
             c.stream = e.streams[0];
             let changed = recomputeUserStreams(sc, source, c);
             if(c.ondowntrack) {
@@ -781,8 +788,10 @@ ServerConnection.prototype.gotRenegotiate = function(id) {
  */
 ServerConnection.prototype.gotClose = function(id) {
     let c = this.down[id];
-    if(!c)
-        throw new Error('unknown down stream');
+    if(!c) {
+        console.warn('unknown down stream', id);
+        return;
+    }
     c.close();
 };
 
@@ -950,8 +959,8 @@ function Stream(sc, id, localId, pc, up) {
      */
     this.onclose = null;
     /**
-     * onerror is called whenever an error occurs.  If the error is
-     * fatal, then onclose will be called afterwards.
+     * onerror is called whenever a fatal error occurs.  The stream will
+     * then be closed, and onclose called normally.
      *
      * @type{(this: Stream, error: unknown) => void}
      */
@@ -1211,7 +1220,6 @@ Stream.prototype.restartIce = function () {
 
     if('restartIce' in c.pc) {
         try {
-            /** @ts-ignore */
             c.pc.restartIce();
             return;
         } catch(e) {

@@ -142,7 +142,7 @@ class ModelSFU {
         try {
             await this.connection.connect(url)
             // Share initial status with other users.
-            this.connection.userAction('setstatus', this.connection.id, app.$s.user.status)
+            this.connection.userAction('setdata', this.connection.id, app.$s.user.data)
         } catch(e) {
             app.notifier.notify({
                 level: 'error',
@@ -354,7 +354,7 @@ class ModelSFU {
         app.$s.streams.push(streamState)
     }
 
-    async onJoined(kind, group, perms, message, status) {
+    async onJoined(kind, group, perms, status, data, message) {
         app.logger.debug(`[onJoined] ${kind}/${group}`)
         switch(kind) {
         case 'fail':
@@ -405,7 +405,7 @@ class ModelSFU {
         }
     }
 
-    onUser(id, kind, permission, status) {
+    onUser(id, kind, permission, data) {
         let user = {...this.connection.users[id], id}
         app.logger.debug(`[onUser] ${kind}/${id}/${user.username}`)
 
@@ -418,9 +418,9 @@ class ModelSFU {
             }
 
             if (id === app.$s.user.id) {
-                // Restore user status back from state and notify others about it.
-                user.status = app.$s.user.status
-                this.connection.userAction('setstatus', this.connection.id, app.$s.user.status)
+                // Restore user data back from state and notify others about it.
+                user.data = app.$s.user.data
+                this.connection.userAction('setdata', this.connection.id, app.$s.user.data)
             }
 
             app.$s.users.push(user)
@@ -443,9 +443,8 @@ class ModelSFU {
                     app.notifier.message('op')
                 }
 
-                if (status) {
-                    app.$s.user.status = {...app.$s.user.status, ...status}
-
+                if (data) {
+                    app.$s.user.data = {...app.$s.user.data, ...data}
                     app.store.save()
                 }
             }

@@ -27,14 +27,14 @@ const persistantState = reactive({
     },
     theme: {id: 'system'},
     user: {
-        id: null,
-        name: '',
-        password: '',
-        status: {
+        data: {
             availability: {id: 'available', name: ''},
             mic: true,
             raisehand: false,
         },
+        id: null,
+        name: '',
+        password: '',
     },
 })
 

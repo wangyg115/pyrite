@@ -2,7 +2,7 @@
     <section class="c-users presence">
         <div v-for="user of sortedUsers" :key="user.id" class="user item">
             <Icon
-                v-if="user.status.raisehand"
+                v-if="user.data.raisehand"
                 class="hand icon item-icon icon-small"
                 name="Hand"
             />
@@ -24,7 +24,7 @@
 
                 <div class="permissions">
                     <div class="status">
-                        <Icon v-if="user.status.mic" class="icon icon-mini" name="Mic" />
+                        <Icon v-if="user.data.mic" class="icon icon-mini" name="Mic" />
                         <Icon v-else class="icon icon-mini error" name="MicMute" />
                     </div>
 
@@ -65,10 +65,10 @@ export default {
     methods: {
         classes(user) {
             const classes = {}
-            if (!user.status.availability) return classes
-            if (user.status.availability.id === 'away') {
+            if (!user.data.availability) return classes
+            if (user.data.availability.id === 'away') {
                 classes.away = true
-            } else if (user.status.availability.id === 'busy') {
+            } else if (user.data.availability.id === 'busy') {
                 classes.busy = true
             }
             return classes
