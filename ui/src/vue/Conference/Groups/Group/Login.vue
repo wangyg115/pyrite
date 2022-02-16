@@ -1,5 +1,5 @@
 <template>
-    <div class="c-login content" @keypress.enter="login">
+    <div v-if="$s.group" class="c-login content" @keypress.enter="login">
         <header>
             <div class="notice">
                 <Hint v-if="$s.group.locked" class="field" :text="$t('Only maintainers may login locked groups')" />
@@ -12,7 +12,12 @@
         <div class="panels">
             <section>
                 <form>
+                    <FieldCheckbox
+                        v-if="$s.group['allow-anonymous'] && false"
+                        v-model="anonymousLogin" :label="$t('anonymous login')"
+                    />
                     <FieldText
+                        v-if="!anonymousLogin"
                         v-model="v$.user.username.$model"
                         autocomplete="username"
                         :autofocus="$route.params.groupId"
@@ -117,6 +122,7 @@ export default {
 
     data() {
         return {
+            anonymousLogin: false,
             busy: false,
             user: this.$s.user,
             vuelidateExternalResults: {
@@ -134,7 +140,11 @@ export default {
 
             this.busy = true
             try {
-                await this.$m.sfu.connect()
+                if (this.anonymousLogin) {
+                    await this.$m.sfu.connect('', '')
+                } else {
+                    await this.$m.sfu.connect(this.$s.user.username, this.$s.user.password)
+                }
 
             } catch(err) {
                 if (err === 'group is locked') {

@@ -117,7 +117,7 @@ class ModelSFU {
         })
     }
 
-    async connect() {
+    async connect(username, password) {
         if(this.connection && this.connection.socket) {
             this.connection.close()
         }
@@ -127,8 +127,7 @@ class ModelSFU {
             app.logger.info('[connected] connected to Galène websocket')
             app.$s.user.id = this.connection.id
             const groupName = app.router.currentRoute.value.params.groupId
-
-            this.connection.join(groupName, app.$s.user.username, app.$s.user.password)
+            this.connection.join(groupName, username, password)
         }
 
         this.connection.onclose = this.onClose.bind(this)
@@ -383,8 +382,7 @@ class ModelSFU {
                 let personal = null
                 if (status.locked !== true) personal = {group, message:status.locked}
                 app.notifier.message('lock', {group}, personal)
-            }
-            else if (app.$s.group.locked) {
+            } else if (app.$s.group.locked) {
                 app.$s.group.locked = false
                 app.notifier.message('unlock', {group})
             }

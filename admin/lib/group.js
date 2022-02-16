@@ -116,7 +116,7 @@ export async function loadGroup(groupName) {
     return groupData
 }
 
-export async function loadGroups({publicEndpoint = true} = {}) {
+export async function loadGroups(publicEndpoint = false) {
     app.logger.debug(`load groups`)
     // Contains clientCount; mix it with the Pyrite group info.
     let galeneGroups = await (await fetch(`${app.settings.sfu.url}/public-groups.json`)).json()
@@ -170,6 +170,9 @@ export async function pingGroups(groupNames) {
 
 export async function saveGroup(groupName, data) {
     const saveData = JSON.parse(JSON.stringify(data))
+    // Remove non-group data.
+    delete saveData.name
+    delete saveData.clientCount
 
     await saveGroupPermissions(groupName, saveData._permissions)
 

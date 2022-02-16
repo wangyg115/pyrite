@@ -52,8 +52,7 @@ export default {
             this.$s.groups = await this.app.api.get('/api/groups/public')
             for (const group of this.$s.groups) {
                 if (group.name === this.$s.group.name) {
-                    if (group.locked) this.$s.group.locked = true
-                    else this.$s.group.locked = false
+                    Object.assign(this.$s.group, group)
                 }
             }
         },
