@@ -16,7 +16,7 @@
                 :data-tooltip="$t('group settings')"
                 :to="routeSettings('misc')"
             >
-                <Icon class="icon-small" name="SettingsMisc" />
+                <Icon class="icon-small" name="Pirate" />
             </RouterLink>
 
             <RouterLink

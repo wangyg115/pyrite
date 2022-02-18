@@ -153,7 +153,10 @@ export async function loadGroups(publicEndpoint = false) {
 
         const galeneGroup = galeneGroups.find((i) => i.name === groupName)
         if (galeneGroup) {
-            Object.assign(data, galeneGroup)
+            Object.assign(data, {
+                clientCount: galeneGroup.clientCount,
+                name: groupName,
+            })
         }
 
         groupsData.push(data)
@@ -166,6 +169,22 @@ export async function loadGroups(publicEndpoint = false) {
 export async function pingGroups(groupNames) {
     app.logger.debug(`ping groups: ${groupNames}`)
     await Promise.all(groupNames.map((i) => fetch(`${app.settings.sfu.url}/group/${i}`)))
+}
+
+export async function renameGroup(oldGroupName, newGroupName) {
+    const users = await loadUsers()
+    for (const user of users) {
+        for (const role of Object.values(user.groups)) {
+            for (const [roleIndex, groupName] of role.entries()) {
+                if (groupName === oldGroupName) {
+                    role[roleIndex] = newGroupName
+                    app.logger.debug(`rename old user group ${oldGroupName} => ${newGroupName}`)
+                }
+            }
+        }
+    }
+
+    await saveUsers(users)
 }
 
 export async function saveGroup(groupName, data) {
@@ -197,22 +216,6 @@ export async function saveGroup(groupName, data) {
         await fs.promises.writeFile(currentGroupFile, JSON.stringify(saveData, null, '  '))
         return {data, groupId: data._name}
     }
-}
-
-export async function renameGroup(oldGroupName, newGroupName) {
-    const users = await loadUsers()
-    for (const user of users) {
-        for (const role of Object.values(user.groups)) {
-            for (const [roleIndex, groupName] of role.entries()) {
-                if (groupName === oldGroupName) {
-                    role[roleIndex] = newGroupName
-                    app.logger.debug(`rename old user group ${oldGroupName} => ${newGroupName}`)
-                }
-            }
-        }
-    }
-
-    await saveUsers(users)
 }
 
 /**
