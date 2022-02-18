@@ -17,14 +17,6 @@
         </div>
 
         <FieldSelect
-            v-model="$s.devices.cam.resolution"
-            :help="$t('supported resolutions depend on the device capabilities')"
-            :label="$t('preferred resolution')"
-            name="resolution"
-            :options="resolutionOptions"
-        />
-
-        <FieldSelect
             v-model="$s.devices.mic.selected"
             :help="$t('verify the microphone is working with the soundmeter')"
             :label="$t('microphone')"
@@ -88,21 +80,6 @@ export default {
             playing: {
                 audio: false,
             },
-            resolutionOptions: [
-                {
-                    id: 'default',
-                    name: this.$t('default'),
-                },
-                {
-                    id: '720p',
-                    name: this.$t('hd - 720p (1280x720)'),
-                },
-                {
-                    help: this.$t('full hd video requires excessive bandwidth!'),
-                    id: '1080p',
-                    name: this.$t('full hd - 1080p (1920x1080)'),
-                },
-            ],
             sound: {
                 audio: {
                     file: '/audio/power-on.ogg',

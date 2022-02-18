@@ -45,7 +45,7 @@ export default function() {
                     target: 'you aqcuired the presenter role', // The source is unknown in the onUser event
                 },
                 raisehand: {
-                    chat: '{source} requested speaking time',
+                    chat: '{source} raises a hand',
                 },
                 record: {
                     level: 'warning',
@@ -94,7 +94,7 @@ export default function() {
             }
 
             if (chat) {
-                let chatMessage = app.$t(message.chat)
+                let chatMessage = message.chat
                 if (personal) chatMessage = `${chatMessage} (${personal.message})`
                 app.$m.sfu.connection.chat('me', '', chatMessage)
             }

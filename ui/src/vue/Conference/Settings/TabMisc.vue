@@ -15,22 +15,6 @@
             name="language"
             :options="languages"
         />
-
-        <FieldSelect
-            v-model="$s.media.accept"
-            :help="$t('stream types that you want to be able to receive')"
-            :label="$t('accepted media formats')"
-            name="request"
-            :options="acceptOptions"
-        />
-
-        <FieldSelect
-            v-model="$s.media.upstream"
-            :help="$t('bandwidth to use for sending media')"
-            :label="$t('bandwidth')"
-            name="send"
-            :options="sendOptions"
-        />
     </section>
 </template>
 
@@ -40,26 +24,10 @@ import {nextTick} from 'vue'
 export default {
     data() {
         return {
-            acceptOptions: [
-                {id: 'nothing', name: this.$t('nothing')},
-                {id: 'audio', name: this.$t('audio')},
-                {id: 'screenshare', name: `${this.$t('audio')} & ${this.$t('screenshare')}`},
-                {id: 'everything', name: `${this.$t('audio')}, ${this.$t('video')} & ${this.$t('screenshare')}`},
-            ],
             languages: [
                 {id: 'en', name: this.$t('english')},
                 {id: 'fr', name: this.$t('french')},
                 {id: 'nl', name: this.$t('dutch')},
-            ],
-            sendOptions: [
-                {id: 'lowest', name: `${this.$t('lowest')} - 150 Kbps`},
-                {id: 'low', name: `${this.$t('low')} - 300 Kbps`},
-                {id: 'normal', name: `${this.$t('normal')} - 700 Kbps`},
-                {
-                    help: this.$t('using unlimited bandwidth may negatively affect the conferencing experience for others'),
-                    id: 'unlimited',
-                    name: this.$t('unlimited'),
-                },
             ],
             themes: [
                 {id: 'system', name: this.$t('system')},

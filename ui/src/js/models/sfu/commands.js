@@ -1,7 +1,4 @@
-import {app} from '@/js/app.js'
-
 // Copyright (c) 2020 by Juliusz Chroboczek.
-
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -20,18 +17,7 @@ import {app} from '@/js/app.js'
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-/**
- * A command known to the command-line parser.
- *
- * @typedef {Object} command
- * @property {string} [parameters]
- *     - A user-readable list of parameters.
- * @property {string} [description]
- *     - A user-readable description, null if undocumented.
- * @property {() => string} [predicate]
- *     - Returns null if the command is available.
- * @property {(c: string, r: string) => void} f
- */
+import {app} from '@/js/app.js'
 
 function findUserId(username) {
     for(const user of app.$s.users) {

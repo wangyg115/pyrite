@@ -1,5 +1,5 @@
 <template>
-    <section v-if="$s.admin.group" class="c-admin-group-tab-misc tab-content active">
+    <section class="c-admin-group-tab-misc tab-content active">
         <FieldText
             v-model="$s.admin.group._newName"
             :label="$t('group name')"

@@ -10,23 +10,31 @@
         <ul class="tabs">
             <RouterLink
                 class="btn btn-menu tab tooltip"
-                :data-tooltip="$t('miscellaneous')"
-                :to="{name: 'conference-settings', params: {tabId: 'misc'}}"
-            >
-                <Icon class="icon-small" name="SettingsMisc" />
-            </RouterLink>
-            <RouterLink
-                class="btn btn-menu tab tooltip"
                 :data-tooltip="$t('devices')"
                 :to="{name: 'conference-settings', params: {tabId: 'devices'}}"
             >
-                <Icon class="icon-small" name="Headset" />
+                <Icon class="icon-small" name="Webcam" />
+            </RouterLink>
+            <RouterLink
+                class="btn btn-menu tab tooltip"
+                :data-tooltip="$t('media')"
+                :to="{name: 'conference-settings', params: {tabId: 'media'}}"
+            >
+                <Icon class="icon-small" name="Media" />
+            </RouterLink>
+            <RouterLink
+                class="btn btn-menu tab tooltip"
+                :data-tooltip="$t('miscellaneous')"
+                :to="{name: 'conference-settings', params: {tabId: 'misc'}}"
+            >
+                <Icon class="icon-small" name="Pirate" />
             </RouterLink>
         </ul>
 
         <div class="tabs-content">
-            <TabMisc v-if="$route.params.tabId === 'misc'" />
-            <TabDevices v-else-if="$route.params.tabId === 'devices'" />
+            <TabDevices v-if="$route.params.tabId === 'devices'" />
+            <TabMedia v-else-if="$route.params.tabId === 'media'" />
+            <TabMisc v-else-if="$route.params.tabId === 'misc'" />
 
             <div class="actions">
                 <button
@@ -43,16 +51,17 @@
 
 <script>
 import TabDevices from './TabDevices.vue'
+import TabMedia from './TabMedia.vue'
 import TabMisc from './TabMisc.vue'
 
 export default {
-    components: {TabDevices, TabMisc},
+    components: {TabDevices, TabMedia, TabMisc},
     methods: {
         saveSettings() {
             this.app.i18n.global.locale = this.$s.language.id
             this.app.logger.debug(`settings language to ${this.$s.language.id}`)
             this.app.store.save()
-            this.app.notifier.notify({level: 'info', message: this.$t('Settings saved')})
+            this.app.notifier.notify({icon: 'Settings', level: 'info', message: this.$t('Settings saved')})
         },
     },
 }

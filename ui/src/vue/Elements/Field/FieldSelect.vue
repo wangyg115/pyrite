@@ -250,6 +250,7 @@ export default {
                 font-size: 1rem;
                 height: var(--space-2);
                 outline: none;
+                text-transform: capitalize;
                 user-select: none;
                 width: 100%;
 
@@ -291,6 +292,7 @@ export default {
                 color: var(--grey-6);
                 padding: var(--spacer);
                 text-align: left;
+                text-transform: capitalize;
                 user-select: none;
                 width: inherit;
 

@@ -7,7 +7,7 @@
             :class="{[notification.level]: true}"
         >
             <div class="message">
-                <Icon class="icon icon-small" :name="notification.level[0].toUpperCase() + notification.level.slice(1)" />
+                <Icon class="icon icon-small" :name="notification.icon ? notification.icon : notification.level[0].toUpperCase() + notification.level.slice(1)" />
                 <div class="text ucfl">
                     {{ notification.message }}
                     <span v-if="notification.link" class="cf link" @click="openUrl(notification.link.url)">{{ notification.link.text }}</span>
@@ -78,12 +78,12 @@ export default {
         padding: calc(var(--spacer) * 1.5);
 
         &.info {
-            background: var(--grey-10);
-            color: var(--grey-2);
+            background: var(--grey-2);
+            color: var(--primary-color);
         }
 
         &.warning {
-            background: var(--warning-color);
+            background: var(--warning-color-d);
             color: var(--warning-color-xl);
         }
 

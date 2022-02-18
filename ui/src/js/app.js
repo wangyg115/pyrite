@@ -26,13 +26,13 @@ import localeNL from './locales/nl.js'
 import Logger from './lib/logger.js'
 import ModelGroup from './models/group.js'
 import ModelMedia from './models/media.js'
-import ModelSFU from './models/sfu.js'
+import ModelSFU from './models/sfu/sfu.js'
 import ModelUser from './models/user.js'
 import Notifications from '@/vue/Elements/Notifications.vue'
 import Notifier from './lib/notifier.js'
 import router from './router/router.js'
-import Store from './lib/store.js'
 import SoundMeter from '@/vue/Elements/SoundMeter.vue'
+import Store from './lib/store.js'
 
 class Pyrite extends EventEmitter {
 

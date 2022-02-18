@@ -28,18 +28,29 @@
                 class="message"
                 :class="{command: !message.nick, [message.kind]: true}"
             >
-                <header v-if="message.nick">
-                    <div class="author">
-                        {{ message.nick }}<span v-if="message.kind === 'me'">...</span>
-                    </div><div class="time">
+                <template v-if="message.kind === 'me'">
+                    <div class="text">
+                        {{ message.nick }} {{ $t(message.message) }}...
+                    </div>
+                    <div class="time">
                         {{ formatTime(message.time) }}
                     </div>
-                </header>
-                <section>
-                    <div v-for="msg of formatMessage(message.message)" :key="msg.id">
-                        {{ msg }}
-                    </div>
-                </section>
+                </template>
+
+                <template v-else>
+                    <header v-if="message.nick">
+                        <div class="author">
+                            {{ message.nick }}
+                        </div><div class="time">
+                            {{ formatTime(message.time) }}
+                        </div>
+                    </header>
+                    <section>
+                        <div v-for="msg of formatMessage(message.message)" :key="msg.id">
+                            {{ msg }}
+                        </div>
+                    </section>
+                </template>
             </div>
         </div>
         <div class="send">
@@ -63,7 +74,6 @@
 </template>
 
 <script>
-import commands from '@/js/lib/commands.js'
 import {nextTick} from 'vue'
 
 export default {
@@ -81,7 +91,9 @@ export default {
             if (channelId === this.$s.chat.channel) {
                 // A message was added to the active channel; update the chat scroller.
                 await nextTick()
-                this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
+                if (this.$refs.messages) {
+                    this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
+                }
             } else {
                 // User is currently watching another channel; bump unread.
                 this.$s.chat.channels[channelId].unread += 1
@@ -169,7 +181,7 @@ export default {
                         message = rest
                         me = true
                     } else {
-                        let c = commands[cmd]
+                        let c = this.$m.sfu.commands[cmd]
                         if(!c) {
                             this.app.notifier.notify({
                                 level: 'error',
@@ -293,18 +305,25 @@ export default {
             margin-bottom: calc(var(--spacer) * 2);
             margin-left: calc(var(--spacer) * 2);
             margin-right: var(--spacer);
-            padding: calc(var(--spacer) * 2);
+            padding: var(--spacer);
 
-            & header {
-                color: var(--primary-color);
-                display: flex;
-                font-size: var(--text-small);
-                font-weight: 600;
-                justify-content: space-between;
-                margin-bottom: var(--spacer);
+            &.default {
+                background: var(--grey-4);
+                border-radius: var(--spacer);
+                color: var(--grey-7);
 
-                .time {
-                    font-size: var(--text-xs);
+                & header {
+                    align-items: center;
+                    color: var(--primary-color);
+                    display: flex;
+                    font-size: var(--text-small);
+                    font-weight: 600;
+                    justify-content: space-between;
+                    margin-bottom: var(--spacer);
+
+                    .time {
+                        font-size: var(--text-s);
+                    }
                 }
             }
 
@@ -314,25 +333,24 @@ export default {
                 font-size: var(--text-small);
             }
 
-            &.default {
-                background: var(--grey-4);
-                border-radius: var(--spacer);
-                color: var(--grey-7);
-            }
-
             &.me {
+                display: flex;
                 font-style: italic;
                 margin-left: 0;
                 margin-right: 0;
                 padding: 0 calc(var(--spacer) * 2);
 
-                header {
-                    color: var(--grey-6);
+                .text {
+                    flex: 1;
 
-                    .time {
-                        align-self: flex-end;
-                        color: var(--grey-5);
+                    &::first-letter {
+                        text-transform: uppercase;
                     }
+                }
+
+                .time {
+                    align-self: flex-end;
+                    color: var(--grey-5);
                 }
             }
         }
