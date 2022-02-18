@@ -3,8 +3,9 @@
 # Documentation
 
 1. [Usage](./usage.md) - How to use Pyrite
-2. [Services](./systemd.md) - Systemd setup
-3. [Proxy](./proxy.md) - NGINX configuration
+2. [Development](./development.md) - How to develop Pyrite
+3. [Services](./systemd.md) - Systemd setup
+4. [Proxy](./proxy.md) - NGINX configuration
 
 ![Pyrite screenshot](./pyrite.png "Pyrite")
 

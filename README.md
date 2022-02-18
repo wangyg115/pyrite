@@ -3,14 +3,12 @@
 <img height="100" src="./ui/public/logo-text.svg">
 <br />
 
-# About
+[Galène](https://galene.org/) is a videoconference server (an “SFU”) that is easy to deploy and that
+requires moderate server resources. [Pyrite](https://pyrite.video) is a web client (a replacement
+for the default client) based on the [Vue](https://v3.vuejs.org/) framework. Besides the WebRTC
+client, Pyrite also features an integrated Galène management UI.
 
-[Pyrite](https://pyrite.video) is a [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software)
-web-based video-conferencing client & management tool for the [Galène](https://github.com/jech/galene)
-SFU. It consists of a [Vue 3](https://v3.vuejs.org/) UI and an [Express.js](http://expressjs.com/)
-backend.
-
-## Getting Started
+## Installation
 
 ```bash
 cd ~/code
@@ -36,22 +34,9 @@ npx @garage44/pyrite
 [INFO] pyrite listening: 127.0.0.1:3030
 ```
 
-### Developers
-
-```bash
-git clone git@github.com:garage44/pyrite.git
-cd pyrite
-npm i  # Install dependencies
-npm run galene  # Run dockerized galene
-# Uses Nodemon autoreload. Use PYRITE_NO_SECURITY=1 to bypass session security
-nodemon admin/app.js
-# Vite development server with proxy
-npm run dev
-```
+![Pyrite screenshot](./docs/pyrite.png "Pyrite")
 
 ## Documentation
 
 Running Pyrite & Galène over a network requires additional configuration.
 Checkout the [documentation](./docs/index.md) for more information.
-
-![Pyrite screenshot](./docs/pyrite.png "Pyrite")
