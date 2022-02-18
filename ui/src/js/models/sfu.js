@@ -48,7 +48,7 @@ class ModelSFU {
             if(!('getDisplayMedia' in navigator.mediaDevices))
                 throw new Error('Your browser does not support screen sharing')
             /** @ts-ignore */
-            stream = await navigator.mediaDevices.getDisplayMedia({video: true})
+            stream = await navigator.mediaDevices.getDisplayMedia({audio: true, video: true})
         } catch(e) {
             app.notifier.notify({level: 'error', message: e})
             return
