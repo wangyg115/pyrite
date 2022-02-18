@@ -441,7 +441,7 @@ class ModelSFU {
         app.emit('chat:message', {channelId})
     }
 
-    onUser(id, kind, permission, data) {
+    onUser(id, kind) {
         let user = {...this.connection.users[id], id}
         app.logger.debug(`[onUser] ${kind}/${id}/${user.username}`)
 
@@ -479,10 +479,9 @@ class ModelSFU {
                     app.notifier.message('op')
                 }
 
-                if (data) {
-                    app.$s.user.data = {...app.$s.user.data, ...data}
-                    app.store.save()
-                }
+                app.$s.user.data = {...app.$s.user.data, ...user.data}
+                app.store.save()
+
             }
 
             app.$s.users.splice(app.$s.users.findIndex((i) => i.id === user.id), 1, user)
