@@ -28,19 +28,12 @@
             :label="$t('autokick')"
         />
 
-        <!-- <FieldText
+        <FieldNumber
             v-model.number="$s.admin.group['max-clients']"
-            help="The maximum number of clients that may join the group at a time"
-            label="Maximum clients"
+            :help="$t('maximum number of clients that may participate in a group')"
+            :label="$t('client maximum')"
             placeholder="..."
-        /> -->
-        <!--
-        <FieldText
-            v-model="$s.admin.group.presenter"
-            help="the users allowed to connect with presenter privileges"
-            label="Group Presenters"
-            placeholder="..."
-        /> -->
+        />
     </section>
 </template>
 

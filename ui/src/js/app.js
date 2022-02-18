@@ -16,6 +16,8 @@ import env from './lib/env.js'
 import EventEmitter from 'eventemitter3'
 import FieldCheckbox from '@/vue/Elements/Field/FieldCheckbox.vue'
 import FieldFile from '@/vue/Elements/Field/FieldFile.vue'
+import FieldMultiSelect from '@/vue/Elements/Field/FieldMultiSelect.vue'
+import FieldNumber from '@/vue/Elements/Field/FieldNumber.vue'
 import FieldSelect from '@/vue/Elements/Field/FieldSelect.vue'
 import FieldSlider from '@/vue/Elements/Field/FieldSlider.vue'
 import FieldText from '@/vue/Elements/Field/FieldText.vue'
@@ -116,6 +118,8 @@ class Pyrite extends EventEmitter {
         this.vm.component('ContextSelect', ContextSelect)
         this.vm.component('FieldCheckbox', FieldCheckbox)
         this.vm.component('FieldFile', FieldFile)
+        this.vm.component('FieldMultiSelect', FieldMultiSelect)
+        this.vm.component('FieldNumber', FieldNumber)
         this.vm.component('FieldSelect', FieldSelect)
         this.vm.component('FieldSlider', FieldSlider)
         this.vm.component('FieldText', FieldText)

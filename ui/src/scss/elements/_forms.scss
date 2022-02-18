@@ -12,12 +12,15 @@
         color: var(--grey-9);
         display: inline-block;
         font-family: var(--font-secondary);
+        margin-bottom: var(--space-05);
+        text-transform: capitalize;
     }
 
     .help {
         color: var(--grey-6);
         font-size: var(--text-s);
         font-style: italic;
+        margin-top: var(--space-05);
     }
 }
 

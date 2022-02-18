@@ -16,27 +16,31 @@
                     :disabled="disabled"
                     :placeholder="currentOption"
                     :readonly="!search"
-                    @click="searchSelect($event, null, null, false)"
-                    @input="searchSelect($event, null, 'query', false)"
-                    @keydown.down="searchSelect($event, null, 'down', false)"
-                    @keydown.page-down="searchSelect($event, null, 'page-down', false)"
-                    @keydown.page-up="searchSelect($event, null, 'page-up', false)"
-                    @keydown.up="searchSelect($event, null, 'up', false)"
-                    @keyup.enter="searchSelect($event, null, 'enter', true)"
+                    @click="handleEvent(null, null, false)"
+                    @input="handleEvent(null, 'query', false)"
+                    @keydown.down="handleEvent(null, 'down', false)"
+                    @keydown.page-down="handleEvent(null, 'page-down', false)"
+                    @keydown.page-up="handleEvent(null, 'page-up', false)"
+                    @keydown.up="handleEvent(null, 'up', false)"
+                    @keyup.enter="handleEvent(null, 'enter', true)"
                     @keyup.escape="active = false"
                 >
 
                 <slot class="button" name="button" />
             </div>
 
-            <div v-show="active" ref="options" class="options">
+            <div
+                ref="options"
+                class="options"
+                :class="{active}"
+            >
                 <div
-                    v-for="option in filteredOptions"
+                    v-for="option in options"
                     :id="`${uniqueId}-option-${option.id}`"
                     :key="option.id"
                     class="option"
                     :class="{selected: searchSelected.id === option.id}"
-                    @click="searchSelect($event, option, null, true)"
+                    @click="handleEvent(option, null, true)"
                 >
                     {{ option.name }}
                 </div>
@@ -69,16 +73,6 @@ export default {
             }
             return this.placeholder
         },
-        filteredOptions() {
-            let filteredOptions = []
-            for (const option of this.options) {
-                // Case insensitive search.
-                if (option.name.toLowerCase().includes(this.searchQuery.toLowerCase())) {
-                    filteredOptions.push(option)
-                }
-            }
-            return filteredOptions
-        },
     },
     data: function() {
         return {
@@ -102,35 +96,7 @@ export default {
             }
             return emptyOption
         },
-        navigate(keyModifier) {
-            if (keyModifier === 'enter') {
-                if (!this.searchSelected.id) this.selectedOption = this.filteredOptions[0]
-                else {
-                    this.selectedOption = this.searchSelected
-                }
-            } else if (['up', 'down', 'page-down', 'page-up'].includes(keyModifier)) {
-                if (!this.searchSelected.id) this.selectedOption = this.filteredOptions[0]
-                else {
-                    const itemIndex = this.filteredOptions.findIndex((i) => i.id === this.searchSelected.id)
-                    if (keyModifier === 'down' && this.filteredOptions.length > itemIndex) {
-                        this.selectedOption = this.filteredOptions[itemIndex + 1]
-                    } else if (keyModifier === 'up' && itemIndex > 0) {
-                        this.selectedOption = this.filteredOptions[itemIndex - 1]
-                    } else if (keyModifier === 'page-down') {
-                        if (this.filteredOptions.length >= itemIndex + 5) {
-                            this.selectedOption = this.filteredOptions[itemIndex + 5]
-                        }
-                    } else if (keyModifier === 'page-up') {
-                        if (this.filteredOptions.length >= itemIndex - 5 && (itemIndex - 5) >= 0) {
-                            this.selectedOption = this.filteredOptions[itemIndex - 5]
-                        }
-                    }
-                }
-            } else if (keyModifier === 'query') {
-                this.selectedOption = this.filteredOptions[0]
-            }
-        },
-        searchSelect(event, option, keyModifier, updateModel) {
+        handleEvent(option, keyModifier, updateModel) {
             this.active = true
 
             if (option) {
@@ -140,7 +106,7 @@ export default {
                 this.navigate(keyModifier)
             } else {
                 // Click/focus.
-                if (!this.searchSelected.id) this.selectedOption = this.filteredOptions[0]
+                if (!this.searchSelected.id) this.selectedOption = this.options[0]
                 else this.selectedOption = this.searchSelected
             }
 
@@ -156,6 +122,35 @@ export default {
                 }
             }
         },
+        navigate(keyModifier) {
+            if (keyModifier === 'enter') {
+                if (!this.searchSelected.id) this.selectedOption = this.options[0]
+                else {
+                    this.selectedOption = this.searchSelected
+                }
+            } else if (['up', 'down', 'page-down', 'page-up'].includes(keyModifier)) {
+                if (!this.searchSelected.id) this.selectedOption = this.options[0]
+                else {
+                    const itemIndex = this.options.findIndex((i) => i.id === this.searchSelected.id)
+                    if (keyModifier === 'down' && this.options.length > itemIndex) {
+                        this.selectedOption = this.options[itemIndex + 1]
+                    } else if (keyModifier === 'up' && itemIndex > 0) {
+                        this.selectedOption = this.options[itemIndex - 1]
+                    } else if (keyModifier === 'page-down') {
+                        if (this.options.length >= itemIndex + 5) {
+                            this.selectedOption = this.options[itemIndex + 5]
+                        }
+                    } else if (keyModifier === 'page-up') {
+                        if (this.options.length >= itemIndex - 5 && (itemIndex - 5) >= 0) {
+                            this.selectedOption = this.options[itemIndex - 5]
+                        }
+                    }
+                }
+            } else if (keyModifier === 'query') {
+                this.selectedOption = this.options[0]
+            }
+        },
+
         toggleSelect(e, vClickOutside, active) {
             if (typeof vClickOutside === 'object' && !active) {
                 this.active = false
@@ -277,16 +272,23 @@ export default {
         }
 
         .options {
-            background: var(--grey-3);
-            border: 1px solid var(--grey-4);
-            box-shadow: 0 0 var(--spacer) var(--space-05) var(--grey-2);
+            border: 1px solid transparent;
             margin-top: calc(var(--space-2) + 1px);
-            max-height: 162px;
+            max-height: 0;
             max-width: inherit;
-            overflow-y: auto;
+            overflow-y: hidden;
             position: absolute;
+            transition: all 0.3s ease;
             width: inherit;
             z-index: 100000;
+
+            &.active {
+                background: var(--grey-4);
+                border: 1px solid var(--grey-5);
+                box-shadow: 0 0 var(--spacer) var(--space-05) var(--grey-2);
+                max-height: 200px;
+                overflow-y: scroll;
+            }
 
             .option {
                 color: var(--grey-6);

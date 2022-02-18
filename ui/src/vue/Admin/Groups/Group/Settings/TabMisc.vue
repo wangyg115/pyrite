@@ -29,12 +29,17 @@
             :label="$t('recording')"
         />
 
-        <!-- <FieldText
-            v-model.number="$s.admin.group['max-history-age']"
-            help="The time, in seconds, during which chat history is kept (default 14400, i.e. 4 hours)"
-            label="Keep Chat History"
-            placeholder="..."
-        /> -->
+        <FieldMultiSelect
+            v-model="$s.admin.group.codecs"
+            :help="$t('allowed group codecs (default: VP8 & Opus)')"
+            :label="$t('codecs')"
+            :options="codecs"
+        />
+        <FieldNumber
+            v-model="$s.admin.group['max-history-age']"
+            :help="$t('chat history retention in seconds (default: 14400, i.e. 4 hours)')"
+            :label="$t('chat retention')"
+        />
     </section>
 </template>
 
@@ -42,8 +47,51 @@
 import {defineComponent} from 'vue'
 
 export default defineComponent({
-    setup() {
-
+    data() {
+        return {
+            codecs: [
+                {
+                    help: this.$t('compatible with all supported browsers'),
+                    id: 'vp8',
+                    name: 'VP8',
+                },
+                {
+                    help: this.$t('better video quality, but incompatible with Safari'),
+                    id: 'vp9',
+                    name: 'VP9',
+                },
+                {
+                    help: this.$t('even better video quality, only supported by some browsers, recording is not supported, SVC is not supported'),
+                    id: 'av1',
+                    name: 'AV1',
+                },
+                {
+                    help: this.$t('incompatible with Debian and with some Android devices, SVC is not supported'),
+                    id: 'h264',
+                    name: 'H264',
+                },
+                {
+                    help: this.$t('only Opus can be recorded to disk'),
+                    id: 'opus',
+                    name: 'Opus',
+                },
+                {
+                    help: this.$t('does not support recording to disk'),
+                    id: 'g722',
+                    name: 'G722',
+                },
+                {
+                    help: this.$t('does not support recording to disk'),
+                    id: 'pcmu',
+                    name: 'PCMU',
+                },
+                {
+                    help: this.$t('does not support recording to disk'),
+                    id: 'pcma',
+                    name: 'PCMA',
+                },
+            ],
+        }
     },
 })
 </script>

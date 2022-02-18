@@ -51,13 +51,10 @@ export default {
         display: flex;
         flex-direction: column;
 
-        .field-label {
-            margin: var(--spacer) 0;
-        }
-
         label.switch {
             height: calc(var(--spacer) * 3);
             margin-right: var(--spacer);
+            margin-top: var(--space-05);
             position: relative;
             user-select: none;
             width: calc(var(--spacer) * 5);
@@ -107,19 +104,6 @@ export default {
                 }
             }
         }
-    }
-
-    .help {
-        margin-top: var(--spacer);
-
-        &::first-letter {
-            text-transform: capitalize;
-        }
-    }
-
-    .field-label {
-        font-family: var(--font-secondary);
-        text-transform: capitalize;
     }
 }
 </style>
