@@ -34,7 +34,8 @@ npx @garage44/pyrite
 [INFO] pyrite listening: 127.0.0.1:3030
 ```
 
-![Pyrite screenshot](./docs/pyrite.png "Pyrite")
+<img height="300" src="./docs/pyrite.png">
+<img height="300" src="./docs/pyrite-admin.png">
 
 ## Documentation
 
