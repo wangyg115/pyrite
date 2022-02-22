@@ -39,5 +39,5 @@ npx @garage44/pyrite
 
 ## Documentation
 
-Running Pyrite & Galène over a network requires additional configuration.
-Checkout the [documentation](./docs/index.md) for more information.
+Curious about Pyrite's [features](./docs/features.md) or you want to run Pyrite
+& Galène on a network? Checkout the [documentation](./docs/index.md) for more information.

@@ -36,7 +36,7 @@
             </button>
             <ContextInput v-if="$s.permissions.op && user.id !== $s.user.id" v-model="warning" :submit="sendNotification" />
             <ContextSelect
-                v-if="user.id === $s.user.id" v-model="$s.user.status.availability"
+                v-if="user.id === $s.user.id" v-model="$s.user.data.availability"
                 icon="Present"
                 :options="statusOptions"
                 :submit="setAvailability"
