@@ -10,24 +10,30 @@ import {saveUser, userTemplate} from './user.js'
 export async function verifyConfig() {
     const configFile = path.join(process.env.HOME, '.pyriterc')
     if (!await fs.pathExists(path.join(configFile))) {
-        app.logger.info('no settings file found; generate one...')
-        const config = await inquirer.prompt([
-            {
-                message: 'Path to Galène SFU:',
-                name: 'sfuPath',
-                type: 'input',
-            },
-        ])
+        app.logger.info('generating config...')
+        let sfuPath
+        // Config passed as commandline argument
+        if (app.settings.sfuPath) {
+            sfuPath = app.settings.sfuPath
+            delete app.settings.sfuPath
+        } else {
+            const config = await inquirer.prompt([
+                {
+                    message: 'Path to Galène SFU:',
+                    name: 'sfuPath',
+                    type: 'input',
+                },
+            ])
+            const sfuPathParts = config.sfuPath.split(path.sep)
+            if (sfuPathParts[0] === '~') {
+                sfuPathParts[0] = os.homedir()
+            }
 
-        app.settings.session.secret = crypto.randomBytes(20).toString('hex')
-
-        const sfuPathParts = config.sfuPath.split(path.sep)
-        if (sfuPathParts[0] === '~') {
-            sfuPathParts[0] = os.homedir()
+            sfuPath = sfuPathParts.reduce((memo, part) => path.join(memo, part), '')
         }
 
-        sfuPathParts.reduce((memo, part) => path.join(memo, part), '')
-        app.settings.sfu.path = sfuPathParts.reduce((memo, part) => path.join(memo, part), '')
+        app.settings.sfu.path = sfuPath
+        app.settings.session.secret = crypto.randomBytes(20).toString('hex')
 
         await fs.writeFile(configFile, JSON.stringify(app.settings, null, '  '))
         app.logger.info(`config file written to: ${configFile}`)
@@ -40,6 +46,7 @@ export async function verifyConfig() {
             recordings: path.join(app.settings.sfu.path, 'recordings'),
         },
     }
+
 }
 
 export async function verifySFU() {

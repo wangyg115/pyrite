@@ -1,0 +1,22 @@
+
+services:
+  pyrite:
+    container_name: pyrite
+    image: garage44/pyrite:latest
+    depends_on:
+      - galene
+    volumes:
+      - ./config/:/root
+
+  galene:
+    container_name: galene
+    image: garage44/galene:latest
+    ports:
+      - 8443:8443
+    user: $PYRITE_UID:$PYRITE_GID
+    volumes:
+      - ./galene/data:/go/src/galene/data
+      - ./galene/groups:/go/src/galene/groups
+      - ./galene/recordings:/go/src/galene/recordings
+
+version: "3.8"
