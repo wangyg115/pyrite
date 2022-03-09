@@ -7,9 +7,15 @@ import os from 'os'
 import path from 'path'
 import {saveUser, userTemplate} from './user.js'
 
-export async function verifyConfig() {
-    const configFile = path.join(process.env.HOME, '.pyriterc')
-    if (!await fs.pathExists(path.join(configFile))) {
+export async function verifyConfig(app) {
+    let configFile
+    if (app.settings.config) {
+        configFile = path.join(app.settings.config)
+    } else {
+        configFile = path.join(process.env.HOME, '.pyriterc')
+    }
+
+    if (!await fs.pathExists(configFile)) {
         app.logger.info('generating config...')
         let sfuPath
         // Config passed as commandline argument

@@ -63,7 +63,8 @@ app.settings = settings
 
 ;(async() => {
     app.logger.info('verifying configuration')
-    await verifyConfig()
+
+    await verifyConfig(app)
     await verifySFU()
 
     initMiddleware()
