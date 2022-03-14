@@ -1,6 +1,5 @@
 node_modules
 dist
+docker/galene/config/data
 docker/pyrite/config/.pyriterc
-docker/galene/config/data/config.json
-docker/galene/config/data/users.json
 *.log

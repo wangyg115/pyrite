@@ -10,8 +10,9 @@ client, Pyrite also features an integrated Galène management UI.
 
 ## Installation
 
+### Vanilla
+
 ```bash
-cd ~/code
 git clone https://github.com/jech/galene
 cd galene
 CGO_ENABLED=0 go build -ldflags='-s -w'
@@ -32,6 +33,14 @@ npx @garage44/pyrite
 [DEBUG] save new user b6676bd5-7d9a-4b91-b0e6-a8f0673d113c
 [INFO] creating sfu config: /home/you/code/galene/data/config.json
 [INFO] pyrite listening: 127.0.0.1:3000
+```
+
+### Docker
+
+```bash
+git clone https://github.com/garage44/pyrite
+cd pyrite/docker
+docker-compose up
 ```
 
 <img height="300" src="./docs/pyrite.png">
