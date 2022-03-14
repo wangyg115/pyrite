@@ -3,20 +3,23 @@ services:
   pyrite:
     container_name: pyrite
     image: garage44/pyrite:latest
+    network_mode: "host"
     depends_on:
       - galene
     volumes:
-      - ./config/:/root
+      - ./pyrite/config/:/usr/app/config
+      - ./galene/config/:/usr/app/galene
 
   galene:
     container_name: galene
     image: garage44/galene:latest
+    network_mode: "host"
     ports:
       - 8443:8443
     user: $PYRITE_UID:$PYRITE_GID
     volumes:
-      - ./galene/data:/go/src/galene/data
-      - ./galene/groups:/go/src/galene/groups
-      - ./galene/recordings:/go/src/galene/recordings
+      - ./galene/config/data:/go/src/galene/data
+      - ./galene/config/groups:/go/src/galene/groups
+      - ./galene/config/recordings:/go/src/galene/recordings
 
 version: "3.8"
