@@ -2,7 +2,7 @@ import app from '../app.js'
 
 import {loadStats} from '../lib/dashboard.js'
 
-export default function(app) {
+export default function() {
 
     app.get('/api/dashboard/:groupid', async function(req, res) {
         const groupId = req.params.groupid

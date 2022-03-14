@@ -93,9 +93,6 @@ export async function verifySFU() {
         username: config.admin[0].username,
     }
 
-    const passwdFile = path.join(app.config.sfu.path.data, 'passwd')
-    await fs.writeFile(passwdFile, `${app.config.sfu.admin.username}:${app.config.sfu.admin.password}`)
-
     // Test sfu endpoint
     const authHeader = `Basic ${Buffer.from(`${app.config.sfu.admin.username}:${app.config.sfu.admin.password}`, 'utf-8').toString('base64')}`
     const headers = new fetch.Headers()

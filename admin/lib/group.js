@@ -34,6 +34,7 @@ export function groupTemplate(groupId = null) {
             separator: '-',
             style: 'lowercase',
         }),
+        _permissions: {},
         _unsaved: true,
         'allow-anonymous': false,
         'allow-recording': true,

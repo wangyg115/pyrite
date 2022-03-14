@@ -6,13 +6,15 @@ services:
     network_mode: "host"
     depends_on:
       - galene
+    ports:
+      - 3030:3030
     volumes:
       - ./pyrite/config/:/usr/app/config
       - ./galene/config/:/usr/app/galene
 
   galene:
     container_name: galene
-    image: garage44/galene:latest
+    image: garage44/galene:0.5.0
     network_mode: "host"
     ports:
       - 8443:8443

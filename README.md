@@ -31,7 +31,7 @@ npx @garage44/pyrite
 [INFO] writing initial users.json
 [DEBUG] save new user b6676bd5-7d9a-4b91-b0e6-a8f0673d113c
 [INFO] creating sfu config: /home/you/code/galene/data/config.json
-[INFO] pyrite listening: 127.0.0.1:3030
+[INFO] pyrite listening: 127.0.0.1:3000
 ```
 
 <img height="300" src="./docs/pyrite.png">

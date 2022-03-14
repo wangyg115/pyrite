@@ -44,6 +44,7 @@
                 class="btn btn-menu tab tooltip"
                 :class="{active: tabId === 'stats'}"
                 :data-tooltip="$t('connection statistics')"
+                :disabled="!$s.group._unsaved"
                 :to="routeSettings('stats')"
             >
                 <Icon class="icon-small" name="Stats" />
