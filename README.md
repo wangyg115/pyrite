@@ -8,6 +8,9 @@ requires moderate server resources. [Pyrite](https://pyrite.video) is a web clie
 for the default client) based on the [Vue](https://v3.vuejs.org/) framework. Besides the WebRTC
 client, Pyrite also features an integrated Galène management UI.
 
+Checkout Pyrite's [features](./docs/features.md) or read the documentation about
+[deploying Pyrite](./docs/index.md) on a network.
+
 ## Installation
 
 ### Vanilla
@@ -45,8 +48,3 @@ docker-compose up
 
 <img height="300" src="./docs/pyrite.png">
 <img height="300" src="./docs/pyrite-admin.png">
-
-## Documentation
-
-Curious about Pyrite's [features](./docs/features.md) or you want to run Pyrite
-& Galène on a network? Checkout the [documentation](./docs/index.md) for more information.
