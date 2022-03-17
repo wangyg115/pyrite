@@ -31,7 +31,7 @@ export default function(app) {
 
         const groupData = await loadGroup(groupId)
         if (!groupData) {
-            res.status(404).send({error: 'group not found'})
+            res.end(JSON.stringify(groupTemplate(groupId)))
             return
         }
 

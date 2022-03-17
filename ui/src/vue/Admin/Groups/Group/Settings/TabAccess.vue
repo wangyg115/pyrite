@@ -29,7 +29,7 @@
         />
 
         <FieldNumber
-            v-model.number="$s.admin.group['max-clients']"
+            v-model="$s.admin.group['max-clients']"
             :help="$t('maximum number of clients that may participate in a group')"
             :label="$t('client maximum')"
             placeholder="..."

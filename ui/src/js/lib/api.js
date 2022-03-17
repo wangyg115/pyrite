@@ -6,6 +6,7 @@ export default class Api {
     }
 
     async get(endpoint) {
+
         const res = await fetch(endpoint, {
             credentials: 'same-origin',
             headers: {
@@ -14,13 +15,14 @@ export default class Api {
             method: 'GET',
         })
 
+        app.logger.info(`[GET] ${endpoint}`)
+
         if (res.status === 401) {
             app.router.push({name: 'admin-login'})
             return {status: 'unauthorized'}
         } else {
             return await res.json()
         }
-
     }
 
     async post(endpoint, data) {

@@ -28,7 +28,6 @@
             :help="$t('enables recording of the group streams')"
             :label="$t('recording')"
         />
-
         <FieldMultiSelect
             v-model="$s.admin.group.codecs"
             :help="$t('allowed group codecs (default: VP8 & Opus)')"

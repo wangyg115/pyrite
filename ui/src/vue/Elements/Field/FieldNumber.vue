@@ -43,7 +43,7 @@ export default {
         },
         modelValue: {
             required: true,
-            type:Object,
+            type:Number,
         },
         options: {
             default: () => [],
