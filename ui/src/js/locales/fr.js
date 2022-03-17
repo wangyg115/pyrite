@@ -96,6 +96,7 @@ export default {
     'mute participants': 'couper le son des participants',
     'no connection statistics available': 'aucune statistique de connexion disponible',
     'no connections': 'pas de connexions',
+    'no groups': 'pas de groupes',
     'no public groups': 'pas de groupes publics',
     'no recordings': 'pas d’enregistrements',
     normal: 'normal',

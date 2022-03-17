@@ -97,6 +97,7 @@ export default {
     'no audio output options found.': 'geen audio uitvoer opties gevonden.',
     'no connection statistics available': 'geen verbindingsstatistieken beschikbaar',
     'no connections': 'geen verbindingen',
+    'no groups': 'geen groepen',
     'no public groups': 'geen publieke groepen',
     'no recordings': 'geen opnames',
     normal: 'normaal',
