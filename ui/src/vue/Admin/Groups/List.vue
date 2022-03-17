@@ -62,6 +62,12 @@
                 </div>
             </div>
         </RouterLink>
+        <div v-if="!orderedGroups.length" class="group item no-presence">
+            <Icon class="item-icon icon-small" name="Group" />
+            <div class="name">
+                {{ $t('no groups yet') }}
+            </div>
+        </div>
     </section>
 </template>
 

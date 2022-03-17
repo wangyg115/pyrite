@@ -2,6 +2,15 @@
     display: flex;
     flex-direction: column;
 
+    .no-presence {
+
+        .icon,
+        .name {
+            color: var(--grey-5);
+        }
+    }
+
+
     .actions {
         display: flex;
 

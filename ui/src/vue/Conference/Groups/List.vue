@@ -19,7 +19,7 @@
                 <Icon class="icon-small" name="User" />
             </div>
         </RouterLink>
-        <div v-if="!$s.groups.length" class="group item no-public-groups">
+        <div v-if="!$s.groups.length" class="group item no-presence">
             <Icon class="item-icon icon-small" name="Group" />
             <div class="name">
                 {{ $t('no public groups') }}
@@ -100,14 +100,6 @@ export default {
 .c-groups {
 
     .group {
-
-        &.no-public-groups {
-
-            .icon,
-            .name {
-                color: var(--grey-5);
-            }
-        }
 
         .count {
             align-items: center;
