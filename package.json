@@ -18,6 +18,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build ui",
+    "build-docker": "rm docker/pyrite/*.tgz;npm pack --pack-destination docker/pyrite;cd docker/pyrite;docker build . --tag garage44/pyrite:latest --no-cache",
     "build-watch": "vite build --watch",
     "check-env": "node -e 'console.log(process.env)' | grep npm",
     "deploy": "cd ui dist;zip -r pyrite.zip .;curl -X POST -F \"distChannel=$RAND_CHANNEL\" -F 'distFile=@pyrite.zip' $RAND_ENDPOINT -H \"Authorization: Basic $(echo $RAND_USER:$RAND_PW | base64)\"",
@@ -27,7 +28,8 @@
     "lint": "npm run lint:js;npm run lint:scss",
     "lint:js": "eslint \"{admin,ui}/src/**/*.{js,vue}\"",
     "lint:scss": "stylelint \"ui/src/**/*.{scss,vue}\"",
-    "prepare": "npm run build",
+    "publish-docker": "npm run build-docker;docker push garage44/pyrite:latest",
+    "prepack": "npm run build",
     "semantic-release": "semantic-release"
   },
   "repository": {

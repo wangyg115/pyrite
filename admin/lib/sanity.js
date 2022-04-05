@@ -12,6 +12,8 @@ import {userTemplate} from './user.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
+console.log(__dirname)
+
 export async function verifyConfig(app) {
     const pkg = JSON.parse(await fs.readFile(path.join(__dirname, '..', '..', 'package.json'), 'utf-8'))
     app.logger.info(`starting pyrite v${pkg.version}`)
@@ -108,10 +110,8 @@ export async function verifySFU() {
         const res = await fetch(`${app.settings.sfu.url}/stats.json`, {headers})
         if (res.status === 401) {
             app.logger.error('sfu endpoint unauthorized; check sfu config')
-            process.exit(1)
         }
     } catch(err) {
         app.logger.error(`sfu not detected (${app.settings.sfu.url})`)
-        process.exit(1)
     }
 }
