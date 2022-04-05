@@ -1,14 +1,19 @@
 import app from '../app.js'
 import crypto from 'crypto'
+import {dirname} from 'path'
 import fetch from 'node-fetch'
+import {fileURLToPath} from 'url'
 import fs from 'fs-extra'
 import inquirer from 'inquirer'
 import os from 'os'
 import path from 'path'
 import {userTemplate} from './user.js'
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
 export async function verifyConfig(app) {
-    const pkg = JSON.parse(await fs.readFile('../package.json', 'utf-8'))
+    const pkg = JSON.parse(await fs.readFile(path.join(__dirname, '..', '..', 'package.json'), 'utf-8'))
     app.logger.info(`starting pyrite v${pkg.version}`)
     let configFile
     if (app.settings.config) {
