@@ -8,6 +8,8 @@ import path from 'path'
 import {userTemplate} from './user.js'
 
 export async function verifyConfig(app) {
+    const pkg = JSON.parse(await fs.readFile('../package.json', 'utf-8'))
+    app.logger.info(`starting pyrite v${pkg.version}`)
     let configFile
     if (app.settings.config) {
         configFile = path.join(app.settings.config)

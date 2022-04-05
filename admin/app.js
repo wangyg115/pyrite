@@ -62,15 +62,13 @@ if (process.env.NODE_ENV !== 'production') {
 app.settings = settings
 
 ;(async() => {
-    app.logger.info('verifying configuration')
-
     await verifyConfig(app)
     await verifySFU()
 
     initMiddleware()
 
     app.listen(settings.listen.port, settings.listen.host, () => {
-        app.logger.info(`pyrite listening: ${settings.listen.host}:${settings.listen.port}`)
+        app.logger.info(`listening host: ${settings.listen.host}:${settings.listen.port}`)
 
         if (process.env.PYRITE_NO_SECURITY) {
             app.logger.warn('SESSION SECURITY IS DISABLED')
