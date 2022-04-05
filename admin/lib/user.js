@@ -1,6 +1,5 @@
 import app from '../app.js'
 import fs from 'fs-extra'
-import path from 'path'
 import {v4 as uuidv4} from 'uuid'
 import {adjectives, animals, colors, NumberDictionary, uniqueNamesGenerator} from 'unique-names-generator'
 import {loadGroups, saveGroup} from './group.js'
@@ -30,8 +29,8 @@ export function userTemplate(overrides) {
 }
 
 export async function loadUsers() {
-    const targetFile = path.join(app.config.sfu.path.data, 'users.json')
-    return JSON.parse(await fs.promises.readFile(targetFile, 'utf8'))
+    const settings = JSON.parse(await fs.promises.readFile(app.settings.config, 'utf8'))
+    return settings.users
 }
 
 export async function loadUser(userId) {
@@ -43,38 +42,34 @@ export async function loadUser(userId) {
 }
 
 export async function saveUser(userId, data) {
-    const targetFile = path.join(app.config.sfu.path.data, 'users.json')
-    let usersData
-
-    const exists = await fs.pathExists(targetFile)
-    if (exists) usersData = JSON.parse(await fs.promises.readFile(targetFile, 'utf8'))
-    else usersData = []
+    const settings = JSON.parse(await fs.promises.readFile(app.settings.config, 'utf8'))
 
     let existingUser = false
 
-    for (let [index, user] of usersData.entries()) {
+    for (let [index, user] of settings.users.entries()) {
         if (user.id === userId) {
-            usersData[index] = data
+            settings.users[index] = data
             existingUser = true
         }
     }
 
     if (!existingUser) {
         app.logger.debug(`save new user ${userId}`)
-        usersData.push(data)
+        settings.users.push(data)
     } else {
         app.logger.debug(`updating existing user ${userId}`)
     }
 
     delete data._unsaved
 
-    await fs.promises.writeFile(targetFile, JSON.stringify(usersData, null, '  '))
+    await fs.promises.writeFile(app.settings.config, JSON.stringify(settings, null, '  '))
     return data
 }
 
 export async function saveUsers(data) {
-    const targetFile = path.join(app.config.sfu.path.data, 'users.json')
-    await fs.promises.writeFile(targetFile, JSON.stringify(data, null, '  '))
+    const settings = JSON.parse(await fs.promises.readFile(app.settings.config, 'utf8'))
+    settings.users = data
+    await fs.promises.writeFile(app.settings.config, JSON.stringify(settings, null, '  '))
 }
 
 export async function syncUsers() {
@@ -93,7 +88,7 @@ export async function syncUsers() {
         for (const [roleName, role] of Object.entries(user.groups)) {
             for (const [roleIndex, groupName] of role.entries()) {
                 if (!groupNames.includes(groupName)) {
-                    // Get rid of non-existing groups in users.json
+                    // Get rid of non-existing groups in settings.users
                     app.logger.debug(`remove invalid group ${groupName} from user ${user.name}`)
                     role.splice(roleIndex, 1)
                 } else {
@@ -108,9 +103,8 @@ export async function syncUsers() {
         }
     }
 
-    // Update users.json
     await saveUsers(users)
-    // Update all Galene groups roles with the ones from users.json
+    // Update all Galene groups roles with the ones from settings.users
     for (const group of groupsData) {
         Object.assign(group, groupsUser[group._name])
         await saveGroup(group._name, group)

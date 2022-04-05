@@ -5,7 +5,7 @@ import fs from 'fs-extra'
 import inquirer from 'inquirer'
 import os from 'os'
 import path from 'path'
-import {saveUser, userTemplate} from './user.js'
+import {userTemplate} from './user.js'
 
 export async function verifyConfig(app) {
     let configFile
@@ -35,7 +35,11 @@ export async function verifyConfig(app) {
                 sfuPathParts[0] = os.homedir()
             }
 
-            sfuPath = sfuPathParts.reduce((memo, part) => path.join(memo, part), '')
+            sfuPath = sfuPathParts.join(path.sep)
+
+            // Add initial user.
+            const user = userTemplate({admin: true, name: 'pyrite'})
+            app.settings.users = [user]
         }
 
         app.settings.sfu.path = sfuPath
@@ -71,23 +75,18 @@ export async function verifySFU() {
         await fs.mkdir(app.config.sfu.path.recordings)
     }
 
-    const usersFile = path.join(app.config.sfu.path.data, 'users.json')
-    const exists = await fs.pathExists(usersFile)
-    if (!exists) {
-        app.logger.info('writing initial users.json')
-        const user = userTemplate({admin: true, name: 'pyrite'})
-        await saveUser(user.id, user)
-    }
-
-    const configFile = path.join(app.config.sfu.path.data, 'config.json')
-    if (!await fs.pathExists(configFile)) {
-        app.logger.info(`creating sfu config: ${configFile}`)
-        await fs.writeFile(configFile, JSON.stringify({
-            admin: [{password: crypto.randomBytes(20).toString('hex'), username: 'admin'}],
+    const sfuConfigFile = path.join(app.config.sfu.path.data, 'config.json')
+    if (!await fs.pathExists(sfuConfigFile)) {
+        app.logger.info(`creating sfu config: ${sfuConfigFile}`)
+        await fs.writeFile(sfuConfigFile, JSON.stringify({
+            admin: [{
+                password: crypto.randomBytes(20).toString('hex'),
+                username: 'admin',
+            }],
         }, null, '  '))
     }
 
-    const config = JSON.parse(await fs.readFile(configFile, 'utf-8'))
+    const config = JSON.parse(await fs.readFile(sfuConfigFile, 'utf-8'))
     app.config.sfu.admin = {
         password: config.admin[0].password,
         username: config.admin[0].username,

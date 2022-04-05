@@ -61,7 +61,7 @@ export function groupTemplate(groupId = null) {
 
 export async function loadGroupPermissions(groupName) {
     const permissions = {op: [], other: [], presenter: []}
-    // Permissions from a group perspective; transformed from users.json
+    // Permissions from a group perspective; transformed from settings.users
     const users = await loadUsers()
     for (const user of users) {
         for (const permissionName of Object.keys(user.groups)) {
@@ -76,7 +76,7 @@ export async function loadGroupPermissions(groupName) {
 }
 
 export async function saveGroupPermissions(groupName, groupPermissions) {
-    // Save the group permissions to users.json and
+    // Save the group permissions to settings.users and
     // sync back to the group files afterwards.
     const users = await loadUsers()
     for (const permissionName of Object.keys(groupPermissions)) {
@@ -206,7 +206,7 @@ export async function saveGroup(groupName, data) {
     if (data._name !== data._newName) {
         app.logger.debug(`save and rename group ${groupName}`)
         const newGroupFile = path.join(app.config.sfu.path.groups, `${data._newName}.json`)
-        // Sync current group file in group definitions and users.json
+        // Sync current group file in group definitions and settings.users
         await renameGroup(data._name, data._newName)
         await fs.remove(currentGroupFile)
 
@@ -220,7 +220,7 @@ export async function saveGroup(groupName, data) {
 }
 
 /**
- * Updates users in users.json from a Galène group.
+ * Updates users in settings.users from a Galène group.
  */
 export async function syncGroup(groupId, groupData) {
     app.logger.debug(`sync group ${groupId}`)
@@ -229,11 +229,11 @@ export async function syncGroup(groupId, groupData) {
     for (const role of ROLES) {
         for (const username of groupData[role]) {
             const _user = users.find((i) => i.name === username)
-            // User from groups definition is in users.json;
+            // User from groups definition is in settings.users;
             // Make sure the group is there as well...
             if (_user) {
                 if (!_user.groups[role].includes(groupId)) {
-                    app.logger.debug(`add group ${groupId} to users.json user ${_user.name}`)
+                    app.logger.debug(`add group ${groupId} to user ${_user.name}`)
                     _user.groups[role].push(groupId)
                     changed = true
                 }

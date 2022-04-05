@@ -32,7 +32,6 @@ npx @garage44/pyrite
 [INFO] no settings file found; generate one...
 ? Path to Galène SFU: ~/code/galene
 [INFO] config file written to: /home/you/.pyriterc
-[INFO] writing initial users.json
 [DEBUG] save new user b6676bd5-7d9a-4b91-b0e6-a8f0673d113c
 [INFO] creating sfu config: /home/you/code/galene/data/config.json
 [INFO] pyrite listening: 127.0.0.1:3000
@@ -43,7 +42,7 @@ npx @garage44/pyrite
 ```bash
 git clone https://github.com/garage44/pyrite
 cd pyrite/docker
-docker-compose up
+PYRITE_UID=1000 PYRITE_GID=1000 docker-compose up galene
 ```
 
 <img height="300" src="./docs/pyrite.png">

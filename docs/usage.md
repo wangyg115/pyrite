@@ -2,11 +2,11 @@
 # Admin mode
 
 Open a browser to <http://localhost:3030> and click on the logo
-to switch to operator mode. You can find the users passwords
-in the users.json file:
+to switch to operator mode. You can find the user passwords
+in the settings file:
 
 ```bash
-cat ~/code/galene/data/users.json
+cat ~/.pyriterc
 ```
 
 Create some groups & users. For a quick test, you can fire up a
