@@ -3,7 +3,8 @@ services:
   pyrite:
     container_name: pyrite
     image: garage44/pyrite:latest
-    network_mode: "host"
+    networks:
+      - pyrite
     depends_on:
       - galene
     ports:
@@ -15,7 +16,8 @@ services:
   galene:
     container_name: galene
     image: garage44/galene:0.5.0
-    network_mode: "host"
+    networks:
+      - pyrite
     ports:
       - 8443:8443
     user: $PYRITE_UID:$PYRITE_GID
@@ -23,5 +25,9 @@ services:
       - ./galene/config/data:/go/src/galene/data
       - ./galene/config/groups:/go/src/galene/groups
       - ./galene/config/recordings:/go/src/galene/recordings
+
+networks:
+  pyrite:
+    driver: bridge
 
 version: "3.8"

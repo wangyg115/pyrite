@@ -8,5 +8,4 @@ COPY *.tgz .
 RUN tar xfz *.tgz
 WORKDIR /usr/app/package
 RUN npm i
-CMD node admin/app.js --sfuPath=/usr/app/galene/ --config=/usr/app/config/.pyriterc
-
+CMD node admin/app.js --sfuPath=/usr/app/galene/ --sfuUrl=http://galene:8443 --config=/usr/app/config/.pyriterc

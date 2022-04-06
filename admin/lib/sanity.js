@@ -12,8 +12,6 @@ import {userTemplate} from './user.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-console.log(__dirname)
-
 export async function verifyConfig(app) {
     const pkg = JSON.parse(await fs.readFile(path.join(__dirname, '..', '..', 'package.json'), 'utf-8'))
     app.logger.info(`starting pyrite v${pkg.version}`)
@@ -26,7 +24,9 @@ export async function verifyConfig(app) {
 
     if (!await fs.pathExists(configFile)) {
         app.logger.info('generating config...')
-        let sfuPath
+        let sfuPath = app.settings.sfu.path
+        let sfuUrl = app.settings.sfu.url
+
         // Config passed as commandline argument
         if (app.settings.sfuPath) {
             sfuPath = app.settings.sfuPath
@@ -45,13 +45,18 @@ export async function verifyConfig(app) {
             }
 
             sfuPath = sfuPathParts.join(path.sep)
+        }
 
-            // Add initial user.
-            const user = userTemplate({admin: true, name: 'pyrite'})
-            app.settings.users = [user]
+        // Add initial user.
+        const user = userTemplate({admin: true, name: 'pyrite'})
+        app.settings.users = [user]
+
+        if (app.settings.sfuUrl) {
+            sfuUrl = app.settings.sfuUrl
         }
 
         app.settings.sfu.path = sfuPath
+        app.settings.sfu.url = sfuUrl
         app.settings.session.secret = crypto.randomBytes(20).toString('hex')
 
         await fs.writeFile(configFile, JSON.stringify(app.settings, null, '  '))
