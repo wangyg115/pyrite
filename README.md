@@ -14,17 +14,19 @@ deploy Pyrite on a network.
 
 ## Docker
 
-For a quick try, you're probably best of trying the Docker-compose config.
+For a quick try, just try the Docker-compose config, which includes Docker
+images for the Galène & Pyrite service.
 
 ```bash
 git clone https://github.com/garage44/pyrite
 cd pyrite/docker
+id # Find out your host user/group id; used to keep volume permissions sane
 PYRITE_UID=1000 PYRITE_GID=1000 docker-compose up
 ```
 
 ## Vanilla Galène
 
-As an alternative, build Galène manually with Pyrite running directly from npm(npx).
+As an alternative, build Galène manually:
 
 ```bash
 git clone https://github.com/jech/galene
@@ -35,19 +37,21 @@ mkdir -p {data,groups,recordings}
 ./galene --insecure
 ```
 
-### Using Npx (Published version)
+### Pyrite - Published
 
-This is the Express service that also hosts the frontend files in one service.
+No need to build Pyrite manually; just run it directly from npm if you
+trust the package. This is the Express service that also exposes the frontend
+as one single service:
 
 ```bash
 npx @garage44/pyrite:latest
 ```
 
-### Manual build (Development)
+### Pyrite - Development
 
-For development, to get a grasp of how services interact, you should try the
-manual build. The Express service and the frontend (Vitejs) are started
-separately to keep development easier:
+The manual build is for development, or to get a grasp of how services interact.
+The Express service and the frontend (Vitejs) are started separately to keep
+development simple:
 
 ```bash
 cd pyrite
@@ -58,5 +62,7 @@ nodemon admin/app.js  # run Express backend on http://localhost:3030
 
 :tada: Open a browser: <http://localhost:3030>
 
-<img height="300" width="50%" src="./docs/pyrite.png">
-<img height="300" width="49.5%" src="./docs/pyrite-admin.png">
+<p float="left">
+    <img width="300" src="./docs/pyrite.png">
+    <img width="300" src="./docs/pyrite-admin.png">
+</p>
