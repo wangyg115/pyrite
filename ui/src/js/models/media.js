@@ -3,7 +3,6 @@ import {app} from '@/js/app.js'
 class ModelMedia {
 
     async getUserMedia(presence) {
-        console.log("GET USER MEDIA")
         app.$s.mediaReady = false
         // Cleanup the old networked stream first:
         if (this.localStream && app.$s.group.connected) {
