@@ -47,15 +47,13 @@ function userMessage(c, r) {
 let commands = {}
 
 function operatorPredicate() {
-    if(app.$m.sfu.connection && app.$m.sfu.connection.permissions &&
-        app.$s.permissions.op)
+    if(app.$m.sfu.connection && app.$s.permissions.op)
         return null
     return 'You are not an operator'
 }
 
 function recordingPredicate() {
-    if(app.$m.sfu.connection && app.$m.sfu.connection.permissions &&
-        app.$s.permissions.record)
+    if(app.$m.sfu.connection && app.$s.permissions.record)
         return null
     return 'You are not allowed to record'
 }

@@ -364,8 +364,9 @@ class ModelSFU {
         app.$s.streams.push(streamState)
     }
 
-    async onJoined(kind, group, perms, status, data, message) {
+    async onJoined(kind, group, permissions, status, data, message) {
         app.logger.debug(`[onJoined] ${kind}/${group}`)
+        let _permissions = {}
         switch(kind) {
         case 'fail':
             this.promiseConnect.reject(message)
@@ -379,12 +380,18 @@ class ModelSFU {
             this.disconnect()
             return
         case 'join':
-            app.$s.permissions = perms
+            for (const permission of permissions) {
+                _permissions[permission] = true
+            }
+            app.$s.permissions = _permissions
             this.promiseConnect.resolve(message)
             this.promiseConnect = null
             break
         case 'change':
-            app.$s.permissions = perms
+            for (const permission of permissions) {
+                _permissions[permission] = true
+            }
+            app.$s.permissions = _permissions
 
             if (status && status.locked) {
                 app.$s.group.locked = true
@@ -397,7 +404,7 @@ class ModelSFU {
                 app.notifier.message('unlock', {group})
             }
 
-            app.logger.debug(`permissions: ${JSON.stringify(perms)}`)
+            app.logger.debug(`permissions: ${JSON.stringify(permissions)}`)
             if(kind === 'change')
                 return
             break
@@ -410,7 +417,7 @@ class ModelSFU {
         app.logger.debug(`request Galène media types: ${app.$s.media.accept.id}`)
         this.connection.request(this.mapRequest(app.$s.media.accept.id))
 
-        if(this.connection.permissions.present && !this.findUpMedia('camera')) {
+        if(app.$s.permissions.present && !this.findUpMedia('camera')) {
             await app.$m.media.getUserMedia(app.$s.devices)
         }
     }

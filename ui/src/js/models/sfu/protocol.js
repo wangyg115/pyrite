@@ -18,9 +18,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+'use strict';
 
 /**
  * toHex formats an array as a hexadecimal string.
+ *
  * @param {number[]|Uint8Array} array - the array to format
  * @returns {string} - the hexadecimal representation of array
  */
@@ -62,9 +64,9 @@ function newLocalId() {
 /**
  * @typedef {Object} user
  * @property {string} username
- * @property {Object<string,boolean>} permissions
+ * @property {Array<string>} permissions
  * @property {Object<string,any>} data
- * @property {Object<string,Object<string,boolean>>} down
+ * @property {Object<string,Object<string,boolean>>} streams
  */
 
 /**
@@ -125,9 +127,9 @@ function ServerConnection() {
     /**
      * The permissions granted to this connection.
      *
-     * @type {Object<string,boolean>}
+     * @type {Array<string>}
      */
-    this.permissions = {};
+    this.permissions = [];
     /**
      * userdata is a convenient place to attach data to a ServerConnection.
      * It is not used by the library.
@@ -151,6 +153,14 @@ function ServerConnection() {
      */
     this.onclose = null;
     /**
+     * onpeerconnection is called before we establish a new peer connection.
+     * It may either return null, or a new RTCConfiguration that overrides
+     * the value obtained from the server.
+     *
+     * @type{(this: ServerConnection) => RTCConfiguration}
+     */
+    this.onpeerconnection = null;
+    /**
      * onuser is called whenever a user in the group changes.  The users
      * array has already been updated.
      *
@@ -163,7 +173,7 @@ function ServerConnection() {
      *
      * kind is one of 'join', 'fail', 'change' or 'leave'.
      *
-     * @type{(this: ServerConnection, kind: string, group: string, permissions: Object<string,boolean>, status: Object<string,any>, data: Object<string,any>, message: string) => void}
+     * @type{(this: ServerConnection, kind: string, group: string, permissions: Array<string>, status: Object<string,any>, data: Object<string,any>, message: string) => void}
      */
     this.onjoined = null;
     /**
@@ -204,8 +214,9 @@ function ServerConnection() {
   * @property {string} [dest]
   * @property {string} [username]
   * @property {string} [password]
+  * @property {string} [token]
   * @property {boolean} [privileged]
-  * @property {Object<string,boolean>} [permissions]
+  * @property {Array<string>} [permissions]
   * @property {Object<string,any>} [status]
   * @property {Object<string,any>} [data]
   * @property {string} [group]
@@ -269,7 +280,7 @@ ServerConnection.prototype.connect = async function(url) {
             resolve(sc);
         };
         this.socket.onclose = function(e) {
-            sc.permissions = {};
+            sc.permissions = [];
             for(let id in sc.up) {
                 let c = sc.up[id];
                 c.close();
@@ -284,7 +295,7 @@ ServerConnection.prototype.connect = async function(url) {
                     sc.onuser.call(sc, id, 'delete');
             }
             if(sc.group && sc.onjoined)
-                sc.onjoined.call(sc, 'leave', sc.group, {}, {}, {}, '');
+                sc.onjoined.call(sc, 'leave', sc.group, [], {}, {}, '');
             sc.group = null;
             sc.username = null;
             if(sc.onclose)
@@ -335,7 +346,7 @@ ServerConnection.prototype.connect = async function(url) {
                 }
                 if(sc.onjoined)
                     sc.onjoined.call(sc, m.kind, m.group,
-                                     m.permissions || {},
+                                     m.permissions || [],
                                      m.status, m.data,
                                      m.value || null);
                 break;
@@ -346,9 +357,9 @@ ServerConnection.prototype.connect = async function(url) {
                         console.warn(`Duplicate user ${m.id} ${m.username}`);
                     sc.users[m.id] = {
                         username: m.username,
-                        permissions: m.permissions || {},
+                        permissions: m.permissions || [],
                         data: m.data || {},
-                        down: {},
+                        streams: {},
                     };
                     break;
                 case 'change':
@@ -356,13 +367,13 @@ ServerConnection.prototype.connect = async function(url) {
                         console.warn(`Unknown user ${m.id} ${m.username}`);
                         sc.users[m.id] = {
                             username: m.username,
-                            permissions: m.permissions || {},
+                            permissions: m.permissions || [],
                             data: m.data || {},
-                            down: {},
+                            streams: {},
                         };
                     } else {
                         sc.users[m.id].username = m.username;
-                        sc.users[m.id].permissions = m.permissions || {};
+                        sc.users[m.id].permissions = m.permissions || [];
                         sc.users[m.id].data = m.data || {};
                     }
                     break;
@@ -415,19 +426,52 @@ ServerConnection.prototype.connect = async function(url) {
  *
  * @param {string} group - The name of the group to join.
  * @param {string} username - the username to join as.
- * @param {string} password - the password.
+ * @param {string|Object} credentials - password or authServer.
  * @param {Object<string,any>} [data] - the initial associated data.
  */
-ServerConnection.prototype.join = function(group, username, password, data) {
+ServerConnection.prototype.join = async function(group, username, credentials, data) {
     let m = {
         type: 'join',
         kind: 'join',
         group: group,
         username: username,
-        password: password,
     };
+    if((typeof credentials) === 'string') {
+        m.password = credentials;
+    } else {
+        switch(credentials.type) {
+        case 'password':
+            m.password = credentials.password;
+            break;
+        case 'token':
+            m.token = credentials.token;
+            break;
+        case 'authServer':
+            let r = await fetch(credentials.authServer, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    location: credentials.location,
+                    username: username,
+                    password: credentials.password,
+                }),
+            });
+            if(!r.ok)
+                throw new Error(
+                    `The authorisation server said: ${r.status} ${r.statusText}`,
+                );
+            m.token = await r.text();
+            break;
+        default:
+            throw new Error(`Unknown credentials type ${credentials.type}`);
+        }
+    }
+
     if(data)
         m.data = data;
+
     this.send(m);
 };
 
@@ -460,6 +504,9 @@ ServerConnection.prototype.request = function(what) {
 };
 
 /**
+ * findByLocalId finds an active connection with the given localId.
+ * It returns null if none was find.
+ *
  * @param {string} localId
  * @returns {Stream}
  */
@@ -475,6 +522,22 @@ ServerConnection.prototype.findByLocalId = function(localId) {
             return s;
     }
     return null;
+}
+
+/**
+ * getRTCConfiguration returns the RTCConfiguration that should be used
+ * with this peer connection.  This usually comes from the server, but may
+ * be overridden by the onpeerconnection callback.
+ *
+ * @returns {RTCConfiguration}
+ */
+ServerConnection.prototype.getRTCConfiguration = function() {
+    if(this.onpeerconnection) {
+        let conf = this.onpeerconnection.call(this);
+        if(conf !== null)
+            return conf;
+    }
+    return this.rtcConfiguration;
 }
 
 /**
@@ -494,7 +557,8 @@ ServerConnection.prototype.newUpStream = function(localId) {
     if(typeof RTCPeerConnection === 'undefined')
         throw new Error("This browser doesn't support WebRTC");
 
-    let pc = new RTCPeerConnection(sc.rtcConfiguration);
+
+    let pc = new RTCPeerConnection(sc.getRTCConfiguration());
     if(!pc)
         throw new Error("Couldn't create peer connection");
 
@@ -529,7 +593,6 @@ ServerConnection.prototype.newUpStream = function(localId) {
     };
 
     pc.ontrack = console.error;
-
     return c;
 };
 
@@ -610,7 +673,7 @@ ServerConnection.prototype.groupAction = function(kind, message) {
 };
 
 /**
- * Called when we receive an offer from the server.  Don't call this.
+ * gotOffer is called when we receive an offer from the server.  Don't call this.
  *
  * @param {string} id
  * @param {string} label
@@ -650,7 +713,7 @@ ServerConnection.prototype.gotOffer = async function(id, label, source, username
     if(!c) {
         let pc;
         try {
-            pc = new RTCPeerConnection(sc.rtcConfiguration);
+            pc = new RTCPeerConnection(sc.getRTCConfiguration());
         } catch(e) {
             console.error(e);
             sc.send({
@@ -686,7 +749,7 @@ ServerConnection.prototype.gotOffer = async function(id, label, source, username
                 return;
             }
             c.stream = e.streams[0];
-            let changed = recomputeUserStreams(sc, source, c);
+            let changed = recomputeUserStreams(sc, source);
             if(c.ondowntrack) {
                 c.ondowntrack.call(
                     c, e.track, e.transceiver, e.streams[0],
@@ -737,7 +800,8 @@ ServerConnection.prototype.gotOffer = async function(id, label, source, username
 };
 
 /**
- * Called when we receive an answer from the server.  Don't call this.
+ * gotAnswer is called when we receive an answer from the server.  Don't
+ * call this.
  *
  * @param {string} id
  * @param {string} sdp
@@ -767,8 +831,8 @@ ServerConnection.prototype.gotAnswer = async function(id, sdp) {
 };
 
 /**
- * Called when we receive a renegotiation request from the server.  Don't
- * call this.
+ * gotRenegotiate is called when we receive a renegotiation request from
+ * the server.  Don't call this.
  *
  * @param {string} id
  * @function
@@ -781,7 +845,8 @@ ServerConnection.prototype.gotRenegotiate = function(id) {
 };
 
 /**
- * Called when we receive a close request from the server.  Don't call this.
+ * gotClose is called when we receive a close request from the server.
+ * Don't call this.
  *
  * @param {string} id
  */
@@ -795,7 +860,8 @@ ServerConnection.prototype.gotClose = function(id) {
 };
 
 /**
- * Called when we receive an abort message from the server.  Don't call this.
+ * gotAbort is called when we receive an abort message from the server.
+ * Don't call this.
  *
  * @param {string} id
  */
@@ -807,7 +873,8 @@ ServerConnection.prototype.gotAbort = function(id) {
 };
 
 /**
- * Called when we receive an ICE candidate from the server.  Don't call this.
+ * gotRemoteIce is called when we receive an ICE candidate from the server.
+ * Don't call this.
  *
  * @param {string} id
  * @param {RTCIceCandidate} candidate
@@ -994,6 +1061,19 @@ function Stream(sc, id, localId, pc, up) {
 }
 
 /**
+ * setStream sets the stream of an upwards connection.
+ *
+ * @param {MediaStream} stream
+ */
+Stream.prototype.setStream = function(stream) {
+    let c = this;
+    c.stream = stream;
+    let changed = recomputeUserStreams(c.sc, c.sc.id);
+    if(changed && c.sc.onuser)
+        c.sc.onuser.call(c.sc, c.sc.id, "change");
+}
+
+/**
  * close closes a stream.
  *
  * For streams in the up direction, this may be called at any time.  For
@@ -1028,18 +1108,23 @@ Stream.prototype.close = function(replace) {
         }
     }
 
+    let userid;
     if(c.up) {
+        userid = c.sc.id;
         if(c.sc.up[c.id] === c)
             delete(c.sc.up[c.id]);
         else
             console.warn('Closing unknown stream');
     } else {
+        userid = c.source;
         if(c.sc.down[c.id] === c)
             delete(c.sc.down[c.id]);
         else
             console.warn('Closing unknown stream');
-        recomputeUserStreams(c.sc, c.source);
     }
+    let changed = recomputeUserStreams(c.sc, userid);
+    if(changed && c.sc.onuser)
+        c.sc.onuser.call(c.sc, userid, "change");
     c.sc = null;
 
     if(c.onclose)
@@ -1047,50 +1132,35 @@ Stream.prototype.close = function(replace) {
 };
 
 /**
+ * recomputeUserStreams recomputes the user.streams array for a given user.
+ * It returns true if anything changed.
+ *
  * @param {ServerConnection} sc
  * @param {string} id
- * @param {Stream} [c]
  * @returns {boolean}
  */
-function recomputeUserStreams(sc, id, c) {
+function recomputeUserStreams(sc, id) {
     let user = sc.users[id];
     if(!user) {
         console.warn("recomputing streams for unknown user");
         return false;
     }
 
-    if(c) {
-        let changed = false;
-        if(!user.down[c.label])
-            user.down[c.label] = {};
-        c.stream.getTracks().forEach(t => {
-            if(!user.down[c.label][t.kind]) {
-                user.down[c.label][t.kind] = true;
-                changed = true;
-            }
-        });
-        return changed;
-    }
-
-    if(!user.down || Object.keys(user.down).length === 0)
-        return false;
-
-    let old = user.down;
-    user.down = {};
-
-    for(id in sc.down) {
-        let c = sc.down[id];
+    let streams = id === sc.id ? sc.up : sc.down;
+    let old = user.streams;
+    user.streams = {};
+    for(id in streams) {
+        let c = streams[id];
         if(!c.stream)
             continue;
-        if(!user.down[c.label])
-            user.down[c.label] = {};
+        if(!user.streams[c.label])
+            user.streams[c.label] = {};
         c.stream.getTracks().forEach(t => {
-            user.down[c.label][t.kind] = true;
+            user.streams[c.label][t.kind] = true;
         });
     }
 
-    // might lead to false positives.  Oh, well.
-    return JSON.stringify(old) != JSON.stringify(user.down);
+    return JSON.stringify(old) != JSON.stringify(user.streams);
 }
 
 /**
@@ -1107,7 +1177,7 @@ Stream.prototype.abort = function() {
 };
 
 /**
- * Called when we get a local ICE candidate.  Don't call this.
+ * gotLocalIce is Called when we get a local ICE candidate.  Don't call this.
  *
  * @param {RTCIceCandidate} candidate
  * @function
@@ -1126,6 +1196,7 @@ Stream.prototype.gotLocalIce = function(candidate) {
 /**
  * flushLocalIceCandidates flushes any buffered local ICE candidates.
  * It is called when we send an offer.
+ *
  * @function
  */
 Stream.prototype.flushLocalIceCandidates = function () {
@@ -1148,6 +1219,7 @@ Stream.prototype.flushLocalIceCandidates = function () {
 /**
  * flushRemoteIceCandidates flushes any buffered remote ICE candidates.  It is
  * called automatically when we get a remote description.
+ *
  * @function
  */
 Stream.prototype.flushRemoteIceCandidates = async function () {
@@ -1275,8 +1347,9 @@ Stream.prototype.updateStats = async function() {
             for(let r of report.values()) {
                 if(stid && r.type === 'outbound-rtp') {
                     let id = stid;
-                    if(r.rid)
-                        id = id + '-' + r.rid
+                    // Firefox doesn't implement rid, use ssrc
+                    // to discriminate simulcast tracks.
+                    id = id + '-' + r.ssrc;
                     if(!('bytesSent' in r))
                         continue;
                     if(!stats[id])
