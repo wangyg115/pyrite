@@ -3,10 +3,11 @@ import app from '../app.js'
 import {dictionary} from './utils.js'
 import fetch from 'node-fetch'
 import fs from 'fs-extra'
-import {globby} from 'globby'
+// import {globby} from 'globby'
 import path from 'path'
 import {uniqueNamesGenerator} from 'unique-names-generator'
 import {loadUsers, saveUsers} from './user.js'
+import {globbyWin} from './utils.js'
 
 const ROLES = ['op', 'other', 'presenter']
 
@@ -121,10 +122,10 @@ export async function loadGroups(publicEndpoint = false) {
     app.logger.debug(`load groups`)
     // Contains clientCount; mix it with the Pyrite group info.
     let galeneGroups = await (await fetch(`${app.settings.sfu.url}/public-groups.json`)).json()
-    const files = await globby(path.join(app.config.sfu.path.groups, '**', '*.json'))
+    const files = await globbyWin(path.join(app.config.sfu.path.groups, '**', '*.json'))
     const fileData = await Promise.all(files.map((i) => fs.promises.readFile(i, 'utf8')))
     const groupNames = files.map((i) => {
-        return i.replace(app.config.sfu.path.groups, '').replace('.json', '').replace('/', '')
+        return i.replace(app.config.sfu.path.groups, '').replace('.json', '').replace(path.sep, '')
     })
 
     const groupsData = []
@@ -133,11 +134,14 @@ export async function loadGroups(publicEndpoint = false) {
         let data = {}
 
         if (publicEndpoint) {
+            if (!groupData.public){
+                continue
+            }
             // name, description, clientCount
             for (const [key, value] of Object.entries(groupData)) {
-                if (key === 'public' && value === false) {
-                    continue
-                }
+                // if (key === 'public' && value === false) {
+                //     continue
+                // }
 
                 if (PUBLIC_GROUP_FIELDS.includes(key)) {
                     data[key] = value
@@ -227,6 +231,9 @@ export async function syncGroup(groupId, groupData) {
     const users = await loadUsers()
     let changed = false
     for (const role of ROLES) {
+        if(!groupData[role]){
+            continue
+        }
         for (const username of groupData[role]) {
             const _user = users.find((i) => i.name === username)
             // User from groups definition is in settings.users;

@@ -1,3 +1,14 @@
+import {globby} from 'globby'
+import path from 'path'
+
+export async function globbyWin(patten){
+    if(path.sep === '\\'){
+        const files = await globby(patten.replaceAll(path.sep,'/'))
+        return files.map((filename)=>filename.replaceAll('/', path.sep))
+    }
+    return globby(patten)
+}
+
 /**
  * Simple object check.
  * @param item

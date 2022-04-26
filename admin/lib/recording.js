@@ -1,14 +1,15 @@
 import app from '../app.js'
 import fs from 'fs-extra'
-import {globby} from 'globby'
+// import {globby} from 'globby'
 import path from 'path'
+import {globbyWin} from './utils.js'
 
 export async function loadRecordings(groupId) {
     app.logger.debug(`load recordings from group: ${groupId}`)
-    const files = await globby(path.join(app.config.sfu.path.recordings, groupId, '*.webm'))
+    const files = await globbyWin(path.join(app.config.sfu.path.recordings, groupId, '*.webm'))
     const fileStats = await Promise.all(files.map((i) => fs.stat(i, 'utf8')))
     const fileNames = files.map((i) => {
-        return i.replace(path.join(app.config.sfu.path.recordings, groupId), '').replace('.webm', '').replace('/', '')
+        return i.replace(path.join(app.config.sfu.path.recordings, groupId), '').replace('.webm', '').replace(path.sep, '')
     })
 
     const filesData = []

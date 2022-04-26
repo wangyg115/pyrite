@@ -36,7 +36,7 @@ const logFormat = winston.format.printf(({level, message, timestamp}) => {
 const app = express()
 app.config = {
     path:  {
-        base: path.join(path.dirname(import.meta.url).replace('file://', ''), '..'),
+        base: path.join(path.dirname(import.meta.url).replace('file:///', ''), '..'),
     },
 }
 app.logger = winston.createLogger({
