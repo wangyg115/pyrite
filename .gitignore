@@ -5,3 +5,5 @@ docker/galene/config/data
 docker/pyrite/config/.pyriterc
 *.log
 *.tgz
+.pyriterc
+package-lock.json

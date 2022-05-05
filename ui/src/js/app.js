@@ -25,6 +25,7 @@ import Hint from '@/vue/Elements/Hint.vue'
 import Icon from '@/vue/Elements/Icon/Icon.vue'
 import localeFR from './locales/fr.js'
 import localeNL from './locales/nl.js'
+import localeZH from './locales/zh.js'
 import Logger from './lib/logger.js'
 import ModelGroup from './models/group.js'
 import ModelMedia from './models/media.js'
@@ -58,6 +59,7 @@ class Pyrite extends EventEmitter {
             messages: {
                 fr: localeFR,
                 nl: localeNL,
+                zh: localeZH,
             },
             silentFallbackWarn: true,
             silentTranslationWarn: true,

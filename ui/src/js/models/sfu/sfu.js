@@ -433,7 +433,7 @@ class ModelSFU {
         // This is a private message
         else if (destinationId && sourceId) {
             channelId = sourceId
-            const activeUser = this.$s.users.find((user) => user.id === sourceId)
+            const activeUser = app.$s.users.find((user) => user.id === sourceId)
             if (activeUser) {
                 if (!app.$s.chat.channels[sourceId]) {
                     app.$s.chat.channels[sourceId] = {

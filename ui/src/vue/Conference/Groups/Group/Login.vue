@@ -73,7 +73,7 @@
                     <div v-if="!app.env.isFirefox" class="media-option">
                         <FieldSelect
                             v-model="$s.devices.audio.selected"
-                            :help="app.env.isFirefox ? `${app.env.browserName} ${$t('does not support this option')}` : $t('select the microphone device')"
+                            :help="app.env.isFirefox ? `${app.env.browserName} ${$t('does not support this option')}` : $t('select audio output device')"
                             :label="$t('audio output')"
                             name="audio"
                             :options="$s.devices.audio.options"

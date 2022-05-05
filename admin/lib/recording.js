@@ -29,7 +29,7 @@ export async function loadRecordings(groupId) {
 export function recordingPath(groupId, recording) {
     const dirname = path.join(app.config.sfu.path.recordings, groupId)
     // Sanitize against directory traversal?
-    return path.join(dirname, recording)
+    return path.join(dirname, recording).replaceAll(path.sep, '/')
 }
 
 export async function deleteRecording(groupId, recording) {

@@ -1,0 +1,9 @@
+done
+1 fixed bugs for globby not suport back slash running on windows;
+2 bugs when get public group
+3 crash when save group json file and one of 'op' 'presenter' 'aother' property absent,
+4 chat with somebody will not send anything.
+todo
+
+1 stop recording.
+2 shuld show recording as a particpent in a group?

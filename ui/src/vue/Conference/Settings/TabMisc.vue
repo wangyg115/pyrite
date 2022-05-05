@@ -28,6 +28,7 @@ export default {
                 {id: 'en', name: this.$t('english')},
                 {id: 'fr', name: this.$t('french')},
                 {id: 'nl', name: this.$t('dutch')},
+                {id: 'zh', name: this.$t('chinese')},
             ],
             themes: [
                 {id: 'system', name: this.$t('system')},
