@@ -3,7 +3,7 @@ done
 2 bugs when get public group
 3 crash when save group json file and one of 'op' 'presenter' 'aother' property absent,
 4 chat with somebody will not send anything.
+5 stop recording.
 todo
 
-1 stop recording.
-2 shuld show recording as a particpent in a group?
+1 shuld show recording as a particpent in a group?

@@ -70,6 +70,10 @@ export default function() {
                     level: 'warning',
                     target: 'group {group} stopped being recorded',
                 },
+                warning: {
+                    level: 'warning',
+                    target: 'group {group} is being recorded!',
+                },
             }
         }
 

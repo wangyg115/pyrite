@@ -79,6 +79,7 @@ export default {
         },
         toggleRecording(isRecording) {
             this.$m.sfu.connection.groupAction(isRecording ? 'unrecord' : 'record')
+            this.$s.group.recording = !isRecording
         },
 
     },
